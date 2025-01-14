@@ -1,22 +1,44 @@
 # T-VIBES
 Taal Visitor Information and Booking System (T-VIBES) is a web application that showcases the tourist attractions and destinations of Taal, Batangas and also allows tourists to book a tour trip. Website name is still subject to change.
-Folder Structure Guide:\n/my-cms-reservation-system\n|-- /public                   # Publicly accessible files (web root)
+<br>
+Folder Structure Guide:
+<br>
+/my-cms-reservation-system
+<br>
+|-- /public                   # Publicly accessible files (web root)
+<br>
 |   |-- index.php             # Entry point of the site (could be a front-page or router)
+<br>
 |   |-- /assets               # Static assets (images, CSS, JS)
+<br>
 |   |   |-- /images           # Images used on the site
+<br>
 |   |   |   |-- logo.png      # Logo for the site
+<br>
 |   |   |   |-- favicon.ico   # Favicon
+<br>
 |   |   |-- /styles           # CSS, SCSS, or other stylesheets
+<br>
 |   |   |   |-- main.css      # Main stylesheet
+<br>
 |   |   |-- /scripts          # JS files for front-end functionality
+<br>
 |   |   |   |-- app.js        # Custom JS logic for the front-end (form validation, etc.)
+<br>
 |   |-- /uploads              # Folder to store uploaded images, files, etc.
+<br>
 |   |   |-- product-images    # Images uploaded by users (e.g., for reservations, products)
+<br>
 |-- /src                      # Application source code (PHP, logic, controllers)
+<br>
 |   |-- /config               # Configuration files (database, environment settings)
+<br>
 |   |   |-- database.php      # Database connection and settings
+<br>
 |   |   |-- config.php        # General app configuration (app name, debug mode)
+<br>
 |   |   |-- routes.php        # Routing configurations
+<br>
 |   |-- /controllers          # PHP controllers for handling business logic
 |   |   |-- ContentController.php   # Handles content-related logic (CRUD for posts, etc.)
 |   |   |-- ReservationController.php # Handles reservation logic (creating, viewing reservations)
