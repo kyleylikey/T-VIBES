@@ -1,8 +1,6 @@
 # T-VIBES
 Taal Visitor Information and Booking System (T-VIBES) is a web application that showcases the tourist attractions and destinations of Taal, Batangas and also allows tourists to book a tour trip. Website name is still subject to change.
-Folder Structure Guide:
-/my-cms-reservation-system
-|-- /public                   # Publicly accessible files (web root)
+Folder Structure Guide:\n/my-cms-reservation-system\n|-- /public                   # Publicly accessible files (web root)
 |   |-- index.php             # Entry point of the site (could be a front-page or router)
 |   |-- /assets               # Static assets (images, CSS, JS)
 |   |   |-- /images           # Images used on the site
