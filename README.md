@@ -7,11 +7,11 @@ Folder Structure Guide:
 <br>
 |-- /public                   # Publicly accessible files (web root)
 <br>
-|   |-- index.php             # Entry point of the site (could be a front-page or router)
+|  |-- index.php             # Entry point of the site (could be a front-page or router)
 <br>
-|   |-- /assets               # Static assets (images, CSS, JS)
+|  |-- /assets               # Static assets (images, CSS, JS)
 <br>
-|   |   |-- /images           # Images used on the site
+|  |  |-- /images           # Images used on the site
 <br>
 |   |   |   |-- logo.png      # Logo for the site
 <br>
