@@ -164,14 +164,14 @@ input[type="text"], input[type="password"] {
     display: flex;
     gap: 10px; /* Spacing between inputs */
     justify-content: space-between; /* Ensure alignment */
-    margin-bottom: 20px;
+
 }
 
 .half-width-input {
     width: 48%; /* Maintain equal width for both inputs */
     padding: 12px; /* Consistent padding */
     border: 1px solid #a7a7a7; /* Uniform border */
-    border-radius: 10px; /* Rounded corners */
+    border-radius: 50px; /* Rounded corners */
     box-sizing: border-box;
     font-size: 14px;
 }
@@ -191,7 +191,7 @@ input[type="text"], input[type="password"] {
     width: 100%;
     padding: 10px;
     border: 1px solid #cccccc; /* Ensures a visible border */
-    border-radius: 10px !important;
+    border-radius: 50px !important;
     box-sizing: border-box;
     font-size: 14px;
     margin-bottom: 20px;
