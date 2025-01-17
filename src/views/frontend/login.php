@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
-
 </head>
 <body>
     <div class="login-container">
         <h1>Login</h1>
         <p style="margin-bottom: 30px;">Please sign in to continue.</p>
-        <form action="/login" method="POST">
+        <form action="../../controllers/logincontroller.php" method="POST">
             <input type="text" id="username" name="username" placeholder="   Username" required>
             <input type="password" id="password" name="password" placeholder="   Password" required>
             <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
