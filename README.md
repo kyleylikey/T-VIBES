@@ -6,7 +6,7 @@ Taal Visitor Information and Booking System (T-VIBES) is a web application that 
 
 1. Start XAMPP and ensure that Apache and MySQL are running.
 2. Open phpMyAdmin by navigating to `http://localhost/phpmyadmin`.
-3. Create a new database (e.g., `tvibes`).
+3. Create a new database (e.g., `TaalTourismDB`).
 4. Import the database schema and data:
    - Click on the new database.
    - Go to the "Import" tab.
