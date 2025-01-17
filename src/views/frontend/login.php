@@ -16,7 +16,7 @@
             <input type="password" id="password" name="password" placeholder="   Password" required>
             <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
             <button type="submit">Login</button>
-            <p style="margin-top: 20%;">Don't have an account? <a href="sign-up_v1.html" style="color: #3a4989; text-decoration: none;">Sign Up</a></p>
+            <p style="margin-top: 20%;">Don't have an account? <a href="signup.php" style="color: #3a4989; text-decoration: none;">Sign Up</a></p>
         </form>
     </div>
 

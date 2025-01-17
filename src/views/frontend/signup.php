@@ -25,7 +25,7 @@
             </div>
             
             <button type="submit">Create Account</button>
-            <p class="login-redirect">Already have an account? <a href="Login_v1.html">Login</a></p>
+            <p class="login-redirect">Already have an account? <a href="login.php">Login</a></p>
         </form>
     </div>
 
