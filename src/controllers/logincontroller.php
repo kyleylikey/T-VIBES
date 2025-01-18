@@ -12,11 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $user = new User($db);
     $user->setUsername($_POST['username']);
-    $user->setPassword($_POST['password']);
+    $plainPassword = $_POST['password'];
 
-    if ($user->login()) {
+    if ($user->login($plainPassword)) {
         $_SESSION['user_id'] = $user->getId();
-        header("Location: /index.php");
+        header("Location: ../../public/index.php");
+        exit();
     } else {
         echo "Invalid username or password";
     }

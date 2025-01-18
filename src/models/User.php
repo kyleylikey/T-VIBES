@@ -34,16 +34,22 @@ class User {
         $this->password = password_hash($password, PASSWORD_BCRYPT, $options);
     }
 
-    public function login() {
+    public function login($plainPassword) {
         $query = "SELECT * FROM " . $this->table . " WHERE username = ? LIMIT 0,1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($this->isActive() && ($user && password_verify($this->password, $user['hashedpassword']))) {
-            $this->id = $user['userid'];
-            return true;
+        if ($user) {
+            if (password_verify($plainPassword, $user['hashedpassword'])) {
+                $this->id = $user['userid'];
+                return true;
+            } else {
+                echo "Password verification failed.";
+            }
+        } else {
+            echo "User not found.";
         }
         return false;
     }
