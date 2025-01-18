@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,22 +10,75 @@
     <div class="signup-container">
         <h1>Sign Up</h1>
         <p>Please register to log in.</p>
-        <form action="signupcontroller.php" method="POST">
+        <form action="../../../controllers/signupcontroller.php" method="POST">
             <div class="form-group">
-                <input type="text" id="fullname" name="fullname" placeholder="   Full Name" required class="half-width-input">
-                <input type="text" id="username" name="username" placeholder="   Username" required class="half-width-input">
-            </div>
-            <input type="tel" id="contact" name="contact" placeholder="   Contact Number" required class="full-width-input">
-            <input type="email" id="email" name="email" placeholder="   Email" required class="full-width-input">            
-            <input type="password" id="password" name="password" placeholder="   Password" required class="full-width-input">
-
-            <div class="checkbox-container">
-                <input type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
-                <label for="privacyPolicy">Privacy Policy & Terms of Service</label>
+                <label for="fullname" class="visually-hidden">Full Name</label>
+                <input 
+                    type="text" 
+                    id="fullname" 
+                    name="fullname" 
+                    placeholder="Full Name" 
+                    required 
+                    class="half-width-input"
+                >
+                
+                <label for="username" class="visually-hidden">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Username" 
+                    required 
+                    class="half-width-input"
+                >
             </div>
             
-            <button type="submit">Create Account</button>
-            <p class="login-redirect">Already have an account? <a href="login.php">Login</a></p>
+            <label for="contact" class="visually-hidden">Contact Number</label>
+            <input 
+                type="tel" 
+                id="contact" 
+                name="contact" 
+                placeholder="Contact Number" 
+                required 
+                class="full-width-input"
+            >
+            
+            <label for="email" class="visually-hidden">Email</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="Email" 
+                required 
+                class="full-width-input"
+            >
+            
+            <label for="password" class="visually-hidden">Password</label>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                placeholder="Password" 
+                required 
+                class="full-width-input"
+            >
+
+            <div class="checkbox-container">
+                <input 
+                    type="checkbox" 
+                    id="privacyPolicy" 
+                    name="privacyPolicy" 
+                    required
+                >
+                <label for="privacyPolicy">I agree to the Privacy Policy & Terms of Service</label>
+            </div>
+            
+            <button type="submit" class="submit-button">Create Account</button>
+            
+            <p class="login-redirect">
+                Already have an account? 
+                <a href="login.php">Login</a>
+            </p>
         </form>
     </div>
 
