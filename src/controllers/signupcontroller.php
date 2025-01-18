@@ -2,63 +2,68 @@
 require_once '../config/dbconnect.php';
 require_once '../models/User.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    
-    $database = new Database();
-    $db = $database->getConnection();
+class SignupController {
+    private $conn;
 
-    $user = new User($db);
+    public function __construct() {
+        $database = new Database();
+        $this->conn = $database->getConnection();
+    }
 
-    $user->setUsername($_POST['username']);
-    $user->setPassword($_POST['password']); 
-
-    $fullname = htmlspecialchars(strip_tags($_POST['fullname']));
-    $contact = htmlspecialchars(strip_tags($_POST['contact']));
-    $email = htmlspecialchars(strip_tags($_POST['email']));
-    $usertype = 'trst'; 
-    $status = 'active'; 
-
-    try {
-        $query = "SELECT * FROM Users WHERE email = :email";
-        $stmt = $db->prepare($query);
+    public function createAccount($name, $username, $password, $contactnum, $email) {
+        $query = "SELECT * FROM users WHERE email = :email OR username = :username";
+        $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':username', $username);
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            echo json_encode(["status" => "error", "message" => "Email is already registered."]);
-            exit();
+            return ["success" => false, "message" => "Email or username already exists."];
         }
 
-        $query = "SELECT * FROM Users WHERE username = :username";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':username', $user->getUsername());
-        $stmt->execute();
+        $user = new User($this->conn);
+        $user->setUsername($username);
+        $user->setPassword($password);
 
-        if ($stmt->rowCount() > 0) {
-            echo json_encode(["status" => "error", "message" => "Username is already taken."]);
-            exit();
-        }
+        $query = "INSERT INTO users (name, username, hashedpassword, contactnum, email, usertype, status) 
+                  VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'active')";
+        $stmt = $this->conn->prepare($query);
 
-        $query = "INSERT INTO Users (username, name, hashedpassword, contactnum, usertype, status, email) 
-                  VALUES (:username, :name, :hashedpassword, :contact, :usertype, :status, :email)";
-
-        $stmt = $db->prepare($query);
-
-        $stmt->bindParam(':username', $user->getUsername());
-        $stmt->bindParam(':name', $fullname);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':username', $username);
         $stmt->bindParam(':hashedpassword', $user->getPassword());
-        $stmt->bindParam(':contact', $contact);
-        $stmt->bindParam(':usertype', $usertype);
-        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':contactnum', $contactnum);
         $stmt->bindParam(':email', $email);
 
         if ($stmt->execute()) {
-            echo json_encode(["status" => "success", "message" => "Account successfully created. You can now log in."]);
+            return ["success" => true, "message" => "Account successfully created."];
         } else {
-            echo json_encode(["status" => "error", "message" => "An error occurred during registration. Please try again."]);
+            return ["success" => false, "message" => "Failed to create account."];
         }
-    } catch (Exception $e) {
-        echo json_encode(["status" => "error", "message" => "An unexpected error occurred: " . $e->getMessage()]);
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = $_POST['fullname'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $contactnum = $_POST['contact'];
+    $email = $_POST['email'];
+
+    if (empty($name) || empty($username) || empty($password) || empty($contactnum) || empty($email)) {
+        header('Location: ../../src/views/frontend/signup.php?error=empty_fields');
+        exit();
+    }
+
+    $signupController = new SignupController();
+    $result = $signupController->createAccount($name, $username, $password, $contactnum, $email);
+
+    if ($result["success"]) {
+        header('Location: ../../src/views/frontend/login.php?message=account_created');
+        exit();
+    } else {
+        header('Location: ../../src/views/frontend/signup.php?error=' . urlencode($result["message"]));
+        exit();
     }
 }
 ?>
