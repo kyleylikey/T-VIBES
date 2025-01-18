@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
     <link rel="stylesheet" href="../../../public/assets/styles/login.css">
 </head>
-<body>
+<body class="taalbgpic">
     <div class="signup-container">
         <h1>Sign Up</h1>
         <p>Please register to log in.</p>

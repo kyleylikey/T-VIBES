@@ -1,10 +1,89 @@
+body {
+    position: relative;
+    margin: 0; 
+    padding: 0; 
+    font-family: Arial, sans-serif;
+}
+
+
 .vertnavbar {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 25%;
-    background-color: #f1f1f1;
-    height: 100%; /* Full height */
-    position: fixed; /* Make it stick, even on scroll */
-    overflow: auto; /* Enable scrolling if the sidenav has too much content */
-  }
+    list-style-type: none; /* Remove default list styling */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    width: 280px; /* Set a fixed width for the navbar */
+    position: fixed; /* Fix the navbar to the left side */
+    height: 100%; /* Make the navbar full height */
+    overflow: auto; /* Enable scrolling if the content overflows */
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Arrange items in a column */
+    justify-content: center; /* Center items vertically */
+}
+
+.logocontainer {
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.logocontainer img {
+    margin: 20px;
+    width: 220px; /* Set the width of the logo */
+}
+
+.vertnavbar .bi {
+    margin-right: 12px; /* Add margin to the right of the icons */
+}
+
+.vertnavbar li a {
+    display: block; /* Make the links block elements */
+    margin: 20px;
+    padding: 16px; /* Add padding */
+    text-decoration: none; /* Remove underline */
+    border-radius: 8px;
+    color: black;
+}
+
+.vertnavbar li a.active {
+    background-color: #CD4132; /* Set the background color for the active link */
+    color: white; /* Set the text color for the active link */
+}
+
+.vertnavbar li a:hover:not(.active) {
+    background-color: #fbb6c2; /* Set the background color on hover */
+    color: white; /* Set the text color on hover */
+}
+
+.accountcontainer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.vertnavbar li button {
+    display: block; /* Make the links block elements */
+    margin: 20px;
+    width: 240px;
+    padding: 16px; /* Add padding */
+    text-decoration: none; /* Remove underline */
+    border-radius: 8px;
+    color: white;
+    border: none;
+    background-color: #3A4989; 
+    text-align: left; /* Align the content to the left */
+}
+
+.vertnavbar li button:hover {
+    background-color: #88a4f7;
+}
+
+
+.dashboardcontainer {
+    margin-left: 260px; /* Add a left margin to make space for the navbar */
+    padding: 20px; /* Add padding */
+}
+
+.content {
+    background-color: #fccfd6; /* Set the background color */
+    border-radius: 10px; /* Make the box corners rounded */
+    padding: 20px; /* Add padding inside the box */
+}

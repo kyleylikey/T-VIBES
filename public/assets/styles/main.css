@@ -6,24 +6,10 @@
 }
 
 body {
+    background-color: #fffafb;
     font-family: 'Arial', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     position: relative;
-}
-
-/* Dim Background with Gradient */
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
-    z-index: -1;
 }
 
 /* General Button Styles */
