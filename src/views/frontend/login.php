@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
+    <link rel="stylesheet" href="../../../public/assets/styles/login.css">
 </head>
 <body>
     <div class="login-container">
