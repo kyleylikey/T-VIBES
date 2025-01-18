@@ -10,7 +10,7 @@
     <div class="signup-container">
         <h1>Sign Up</h1>
         <p>Please register to log in.</p>
-        <form action="/../../../controllers/signupcontroller.php" method="POST">
+        <form action="../../../../controllers/signupcontroller.php" method="POST">
             <div class="form-group">
                 <input type="text" id="fullname" name="fullname" placeholder="Full Name" required class="half-width-input">
                 <input type="text" id="username" name="username" placeholder="Username" required class="half-width-input">
