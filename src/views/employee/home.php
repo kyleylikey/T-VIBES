@@ -1,3 +1,6 @@
+<?php
+require_once '../../controllers/helpers.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,23 +17,139 @@
             <img src="../../../public/assets/images/headerlogo.jpg" alt="Header Logo">
         </div>
         <ul>
-            <li><a class="active" href="#home"><i class="bi bi-grid-fill"></i>Overview</a></li>
-            <li><a href="#requests"><i class="bi bi-map"></i>Tour Requests</a></li>
-            <li><a href="#tours"><i class="bi bi-geo"></i>Upcoming Tours</a></li>
-            <li><a href="#reviews"><i class="bi bi-pencil-square"></i>Reviews</a></li>
-            <li><a href="#sites"><i class="bi bi-image"></i>Tourist Sites</a></li>
+            <li><a class="active" href="#home"><i class="bi bi-grid-fill"></i><span class="nav-text">Overview</span></a></li>
+            <li><a href="#requests"><i class="bi bi-map"></i><span class="nav-text">Tour Requests</span></a></li>
+            <li><a href="#tours"><i class="bi bi-geo"></i><span class="nav-text">Upcoming Tours</span></a></li>
+            <li><a href="#reviews"><i class="bi bi-pencil-square"></i><span class="nav-text">Reviews</span></a></li>
+            <li><a href="#sites"><i class="bi bi-image"></i><span class="nav-text">Tourist Sites</span></a></li>
         </ul> 
         <div class="accountcontainer">
             <ul>
-                <li><button><i class="bi bi-arrow-left-square-fill"></i>Log out</button></li>
+                <li class="accountname"><i class="bi bi-person-circle"></i><span class="nav-text">Employee Name</span></li>
+                <li><button href="#signout"><i class="bi bi-arrow-left-square-fill"></i><span class="nav-text">Sign Out</span></button></li>
             </ul>
         </div>
     </div>
     <div class="dashboardcontainer">
         <div class="content">
-            <h1>Welcome, Employee!</h1>
-            <p>This is your dashboard. You can view your tasks, schedule, and other important information here.</p>
+            <div class="header">
+                <h1>Overview</h1>
+                <span class="date"><h1><?php 
+                    date_default_timezone_set('Asia/Manila');
+                    echo date('M d, Y | h:i A'); 
+                ?></h1></span>
+            </div>
+            <div class="statistics">
+                <div id="pendingtours" style="">
+                    <h2>Pending Tours</h2>
+                    <span class="bi bi-map-fill"></span>
+                    <h1>12</h1>
+                </div>
+                <div id="upcomingtours">
+                    <h2>Upcoming Tours</h2>
+                    <span class="bi bi-geo-fill"></span>
+                    <h1>8</h1>
+                </div>
+                <div id="pendingreviews">
+                    <h2>Pending Reviews</h2>
+                    <span class="bi bi-pencil-square"></span>
+                    <h1>10</h1>
+                </div>
+                <div class="tablecontainer">
+                    <h2>Latest Tour Requests</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th class="hide-on-small">Submitted</th>
+                                <th class="hide-on-small">Destination</th>
+                                <th>Travel Date</th>
+                                <th>Pax</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td class="hide-on-small">Oct 10, 2023</td>
+                                <td class="hide-on-small">3</td>
+                                <td>Nov 15, 2023</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td class="hide-on-small">Oct 12, 2023</td>
+                                <td class="hide-on-small">2</td>
+                                <td>Dec 01, 2023</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>Michael Brown</td>
+                                <td class="hide-on-small">Oct 14, 2023</td>
+                                <td class="hide-on-small">1</td>
+                                <td>Nov 20, 2023</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>Emily White</td>
+                                <td class="hide-on-small">Oct 16, 2023</td>
+                                <td class="hide-on-small">4</td>
+                                <td>Dec 05, 2023</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>Chris Green</td>
+                                <td class="hide-on-small">Oct 18, 2023</td>
+                                <td class="hide-on-small">2</td>
+                                <td>Nov 25, 2023</td>
+                                <td>5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="bluebutton">See All</button>
+                </div>
+                <div class="tablecontainer">
+                    <h2>Recent Reviews</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Author</th>
+                                <th>Rating</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>John Doe</td>
+                            <td><?php echo generateStarRating(4.5); ?></td>
+                            <td>Oct 10, 2023</td>
+                        </tr>
+                        <tr>
+                            <td>Jane Smith</td>
+                            <td><?php echo generateStarRating(4.0); ?></td>
+                            <td>Oct 12, 2023</td>
+                        </tr>
+                        <tr>
+                            <td>Michael Brown</td>
+                            <td><?php echo generateStarRating(3.5); ?></td>
+                            <td>Oct 14, 2023</td>
+                        </tr>
+                        <tr>
+                            <td>Emily White</td>
+                            <td><?php echo generateStarRating(5.0); ?></td>
+                            <td>Oct 16, 2023</td>
+                        </tr>
+                        <tr>
+                            <td>Chris Green</td>
+                            <td><?php echo generateStarRating(4.2); ?></td>
+                            <td>Oct 18, 2023</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button class="bluebutton">See All</button>
+                </div>
+            </div>
         </div>
     </div>
+    <script src="../../../public/assets/scripts/dashboard.js"></script>
 </body>
 </html>
