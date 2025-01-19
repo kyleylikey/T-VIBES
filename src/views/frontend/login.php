@@ -12,8 +12,8 @@
         <h1>Login</h1>
         <p style="margin-bottom: 30px;">Please sign in to continue.</p>
         <form action="../../controllers/logincontroller.php" method="POST">
-            <input type="text" id="username" name="username" placeholder="   Username" required>
-            <input type="password" id="password" name="password" placeholder="   Password" required>
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
             <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
             <button type="submit">Login</button>
             <p style="margin-top: 20%;">Don't have an account? <a href="signup.php" style="color: #3a4989; text-decoration: none;">Sign Up</a></p>
