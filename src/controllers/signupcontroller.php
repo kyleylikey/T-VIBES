@@ -18,8 +18,9 @@ class SignupController {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            return ["success" => false, "message" => "Email or username already exists."];
-        }
+            echo "<script>alert('Email or username already exists.'); window.location.href = '../../src/views/frontend/signup.php';</script>";
+            exit();
+        }        
 
         $user = new User($this->conn);
         $user->setUsername($username);
@@ -36,10 +37,12 @@ class SignupController {
         $stmt->bindParam(':email', $email);
 
         if ($stmt->execute()) {
-            return ["success" => true, "message" => "Account successfully created."];
+            echo "<script>alert('Account successfully created.'); window.location.href = '../../src/views/frontend/login.php';</script>";
+            exit();
         } else {
-            return ["success" => false, "message" => "Failed to create account."];
-        }
+            echo "<script>alert('Failed to create account.'); window.location.href = '../../src/views/frontend/signup.php';</script>";
+            exit();
+        }        
     }
 }
 
