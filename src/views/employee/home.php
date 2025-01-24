@@ -40,7 +40,7 @@ require_once '../../controllers/helpers.php';
                 ?></h1></span>
             </div>
             <div class="statistics">
-                <div id="pendingtours" style="">
+                <div id="pendingtours">
                     <h2>Pending Tours</h2>
                     <span class="bi bi-map-fill"></span>
                     <h1>12</h1>
