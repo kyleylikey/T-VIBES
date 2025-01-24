@@ -46,10 +46,10 @@ class User {
                 $this->id = $user['userid'];
                 return true;
             } else {
-                echo "Password verification failed.";
+                echo "Password verification failed. ";
             }
         } else {
-            echo "User not found.";
+            echo "User not found. ";
         }
         return false;
     }

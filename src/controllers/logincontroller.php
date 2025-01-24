@@ -19,7 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: ../../public/index.php");
         exit();
     } else {
-        echo "Invalid username or password";
-    }
+        echo "<script>alert('Invalid username or password.'); window.location.href = '../../src/views/frontend/login.php';</script>";
+        exit();
+    }    
 }
 ?>
