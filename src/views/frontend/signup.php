@@ -22,7 +22,7 @@
             justify-content: center;
             width: 60px;
             height: 60px;
-            color: #333;
+            color: #333 !important;
         }
 
         .swal2-icon.swal2-error-icon {
@@ -33,7 +33,7 @@
             justify-content: center;
             width: 60px; 
             height: 60px; 
-            color: #e74c3c; 
+            color: #e74c3c !important; 
         }
     </style>
 </head>

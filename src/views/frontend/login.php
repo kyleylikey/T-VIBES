@@ -22,7 +22,7 @@
             justify-content: center;
             width: 60px; 
             height: 60px; 
-            color: #e74c3c; 
+            color: #e74c3c !important; 
         }
     </style>
 </head>
