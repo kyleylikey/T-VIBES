@@ -41,17 +41,12 @@ class User {
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user) {
-            if (password_verify($plainPassword, $user['hashedpassword'])) {
-                $this->id = $user['userid'];
-                return true;
-            } else {
-                echo "Password verification failed. ";
-            }
-        } else {
-            echo "User not found. ";
+        if ($user && password_verify($plainPassword, $user['hashedpassword'])) {
+            $this->id = $user['userid'];
+            return true; 
         }
-        return false;
+
+        return 'Invalid username or password.';
     }
 
     public function isActive() {

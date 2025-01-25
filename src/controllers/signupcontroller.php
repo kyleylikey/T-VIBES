@@ -18,7 +18,10 @@ class SignupController {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            echo "<script>alert('Email or username already exists.'); window.location.href = '../../src/views/frontend/signup.php';</script>";
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Email or username already exists.'
+            ]);
             exit();
         }        
 
@@ -26,47 +29,52 @@ class SignupController {
         $user->setUsername($username);
         $user->setPassword($password);
 
+        $hashedPassword = $user->getPassword();
+
         $query = "INSERT INTO users (name, username, hashedpassword, contactnum, email, usertype, status) 
                   VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'active')";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':hashedpassword', $user->getPassword());
+        $stmt->bindParam(':hashedpassword', $hashedPassword);
         $stmt->bindParam(':contactnum', $contactnum);
         $stmt->bindParam(':email', $email);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Account successfully created.'); window.location.href = '../../src/views/frontend/login.php';</script>";
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Account created! Please check your email for a verification link.'
+            ]);
             exit();
         } else {
-            echo "<script>alert('Failed to create account.'); window.location.href = '../../src/views/frontend/signup.php';</script>";
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to create account. Please try again.'
+            ]);
             exit();
-        }        
+        }
     }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['fullname'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $contactnum = $_POST['contact'];
-    $email = $_POST['email'];
+    header('Content-Type: application/json');
+
+    $name = $_POST['fullname'] ?? '';
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $contactnum = $_POST['contact'] ?? '';
+    $email = $_POST['email'] ?? '';
 
     if (empty($name) || empty($username) || empty($password) || empty($contactnum) || empty($email)) {
-        header('Location: ../../src/views/frontend/signup.php?error=empty_fields');
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'All fields are required.'
+        ]);
         exit();
     }
 
     $signupController = new SignupController();
-    $result = $signupController->createAccount($name, $username, $password, $contactnum, $email);
-
-    if ($result["success"]) {
-        header('Location: ../../src/views/frontend/login.php?message=account_created');
-        exit();
-    } else {
-        header('Location: ../../src/views/frontend/signup.php?error=' . urlencode($result["message"]));
-        exit();
-    }
+    $signupController->createAccount($name, $username, $password, $contactnum, $email);
 }
 ?>
