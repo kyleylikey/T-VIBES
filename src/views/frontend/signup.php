@@ -48,7 +48,7 @@
             </div>
             <input type="tel" id="contact" name="contact" placeholder="Contact Number" pattern="^\d{11}$" required class="full-width-input" title="Contact number must be exactly 11 digits." inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
             <input type="email" id="email" name="email" placeholder="Email" required class="full-width-input">            
-            <input type="password" id="password" name="password" placeholder="Password" required class="full-width-input" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" title="Password must be at least 8 characters long, and include one letter, one number, and one special character.">
+            <input type="password" id="password" name="password" placeholder="Password" required class="full-width-input" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" title="Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.">
 
             <div class="checkbox-container">
                 <input type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
