@@ -1,0 +1,32 @@
+body {
+    position: relative;
+    background-color:#3a4989;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Gradient overlay effect for the background */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.7)); /* Gradient black fade from bottom */
+    z-index: -1;
+}
+
+.btn-submit {
+    background-color: #cd4132; /* Button color */
+    border-color: #cd4132; /* Border color */
+    color: white;
+}
+
+.btn-submit:hover {
+    background-color: #b23c2e; /* Hover color */
+    border-color: #b23c2e; /* Hover border color */
+}
