@@ -7,7 +7,7 @@ require '../../vendor/autoload.php';
 
 function sendconfirmationEmail($username, $email) {
 
-$verificationLink = "localhost/T-VIBES_Test/src/controllers/verify.php?email=" . urlencode($email);
+$verificationLink = "localhost/T-VIBES/src/controllers/verify.php?email=" . urlencode($email);
 
 //Create an instance; passing true enables exceptions
 $mail = new PHPMailer(true);
