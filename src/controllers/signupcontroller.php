@@ -1,6 +1,7 @@
 <?php
 require_once '../config/dbconnect.php';
 require_once '../models/User.php';
+include 'emailverification.php';
 
 class SignupController {
     private $conn;
@@ -22,19 +23,14 @@ class SignupController {
                 'status' => 'error',
                 'message' => 'Email or username already exists.'
             ]);
-            exit();
+            return;
         }        
 
-        $user = new User($this->conn);
-        $user->setUsername($username);
-        $user->setPassword($password);
-
-        $hashedPassword = $user->getPassword();
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
         $query = "INSERT INTO users (name, username, hashedpassword, contactnum, email, usertype, status) 
-                  VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'active')";
+                  VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive')";
         $stmt = $this->conn->prepare($query);
-
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':hashedpassword', $hashedPassword);
@@ -42,18 +38,19 @@ class SignupController {
         $stmt->bindParam(':email', $email);
 
         if ($stmt->execute()) {
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Account created! Please check your email for a verification link.'
-            ]);
-            exit();
-        } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Failed to create account. Please try again.'
-            ]);
-            exit();
-        }
+            if (sendconfirmationEmail($username, $email)) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Please check your email for a verification link.'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Account created, but failed to send the verification email. Please contact support.'
+                ]);
+            }
+            return;
+        }        
     }
 }
 
@@ -71,10 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'status' => 'error',
             'message' => 'All fields are required.'
         ]);
-        exit();
+        return;
     }
 
     $signupController = new SignupController();
     $signupController->createAccount($name, $username, $password, $contactnum, $email);
 }
-?>

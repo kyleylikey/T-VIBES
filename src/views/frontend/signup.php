@@ -13,18 +13,7 @@
             border-radius: 12px;
             padding: 20px;
         }
-
-        .swal2-icon.swal2-email-icon {
-            border: none;
-            font-size: 10px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            color: #333;
-        }
-
+        .swal2-icon.swal2-email-icon,
         .swal2-icon.swal2-error-icon {
             border: none; 
             font-size: 10px; 
@@ -33,7 +22,7 @@
             justify-content: center;
             width: 60px; 
             height: 60px; 
-            color: #e74c3c; 
+            color: #333; 
         }
     </style>
 </head>
@@ -47,14 +36,14 @@
                 <input type="text" id="username" name="username" placeholder="Username" required class="half-width-input" pattern="^\w{3,20}$" title="Username must be 3-20 characters long and can only include letters, numbers, and underscores.">
             </div>
             <input type="tel" id="contact" name="contact" placeholder="Contact Number" pattern="^\d{11}$" required class="full-width-input" title="Contact number must be exactly 11 digits." inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-            <input type="email" id="email" name="email" placeholder="Email" required class="full-width-input">            
+            <input type="email" id="email" name="email" placeholder="Email" required class="full-width-input">
             <input type="password" id="password" name="password" placeholder="Password" required class="full-width-input" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" title="Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.">
 
             <div class="checkbox-container">
                 <input type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
                 <label for="privacyPolicy">Privacy Policy & Terms of Service</label>
             </div>
-            
+
             <button type="submit">Create Account</button>
             <p class="login-redirect">Already have an account? <a href="login.php">Login</a></p>
         </form>
@@ -83,11 +72,9 @@
                         customClass: {
                             icon: 'swal2-icon swal2-email-icon'
                         },
-                        html: '<p style="font-size: 24px; font-weight: bold;">Please check your email for a verification link.</p>',
+                        html: '<p style="font-size: 24px; font-weight: bold;">' + data.message + '</p>',
                         showConfirmButton: false, 
-                        timer: 3000 
-                    }).then(() => {
-                        window.location.href = 'login.php';
+                        timer: 3000
                     });
                 } else {
                     Swal.fire({

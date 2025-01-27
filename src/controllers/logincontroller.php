@@ -18,16 +18,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $loginResult = $user->login($plainPassword);
 
         if ($loginResult === true) {
-            $_SESSION['user_id'] = $user->getId();
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Login successful.',
-                'redirect' => '../../public/index.php'
-            ]);
+            if (!$user->isActive()) {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Your account is inactive. Please verify your email to activate your account.'
+                ]);
+            } else {
+                $_SESSION['user_id'] = $user->getId();
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Login successful.',
+                    'redirect' => '../../public/index.php'
+                ]);
+            }
         } else {
             echo json_encode([
                 'status' => 'error',
-                'message' => $loginResult
+                'message' => 'Invalid username or password.'
             ]);
         }
     } catch (Exception $e) {

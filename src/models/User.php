@@ -41,12 +41,16 @@ class User {
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($plainPassword, $user['hashedpassword'])) {
+        if (!$user) {
+            return false; 
+        }
+
+        if (password_verify($plainPassword, $user['hashedpassword'])) {
             $this->id = $user['userid'];
             return true; 
         }
 
-        return 'Invalid username or password.';
+        return false; 
     }
 
     public function isActive() {
@@ -56,10 +60,10 @@ class User {
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && $user['status'] === 'active') {
+        if ($user && strtolower($user['status']) === 'active') {
             return true;
         }
-        return false;
+        return false; 
     }
 }
 ?>

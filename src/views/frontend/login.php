@@ -22,7 +22,7 @@
             justify-content: center;
             width: 60px; 
             height: 60px; 
-            color: #e74c3c; 
+            color: #333; 
         }
     </style>
 </head>
@@ -58,7 +58,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    window.location.href = '../../public/index.php';
+                    window.location.href = data.redirect;
                 } else {
                     Swal.fire({
                         iconHtml: '<i class="fas fa-exclamation-circle"></i>', 
