@@ -37,6 +37,9 @@
 .siteinfo {
     display: grid;
     grid-template-columns: auto auto auto;
+    width: 100%;
+    margin: 12px;
+    
 }
 
 .siteinfo > div {
@@ -97,11 +100,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.siteinfo {
-    width: 100%;
-    margin: 12px;
 }
 
 .pax, .selectdate {
@@ -192,16 +190,24 @@
     margin-top: 32px;
     border-radius: 40px; /* Makes the corners round */
     padding: 10px; /* Adds some padding for better appearance */
-    text-decoration: none;
     color: white;
     background-color: blue;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    font-size: 16px;
 }
 
-/* Responsive layout for smaller screens */
 @media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
     .tourcontainer, .tourfees {
         width: 100%;
-        margin: 0;
+    }
+
+    .tourfees {
+        margin-top: 32px;
     }
 
     .sitecontainer {
@@ -210,12 +216,20 @@
     }
 
     .siteinfo {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: auto auto auto;
+    }
+
+    .siteinfo > div {
+        background-color: #f1f1f1;
     }
 
     .siteimage {
         width: 100%;
-        height: auto;
+    }
+
+    .filler3 {
+        display: none;
     }
 
     .pax, .selectdate {
@@ -223,12 +237,6 @@
     }
 
     .pax-input > button, .pax-input > input, .selectdate > input {
-        width: 100%;
         margin: 4px 0;
-    }
-
-    .btndel > button {
-        width: 100%;
-        height: auto;
     }
 }
