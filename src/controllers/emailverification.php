@@ -3,7 +3,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../../vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
 function sendconfirmationEmail($username, $email) {
 
@@ -117,8 +117,7 @@ try {
     return true;
 
 } catch (Exception $e) {
-    return false;
-}
+    return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";}
 
 }
 
