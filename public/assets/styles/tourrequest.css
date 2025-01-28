@@ -1,0 +1,234 @@
+.tourcontainer, .sitecontainer {
+    display: flex; 
+    flex-wrap: nowrap; 
+    justify-content: space-around;
+    align-items: center; 
+}
+
+.tourcontainer {
+    margin: 0 12px;
+    width: 60%;
+    background-color: orange;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px;
+}
+
+.sitelist {
+    width: 100%;
+    margin: 24px 16px;
+}
+
+.sitenumber {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.circle {
+    border: 4px solid black;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin: auto;
+    padding: 0;
+}
+
+.siteinfo {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.siteinfo > div {
+    background-color: #f1f1f1;
+    padding: 0;
+}
+
+.siteinfo > .filler3 {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    height:  50px;
+}
+
+.siteinfo > .filler2 {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+.price, .btndel {
+    text-align: right;   
+}
+
+.btndel > button {
+    font-size: 16px;
+    background-color: blue;
+    border: none; 
+    border-radius: 50%; 
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    margin:auto;
+}
+
+.btndel > button > i {
+    color: white;
+}
+
+.circle h2 {
+    margin: 0;
+}
+
+.sitecontainer {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: row;
+    background-color: red;
+    flex-wrap:nowrap;
+    width: 100%;
+}
+
+.siteimage {
+    height: 120px;
+    border-radius: 12px;
+    background-color: brown;
+    width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.siteinfo {
+    width: 100%;
+    margin: 12px;
+}
+
+.pax, .selectdate {
+    align-self: flex-start; /* Aligns the .pax to the start (left) */
+    margin-bottom: 20px; 
+    margin-left:16px;
+    width: 100%; /* Optional: Ensure .pax spans the available space */
+}
+
+.pax h2, .selectdate h2 {
+    text-align: left; /* Ensures the h2 is aligned left */
+}
+
+.pax-input > button {
+    width: 16px;
+    margin: 0 4px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.pax-input > input {
+    width: 40px;
+    text-align: center;
+    border-radius: 8px;
+    border:none;
+    height: 24px;
+    margin: 8px 0;
+}
+
+.selectdate > input {
+    border-radius: 8px;
+    padding: 0 8px;
+    border:none;
+    height: 24px;
+    margin: 8px 0;
+}
+
+.addmorecontainer {
+    margin-top: 8px;
+    margin-bottom: 52px;
+}
+
+.addmore {
+    border-radius: 40px; /* Makes the corners round */
+    padding: 10px; /* Adds some padding for better appearance */
+    text-decoration: none;
+    color: white;
+    background-color: blue;
+}
+
+.addmore i {
+    color: white;
+}
+
+.accommodation {
+    margin-bottom: 32px;
+    margin-left: 16px;
+}
+
+.tourfees {
+    margin: 0 12px;
+    width: 40%;
+    border-radius: 16px;
+    display: flex; 
+    flex-wrap: nowrap; 
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: green;
+    align-items: flex-start;
+    padding: 32px;
+}
+
+.tourfees > table {
+    margin-top: 16px;
+    width: 100%;
+    border-spacing: 12px;
+}
+ 
+.tourfees > table td:nth-child(2) {
+    text-align: right;
+}
+
+.submit {
+    align-self: center;
+    margin-top: 32px;
+    border-radius: 40px; /* Makes the corners round */
+    padding: 10px; /* Adds some padding for better appearance */
+    text-decoration: none;
+    color: white;
+    background-color: blue;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+    .tourcontainer, .tourfees {
+        width: 100%;
+        margin: 0;
+    }
+
+    .sitecontainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .siteinfo {
+        grid-template-columns: 1fr;
+    }
+
+    .siteimage {
+        width: 100%;
+        height: auto;
+    }
+
+    .pax, .selectdate {
+        width: 100%;
+    }
+
+    .pax-input > button, .pax-input > input, .selectdate > input {
+        width: 100%;
+        margin: 4px 0;
+    }
+
+    .btndel > button {
+        width: 100%;
+        height: auto;
+    }
+}
