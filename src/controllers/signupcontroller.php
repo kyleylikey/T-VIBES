@@ -3,6 +3,10 @@ require_once '../config/dbconnect.php';
 require_once '../models/User.php';
 include 'emailverification.php';
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
 class SignupController {
     private $conn;
 
