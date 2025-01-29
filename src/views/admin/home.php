@@ -17,12 +17,12 @@ require_once '../../controllers/helpers.php';
             <img src="../../../public/assets/images/headerlogo.jpg" alt="Header Logo">
         </div>
         <ul>
-            <li><a class="active" href="#home"><i class="bi bi-grid-fill"></i><span class="nav-text">Overview</span></a></li>
-            <li><a href="#performance"><i class="bi bi-graph-up-arrow"></i><span class="nav-text">Monthly Performance</span></a></li>
-            <li><a href="#tourhistory"><i class="bi bi-map"></i><span class="nav-text">Tour History</span></a></li>
-            <li><a href="#sites"><i class="bi bi-image"></i><span class="nav-text">Tourist Sites</span></a></li>
-            <li><a href="#accounts"><i class="bi bi-people"></i><span class="nav-text">Accounts</span></a></li>
-            <li><a href="#logs"><i class="bi bi-person-vcard"></i><span class="nav-text">Employee Logs</span></a></li>
+            <li><a class="active" href="home.php"><i class="bi bi-grid-fill"></i><span class="nav-text">Overview</span></a></li>
+            <li><a href="monthlyperformance.php"><i class="bi bi-graph-up-arrow"></i><span class="nav-text">Monthly Performance</span></a></li>
+            <li><a href="tourhistory.php"><i class="bi bi-map"></i><span class="nav-text">Tour History</span></a></li>
+            <li><a href="touristsites.php"><i class="bi bi-image"></i><span class="nav-text">Tourist Sites</span></a></li>
+            <li><a href="accounts.php"><i class="bi bi-people"></i><span class="nav-text">Accounts</span></a></li>
+            <li><a href="employeelogs.php"><i class="bi bi-person-vcard"></i><span class="nav-text">Employee Logs</span></a></li>
         </ul> 
         <div class="accountcontainer">
             <ul>
@@ -82,17 +82,17 @@ require_once '../../controllers/helpers.php';
                             <div class="topthree">
                                 <div class="topsitecontainer">
                                     <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span><!-- Replace with image -->
-                                    <p class="marquee-content">Destination Name</p>
+                                    <p>Name</p>
+                                    <p style="display: flex; align-items: flex-end;"><i class="bi-star-fill"></i>&nbsp5.0</p>
+                                </div>
+                                <div class="topsitecontainer">
+                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
+                                    <p>Destination Name</p>
                                     <p><i class="bi-star-fill"></i>&nbsp5.0</p>
                                 </div>
                                 <div class="topsitecontainer">
                                     <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
-                                    <p class="marquee-content">Destination Name</p>
-                                    <p><i class="bi-star-fill"></i>&nbsp5.0</p>
-                                </div>
-                                <div class="topsitecontainer">
-                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
-                                    <p class="marquee-content">Destination Name</p>
+                                    <p>Destination Name</p>
                                     <p><i class="bi-star-fill"></i>&nbsp5.0</p>
                                 </div>
                             </div>

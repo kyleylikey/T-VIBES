@@ -1,0 +1,26 @@
+.statistics .toursthismonth {
+    flex: 0 0 23%;  /* Takes up 1/4 of the parent div */
+}
+
+.statistics .tourstatistics {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.tourstatistics > div {
+    background-color: red;
+    border-radius: 0;
+    padding: 0;
+    margin: 12px;
+    height: auto; 
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    position: relative; 
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .statistics .toursthismonth {
+        flex: 0 0 100%;
+    }
+}

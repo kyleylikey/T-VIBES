@@ -112,8 +112,8 @@ body {
 
 .statistics, .busydays, .topthree, .statistics > .container {
     display: flex; 
-    justify-content: space-around;
-    flex-wrap: wrap; /* Allow the boxes to wrap to the next line */
+    justify-content: flex-start;
+    flex-wrap: wrap; 
     background-color: transparent;
 }
 
