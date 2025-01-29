@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Jan 17, 2025 at 05:38 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: 127.0.0.1
+-- Generation Time: Jan 29, 2025 at 04:45 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,16 +18,16 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `TaalTourismDB`
+-- Database: `taaltourismdb`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Logs`
+-- Table structure for table `logs`
 --
 
-CREATE TABLE `Logs` (
+CREATE TABLE `logs` (
   `logid` int(11) NOT NULL,
   `action` varchar(255) NOT NULL,
   `datetime` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -37,10 +37,10 @@ CREATE TABLE `Logs` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Rev`
+-- Table structure for table `rev`
 --
 
-CREATE TABLE `Rev` (
+CREATE TABLE `rev` (
   `revid` int(11) NOT NULL,
   `review` varchar(45) NOT NULL,
   `date` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -52,10 +52,10 @@ CREATE TABLE `Rev` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Sites`
+-- Table structure for table `sites`
 --
 
-CREATE TABLE `Sites` (
+CREATE TABLE `sites` (
   `siteid` int(11) NOT NULL,
   `sitename` varchar(100) NOT NULL,
   `siteimage` varchar(255) NOT NULL,
@@ -63,32 +63,32 @@ CREATE TABLE `Sites` (
   `opdays` binary(7) NOT NULL,
   `rating` decimal(2,1) DEFAULT NULL,
   `price` int(11) NOT NULL,
-  `status` enum('displayed','archived') NOT NULL DEFAULT 'displayed',
-  `revid` int(11) DEFAULT NULL
+  `status` enum('displayed','archived') NOT NULL DEFAULT 'displayed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Tour`
+-- Table structure for table `tour`
 --
 
-CREATE TABLE `Tour` (
+CREATE TABLE `tour` (
   `tourid` int(11) NOT NULL,
   `siteid` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
   `status` enum('request','submitted','accepted','cancelled') NOT NULL DEFAULT 'request',
   `date` date NOT NULL,
-  `companions` tinyint(255) NOT NULL
+  `companions` tinyint(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Users`
+-- Table structure for table `users`
 --
 
-CREATE TABLE `Users` (
+CREATE TABLE `users` (
   `userid` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -100,43 +100,49 @@ CREATE TABLE `Users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`userid`, `username`, `name`, `hashedpassword`, `contactnum`, `usertype`, `status`, `email`) VALUES
+(2, 'kyle', 'Kyle Baldoza', '$2y$10$i5G18fFqaGGoJLQv1FlvzOLOTHPzT/QFLTLkY3Rw3MWWiQhiTEQTq', '09171099438', 'trst', 'active', 'kyleashleigh.baldoza.cics@ust.edu.ph');
+
+--
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `Logs`
+-- Indexes for table `logs`
 --
-ALTER TABLE `Logs`
+ALTER TABLE `logs`
   ADD PRIMARY KEY (`logid`),
   ADD KEY `userid_idx` (`userid`);
 
 --
--- Indexes for table `Rev`
+-- Indexes for table `rev`
 --
-ALTER TABLE `Rev`
+ALTER TABLE `rev`
   ADD PRIMARY KEY (`revid`),
   ADD KEY `userid_idx` (`userid`),
   ADD KEY `siteid_idx` (`siteid`);
 
 --
--- Indexes for table `Sites`
+-- Indexes for table `sites`
 --
-ALTER TABLE `Sites`
-  ADD PRIMARY KEY (`siteid`),
-  ADD KEY `revid_idx` (`revid`);
+ALTER TABLE `sites`
+  ADD PRIMARY KEY (`siteid`);
 
 --
--- Indexes for table `Tour`
+-- Indexes for table `tour`
 --
-ALTER TABLE `Tour`
+ALTER TABLE `tour`
   ADD PRIMARY KEY (`tourid`,`siteid`,`userid`),
   ADD KEY `fk_tour_siteid` (`siteid`),
   ADD KEY `fk_tour_userid` (`userid`);
 
 --
--- Indexes for table `Users`
+-- Indexes for table `users`
 --
-ALTER TABLE `Users`
+ALTER TABLE `users`
   ADD PRIMARY KEY (`userid`),
   ADD UNIQUE KEY `username_UNIQUE` (`username`),
   ADD UNIQUE KEY `email_UNIQUE` (`email`);
@@ -146,46 +152,40 @@ ALTER TABLE `Users`
 --
 
 --
--- AUTO_INCREMENT for table `Rev`
+-- AUTO_INCREMENT for table `rev`
 --
-ALTER TABLE `Rev`
+ALTER TABLE `rev`
   MODIFY `revid` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Users`
+-- AUTO_INCREMENT for table `users`
 --
-ALTER TABLE `Users`
-  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `users`
+  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `Logs`
+-- Constraints for table `logs`
 --
-ALTER TABLE `Logs`
-  ADD CONSTRAINT `fk_logs_userid` FOREIGN KEY (`userid`) REFERENCES `Users` (`userid`) ON DELETE SET NULL ON UPDATE NO ACTION;
+ALTER TABLE `logs`
+  ADD CONSTRAINT `fk_logs_userid` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 --
--- Constraints for table `Rev`
+-- Constraints for table `rev`
 --
-ALTER TABLE `Rev`
-  ADD CONSTRAINT `fk_rev_siteid` FOREIGN KEY (`siteid`) REFERENCES `Sites` (`siteid`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_rev_userid` FOREIGN KEY (`userid`) REFERENCES `Users` (`userid`) ON DELETE SET NULL ON UPDATE NO ACTION;
+ALTER TABLE `rev`
+  ADD CONSTRAINT `fk_rev_siteid` FOREIGN KEY (`siteid`) REFERENCES `sites` (`siteid`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_rev_userid` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 --
--- Constraints for table `Sites`
+-- Constraints for table `tour`
 --
-ALTER TABLE `Sites`
-  ADD CONSTRAINT `fk_sites_revid` FOREIGN KEY (`revid`) REFERENCES `Rev` (`revid`) ON DELETE SET NULL ON UPDATE NO ACTION;
-
---
--- Constraints for table `Tour`
---
-ALTER TABLE `Tour`
-  ADD CONSTRAINT `fk_tour_siteid` FOREIGN KEY (`siteid`) REFERENCES `Sites` (`siteid`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_tour_userid` FOREIGN KEY (`userid`) REFERENCES `Users` (`userid`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `tour`
+  ADD CONSTRAINT `fk_tour_siteid` FOREIGN KEY (`siteid`) REFERENCES `sites` (`siteid`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tour_userid` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`) ON DELETE CASCADE ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
