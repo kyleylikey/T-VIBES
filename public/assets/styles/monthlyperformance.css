@@ -7,20 +7,55 @@
     flex-direction: row;
 }
 
+.statistics .container {
+    flex: 0 0 50%;
+}
+
 
 .tourstatistics > div {
     background-color: red;
     border-radius: 0;
     padding: 0;
-    margin: 12px;
+    margin: 0;
     height: auto; 
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    position: relative; 
+    box-sizing: border-box;
     overflow: hidden;
+}
+
+.statistics .tablecontainer {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.tablecontainer .visitorchart {
+    margin: 0;
+}
+
+.download {
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    align-self: flex-end;
+    margin: 32px;
+    width: calc(100% - 64px); /* 100% width minus the left and right margins */
+}
+
+.summary {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 16px;
 }
 
 @media (max-width: 768px) {
     .statistics .toursthismonth {
-        flex: 0 0 100%;
+        flex: 1;
+    }
+    .statistics .container {
+        flex: 1;
+    }
+    .download {
+        font-size: 16px;
     }
 }

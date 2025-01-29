@@ -11,6 +11,8 @@ require_once '../../controllers/helpers.php';
     <link rel="stylesheet" href="../../../public/assets/styles/dashboard.css">
     <link rel="stylesheet" href="../../../public/assets/styles/monthlyperformance.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
     <div class="vertnavbar">
@@ -64,9 +66,59 @@ require_once '../../controllers/helpers.php';
                         <h1>20</h1>
                     </div>
                 </div>
+                <div class="container">
+                        <div id="busiestdays" onclick="location.href='statistics/busiestmonths.php';" style="cursor: pointer;">
+                            <h2>Busiest Days</h2>
+                            <div class="busydays">
+                                <div class="busydaycontainer">
+                                    <h3>Jan</h3>
+                                    <h1>12</h1>
+                                    <p>7 tours</p>
+                                </div>
+                                <div class="busydaycontainer">
+                                    <h3>Jan</h3>
+                                    <h1>18</h1>
+                                    <p>5 tours</p>
+                                </div>
+                                <div class="busydaycontainer">
+                                    <h3>Jan</h3>
+                                    <h1>19</h1>
+                                    <p>3 tours</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="topsites">
+                            <h2>Top Tourist Sites</h2>
+                            <div class="topthree">
+                                <div class="topsitecontainer">
+                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span><!-- Replace with image -->
+                                    <p>Name</p>
+                                    <p style="display: flex; align-items: flex-end;"><i class="bi-star-fill"></i>&nbsp5.0</p>
+                                </div>
+                                <div class="topsitecontainer">
+                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
+                                    <p>Destination Name</p>
+                                    <p><i class="bi-star-fill"></i>&nbsp5.0</p>
+                                </div>
+                                <div class="topsitecontainer">
+                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
+                                    <p>Destination Name</p>
+                                    <p><i class="bi-star-fill"></i>&nbsp5.0</p>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="tablecontainer">
+                    <div class="visitorchart">
+                        <h2>Visitor Chart</h2>
+                        <canvas id="visitorchartpreview"></canvas>
+                    </div>
+                <button class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbspDownload PDF Report</button>
+                </div>
             </div>
         </div>
     </div>
     <script src="../../../public/assets/scripts/dashboard.js"></script>
+    <script src="../../../public/assets/scripts/monthlyperformance.js"></script>
 </body>
 </html>
