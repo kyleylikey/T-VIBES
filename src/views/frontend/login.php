@@ -33,7 +33,7 @@
         <form id="loginForm">
             <input type="text" id="username" name="username" placeholder="Username" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
-            <a href="resetpwemail.php" class="forgot-password">Forgot Password?</a>
+            <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
             <button type="submit" style="font-weight: bold;">Login</button>
             <p style="margin-top: 20%; color: #333333; font-size: 14px;">Don't have an account? <a href="signup.php" style="color: #3a4989; text-decoration: none; font-weight: bold; font-size: 14px;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">Sign Up</a></p>
         </form>
@@ -46,17 +46,19 @@
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
-
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
             const formData = new FormData(this);
-
-            fetch('../../controllers/logincontroller.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
+            
+            try {
+                const response = await fetch('../../controllers/logincontroller.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
                 if (data.status === 'success') {
                     window.location.href = data.redirect;
                 } else {
@@ -65,13 +67,12 @@
                         customClass: {
                             icon: 'swal2-icon swal2-error-icon', 
                         },
-                        html: '<p style="font-size: 24px; font-weight: bold;">' + data.message + '</p>',
+                        html: `<p style="font-size: 24px; font-weight: bold;">${data.message}</p>`,
                         showConfirmButton: false,
                         timer: 3000
                     });
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
                 Swal.fire({
                     iconHtml: '<i class="fas fa-exclamation-circle"></i>', 
@@ -82,7 +83,7 @@
                     showConfirmButton: false,
                     timer: 3000
                 });
-            });
+            }
         });
     </script>
 </body>

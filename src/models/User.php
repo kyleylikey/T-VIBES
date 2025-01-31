@@ -6,6 +6,8 @@ class User {
     private $id;
     private $username;
     private $password;
+    private $usertype;
+    private $status;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -23,8 +25,12 @@ class User {
         $this->username = $username;
     }
 
-    public function getPassword() {
-        return $this->password;
+    public function getUsertype() {
+        return $this->usertype;
+    }
+
+    public function getStatus() {
+        return $this->status;
     }
 
     public function setPassword($password) {
@@ -35,35 +41,29 @@ class User {
     }
 
     public function login($plainPassword) {
-        $query = "SELECT * FROM " . $this->table . " WHERE username = ? LIMIT 0,1";
+        $query = "SELECT userid, hashedpassword, usertype, status FROM " . $this->table . " WHERE username = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
-            return false; 
+            return 'Invalid username or password.';
         }
 
-        if (password_verify($plainPassword, $user['hashedpassword'])) {
-            $this->id = $user['userid'];
-            return true; 
+        if (!password_verify($plainPassword, $user['hashedpassword'])) {
+            return 'Invalid username or password.';
         }
 
-        return false; 
+        $this->id = $user['userid'];
+        $this->usertype = $user['usertype'];
+        $this->status = $user['status'];
+
+        return true;
     }
 
     public function isActive() {
-        $query = "SELECT status FROM " . $this->table . " WHERE username = ? LIMIT 0,1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $this->username);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && strtolower($user['status']) === 'active') {
-            return true;
-        }
-        return false; 
+        return strtolower($this->status) === 'active';
     }
 }
 ?>

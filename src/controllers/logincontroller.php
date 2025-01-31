@@ -23,14 +23,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     'status' => 'error',
                     'message' => 'Your account is inactive. Please verify your email to activate your account.'
                 ]);
-            } else {
-                $_SESSION['user_id'] = $user->getId();
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Login successful.',
-                    'redirect' => '../../public/index.php'
-                ]);
+                exit();
             }
+
+            $_SESSION['userid'] = $user->getId();
+            $_SESSION['usertype'] = $user->getUserType();
+
+            $redirectUrl = '../../../public/index.php'; 
+            if ($_SESSION['usertype'] === 'mngr') {
+                $redirectUrl = '../../views/admin/home.php';
+            } elseif ($_SESSION['usertype'] === 'emp') {
+                $redirectUrl = '../../views/employee/home.php';
+            }
+
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Login successful.',
+                'redirect' => $redirectUrl
+            ]);
         } else {
             echo json_encode([
                 'status' => 'error',

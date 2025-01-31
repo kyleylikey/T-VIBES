@@ -1,5 +1,11 @@
 <?php
+session_start();
 require_once '../../controllers/helpers.php';
+
+if (!isset($_SESSION['userid'])) {
+    header('Location: ../frontend/login.php'); 
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
