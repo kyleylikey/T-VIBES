@@ -59,7 +59,7 @@ if ($_SESSION['usertype'] !== 'emp') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Dashboard</title>
+    <title>Employee Dashboard - Overview</title>
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
     <link rel="stylesheet" href="../../../public/assets/styles/dashboard.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -70,8 +70,8 @@ if ($_SESSION['usertype'] !== 'emp') {
             <img src="../../../public/assets/images/headerlogo.jpg" alt="Header Logo">
         </div>
         <ul>
-            <li><a class="active" href="#home"><i class="bi bi-grid-fill"></i><span class="nav-text">Overview</span></a></li>
-            <li><a href="#requests"><i class="bi bi-map"></i><span class="nav-text">Tour Requests</span></a></li>
+            <li><a class="active"><i class="bi bi-grid-fill"></i><span class="nav-text">Overview</span></a></li>
+            <li><a href="tourrequests.php"><i class="bi bi-map"></i><span class="nav-text">Tour Requests</span></a></li>
             <li><a href="#tours"><i class="bi bi-geo"></i><span class="nav-text">Upcoming Tours</span></a></li>
             <li><a href="#reviews"><i class="bi bi-pencil-square"></i><span class="nav-text">Reviews</span></a></li>
             <li><a href="#sites"><i class="bi bi-image"></i><span class="nav-text">Tourist Sites</span></a></li>
