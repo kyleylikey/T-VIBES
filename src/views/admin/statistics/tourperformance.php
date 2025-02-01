@@ -66,6 +66,8 @@ if ($_SESSION['usertype'] !== 'mngr') {
     <link rel="stylesheet" href="../../../../public/assets/styles/monthlyperformance.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
 
 </head>
 <body>
@@ -155,11 +157,12 @@ if ($_SESSION['usertype'] !== 'mngr') {
                     <h4>49</h4>
                 </div>
                 <div>
-                    <button class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbspDownload PDF Report</button>
+                    <button id="downloadPdf" class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbspDownload PDF Report</button>
                 </div>
             </div>
         </div>
     </div>
     <script src="../../../../public/assets/scripts/dashboard.js"></script>
+    <script src="../../../../public/assets/scripts/downloadreport.js"></script>
 </body>
 </html>
