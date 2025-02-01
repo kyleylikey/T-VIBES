@@ -97,7 +97,7 @@ if ($_SESSION['usertype'] !== 'mngr') {
             </div>
             <div class="statistics">
                 <div>
-                    <div style="background-color: white;">
+                    <div class="chartcontainer">
                         <canvas id="busiestmonths"></canvas>
                         <script>
                             let busiestmonths = document.getElementById('busiestmonths').getContext('2d');
@@ -111,7 +111,10 @@ if ($_SESSION['usertype'] !== 'mngr') {
                                         data:[100, 200, 300, 600, 300, 600, 700, 800, 900, 1000, 1100, 1200]
                                     }]
                                 },
-                                options: {}
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                }
                             });
                         </script>
                     </div>
@@ -131,7 +134,7 @@ if ($_SESSION['usertype'] !== 'mngr') {
                     <p>04/25</p>
                 </div>
                 <div>
-                    <h4>Total Tours This Year:</h4>
+                    <h4>Total Completed Tours This Year:</h4>
                     <h4>449</h4>
                 </div>
                 <div>

@@ -97,26 +97,26 @@ if ($_SESSION['usertype'] !== 'mngr') {
                 ?></h1></span>
             </div>
             <div class="statistics">
-                <div class="toursthismonth">
+                <div class="toursthismonth" onclick="location.href='statistics/tourperformance.php';" style="cursor: pointer;">
                     <h2>Tours this Month &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
                     <span class="bi bi-map-fill"></span>
                     <h1>32</h1>
                 </div>
-                <div class="tourstatistics">
+                <div class="tourstatistics" onclick="location.href='statistics/tourperformance.php';" style="cursor: pointer;">
                     <div class="approved">
-                        <h2>Approved Tours</h2>
-                        <span class="bi bi-check-circle-fill"></span>
-                        <h1>25</h1>
+                        <h2>Approved Tours<span class="bi bi-arrow-up-circle-fill"> 37.5%</span></h2>
+                        <h1>22</h1>
+                        <p>vs. last month<span>16</span></p>
                     </div>
                     <div class="cancelled">
-                        <h2>Cancelled Tours</h2>
-                        <span class="bi bi-x-circle-fill"></span>
+                        <h2>Cancelled Tours<span class="bi bi-arrow-down-circle-fill"> 57.14</span></h2>
                         <h1>7</h1>
+                        <p>vs. last month<span>15</span></p>
                     </div>
                     <div class="completed">
-                        <h2>Completed Tours</h2>
-                        <span class="bi bi-check2-circle"></span>
+                        <h2>Completed Tours<span> = 0%</span></h2>
                         <h1>20</h1>
+                        <p>vs. last month<span>20</span></p>
                     </div>
                 </div>
                 <div class="container">
@@ -140,7 +140,7 @@ if ($_SESSION['usertype'] !== 'mngr') {
                                 </div>
                             </div>
                         </div>
-                        <div id="topsites">
+                        <div id="topsites" onclick="location.href='statistics/toptouristsite.php';" style="cursor: pointer;">
                             <h2>Top Tourist Sites</h2>
                             <div class="topthree">
                                 <div class="topsitecontainer">
@@ -162,7 +162,7 @@ if ($_SESSION['usertype'] !== 'mngr') {
                         </div>
                 </div>
                 <div class="tablecontainer">
-                    <div class="visitorchart">
+                    <div class="visitorchart" onclick="location.href='statistics/visitor.php';" style="cursor: pointer;">
                         <h2>Visitor Chart</h2>
                         <canvas id="visitorchartpreview"></canvas>
                     </div>

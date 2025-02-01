@@ -5,6 +5,7 @@
 .statistics .tourstatistics {
     display: flex;
     flex-direction: row;
+    gap: 64px;
 }
 
 .statistics .container {
@@ -13,7 +14,6 @@
 
 
 .tourstatistics > div {
-    background-color: red;
     border-radius: 0;
     padding: 0;
     margin: 0;
@@ -22,14 +22,36 @@
     overflow: hidden;
 }
 
+.tourstatistics > div > h2 > span {
+    float: right;
+}
+
+.tourstatistics > div > p > span {
+    float: right;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.tourstatistics > div > h1 {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    font-size: 72px;
+}
+
 .statistics .tablecontainer {
     display: flex;
     flex-direction: column;
     padding: 0;
 }
 
+
 .tablecontainer .visitorchart {
     margin: 0;
+}
+
+.statistics .chartcontainer {
+    background-color: white;
+    height: 680px;
 }
 
 .download {
@@ -57,5 +79,18 @@
     }
     .download {
         font-size: 16px;
+    }
+    .statistics .tourstatistics {
+        flex-direction: column;
+    }
+    .tourstatistics > div > h2 > span {
+        font-size: 24px;
+    }
+    .summary {
+        flex-direction: column;
+        gap:  24px;
+    }
+    .statistics .chartcontainer {
+        height: 340px;
     }
 }
