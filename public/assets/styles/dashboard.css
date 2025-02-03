@@ -197,6 +197,77 @@ body {
     background-color: initial; /* Keep the header cells' background color unchanged */
 }
 
+.tabs {
+    margin: 20px 12px 12px 12px;
+    display: flex; 
+    flex-direction: row;
+    gap: 12px;
+}
+
+.tabbutton {
+    width: auto;
+    padding: 12px;
+    background-color: red;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
+}
+
+.tabbutton:hover {
+    background-color: orange;
+}
+
+.tabbutton.active {
+    background-color: green;
+}
+
+.tablecontainerrequests table tr {
+    cursor: pointer;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    border-radius: 20px;
+    margin: auto;
+    border: 1px solid #888;
+    width: 80%;
+    display: flex; 
+    flex-wrap: nowrap; 
+    justify-content: space-between;
+    padding: 12px 12px;
+    
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 
 @media (max-width: 768px) {/* small screens*/
     .hide-on-small {
@@ -271,6 +342,31 @@ body {
 
     .marquee-content {
         animation:none;
+    }
+    .tablecontainerrequests table tr > *:nth-child(2) {
+        display: none;
+    }
+
+    .tablecontainerrequests table {
+        table-layout: fixed; /* Ensure the table layout is fixed */
+    }
+
+    .tablecontainerrequests table th, .tablecontainerrequests table td, .tablecontainerrequests table thead tr th {
+        word-wrap: break-word; /* Allow text to wrap within cells */
+        font-size: 14px; /* Decrease the font size */
+    }
+
+    .tablecontainerrequests {
+        overflow-x: auto; /* Enable horizontal scrolling if needed */
+    }
+
+    .modal-content {
+        flex-direction: column;
+        width: 80%;
+    }
+
+    .tourfees > table {
+        margin-top: 0;
     }
 }
 
@@ -375,3 +471,5 @@ body {
     bottom: 12px; /* Move headers slightly up */
     font-size: 18px;
 }
+
+
