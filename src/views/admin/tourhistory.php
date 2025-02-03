@@ -138,6 +138,7 @@ if ($_SESSION['usertype'] !== 'mngr') {
             </div>
             <div id="requestModal" class="modal">
                 <div class="modal-content">
+                <span id="closeforsmall" class="close">&times;</span>
                     <div class="tourcontainer">
                         <table class="sitelist">
                             <tr class="site">
@@ -233,7 +234,7 @@ if ($_SESSION['usertype'] !== 'mngr') {
                             </tfoot>
                         </table>
                     </div>
-                    <span class="close">&times;</span>
+                    <span id="closeforbig" class="close">&times;</span>
                 </div>
             </div>
         </div>
