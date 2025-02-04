@@ -6,7 +6,11 @@ document.querySelectorAll('.tablecontainerrequests tbody tr').forEach(function(r
     });
 });
 
-document.querySelector('.modal .close').addEventListener('click', function() {
+document.getElementById('closeforsmall').addEventListener('click', function() {
+    document.getElementById('requestModal').style.display = 'none';
+});
+
+document.getElementById('closeforbig').addEventListener('click', function() {
     document.getElementById('requestModal').style.display = 'none';
 });
 

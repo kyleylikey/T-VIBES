@@ -66,7 +66,6 @@ if ($_SESSION['usertype'] !== 'mngr') {
     <link rel="stylesheet" href="../../../public/assets/styles/tourrequest.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 <body>
     <div class="vertnavbar">
