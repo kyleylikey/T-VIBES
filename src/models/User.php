@@ -34,10 +34,29 @@ class User {
     }
 
     public function setPassword($password) {
-        $options = [
-            'cost' => 10,
-        ];
+        $options = ['cost' => 10];
         $this->password = password_hash($password, PASSWORD_BCRYPT, $options);
+    }
+
+    public function doesUserExist($email, $username) {
+        $query = "SELECT * FROM " . $this->table . " WHERE email = :email OR username = :username";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
+    public function createUser($name, $username, $hashedPassword, $contactnum, $email) {
+        $query = "INSERT INTO " . $this->table . " (name, username, hashedpassword, contactnum, email, usertype, status) 
+                  VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':hashedpassword', $hashedPassword);
+        $stmt->bindParam(':contactnum', $contactnum);
+        $stmt->bindParam(':email', $email);
+        return $stmt->execute();
     }
 
     public function login($plainPassword) {
@@ -47,11 +66,7 @@ class User {
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$user) {
-            return 'Invalid username or password.';
-        }
-
-        if (!password_verify($plainPassword, $user['hashedpassword'])) {
+        if (!$user || !password_verify($plainPassword, $user['hashedpassword'])) {
             return 'Invalid username or password.';
         }
 

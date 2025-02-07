@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
 
             $_SESSION['userid'] = $user->getId();
-            $_SESSION['usertype'] = $user->getUserType();
+            $_SESSION['usertype'] = $user->getUsertype();
 
             $redirectUrl = '../../../public/index.php'; 
             if ($_SESSION['usertype'] === 'mngr') {

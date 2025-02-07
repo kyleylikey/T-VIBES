@@ -6,7 +6,6 @@ include 'emailverification.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
 class SignupController {
     private $conn;
 
@@ -16,32 +15,19 @@ class SignupController {
     }
 
     public function createAccount($name, $username, $password, $contactnum, $email) {
-        $query = "SELECT * FROM users WHERE email = :email OR username = :username";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
+        $user = new User($this->conn);
 
-        if ($stmt->rowCount() > 0) {
+        if ($user->doesUserExist($email, $username)) {
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Email or username already exists.'
             ]);
             return;
-        }        
+        }
 
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        $query = "INSERT INTO users (name, username, hashedpassword, contactnum, email, usertype, status) 
-                  VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive')";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':hashedpassword', $hashedPassword);
-        $stmt->bindParam(':contactnum', $contactnum);
-        $stmt->bindParam(':email', $email);
-
-        if ($stmt->execute()) {
+        if ($user->createUser($name, $username, $hashedPassword, $contactnum, $email)) {
             if (sendconfirmationEmail($username, $email)) {
                 echo json_encode([
                     'status' => 'success',
@@ -54,7 +40,12 @@ class SignupController {
                 ]);
             }
             return;
-        }        
+        }
+
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to create account. Please try again later.'
+        ]);
     }
 }
 
@@ -78,3 +69,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $signupController = new SignupController();
     $signupController->createAccount($name, $username, $password, $contactnum, $email);
 }
+?>
