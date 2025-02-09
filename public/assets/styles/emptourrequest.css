@@ -1,0 +1,247 @@
+body {
+    position: relative;
+    margin: 0; 
+    padding: 0; 
+    font-family: Arial, sans-serif;
+}
+
+
+.vertnavbar {
+    list-style-type: none; /* Remove default list styling */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    width: 280px; /* Set a fixed width for the navbar */
+    position: fixed; /* Fix the navbar to the left side */
+    height: 100%; /* Make the navbar full height */
+    overflow: auto; /* Enable scrolling if the content overflows */
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Arrange items in a column */
+    justify-content: center; /* Center items vertically */
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 100vh; /* Limit the height to the viewport height */
+}
+
+.logocontainer {
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.logocontainer img {
+    margin: 20px;
+    width: 240px; /* Set the width of the logo */
+}
+
+.vertnavbar .bi {
+    margin-right: 12px; /* Add margin to the right of the icons */
+}
+
+.vertnavbar li a {
+    display: block; /* Make the links block elements */
+    margin: 20px;
+    padding: 16px; /* Add padding */
+    text-decoration: none; /* Remove underline */
+    border-radius: 8px;
+    color: black;
+}
+
+.vertnavbar li a.active {
+    background-color: #f76e85; /* Set the background color for the active link */
+    color: white; /* Set the text color for the active link */
+}
+
+.vertnavbar li a:hover:not(.active) {
+    background-color: #fbb6c2; /* Set the background color on hover */
+    color: white; /* Set the text color on hover */
+}
+
+.accountcontainer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.accountcontainer .accountname {
+    display: block; /* Make the links block elements */
+    margin: 20px;
+    padding: 16px; /* Add padding */
+    border-radius: 8px;
+    background-color: #dbdff0;
+    color: black;
+}
+
+.vertnavbar li button {
+    display: block; /* Make the links block elements */
+    margin: 20px;
+    width: 240px;
+    padding: 16px; /* Add padding */
+    text-decoration: none; /* Remove underline */
+    border-radius: 8px;
+    color: white;
+    border: none;
+    background-color: #3A4989; 
+    text-align: left; /* Align the content to the left */
+    font-size: 16px;
+}
+
+.vertnavbar li button:hover {
+    background-color: #88a4f7;
+}
+
+
+.dashboardcontainer {
+    margin-left: 280px; /* Add a left margin to make space for the navbar */
+    padding: 20px; /* Add padding */
+}
+
+.content {
+    background-color: #fee7eb; /* Set the background color */
+    border-radius: 10px; /* Make the box corners rounded */
+    padding: 28px; /* Add padding inside the box */
+    min-height: calc(100vh - 40px); /* Set the minimum height to span from top to bottom of the viewport, accounting for padding */
+    height: auto; /* Allow the height to adjust automatically once the contents surpass the .content div */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.header {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    margin: 12px;
+}
+
+@media (max-width: 768px) {/* small screens*/
+    .content {
+        padding: 12px; /* Adjust padding for smaller screens */
+        height: auto;
+    }
+
+    .date {
+        display: none;
+    }
+
+    .requestlists div {
+        height: auto; /* Adjust height for smaller screens */
+        width: 100%; /* Make the width of .statistics div the same */
+    }
+
+    .requestlists div span {
+        font-size: 4rem; /* Adjust font size for smaller screens */
+        top: -2px;
+        right: 2px;
+    }
+
+    .requestlists > div > h1 {
+        font-size: 40px; /* Adjust font size for smaller screens */
+        margin: 4px;
+    }
+
+    .vertnavbar {
+        width: 88px;
+    }
+
+    .vertnavbar .accountname {
+        display: none;
+    }
+
+    .vertnavbar .nav-text {
+        opacity: 0;
+        display: none;
+    }
+
+    .vertnavbar li button {
+        width: 48px;
+    }
+
+    .dashboardcontainer {
+        margin-left: 72px;
+    }
+}
+
+@media (min-width: 1024px) { /* big screens*/
+    .requestlists div {
+        flex: 1 1 calc(33.333% - 24px); /* Allow up to 3 boxes per row, accounting for margin */
+    }
+    .requestlists > .container > div {
+        flex: 1 1 100%; /* Allow only 1 box per row */
+    }
+}
+
+.requestlists, .busydays, .topthree, .requestlists > .container {
+    display: flex; 
+    justify-content: flex-start;
+    flex-wrap: wrap; 
+    background-color: transparent;
+}
+
+.requestlists > .container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 0;
+}
+.requestlists > .container > div:first-child {
+    margin: 0 0 12px 0;
+}
+
+.requestlists > .container > div:last-child {
+    margin: 12px 0 0 0;
+}
+
+.requestlists div{
+    background-color: #ffccd6; /* Set the background color of the boxes */
+    border-radius: 16px; /* Round the corners of the boxes */
+    padding: 20px; /* Add padding inside the boxes */
+    margin: 12px; /* Add margin between the boxes */
+    height: auto; /* Set initial height */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    position: relative; 
+    overflow: hidden;
+}
+
+.requestlists > div > span {
+    position: absolute; 
+    top: -24px;
+    right: 8px;
+    font-size: 8rem; 
+    opacity: 0.1;
+}
+
+.requestlists > div > h1 {
+    font-size: 80px;
+    text-align: right;
+    margin: 36px 16px 16px 16px;
+}
+
+.tablecontainerrequests table {
+    margin-top: 12px; /* Add margin to the top of the table */
+    width: 100%; /* Make the table span the full width of the container */
+    border-collapse: separate; /* Separate the borders of the table cells */
+    border-spacing: 0 16px; /* Add space between rows */
+    text-align: center; /* Align text in table cells to the center */
+}
+
+.tablecontainerrequests table td {
+    background-color: #fee7eb; /* Set the background color of table cells to blue */
+    padding: 20px; /* Add padding inside the table cells */
+}
+
+.tablecontainerrequests table td:first-child {
+    border-top-left-radius: 16px; /* Round the top-left corner of the first column */
+    border-bottom-left-radius: 16px; /* Round the bottom-left corner of the first column */
+}
+
+.tablecontainerrequests table td:last-child {
+    border-top-right-radius: 16px; /* Round the top-left corner of the first column */
+    border-bottom-right-radius: 16px; /* Round the bottom-left corner of the first column */
+}
+
+.tablecontainerrequests table th {
+    background-color: initial; /* Keep the header cells' background color unchanged */
+    text-align: center; /* Center the header text */
+    padding: 0px 12px; /* Reduce top and bottom padding to move headers up */
+    vertical-align: middle; /* Ensure the text stays vertically centered */
+    position: relative;
+    bottom: 12px; /* Move headers slightly up */
+    font-size: 18px;
+}

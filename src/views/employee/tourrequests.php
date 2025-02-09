@@ -61,7 +61,7 @@ if ($_SESSION['usertype'] !== 'emp') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Dashboard - Tour Requests</title>
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
-    <link rel="stylesheet" href="../../../public/assets/styles/dashboard.css">
+    <link rel="stylesheet" href="../../../public/assets/styles/emptourrequest.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
