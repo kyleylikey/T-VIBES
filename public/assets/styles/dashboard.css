@@ -131,13 +131,19 @@ body {
     margin: 12px 0 0 0;
 }
 
-.statistics div{
-    background-color: #ffccd6; /* Set the background color of the boxes */
-    border-radius: 16px; /* Round the corners of the boxes */
-    padding: 20px; /* Add padding inside the boxes */
-    margin: 12px; /* Add margin between the boxes */
-    height: auto; /* Set initial height */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+.grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 12px; 
+}
+
+.statistics div, .grid div{
+    background-color: #ffccd6; 
+    border-radius: 16px; 
+    padding: 20px; 
+    margin: 12px; 
+    height: auto; 
+    box-sizing: border-box;
     position: relative; 
     overflow: hidden;
 }
@@ -162,6 +168,34 @@ body {
     right: 8px;
     font-size: 8rem; 
     opacity: 0.1;
+}
+
+.modal-content .revcontainer {
+    position: relative;
+    padding: 80px;
+}
+
+.revcontainer p {
+    font-size: 24px;
+    text-align: center;
+    font-style: italic;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.modal-content .revcontainer .revbg {
+    font-size: 10rem;
+    opacity: 0.1;
+    position: absolute;
+    top: 0; /* Align to the top */
+    right: 0; /* Align to the right */
+}
+
+.authorcontainer {
+    display: flex; 
+    flex-direction: row;
+    margin-top: 20px;
+    gap: 12px;
 }
 
 .statistics > div > h1 {
@@ -228,6 +262,33 @@ body {
     cursor: pointer;
 }
 
+.revitem {
+    cursor: pointer;
+}
+
+.displayarchive {
+    display: flex; 
+    justify-content: center;
+    gap: 24px;
+}
+
+.displayarchive button {
+    cursor: pointer;
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 32px;
+    background-color: #3A4989; 
+    color: white;
+    border-radius: 20px; 
+    border: none; 
+    padding: 8px 16px; 
+}
+
+.displayarchive button:hover {
+    background-color: #88a4f7;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -277,7 +338,10 @@ body {
 }
 
 
-@media (max-width: 768px) {/* small screens*/
+@media (max-width: 768px) {
+    .modal-content .revcontainer {
+        padding: 20px;
+    }    
     .hide-on-small {
         display: none;
     }

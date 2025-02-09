@@ -99,15 +99,6 @@ if ($_SESSION['usertype'] !== 'mngr') {
             <div class="tabs">
                 <button class="tabbutton active" onclick="setActiveTab(this)">Completed</button>
                 <button class="tabbutton" onclick="setActiveTab(this)">Cancelled</button>
-            <script>
-                function setActiveTab(button) {
-                    var buttons = document.querySelectorAll('.tabbutton');
-                    buttons.forEach(function(btn) {
-                        btn.classList.remove('active');
-                    });
-                    button.classList.add('active');
-                }
-            </script>
             </div>
             <div class="requestlists">
                 <div class="tablecontainerrequests">
