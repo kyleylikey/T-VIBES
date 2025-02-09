@@ -72,7 +72,7 @@ if ($_SESSION['usertype'] !== 'emp') {
         <ul>
             <li><a class="active"><i class="bi bi-grid-fill"></i><span class="nav-text">Overview</span></a></li>
             <li><a href="tourrequests.php"><i class="bi bi-map"></i><span class="nav-text">Tour Requests</span></a></li>
-            <li><a href="tours.php"><i class="bi bi-geo"></i><span class="nav-text">Upcoming Tours</span></a></li>
+            <li><a href="upcomingtourstoday.php"><i class="bi bi-geo"></i><span class="nav-text">Upcoming Tours</span></a></li>
             <li><a href="reviews.php"><i class="bi bi-pencil-square"></i><span class="nav-text">Reviews</span></a></li>
             <li><a href="sites.php"><i class="bi bi-image"></i><span class="nav-text">Tourist Sites</span></a></li>
         </ul> 
