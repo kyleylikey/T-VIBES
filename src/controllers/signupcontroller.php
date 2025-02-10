@@ -26,9 +26,11 @@ class SignupController {
         }
 
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $verificationToken = bin2hex(random_bytes(32)); 
+        $tokenExpiry = date('Y-m-d H:i:s', strtotime('+24 hours')); 
 
-        if ($user->createUser($name, $username, $hashedPassword, $contactnum, $email)) {
-            if (sendconfirmationEmail($username, $email)) {
+        if ($user->createUser($name, $username, $hashedPassword, $contactnum, $email, $verificationToken, $tokenExpiry)) {
+            if (sendconfirmationEmail($username, $email, $verificationToken)) {
                 echo json_encode([
                     'status' => 'success',
                     'message' => 'Please check your email for a verification link.'
@@ -69,4 +71,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $signupController = new SignupController();
     $signupController->createAccount($name, $username, $password, $contactnum, $email);
 }
-?>

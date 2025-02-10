@@ -1,15 +1,15 @@
 <?php
 require_once '../config/dbconnect.php';
 
-if (isset($_GET['email'])) {
-    $email = urldecode($_GET['email']);
+if (isset($_GET['token'])) {
+    $token = $_GET['token'];
     
     $database = new Database();
     $conn = $database->getConnection();
 
-    $query = "SELECT * FROM users WHERE email = :email AND status = 'inactive'";
+    $query = "SELECT * FROM users WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > NOW()";
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':token', $token);
     $stmt->execute();
 
     $success = false; 
@@ -18,9 +18,9 @@ if (isset($_GET['email'])) {
     $customClass = 'swal2-icon swal2-error-icon';
 
     if ($stmt->rowCount() > 0) {
-        $updateQuery = "UPDATE users SET status = 'active' WHERE email = :email";
+        $updateQuery = "UPDATE users SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = :token";
         $updateStmt = $conn->prepare($updateQuery);
-        $updateStmt->bindParam(':email', $email);
+        $updateStmt->bindParam(':token', $token);
 
         if ($updateStmt->execute()) {
             $success = true;
@@ -31,7 +31,7 @@ if (isset($_GET['email'])) {
             $message = 'Failed to verify your email. Please try again later.';
         }
     } else {
-        $message = 'Your email is already verified or the link is invalid.';
+        $message = 'Your email is already verified, the link is invalid, or it has expired.';
     }
 
     echo "<!DOCTYPE html>

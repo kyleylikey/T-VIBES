@@ -8,6 +8,8 @@ class User {
     private $password;
     private $usertype;
     private $status;
+    private $emailveriftoken;
+    private $token_expiry;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -47,15 +49,17 @@ class User {
         return $stmt->rowCount() > 0;
     }
 
-    public function createUser($name, $username, $hashedPassword, $contactnum, $email) {
-        $query = "INSERT INTO " . $this->table . " (name, username, hashedpassword, contactnum, email, usertype, status) 
-                  VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive')";
+    public function createUser($name, $username, $hashedPassword, $contactnum, $email, $verificationToken, $tokenExpiry) {
+        $query = "INSERT INTO " . $this->table . " (name, username, hashedpassword, contactnum, email, usertype, status, emailveriftoken, token_expiry) 
+                  VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive', :emailveriftoken, :token_expiry)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':hashedpassword', $hashedPassword);
         $stmt->bindParam(':contactnum', $contactnum);
         $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':emailveriftoken', $verificationToken);
+        $stmt->bindParam(':token_expiry', $tokenExpiry);
         return $stmt->execute();
     }
 
@@ -81,4 +85,3 @@ class User {
         return strtolower($this->status) === 'active';
     }
 }
-?>
