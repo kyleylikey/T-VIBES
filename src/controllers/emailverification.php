@@ -7,7 +7,7 @@ require '..\..\vendor\autoload.php';
 require_once '../config/dbconnect.php';
 
 function sendconfirmationEmail($username, $email, $verificationToken) {
-    $verificationLink = "localhost/T-VIBES_Test/src/controllers/verify.php?token=" . urlencode($verificationToken);
+    $verificationLink = "localhost/T-VIBES/src/controllers/verify.php?token=" . urlencode($verificationToken);
 
     $mail = new PHPMailer(true);
 
