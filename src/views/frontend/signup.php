@@ -24,6 +24,10 @@
             height: 60px; 
             color: #333; 
         }
+
+        .large-text-overlay-signup h1 {
+            color: #FFFFFF !important;
+        }
     </style>
 </head>
 <body class="taalbgpic">
