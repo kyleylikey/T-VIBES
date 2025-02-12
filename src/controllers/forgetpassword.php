@@ -6,7 +6,6 @@ require_once '../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-
 class ForgotPasswordController {
     private $conn;
 
@@ -33,8 +32,8 @@ class ForgotPasswordController {
             exit();
         }
 
-        // Check if email exists in database
-        $query = "SELECT * FROM users WHERE email = :email";
+        // Check if email exists and is verified
+        $query = "SELECT * FROM users WHERE email = :email AND emailveriftoken IS NULL";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
@@ -42,7 +41,7 @@ class ForgotPasswordController {
         if ($stmt->rowCount() === 0) {
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Email not found in our records.'
+                'message' => 'Email not found or not verified.'
             ]);
             exit();
         }
@@ -142,3 +141,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $forgotPasswordController = new ForgotPasswordController();
     $forgotPasswordController->sendResetLink($email);
 }
+?>

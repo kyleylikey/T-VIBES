@@ -9,12 +9,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Invalid request.");
     }
 
-    $email = $_POST['email'];
-    $token = $_POST['token'];
+    $email = trim($_POST['email']);
+    $token = trim($_POST['token']);
     $newPassword = $_POST['newPassword'];
     $retypeNewPassword = $_POST['retypeNewPassword'];
 
-    // Validate new password match
+    // Validate password strength
+    if (strlen($newPassword) < 8 || !preg_match('/[A-Z]/', $newPassword) || !preg_match('/[0-9]/', $newPassword)) {
+        echo "<script>alert('Password must be at least 8 characters long and include an uppercase letter and a number.'); window.location.href = 'resetpassword.php?email=" . urlencode($email) . "&token=" . urlencode($token) . "';</script>";
+        exit();
+    }
+
+    // Validate passwords match
     if ($newPassword !== $retypeNewPassword) {
         echo "<script>alert('Passwords do not match.'); window.location.href = 'resetpassword.php?email=" . urlencode($email) . "&token=" . urlencode($token) . "';</script>";
         exit();
@@ -30,23 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verify token and expiry
     $query = "SELECT * FROM users WHERE email = :email AND emailveriftoken = :token AND token_expiry > NOW()";
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':token', $token);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':token', $token, PDO::PARAM_STR);
     $stmt->execute();
 
     if ($stmt->rowCount() === 0) {
-        echo "<script>alert('Invalid or expired token. Please request a new password reset.');  window.location.href = '/T-VIBES/src/views/frontend/login.php';</script>";
+        echo "<script>alert('Invalid or expired token. Please request a new password reset.'); window.location.href = '/T-VIBES/src/views/frontend/login.php';</script>";
         exit();
     }
 
-    // Hash new password
+    // Hash new password securely
     $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
 
     // Update password and invalidate token
     $updateQuery = "UPDATE users SET hashedpassword = :password, emailveriftoken = NULL, token_expiry = NULL WHERE email = :email";
     $updateStmt = $conn->prepare($updateQuery);
-    $updateStmt->bindParam(':password', $hashedPassword);
-    $updateStmt->bindParam(':email', $email);
+    $updateStmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+    $updateStmt->bindParam(':email', $email, PDO::PARAM_STR);
 
     if ($updateStmt->execute()) {
         echo "<script>alert('Password successfully reset. You can now log in.'); window.location.href = '/T-VIBES/src/views/frontend/login.php';</script>";
