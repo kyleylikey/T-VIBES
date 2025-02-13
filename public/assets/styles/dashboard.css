@@ -360,11 +360,6 @@ body {
         width: 100%; /* Make the width of .statistics div the same */
     }
 
-    .requestlists div {
-        height: auto; /* Adjust height for smaller screens */
-        width: 100%; /* Make the width of .statistics div the same */
-    }
-
     #busiestdays > .busydays div {
         margin: 8px 0px;
     }
@@ -376,17 +371,6 @@ body {
     }
 
     .statistics > div > h1 {
-        font-size: 40px; /* Adjust font size for smaller screens */
-        margin: 4px;
-    }
-
-    .requestlists div span {
-        font-size: 4rem; /* Adjust font size for smaller screens */
-        top: -2px;
-        right: 2px;
-    }
-
-    .requestlists > div > h1 {
         font-size: 40px; /* Adjust font size for smaller screens */
         margin: 4px;
     }
@@ -414,22 +398,6 @@ body {
 
     .marquee-content {
         animation:none;
-    }
-    .tablecontainerrequests table tr > *:nth-child(2) {
-        display: none;
-    }
-
-    .tablecontainerrequests table {
-        table-layout: fixed; /* Ensure the table layout is fixed */
-    }
-
-    .tablecontainerrequests table th, .tablecontainerrequests table td, .tablecontainerrequests table thead tr th {
-        word-wrap: break-word; /* Allow text to wrap within cells */
-        font-size: 14px; /* Decrease the font size */
-    }
-
-    .tablecontainerrequests {
-        overflow-x: auto; /* Enable horizontal scrolling if needed */
     }
 
     .modal-content {
@@ -459,13 +427,6 @@ body {
         flex: 1 1 100%; /* Allow only 1 box per row */
     }
 
-    .requestlists div {
-        flex: 1 1 calc(33.333% - 24px); /* Allow up to 3 boxes per row, accounting for margin */
-    }
-    .requestlists > .container > div {
-        flex: 1 1 100%; /* Allow only 1 box per row */
-    }
-
     .busydays :first-child, .topthree :first-child {
         margin-left: 0px;
     }
@@ -473,84 +434,3 @@ body {
         margin-right: 0px;
     }
 }
-
-.requestlists, .busydays, .topthree, .requestlists > .container {
-    display: flex; 
-    justify-content: flex-start;
-    flex-wrap: wrap; 
-    background-color: transparent;
-}
-
-.requestlists > .container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    padding: 0;
-}
-.requestlists > .container > div:first-child {
-    margin: 0 0 12px 0;
-}
-
-.requestlists > .container > div:last-child {
-    margin: 12px 0 0 0;
-}
-
-.requestlists div{
-    background-color: #ffccd6; /* Set the background color of the boxes */
-    border-radius: 16px; /* Round the corners of the boxes */
-    padding: 20px; /* Add padding inside the boxes */
-    margin: 12px; /* Add margin between the boxes */
-    height: auto; /* Set initial height */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    position: relative; 
-    overflow: hidden;
-}
-
-.requestlists > div > span {
-    position: absolute; 
-    top: -24px;
-    right: 8px;
-    font-size: 8rem; 
-    opacity: 0.1;
-}
-
-.requestlists > div > h1 {
-    font-size: 80px;
-    text-align: right;
-    margin: 36px 16px 16px 16px;
-}
-
-.tablecontainerrequests table {
-    margin-top: 12px; /* Add margin to the top of the table */
-    width: 100%; /* Make the table span the full width of the container */
-    border-collapse: separate; /* Separate the borders of the table cells */
-    border-spacing: 0 16px; /* Add space between rows */
-    text-align: center; /* Align text in table cells to the center */
-}
-
-.tablecontainerrequests table td {
-    background-color: #fee7eb; /* Set the background color of table cells to blue */
-    padding: 20px; /* Add padding inside the table cells */
-}
-
-.tablecontainerrequests table td:first-child {
-    border-top-left-radius: 16px; /* Round the top-left corner of the first column */
-    border-bottom-left-radius: 16px; /* Round the bottom-left corner of the first column */
-}
-
-.tablecontainerrequests table td:last-child {
-    border-top-right-radius: 16px; /* Round the top-left corner of the first column */
-    border-bottom-right-radius: 16px; /* Round the bottom-left corner of the first column */
-}
-
-.tablecontainerrequests table th {
-    background-color: initial; /* Keep the header cells' background color unchanged */
-    text-align: center; /* Center the header text */
-    padding: 0px 12px; /* Reduce top and bottom padding to move headers up */
-    vertical-align: middle; /* Ensure the text stays vertically centered */
-    position: relative;
-    bottom: 12px; /* Move headers slightly up */
-    font-size: 18px;
-}
-
-
