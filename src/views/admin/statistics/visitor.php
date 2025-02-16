@@ -52,6 +52,10 @@ if ($_SESSION['usertype'] !== 'mngr') {
     </html>";
     exit();
 }
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
 ?>
 
 
@@ -84,7 +88,7 @@ if ($_SESSION['usertype'] !== 'mngr') {
         <div class="accountcontainer">
             <ul>
                 <li class="accountname"><i class="bi bi-person-circle"></i><span class="nav-text">Manager Name</span></li>
-                <li><button href="#signout"><i class="bi bi-arrow-left-square-fill"></i><span class="nav-text">Sign Out</span></button></li>
+                <li><a href="../../../controllers/logout.php" onclick="return confirm('Are you sure you want to sign out?');"><i class="bi bi-arrow-left-square-fill"></i><span class="">Sign Out</span></a></li>
             </ul>
         </div>
     </div>
