@@ -35,10 +35,11 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
             <html>
             <head>
                 <title>Verify Your Email - Taal Tourism</title>
+                <link href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap' rel='stylesheet'>
                 <style>
                     body {
-                        font-family: Arial, sans-serif;
-                        background-color: #f4f4f4;
+                        font-family: 'Nunito', sans-serif;
+                        background-color: #ffffff;
                         margin: 0;
                         padding: 0;
                     }
@@ -51,7 +52,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                         overflow: hidden;
                     }
                     .header {
-                        background-color: #3a4989;
+                        background-color: #102E47;
                         color: #ffffff;
                         text-align: center;
                         padding: 20px;
@@ -61,11 +62,11 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                     }
                     .content {
                         padding: 20px;
-                        color: #333333;
+                        color: #434343;
                         text-align: justify;
                     }
                     .content h2 {
-                        color: #3a4989;
+                        color: #102E47;
                         text-align: center;
                     }
                     .button {
@@ -73,7 +74,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                         width: fit-content;
                         margin: 20px auto;
                         padding: 10px 20px;
-                        background-color: #3a4989;
+                        background-color: #102E47;
                         color: #ffffff !important;
                         text-decoration: none;
                         border-radius: 5px;
@@ -82,14 +83,14 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                         font-weight: bold;
                     }
                     .button:hover {
-                        background-color: #2f3c6d;
+                        background-color: #729AB8;
                     }
                     .footer {
-                        background-color: #f4f4f4;
+                        background-color: #E7EBEE;
                         text-align: center;
                         padding: 10px;
                         font-size: 12px;
-                        color: #666666;
+                        color: #434343;
                     }
                 </style>
             </head>
