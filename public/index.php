@@ -6,52 +6,6 @@ if (!isset($_SESSION['userid'])) {
     exit();
 }
 
-if ($_SESSION['usertype'] !== 'trst') {
-    echo "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <title>Access Denied</title>
-        <link rel='stylesheet' href='assets/styles/main.css'>
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
-        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-        <script>
-            setTimeout(function() {
-                Swal.fire({
-                    iconHtml: '<i class=\"fas fa-exclamation-circle\"></i>',
-                    customClass: {
-                        icon: 'swal2-icon swal2-error-icon',
-                    },
-                    html: '<p style=\"font-size: 24px; font-weight: bold;\">Access Denied! This page is for tourists only.</p>',
-                    showConfirmButton: false,
-                    timer: 3000
-                }).then(() => {
-                    window.location.href = '../src/views/frontend/login.php';
-                });
-            }, 100);
-        </script>
-        <style>
-            .swal2-popup {
-                border-radius: 12px;
-                padding: 20px;
-            }
-            .swal2-icon.swal2-error-icon {
-                border: none;
-                font-size: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 60px;
-                height: 60px;
-                color: #333;
-            }
-        </style>
-    </head>
-    <body></body>
-    </html>";
-    exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,9 +16,7 @@ if ($_SESSION['usertype'] !== 'trst') {
     <link rel="stylesheet" href="assets/styles/index.css">
     <link rel="stylesheet" href="assets/styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    
 </head>
 <body>
     <?php include '../src/views/templates/header.php'; ?>
@@ -109,19 +61,14 @@ if ($_SESSION['usertype'] !== 'trst') {
             </div>
 
         </section>
-
-        <!-- About Section -->
         <section class="about">
             <h2>About Us</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Discover more about what we offer and how we help you explore.</p>
             <a href="#" class="about-button">Learn More</a>
         </section>
     </main>
+    <?php include '../src/views/templates/footer.html'; ?>
 
-    <!-- Footer Section -->
-    <footer>
-        <p>&copy; 2025 Your Company. All rights reserved.</p>
-    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>

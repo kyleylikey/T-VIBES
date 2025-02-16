@@ -1,9 +1,9 @@
-/* General Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     color: #130104;
+    font-family: Arial, sans-serif;
 }
 
 header div{

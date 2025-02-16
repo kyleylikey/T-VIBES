@@ -80,7 +80,7 @@ if ($_SESSION['usertype'] !== 'mngr') {
         <div class="accountcontainer">
             <ul>
                 <li class="accountname"><i class="bi bi-person-circle"></i><span class="nav-text">Manager Name</span></li>
-                <li><button href="#signout"><i class="bi bi-arrow-left-square-fill"></i><span class="nav-text">Sign Out</span></button></li>
+                <li><a href="../../controllers/logout.php" onclick="return confirm('Are you sure you want to sign out?');"><i class="bi bi-arrow-left-square-fill"></i><span class="nav-text">Sign Out</span></a></li>
             </ul>
         </div>
     </div>
