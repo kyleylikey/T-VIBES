@@ -70,6 +70,7 @@ header("Expires: 0");
     <link rel="stylesheet" href="../../../public/assets/styles/monthlyperformance.css">
     <link rel="stylesheet" href="../../../public/assets/styles/tourrequest.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../../../public/assets/styles/emptourrequest.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>

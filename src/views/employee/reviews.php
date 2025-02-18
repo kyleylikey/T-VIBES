@@ -98,7 +98,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                 <button class="tabbutton" onclick="setActiveTab(this)">Archived</button>
             </div>
             <div class="grid">
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>
@@ -106,7 +106,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <br>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
                 </div>
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>
@@ -114,7 +114,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <br>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
                 </div>
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>
@@ -122,7 +122,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <br>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
                 </div>
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>
@@ -130,7 +130,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <br>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
                 </div>
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>
@@ -138,7 +138,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <br>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
                 </div>
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>
@@ -146,7 +146,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <br>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
                 </div>
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>
@@ -154,7 +154,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <br>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
                 </div>
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>
@@ -162,7 +162,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <br>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
                 </div>
-                <div class="revitem">
+                <div class="griditem">
                     <h3>Site Name</h3>
                     <br>
                     <h2>Author Name</h2>

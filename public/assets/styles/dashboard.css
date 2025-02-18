@@ -135,6 +135,37 @@ body {
     gap: 12px; 
 }
 
+.addaccount {
+    border: 4px dashed #f76e85;
+}
+
+.accountplus {
+    margin: auto;
+    font-size: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f76e85;
+    height: 90%; /* Make the container full height */
+    position: relative; /* Position relative to the containing div */
+}
+
+.accountplusdesc {
+    color: #f76e85;
+}
+
+.accountitem {
+    display: flex;
+    align-items: flex-start; /* Align items to the bottom */
+    justify-content: flex-end; /* Align items to the left */
+    flex-direction: column;
+}
+
+.accounticon {
+    font-size: 80px;
+    margin-top: 120px;
+}
+
 .statistics div, .grid div{
     background-color: #ffccd6; 
     border-radius: 16px; 
@@ -168,7 +199,8 @@ body {
     opacity: 0.1;
 }
 
-.modal-content .revcontainer {
+
+.modal-content .revcontainer, .accdetailscontainer {
     position: relative;
     padding: 80px;
 }
@@ -179,6 +211,19 @@ body {
     font-style: italic;
     margin-top: 32px;
     margin-bottom: 32px;
+}
+
+.accdetailscontainer {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px; 
+    column-gap: 400px;
+}
+
+.accdetailscontainer .label {
+    margin: 12px 0;
+    opacity: 0.5;
 }
 
 .modal-content .revcontainer .revbg {
@@ -260,7 +305,7 @@ body {
     cursor: pointer;
 }
 
-.revitem {
+.griditem {
     cursor: pointer;
 }
 
@@ -299,6 +344,9 @@ body {
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
 }
+.modal-title {
+    margin: 40px;
+}
 
 .modal-content {
     background-color: #fefefe;
@@ -310,7 +358,6 @@ body {
     flex-wrap: nowrap; 
     justify-content: space-between;
     padding: 12px 12px;
-    
 }
 
 .close {
@@ -337,9 +384,16 @@ body {
 
 
 @media (max-width: 768px) {
-    .modal-content .revcontainer {
+    .modal-content .revcontainer, .accdetailscontainer {
         padding: 20px;
     }    
+    .modal-title {
+        margin-left: 20px;
+    }
+    .accdetailscontainer {
+        margin-top: 0;
+        grid-template-columns: repeat(1, 1fr); 
+    }
     .hide-on-small {
         display: none;
     }

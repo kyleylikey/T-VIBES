@@ -81,10 +81,24 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <a href="#contact" class="nav <?php echo $current_page == 'contact.php' ? 'active' : ''; ?>">Contact</a>
         </nav>
         <div>
-            <a href="/T-VIBES/src/views/frontend/tours/tourrequest.php" class="btn" style="margin-right: 12px;">
+            <a href="<?php 
+            if (!isset($_SESSION['userid'])) {
+                echo "/T-VIBES/src/views/frontend/login.php";
+            }
+            else {
+                echo "/T-VIBES/src/views/frontend/tours/tourrequest.php";
+            }
+            ?>" class="btn" style="margin-right: 12px;">
                 <i class="<?php echo $current_page == 'tourrequest.php' ? 'bi bi-map-fill' : 'bi bi-map'; ?>" onmouseover="this.className='bi bi-map-fill'" onmouseout="this.className='<?php echo $current_page == 'tourrequest.php' ? 'bi bi-map-fill' : 'bi bi-map'; ?>'"></i>
             </a>
-            <a href="#account" class="btn">
+            <a href="<?php 
+            if (!isset($_SESSION['userid'])) {
+                echo "/T-VIBES/src/views/frontend/login.php";
+            }
+            else {
+                echo "/T-VIBES/src/views/frontend/account.php";
+            }
+            ?>" class="btn">
                 <i class="<?php echo $current_page == 'account.php' ? 'bi bi-person-fill' : 'bi bi-person'; ?>" onmouseover="this.className='bi bi-person-fill'" onmouseout="this.className='<?php echo $current_page == 'account.php' ? 'bi bi-person-fill' : 'bi bi-person'; ?>'"></i>
             </a>
         </div>
