@@ -82,7 +82,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </nav>
         <div>
             <a href="<?php 
-            if (!isset($_SESSION['userid'])) {
+            if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
                 echo "/T-VIBES/src/views/frontend/login.php";
             }
             else {
@@ -92,7 +92,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <i class="<?php echo $current_page == 'tourrequest.php' ? 'bi bi-map-fill' : 'bi bi-map'; ?>" onmouseover="this.className='bi bi-map-fill'" onmouseout="this.className='<?php echo $current_page == 'tourrequest.php' ? 'bi bi-map-fill' : 'bi bi-map'; ?>'"></i>
             </a>
             <a href="<?php 
-            if (!isset($_SESSION['userid'])) {
+            if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
                 echo "/T-VIBES/src/views/frontend/login.php";
             }
             else {
