@@ -84,4 +84,37 @@ class User {
     public function isActive() {
         return strtolower($this->status) === 'active';
     }
+
+    public function addEmpAccount($name, $username, $email, $contactnum, $plainPassword) {
+        $hashedPassword = password_hash($plainPassword, PASSWORD_BCRYPT);
+        $query = "INSERT INTO ".$this->table." (name, username, email, contactnum, hashedpassword, usertype, status) VALUES (:name, :username, :email, :contactnum, :hashedpassword, 'emp', 'active')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':contactnum', $contactnum);
+        $stmt->bindParam(':hashedpassword', $hashedPassword);
+        return $stmt->execute();
+    }
+
+
+    public function getUserList() {
+        $usertypes = ['mngr' => 'Manager', 'emp' => 'Employee', 'trst' => 'Tourist'];
+        $accounts = ['mngr' => [], 'emp' => [], 'trst' => []];
+    
+        $query = "SELECT name, username, email, contactnum, usertype FROM users";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        if ($result) {
+            foreach ($result as $row) {
+                $usertype = $row['usertype'];
+                if (isset($usertypes[$usertype])) {
+                    $accounts[$usertype][] = $row;
+                }
+            }
+        }
+        return $accounts;
+    }
 }

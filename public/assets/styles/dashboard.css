@@ -137,6 +137,7 @@ body {
 
 .addaccount {
     border: 4px dashed #f76e85;
+    cursor: pointer;
 }
 
 .accountplus {
@@ -163,7 +164,6 @@ body {
 
 .accounticon {
     font-size: 80px;
-    margin-top: 120px;
 }
 
 .statistics div, .grid div{
@@ -203,6 +203,26 @@ body {
 .modal-content .revcontainer, .accdetailscontainer {
     position: relative;
     padding: 80px;
+}
+
+.addaccformcontainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 40px;
+    place-items: center;
+    gap: 20px;
+}
+
+.addaccformcontainer .label {
+    opacity: 0.5;
+}
+
+.addaccformcontainer input {
+    width: 300px;
+    padding: 12px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    margin-top: 12px;
 }
 
 .revcontainer p {
@@ -332,6 +352,18 @@ body {
     background-color: #88a4f7;
 }
 
+.searchbarcontainer {
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+.searchbar {
+    width: 100%;
+    padding: 12px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -344,6 +376,7 @@ body {
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
 }
+
 .modal-title {
     margin: 40px;
 }
@@ -390,9 +423,12 @@ body {
     .modal-title {
         margin-left: 20px;
     }
-    .accdetailscontainer {
+    .accdetailscontainer,.addaccformcontainer {
         margin-top: 0;
         grid-template-columns: repeat(1, 1fr); 
+    }
+    .addaccformcontainer {
+        margin-left: 16px;
     }
     .hide-on-small {
         display: none;

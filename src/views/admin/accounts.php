@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once '../../controllers/helpers.php';
+require_once '../../controllers/accountcontroller.php';
 require_once '../../../db/dbconnect.php';
 
 if (!isset($_SESSION['userid'])) {
@@ -102,42 +102,38 @@ header("Expires: 0");
                     echo date('M d, Y | h:i A'); 
                 ?></h1></span>
             </div>
+            <div class="tabs">
+                <button class="emp tabbutton active" onclick="setActiveTab(this)">Employee</button>
+                <button class="trst tabbutton" onclick="setActiveTab(this)">Tourist</button>
+                <button class="mngr tabbutton" onclick="setActiveTab(this)">Manager</button>
+            </div>
+            <div class="searchbarcontainer">
+                <input class="searchbar" type="text" id="searchInput" placeholder="Search accounts..." onkeyup="filterAccounts()">
+            </div>
+            <script>
+                
+            </script>
             <div class="grid">
-                <div class="addaccount">
+                <div style="height:260px;" class="addaccount" id="addAccountButton">
                     <span class="bi bi-person-plus-fill accountplus"></span>
-                    <h2 class="accountplusdesc">Add Account</h2>
+                    <h2 class="accountplusdesc">Add Employee Account</h2>
                 </div>
                 <?php
-                $usertypes = ['mngr' => 'Manager', 'emp' => 'Employee', 'trst' => 'Tourist'];
-                $accounts = ['mngr' => [], 'emp' => [], 'trst' => []];
-
-                $query = "SELECT name, username, email, contactnum, usertype FROM users";
-                $result = mysqli_query($conn, $query);
-
-                if ($result && mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $usertype = $row['usertype'];
-                        if (isset($usertypes[$usertype])) {
-                            $accounts[$usertype][] = $row;
+                    foreach (['mngr', 'emp', 'trst'] as $type) {
+                        if (!empty($accounts[$type])) {
+                            foreach ($accounts[$type] as $account) {
+                                echo '<div style="padding-top: 100px;"class="griditem accountitem" data-usertype="' . $type . '" data-name="' . htmlspecialchars($account['name']) . '" data-username="' . $account['username'] . '" data-email="' . htmlspecialchars($account['email']) . '" data-contact="' . htmlspecialchars($account['contactnum']) . '">';
+                                echo '<span class="bi bi-person-circle accounticon"></span>';
+                                echo '<h2>' . htmlspecialchars($account['name']) . '</h2>';
+                                echo '<p>' . $usertypes[$type] . '</p>';
+                                echo '</div>';
+                            }
                         }
                     }
-                }
 
-                foreach (['mngr', 'emp', 'trst'] as $type) {
-                    if (!empty($accounts[$type])) {
-                        foreach ($accounts[$type] as $account) {
-                            echo '<div class="griditem accountitem" data-name="' . htmlspecialchars($account['name']) . '" data-username="' . $account['username'] . '" data-usertype="' . $usertypes[$type] . '" data-email="' . htmlspecialchars($account['email']) . '" data-contact="' . htmlspecialchars($account['contactnum']) . '">';
-                            echo '<span class="bi bi-person-circle accounticon"></span>';
-                            echo '<h2>' . htmlspecialchars($account['name']) . '</h2>';
-                            echo '<p>' . $usertypes[$type] . '</p>';
-                            echo '</div>';
-                        }
+                    if (empty($accounts['mngr']) && empty($accounts['emp']) && empty($accounts['trst'])) {
+                        echo '<p>No accounts found.</p>';
                     }
-                }
-
-                if (empty($accounts['mngr']) && empty($accounts['emp']) && empty($accounts['trst'])) {
-                    echo '<p>No accounts found.</p>';
-                }
                 ?>
             </div>
             <div id="requestModal" class="modal">
@@ -159,12 +155,48 @@ header("Expires: 0");
                         </div>
                     </div>
                     <div class="displayarchive" style="margin-bottom: 20px;">
-                        <button>Edit</button>
-                        <button>Delete</button>
+                        <button class="btn1">Edit</button>
+                        <button class="btn2">Delete</button>
                     </div>
                     <span id="closeforbig" class="close">&times;</span>
                 </div>
             </div>
+             <!-- Add Account Modal -->
+             <div id="addAccountModal" class="modal">
+                <div class="modal-content" style="margin: 0; position: absolute; top: 50%; left: 50%; -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%);">
+                <span id="closeforsmall" class="close">&times;</span>
+                    <form style="width:100%" id="addAccountForm" action="../../controllers/accountcontroller.php" method="POST">
+                    <input type="hidden" name="action" value="addEmpAccount">
+                    <h1 class="modal-title">Add Employee Account</h1>
+                        <div class="addaccformcontainer">
+                            <div>
+                                <h4 class="label">Name</h4>
+                                <input type="text" name="name" required>
+                            </div>
+                            <div>
+                                <h4 class="label">Username</h4>
+                                <input type="text" name="username" required>
+                            </div>
+                            <div>
+                                <h4 class="label">Password</h4>
+                                <input type="password" name="password" required>
+                            </div>
+                            <div>
+                                <h4 class="label">Email</h4>
+                                <input type="email" name="email" required>
+                            </div>
+                            <div>
+                                <h4 class="label">Contact Number</h4>
+                                <input type="text" name="contactnum" required>
+                            </div>
+                        </div>
+                        <div class="displayarchive" style="margin-bottom: 20px;">
+                            <button style="width: 100px;" type="submit" class="btn1">Add</button>
+                        </div>
+                    </form>
+                    <span id="closeforbig" class="close">&times;</span>
+                </div>
+             </div>
         </div>
     </div>
     <script src="../../../public/assets/scripts/dashboard.js"></script>
