@@ -1,7 +1,7 @@
 <?php
 require_once '../../controllers/helpers.php';
 require_once '../../controllers/accountcontroller.php';
-require_once '../../../db/dbconnect.php';
+require_once '../../config/dbconnect.php';
 
 if (!isset($_SESSION['userid'])) {
     header('Location: ../frontend/login.php'); 
@@ -71,7 +71,8 @@ header("Expires: 0");
     <link rel="stylesheet" href="../../../public/assets/styles/monthlyperformance.css">
     <link rel="stylesheet" href="../../../public/assets/styles/tourrequest.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../../public/assets/scripts/main.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
 </head>
 <body>
     <div class="vertnavbar">
@@ -89,7 +90,7 @@ header("Expires: 0");
         <div class="accountcontainer">
             <ul>
                 <li class="accountname"><i class="bi bi-person-circle"></i><span class="nav-text">Manager Name</span></li>
-                <li><a href="../../controllers/logout.php" onclick="return confirm('Are you sure you want to sign out?');"><i class="bi bi-arrow-left-square-fill"></i><span class="">Sign Out</span></a></li>
+                <li><a onclick="logoutConfirm()"><i class="bi bi-arrow-left-square-fill"></i><span class="">Sign Out</span></a></li>
             </ul>
         </div>
     </div>
@@ -103,9 +104,9 @@ header("Expires: 0");
                 ?></h1></span>
             </div>
             <div class="tabs">
-                <button class="emp tabbutton active" onclick="setActiveTab(this)">Employee</button>
-                <button class="trst tabbutton" onclick="setActiveTab(this)">Tourist</button>
-                <button class="mngr tabbutton" onclick="setActiveTab(this)">Manager</button>
+                <button class="emp tabbutton active">Employee</button>
+                <button class="trst tabbutton">Tourist</button>
+                <button class="mngr tabbutton">Manager</button>
             </div>
             <div class="searchbarcontainer">
                 <input class="searchbar" type="text" id="searchInput" placeholder="Search accounts..." onkeyup="filterAccounts()">

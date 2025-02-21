@@ -88,12 +88,19 @@ document.getElementById('addAccountForm').addEventListener('submit', function(ev
 
     const formData = new FormData(this);
 
+    console.log('Form Data:');
+    formData.forEach((value, key) => {
+        console.log(key + ': ' + value);
+    });
+
+
     fetch('../../controllers/accountcontroller.php', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
+        console.log('Server Response:', data);
         if (data.status === 'success') {
             Swal.fire({
                 iconHtml: '<i class="fas fa-check-circle"></i>',

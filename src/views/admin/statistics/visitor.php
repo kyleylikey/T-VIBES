@@ -70,7 +70,8 @@ header("Expires: 0");
     <link rel="stylesheet" href="../../../../public/assets/styles/monthlyperformance.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="../../../../public/assets/scripts/main.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
 </head>
 <body>
     <div class="vertnavbar">
@@ -88,7 +89,7 @@ header("Expires: 0");
         <div class="accountcontainer">
             <ul>
                 <li class="accountname"><i class="bi bi-person-circle"></i><span class="nav-text">Manager Name</span></li>
-                <li><a href="../../../controllers/logout.php" onclick="return confirm('Are you sure you want to sign out?');"><i class="bi bi-arrow-left-square-fill"></i><span class="">Sign Out</span></a></li>
+                <li><a onclick="logoutConfirm()"><i class="bi bi-arrow-left-square-fill"></i><span class="">Sign Out</span></a></li>
             </ul>
         </div>
     </div>
