@@ -63,6 +63,17 @@ class User {
         return $stmt->execute();
     }
 
+    public function editUser($userid, $name, $username, $contactnum, $email) {
+        $query = "UPDATE " . $this->table . " SET name = :name, username = :username, contactnum = :contactnum, email = :email WHERE userid = :userid";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userid', $userid);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':contactnum', $contactnum);
+        $stmt->bindParam(':email', $email);
+        return $stmt->execute();
+    }
+
     public function login($plainPassword) {
         $query = "SELECT userid, hashedpassword, usertype, status FROM " . $this->table . " WHERE username = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);
@@ -97,12 +108,30 @@ class User {
         return $stmt->execute();
     }
 
+    public function updateEmpAccount($accountid, $updateData) {
+        if (empty($updateData)) {
+            return false;
+        }
+        
+        $fields = [];
+        $params = [];
+        foreach ($updateData as $column => $value) {
+            $fields[] = "$column = :$column";
+            $params[":$column"] = $value;
+        }
+        // Add the account id for the WHERE clause
+        $params[":accountid"] = $accountid;
+        
+        $sql = "UPDATE " . $this->table . " SET " . implode(", ", $fields) . " WHERE userid = :accountid";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute($params);
+    }
 
     public function getUserList() {
         $usertypes = ['mngr' => 'Manager', 'emp' => 'Employee', 'trst' => 'Tourist'];
         $accounts = ['mngr' => [], 'emp' => [], 'trst' => []];
     
-        $query = "SELECT name, username, email, contactnum, usertype FROM users";
+        $query = "SELECT userid, name, username, email, contactnum, usertype FROM users";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -123,7 +123,7 @@ header("Expires: 0");
                     foreach (['mngr', 'emp', 'trst'] as $type) {
                         if (!empty($accounts[$type])) {
                             foreach ($accounts[$type] as $account) {
-                                echo '<div style="padding-top: 100px;"class="griditem accountitem" data-usertype="' . $type . '" data-name="' . htmlspecialchars($account['name']) . '" data-username="' . $account['username'] . '" data-email="' . htmlspecialchars($account['email']) . '" data-contact="' . htmlspecialchars($account['contactnum']) . '">';
+                                echo '<div style="padding-top: 100px;"class="griditem accountitem" data-usertype="' . $type . '" data-userid="' . htmlspecialchars($account['userid']) . '" data-name="' . htmlspecialchars($account['name']) . '" data-username="' . $account['username'] . '" data-email="' . htmlspecialchars($account['email']) . '" data-contact="' . htmlspecialchars($account['contactnum']) . '">';
                                 echo '<span class="bi bi-person-circle accounticon"></span>';
                                 echo '<h2>' . htmlspecialchars($account['name']) . '</h2>';
                                 echo '<p>' . $usertypes[$type] . '</p>';
@@ -142,6 +142,7 @@ header("Expires: 0");
                     <span id="closeforsmall" class="close">&times;</span>
                     <h1 id="modalName" class="modal-title">Sample Name</h1>
                     <div class="accdetailscontainer">
+                        <input type="hidden" id="modalAccountId" value="">
                         <div>
                             <h4 class="label">Username</h4>
                             <p id="modalUsername">sampleusername</p>
@@ -156,7 +157,7 @@ header("Expires: 0");
                         </div>
                     </div>
                     <div class="displayarchive" style="margin-bottom: 20px;">
-                        <button class="btn1">Edit</button>
+                        <button class="btn1" onclick="openEditModalFromModal()">Edit</button>
                         <button class="btn2">Delete</button>
                     </div>
                     <span id="closeforbig" class="close">&times;</span>
@@ -167,32 +168,33 @@ header("Expires: 0");
                 <div class="modal-content" style="margin: 0; position: absolute; top: 50%; left: 50%; -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%);">
                 <span id="closeforsmall" class="close">&times;</span>
                     <form style="width:100%" id="addAccountForm" action="../../controllers/accountcontroller.php" method="POST">
-                    <input type="hidden" name="action" value="addEmpAccount">
-                    <h1 class="modal-title">Add Employee Account</h1>
+                    <input type="hidden" name="action" id="action" value="addEmpAccount">
+                    <input type="hidden" name="accountid" id="accountid">
+                    <h1 class="modal-title">Add or Edit Employee Account</h1>
                         <div class="addaccformcontainer">
                             <div>
                                 <h4 class="label">Name</h4>
-                                <input type="text" name="name" required>
+                                <input type="text" name="name" id="name" required>
                             </div>
                             <div>
                                 <h4 class="label">Username</h4>
-                                <input type="text" name="username" required>
+                                <input type="text" name="username" id="username" required>
                             </div>
                             <div>
                                 <h4 class="label">Password</h4>
-                                <input type="password" name="password" required>
+                                <input type="password" name="password" id="password" required>
                             </div>
                             <div>
                                 <h4 class="label">Email</h4>
-                                <input type="email" name="email" required>
+                                <input type="email" name="email" id="email" required>
                             </div>
                             <div>
                                 <h4 class="label">Contact Number</h4>
-                                <input type="text" name="contactnum" required>
+                                <input type="text" name="contactnum" id="contactnum" required>
                             </div>
                         </div>
                         <div class="displayarchive" style="margin-bottom: 20px;">
-                            <button style="width: 100px;" type="submit" class="btn1">Add</button>
+                            <button style="width: 100px;" type="submit">Save</button>
                         </div>
                     </form>
                     <span id="closeforbig" class="close">&times;</span>
@@ -200,7 +202,7 @@ header("Expires: 0");
              </div>
         </div>
     </div>
+    <script src="../../../public/assets/scripts/account.js"></script>
     <script src="../../../public/assets/scripts/dashboard.js"></script>
-    <script src="../../../public/assets/scripts/monthlyperformance.js"></script>
 </body>
 </html>
