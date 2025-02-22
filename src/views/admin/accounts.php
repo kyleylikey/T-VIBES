@@ -123,8 +123,8 @@ header("Expires: 0");
                     foreach (['mngr', 'emp', 'trst'] as $type) {
                         if (!empty($accounts[$type])) {
                             foreach ($accounts[$type] as $account) {
-                                echo '<div style="padding-top: 100px;"class="griditem accountitem" data-usertype="' . $type . '" data-userid="' . htmlspecialchars($account['userid']) . '" data-name="' . htmlspecialchars($account['name']) . '" data-username="' . $account['username'] . '" data-email="' . htmlspecialchars($account['email']) . '" data-contact="' . htmlspecialchars($account['contactnum']) . '">';
-                                echo '<span class="bi bi-person-circle accounticon"></span>';
+                                $opacity = ($account['status'] === 'inactive') ? "opacity: 0.5;" : "";
+                                echo '<div style="padding-top: 100px; ' . $opacity . '" class="griditem accountitem" data-userstatus="' . htmlspecialchars($account['status']) . '" data-usertype="' . $type . '" data-userid="' . htmlspecialchars($account['userid']) . '" data-name="' . htmlspecialchars($account['name']) . '" data-username="' . $account['username'] . '" data-email="' . htmlspecialchars($account['email']) . '" data-contact="' . htmlspecialchars($account['contactnum']) . '">';                                                                echo '<span class="bi bi-person-circle accounticon"></span>';
                                 echo '<h2>' . htmlspecialchars($account['name']) . '</h2>';
                                 echo '<p>' . $usertypes[$type] . '</p>';
                                 echo '</div>';
@@ -155,6 +155,7 @@ header("Expires: 0");
                             <h4 class="label">Contact Number</h4>
                             <p id="modalContact">samplecontactnumber</p>
                         </div>
+                        <h1 hidden class="label" id="accstatus">Disabled</h1>
                     </div>
                     <div class="displayarchive" style="margin-bottom: 20px;">
                         <button class="btn1" onclick="openEditModalFromModal()">Edit</button>
@@ -170,7 +171,7 @@ header("Expires: 0");
                     <form style="width:100%" id="addAccountForm" action="../../controllers/accountcontroller.php" method="POST">
                     <input type="hidden" name="action" id="action" value="addEmpAccount">
                     <input type="hidden" name="accountid" id="accountid">
-                    <h1 class="modal-title">Add or Edit Employee Account</h1>
+                    <h1 class="modal-title">Add or Edit Account</h1>
                         <div class="addaccformcontainer">
                             <div>
                                 <h4 class="label">Name</h4>

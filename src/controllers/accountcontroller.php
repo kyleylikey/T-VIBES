@@ -125,7 +125,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         // Call an update method on the model (see next step)
         $result = $userModel->updateEmpAccount($accountid, $updateData);
         
-        echo json_encode(['status' => $result ? 'success' : 'error', 'message' => $result ? 'Employee account updated successfully.' : 'Failed to update employee account.']);
+        echo json_encode(['status' => $result ? 'success' : 'error', 'message' => $result ? 'Account updated successfully.' : 'Failed to update account.']);
+        exit();
+    }
+
+    elseif ($action === 'disableEmpAcc') {
+        $userid = $_POST['userid'] ?? null;
+
+        $result = $userModel->disableEmpAcc($userid);
+
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Employee account disabled successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to disable employee account.']);
+        }
+        exit();
+    }
+    elseif ($action === 'enableEmpAcc') {
+        $userid = $_POST['userid'] ?? null;
+
+        $result = $userModel->enableEmpAcc($userid);
+
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Employee account enabled successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to enable employee account.']);
+        }
+        exit();
+    }
+    elseif ($action === 'deleteTrstAcc') {
+        $userid = $_POST['userid'] ?? null;
+
+        $result = $userModel->deleteTrstAcc($userid);
+
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Tourist account deleted successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete employee account.']);
+        }
         exit();
     }
 }

@@ -131,7 +131,7 @@ class User {
         $usertypes = ['mngr' => 'Manager', 'emp' => 'Employee', 'trst' => 'Tourist'];
         $accounts = ['mngr' => [], 'emp' => [], 'trst' => []];
     
-        $query = "SELECT userid, name, username, email, contactnum, usertype FROM users";
+        $query = "SELECT userid, name, username, email, contactnum, usertype, status FROM users ORDER BY (status = 'active') DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -145,5 +145,44 @@ class User {
             }
         }
         return $accounts;
+    }
+
+    public function disableEmpAcc($userid) {
+        $query = "UPDATE " . $this->table . " SET status = 'inactive' WHERE userid = :userid";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userid', $userid);
+        $result = $stmt->execute();
+    
+        if (!$result) {
+            $errorInfo = $stmt->errorInfo();
+            error_log("SQL Error: " . print_r($errorInfo, true));
+        }
+        return $result;
+    }
+
+    public function enableEmpAcc($userid) {
+        $query = "UPDATE " . $this->table . " SET status = 'active' WHERE userid = :userid";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userid', $userid);
+        $result = $stmt->execute();
+    
+        if (!$result) {
+            $errorInfo = $stmt->errorInfo();
+            error_log("SQL Error: " . print_r($errorInfo, true));
+        }
+        return $result;
+    }
+
+    public function deleteTrstAcc($userid) {
+        $query = "DELETE FROM " . $this->table . " WHERE userid = :userid";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userid', $userid);
+        $result = $stmt->execute();
+    
+        if (!$result) {
+            $errorInfo = $stmt->errorInfo();
+            error_log("SQL Error: " . print_r($errorInfo, true));
+        }
+        return $result;
     }
 }
