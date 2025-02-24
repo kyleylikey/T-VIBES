@@ -19,7 +19,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         
         $mail->Host       = 'smtp.gmail.com';
         $mail->Username   = 'kyleashleighbaldoza.tomcat@gmail.com';
-        $mail->Password   = 'otlg tqtz gpwv kqjn';
+        $mail->Password   = 'ikkt npxt cghd dhbj';
         
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
