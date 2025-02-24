@@ -1,3 +1,9 @@
+<?php
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', '/T-VIBES/temp/error.log');
+error_reporting(E_ALL);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,16 +82,25 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    Swal.fire(
-                        'Email Verification Sent',
-                        data.message,
-                        'success');
+                    Swal.fire({
+                        iconHtml: '<i class="fas fa-envelope"></i>',
+                        customClass: {
+                            icon: 'swal2-icon swal2-email-icon'
+                        },
+                        html: '<p style="font-size: 24px; font-weight: bold;">' + data.message + '</p>',
+                        showConfirmButton: false, 
+                        timer: 3000
+                    });
                 } else {
-                    Swal.fire(
-                        'Something went wrong',
-                        data.message,
-                        'error'
-                    );
+                    Swal.fire({
+                        iconHtml: '<i class="fas fa-exclamation-circle"></i>', 
+                        customClass: {
+                            icon: 'swal2-icon swal2-error-icon', 
+                        },
+                        html: '<p style="font-size: 24px; font-weight: bold;">' + data.message + '</p>',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
                 }
             })
             .catch(error => {
