@@ -32,7 +32,7 @@ session_start();
 
 		<!-- Features Section -->
         <section class="features">
-            <div class="container">
+            <div id="explore" class="container">
                 <div class="row">
                     <div class="col-lg-6">
                         <h2 class="text-start">Upidatat dolor veniam ipsum culpa in nulla adipisicing ad magna minim ipsum reprehenderit mollit sit.</h2>
@@ -62,7 +62,7 @@ session_start();
 
         <!-- About Section -->
 		<section class="bg-gray-100 py-12">
-    <div class="max-w-6xl mx-auto px-6 text-center">
+        <div id="about" class="max-w-6xl mx-auto px-6 text-center">
         <h2 class="text-4xl font-bold text-gray-800">About Us</h2>
         <p class="mt-4 text-gray-600">
             We are a passionate team dedicated to delivering quality and innovation.  
@@ -233,7 +233,7 @@ session_start();
 
     <!-- Footer Section -->
     <footer class="bg-light py-4 mt-5">
-        <div class="container">
+        <div id="contact" class="container">
             <div class="row">
                 <!-- Google Map -->
                 <div class="col-md-4">

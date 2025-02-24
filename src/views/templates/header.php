@@ -44,21 +44,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
-              <div class="collapse navbar-collapse" id="navbarText">
+              <div class="collapse navbar-collapse ml-2" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
-                    <a class="nav-link mb-0" href="/T-VIBES/public/" style="margin-right: 16px;">Explore</a>
+                  <li class="nav-item active">
+                    <a class="nav-link mb-0" href="/T-VIBES/public/#explore" style="margin-right: 16px;">Explore</a>
                   </li>
-                  <li class="nav-item <?php echo $current_page == 'about.php' ? 'active' : ''; ?>">
-                    <a class="nav-link mb-0" href="#about" style="margin-right: 16px;">About Us</a>
+                  <li class="nav-item active">
+                    <a class="nav-link mb-0" href="/T-VIBES/public/#about" style="margin-right: 16px;">About Us</a>
                   </li>
-                  <li class="nav-item <?php echo $current_page == 'contact.php' ? 'active' : ''; ?>">
-                    <a class="nav-link mb-0" href="#contact">Contact</a>
+                  <li class="nav-item active">
+                    <a class="nav-link mb-0" href="/T-VIBES/public/#contact">Contact</a>
                   </li>
                 </ul>
 				<ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
 				<div>
-                    <a href="<?php 
+                    <a class="mx-2" href="<?php 
                     if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
                         echo "/T-VIBES/src/views/frontend/login.php";
                     }
@@ -66,9 +66,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         echo "/T-VIBES/src/views/frontend/tours/tourrequest.php";
                     }
                     ?>" class="btn" style="margin-right: 12px;">
-                        <i class="<?php echo $current_page == 'tourrequest.php' ? 'bi bi-map-fill' : 'bi bi-map'; ?>" onmouseover="this.className='bi bi-map-fill'" onmouseout="this.className='<?php echo $current_page == 'tourrequest.php' ? 'bi bi-map-fill' : 'bi bi-map'; ?>'"></i>
+                        <i class="h2 <?php echo $current_page == 'tourrequest.php' ? 'h2 bi bi-map-fill' : 'h2 bi bi-map'; ?>" onmouseover="this.className='h2 bi bi-map-fill'" onmouseout="this.className='<?php echo $current_page == 'tourrequest.php' ? 'h2 bi bi-map-fill' : 'h2 bi bi-map'; ?>'"></i>
                     </a>
-                    <a href="<?php 
+                    <a class="mx-2" href="<?php 
                     if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
                         echo "/T-VIBES/src/views/frontend/login.php";
                     }
@@ -76,7 +76,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         echo "/T-VIBES/src/views/frontend/account.php";
                     }
                     ?>" class="btn">
-                        <i class="<?php echo $current_page == 'account.php' ? 'bi bi-person-fill' : 'bi bi-person'; ?>" onmouseover="this.className='bi bi-person-fill'" onmouseout="this.className='<?php echo $current_page == 'account.php' ? 'bi bi-person-fill' : 'bi bi-person'; ?>'"></i>
+                        <i class="<?php echo $current_page == 'account.php' ? 'h2 bi bi-person-fill' : 'h2 bi bi-person'; ?>" onmouseover="this.className='h2 bi bi-person-fill'" onmouseout="this.className='<?php echo $current_page == 'account.php' ? 'h2 bi bi-person-fill' : 'h2 bi bi-person'; ?>'"></i>
                     </a>
 				</ul>`
               </div>
