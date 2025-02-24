@@ -111,9 +111,6 @@ header("Expires: 0");
             <div class="searchbarcontainer">
                 <input class="searchbar" type="text" id="searchInput" placeholder="Search accounts..." onkeyup="filterAccounts()">
             </div>
-            <script>
-                
-            </script>
             <div class="grid">
                 <div style="height:260px;" class="addaccount" id="addAccountButton">
                     <span class="bi bi-person-plus-fill accountplus"></span>
