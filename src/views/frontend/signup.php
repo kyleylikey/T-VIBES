@@ -76,25 +76,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-envelope"></i>',
-                        customClass: {
-                            icon: 'swal2-icon swal2-email-icon'
-                        },
-                        html: '<p style="font-size: 24px; font-weight: bold;">' + data.message + '</p>',
-                        showConfirmButton: false, 
-                        timer: 3000
-                    });
+                    Swal.fire(
+                        'Email Verification Sent',
+                        data.message,
+                        'success');
                 } else {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-exclamation-circle"></i>', 
-                        customClass: {
-                            icon: 'swal2-icon swal2-error-icon', 
-                        },
-                        html: '<p style="font-size: 24px; font-weight: bold;">' + data.message + '</p>',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
+                    Swal.fire(
+                        'Something went wrong',
+                        data.message,
+                        'error'
+                    );
                 }
             })
             .catch(error => {
