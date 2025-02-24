@@ -20,37 +20,6 @@ body {
 	margin: 0;
 }
 
-/* Sign Up & Login Buttons */
-.navbar .nav-link {
-	font-size: 1rem;
-	font-weight: 500;
-	padding: 8px 15px;
-	text-decoration: none;
-	color: #333;
-	transition: 0.3s ease;
-}
-
-.navbar .nav-link:hover {
-	color: #000;
-}
-
-.login-button {
-	display: inline-block; /* Ensures it's a button-like element */
-	padding: 10px 20px;
-	border-radius: 30px; /* Oval shape */
-	background-color: #007bff; /* Blue color */
-	color: white !important; /* Ensures text color stays white */
-	text-decoration: none;
-	font-weight: bold;
-	border: 2px solid #007bff; /* Border to make it more button-like */
-	transition: all 0.3s ease;
-}
-
-.login-button:hover {
-	background-color: #0056b3; /* Darker blue on hover */
-	border-color: #0056b3;
-}
-
 /* Hero Section */
 .hero {
 	display: flex;
