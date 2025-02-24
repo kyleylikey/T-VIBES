@@ -63,58 +63,53 @@ session_start();
         <!-- About Section -->
 		<section class="bg-gray-100 py-12">
         <div id="about" class="max-w-6xl mx-auto px-6 text-center">
-        <h2 class="text-4xl font-bold text-gray-800">About Us</h2>
-        <p class="mt-4 text-gray-600">
-            We are a passionate team dedicated to delivering quality and innovation.  
-            Our goal is to create meaningful experiences and build lasting connections.
-        </p>
+		<a href="#" class="btn btn-dark rounded-pill mt-4 mb-4 px-4 py-2 btn-lg">About Us</a>
 
         <div class="mt-10 grid grid-cols-1 md:grid-cols-5 gap-8 bg-gray-200 p-6 rounded-lg">
-			<div class="row">
+			<div class="row bg-light">
             <!-- Column 1 --> 
-            <!-- Copy Column 1 structure to other columns -->
             <div class="col text-center">
-                <div class="p-6 top-50 inline-block">
-				    <i class="bi bi-geo-alt rounded-circle h1 bg-white p-2 m-2 shadow"></i>
+                <div class="p-6 top-60 inline-block">
+				    <i class="bi bi-geo-alt rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 1</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the first column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Discover Stuning Attractions</h4>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip.</p>
             </div>
 
             <!-- Column 2 -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-				<i class="bi bi-bell"></i>
+                <div class="p-6 top-50 inline-block">
+				<i class="bi bi-bell rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 2</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the second column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Stay Updated on Exciting Events</h5>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip..</p>
             </div>
 
             <!-- Column 3 -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-                <i class="bi bi-calendar4"></i>
+                <div class="p-6 top-50 inline-block">
+                <i class="bi bi-calendar4 rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 3</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the third column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Plan Your Trip with Ease</h5>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip.</p>
             </div>
 
             <!-- Column 4 -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-                <i class="bi bi-display"></i>
+                <div class="p-6 top-50 inline-block">
+                <i class="bi bi-display rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 4</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the fourth column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Book Reservations Hassle-Free</h5>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip..</p>
             </div>
 
             <!-- Column 5 -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-				<i class="bi bi-info-circle"></i>
+                <div class="p-6 top-50 inline-block">
+				<i class="bi bi-info-circle rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 5</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the fifth column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Get Support from Your LGU</h5>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip.</p>
             </div>
         </div>
 		</div>
@@ -155,7 +150,7 @@ session_start();
                 </div>
             </div>
         </div>
-        <a href="#" class="btn btn-dark mt-4 px-4 py-2">Explore Destinations</a>
+        <a href="#" class="btn btn-dark rounded-pill mt-4 px-4 py-2">Explore Destinations</a>
     </section>
 
 
