@@ -36,15 +36,15 @@ session_start();
                 <div class="row">
                     <div class="col-lg-6">
                         <h2 class="text-start">Upidatat dolor veniam ipsum culpa in nulla adipisicing ad magna minim ipsum reprehenderit mollit sit.</h2>
-                        <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover">
+                        <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded">
                     </div>
                     <div class="col-lg-6">
                         <div class="row">
                             <div class="col-lg-6">
-                                <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid">
+                                <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid rounded">
                             </div>
                             <div class="col-lg-6">
-                                <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid">
+                                <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid rounded">
                             </div>
                         </div>
                         <div class="row mt-5">
@@ -71,10 +71,11 @@ session_start();
 
         <div class="mt-10 grid grid-cols-1 md:grid-cols-5 gap-8 bg-gray-200 p-6 rounded-lg">
 			<div class="row">
-            <!-- Column 1 -->
+            <!-- Column 1 --> 
+            <!-- Copy Column 1 structure to other columns -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-				<i class="bi bi-geo-alt"></i>
+                <div class="p-6 top-50 inline-block">
+				    <i class="bi bi-geo-alt rounded-circle h1 bg-white p-2 m-2 shadow"></i>
                 </div>
                 <h3 class="text-xl font-bold text-gray-800 mt-4">Title 1</h3>
                 <p class="text-gray-600 mt-2">This is a short description for the first column.</p>
