@@ -63,6 +63,7 @@ if ($_SESSION['usertype'] !== 'emp') {
     <link rel="stylesheet" href="../../../public/assets/styles/emptourrequest.css">
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .bluebuttonactive, .bluebuttonnotactive {
             margin-left: 12px;
@@ -187,7 +188,7 @@ if ($_SESSION['usertype'] !== 'emp') {
     <div class="accountcontainer">
         <ul>
             <li class="accountname"><i class="bi bi-person-circle"></i><span class="nav-text">Employee Name</span></li>
-            <li><button href="#signout"><i class="bi bi-arrow-left-square-fill"></i><span class="nav-text">Sign Out</span></button></li>
+            <li><a onclick="logoutConfirm()"><i class="bi bi-arrow-left-square-fill"></i><span class="">Sign Out</span></a></li>
         </ul>
     </div>
 </div>
@@ -247,6 +248,7 @@ if ($_SESSION['usertype'] !== 'emp') {
     </div>
 </div>
 <script src="../../../public/assets/scripts/dashboard.js"></script>
+<script src='../../../public/assets/scripts/main.js'></script>
 <script>
     function toggleActive(selected) {
         document.querySelectorAll('.tour-container').forEach(container => {
