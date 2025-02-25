@@ -1,9 +1,13 @@
+<?php
+    require_once '../../controllers/sitecontroller.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Dashboard - Upcoming Tours</title>
+    <title>Employee Dashboard - Tourist Sites</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
@@ -96,6 +100,164 @@
             flex-shrink: 0; 
         }
 
+        .add-site-box {
+            height: 290px;
+            width: 375px;
+            background-color: #E7EBEE;
+            border-radius: 10px;
+            border: 2px dashed #939393;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            padding: 15px;
+            margin-top: 15px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .plus-sign {
+            font-size: 75px;
+            color: #939393;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .add-text {
+            font-size: 20px;
+            color: #939393;
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            margin: 0;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .add-site-box:hover {
+            background-color: #D0D5DA; 
+            border-color: #757575;
+        }
+
+        .add-site-box:hover .plus-sign,
+        .add-site-box:hover .add-text {
+            color: #757575; 
+        }
+
+        .info-box {
+            height: 290px;
+            width: 375px;
+            background-color: #729AB8;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .info-box span {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .info-box p {
+            font-size: 20px;
+            color: #434343;
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .info-box:hover {
+            transform: scale(1.03);
+            transition: all 0.3s;
+        }
+
+        .destination-image {
+            width: 100%;
+            height: 82%;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0; 
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .modal-body {
+            display: flex;
+            align-items: stretch; 
+            gap: 20px;
+        }
+
+        .modal-dialog {
+            max-width: 60%;
+        }
+
+        .modal-content {
+            border-radius: 25px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            border-top: none;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #434343;
+        }
+
+        .image-upload-container {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: -18px;
+        }
+
+        .image-preview {
+            width: 100%; 
+            height: 250px; 
+            max-height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 10px;
+            background-color: #E7EBEE;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #imageUpload {
+            width: 100%;
+            max-width: 100%;
+            text-align: center;
+        }
+
+        .image-preview i {
+            font-size: 50px; 
+            color: #939393; 
+        }
+
         .btn-custom {
             padding: 10px 20px;
             font-size: 16px;
@@ -123,129 +285,8 @@
             color: white;
         }
 
-        .tour-container {
-            margin-top: 30px;
-            background-color: #729AB8; 
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .tour-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 50%;
-            margin: 20px;
-        }
-
-        .tour-details {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            width: 60%;
-            flex-grow: 1;
-            margin: 20px;
-            display: flex;
-            flex-direction: column; 
-            justify-content: space-between; 
-            min-height: 100%; 
-        }
-
-        .tour-item {
-            background-color: white;
-            border: 2px solid #102E47;
-            border-radius: 8px;
-            padding: 20px;
-            transition: background-color 0.3s, color 0.3s;
-            height: 120px;
-        }
-
-        .tour-item:hover {
-            background-color: #102E47;
-            color: white;
-        }
-
-        .tour-item.active {
-            background-color: #102E47;
-            color: white;
-        }
-
-        .tour-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start; 
-            width: 100%;
-        }
-
-        .tour-locations {
-            margin-left: 20px; 
-            padding-left: 10px; 
-            display: block; 
-            margin-top: -15px;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center; 
-        }
-
-        .tour-info {
-            display: flex;
-            justify-content: space-between; 
-            width: 40%; 
-            margin-top: 10px;
-        }
-
-        .tour-info div {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .tour-info strong {
-            white-space: nowrap; 
-        }
-
-        .tour-info span {
-            margin-top: 5px; 
-        }
-
-        .modal-body {
-            display: flex;
-            align-items: center; 
-            gap: 20px;
-        }
-
-        .modal-dialog {
-            max-width: 50%;
-        }
-
-        .modal-content {
-            border-radius: 25px; 
-        }
-
-        .modal-sm-custom {
-            max-width: 35%; 
-        }
-
         .form-control {
-            resize: none; 
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            border-top: none;
-        }
-
-        .modal-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #434343;
+            resize: none;
         }
 
         .swal2-icon {
@@ -287,18 +328,23 @@
             color: white !important;
         }
 
+        .edit-modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            border-top: none;
+        }
+
         @media (max-width: 1280px) {
-            .btn-custom {
-                padding: 8px 16px;
-                font-size: 15px;
+            .add-site-box,
+            .info-box {
+                width: 100%;
+                height: 290px;
             }
 
-            .tour-info div {
-                margin-right: 20px;
-            }
-
-            .modal-sm-custom {
-                max-width: 50%;
+            .destination-image {
+                height: 75%;
             }
 
             .modal-dialog {
@@ -328,20 +374,6 @@
                 width: calc(100% - 200px);
             }
 
-            .btn-custom {
-                padding: 8px 14px;
-                font-size: 14px;
-                min-width: 70px;
-            }
-
-            .tour-details {
-                width: 40%;
-            }
-
-            .modal-sm-custom {
-                max-width: 65%;
-            }
-
             .modal-dialog {
                 max-width: 65%;
             }
@@ -350,6 +382,14 @@
                 flex-direction: column;
                 align-items: center;
                 margin-top: 20px;
+            }
+
+            .modal-body form {
+                width: 100% !important;
+            }
+
+            .image-upload-container {
+                width: 100%;
             }
         }
 
@@ -400,27 +440,6 @@
                 width: 100%; 
             }
 
-            .btn-custom {
-                padding: 6px 12px;
-                font-size: 14px;
-            }
-
-            .tour-list, .tour-details {
-                width: 100%;
-                margin: 10px;
-            }
-
-            .tour-info {
-                display: flex;
-                flex-direction: row;  
-                justify-content: space-between; 
-                width: 50%;
-            }
-
-            .modal-sm-custom {
-                max-width: 70%;
-            }
-
             .modal-dialog {
                 max-width: 70%;
             }
@@ -456,99 +475,12 @@
                 transition: background 0.3s ease;
             }
 
-            .btn-group {
-                flex-direction: column;
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-            
-            .btn-custom {
-                width: 90%;
-                padding: 8px;
-                font-size: 14px;
-            }
-
-            .tour-list {
-                gap: 10px;
-                width: 100%;
-            }
-
-            .tour-item {
-                height: auto;
-                padding: 15px;
-            }
-
-            .tour-info {
-                flex-direction: column;
-                align-items: flex-start; 
-                width: 100%;
-            }
-
-            .tour-info div {
-                display: flex;
-                justify-content: space-between; 
-                width: 100%;
-                margin-bottom: 20px;
-            }
-
-            .tour-info strong {
-                flex: 1;
-                text-align: left; 
-            }
-
-            .tour-info span {
-                flex: 1;
-                text-align: left;
-            }
-
-            .button-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .tour-container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .modal-sm-custom {
-                max-width: 100%;
+            .info-box {
+                padding: 10px;
             }
 
             .modal-dialog {
                 max-width: 100%;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .btn-custom {
-                font-size: 13px;
-                padding: 6px;
-            }
-
-            .tour-container {
-                padding: 10px;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .tour-item, .tour-details {
-                padding: 15px;
-                width: 100%;
-            }
-
-            .button-container button {
-                width: 100%;
-            }
-            
-            .tour-info {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .tour-info div{
-                margin-left: 20px;
             }
         }
     </style>
@@ -577,7 +509,7 @@
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="" class="nav-link active">
+                    <a href="upcomingtourstoday.php" class="nav-link text-dark">
                         <i class="bi bi-geo"></i>
                         <span class="d-none d-sm-inline">Upcoming Tours</span>
                     </a>
@@ -589,7 +521,7 @@
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="touristsites.php" class="nav-link text-dark">
+                    <a href="" class="nav-link active">
                         <i class="bi bi-image"></i>
                         <span class="d-none d-sm-inline">Tourist Sites</span>
                     </a>
@@ -616,7 +548,7 @@
     <div class="main-content">
         <div class="content-container">
             <div class="header">
-                <h2>Upcoming Tours</h2>
+                <h2>Tourist Sites</h2>
                 <span class="date">
                     <h2>
                         <?php 
@@ -627,114 +559,154 @@
                 </span>
             </div>
 
-            <div class="btn-group" role="group">
-                <button type="button" class="btn-custom active">Today</button>
-                <button type="button" class="btn-custom" onclick="window.location.href='upcomingtoursall.php';">All</button>
-            </div>
-
-            <div class="tour-container">
-                <div class="tour-list">
-                    <div class="tour-item active">
-                        <strong>Mr. Juan Dela Cruz</strong><br>
-                        3 Sites
-                    </div>
-                    <div class="tour-item">
-                        <strong>Mr. Jose Cruz</strong><br>
-                        1 Site
+            <div class="row mt-3 d-flex justify-content-start">
+                <div class="col-lg-4 col-md-6 col-12 mb-3">
+                    <div class="add-site-box" onclick="showModal()" style="cursor: pointer;">
+                        <div class="plus-sign">+</div>
+                        <p class="add-text">Add Tourist Site</p>
                     </div>
                 </div>
-
-                <div class="tour-details">
-                    <strong>Mr. Juan Dela Cruz</strong><br>
-                    <span class="tour-locations">
-                        Taal Church<br>
-                        Goco Ancestral House<br>
-                        Sacred Well of Sta. Lucia
-                    </span>
-                    <br><br>
-
-                    <div class="tour-info">
-                        <div>
-                            <strong>Tour Date:</strong>
-                            <span>11/12/2024</span>
-                        </div>
-                        <div>
-                            <strong>Pax:</strong>
-                            <span>2</span>
-                        </div>
-                    </div>
-
-                    <br><br>
-
-                    <div class="button-container">
-                        <button class="btn-custom" onclick="showModal()" style="cursor: pointer;">Edit</button>
-                        <button class="btn-custom">Cancel</button>
-                    </div>
-                </div>
+                    <?php
+                        if (!empty($sites)) {
+                            foreach ($sites as $site) {
+                                echo '<div class="col-lg-4 col-md-6 col-12 mb-3">';
+                                echo '<div class="info-box" onclick="editModal()" style="cursor: pointer;">';
+                                echo '<img src="/T-VIBES/public/uploads/' . htmlspecialchars($site['siteimage']) . '" alt="' . htmlspecialchars($site['sitename']) . '" class="destination-image">';
+                                echo '<p>'.htmlspecialchars($site['sitename']).'</p>';
+                                echo '</div>';
+                                echo '</div>';
+                            }
+                        } else {
+                            echo '<p>No sites found.</p>';
+                        }
+                    ?>
             </div>
-
         </div>
     </div>
 
-    <div class="modal fade" id="upcomingToursModal" tabindex="-1" aria-labelledby="upcomingToursModalLabel" aria-hidden="true">
+    <div class="modal fade" id="touristSitesModal" tabindex="-1" aria-labelledby="touristSitesModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content p-4">
-                <div class="modal-header border-0 text-center">
-                    <h5 class="modal-title w-100">Edit Tour</h5>
+                <div class="modal-header border-0">
+                    <h5 class="modal-title w-100">Add Tourist Site</h5>
                     <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body d-flex flex-column align-items-center">
-                    <form class="w-75">
+                <div class="modal-body d-flex gap-4">
+                    <div class="image-upload-container d-flex flex-column align-items-center">
+                        <div class="image-preview">
+                            <i class="bi bi-image" id="previewIcon"></i>
+                        </div>
+                        <input type="file" id="imageUpload" class="form-control w-100 mt-2">
+                    </div>
+
+                    <form class="w-50">
                         <div class="mb-3">
-                            <label for="tourSites" class="form-label">Sites</label>
-                            <input type="text" class="form-control w-100" id="tourSites" placeholder="Enter Sites">
+                            <input type="text" class="form-control w-100" id="tourLocation" placeholder="Location">
                         </div>
                         <div class="mb-3">
-                            <label for="tourDate" class="form-label">Tour Date</label>
-                            <input type="date" class="form-control w-100" id="tourDate">
+                            <input type="text" class="form-control w-100" id="tourPrice" placeholder="Price">
                         </div>
                         <div class="mb-3">
-                            <label for="tourPax" class="form-label">Pax</label>
-                            <input type="number" class="form-control w-100" id="tourPax" placeholder="Number of People">
+                            <input type="text" class="form-control w-100" id="tourSchedule" placeholder="Schedule">
+                        </div>
+                        <div class="mb-3">
+                            <textarea id="descriptionInput" class="form-control w-100" rows="5" placeholder="Description"></textarea>
                         </div>
                     </form>
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn-custom">Save Changes</button>
-                    <button class="btn-custom">Cancel</button>
+                    <button class="btn-custom">Submit</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm-custom"> 
-            <div class="modal-content swal-custom-popup text-center"> 
+    <div class="modal fade" id="editTouristSitesModal" tabindex="-1" aria-labelledby="editTouristSitesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title swal2-title-custom w-100" id="cancelReasonLabel">Write Reason</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title w-100">Edit Tourist Site</h5>
+                    <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <textarea id="cancelReasonInput" class="form-control" rows="4" placeholder="Type here..."></textarea>
+                <div class="modal-body d-flex gap-4">
+                    <div class="image-upload-container d-flex flex-column align-items-center">
+                        <div class="image-preview">
+                            <i class="bi bi-image" id="previewIcon"></i>
+                        </div>
+                        <input type="file" id="imageUpload" class="form-control w-100 mt-2">
+                    </div>
+
+                    <form class="w-50">
+                        <div class="mb-3">
+                            <input type="text" class="form-control w-100" id="tourLocation" placeholder="Location">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control w-100" id="tourPrice" placeholder="Price">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control w-100" id="tourSchedule" placeholder="Schedule">
+                        </div>
+                        <div class="mb-3">
+                            <textarea id="descriptionInput" class="form-control w-100" rows="5" placeholder="Description"></textarea>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-footer justify-content-center">
-                    <button id="submitCancelReason" class="swal-custom-btn">Submit</button>
+
+                <div class="edit-modal-footer">
+                    <button class="btn-custom">Submit</button>
                 </div>
             </div>
         </div>
     </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 
 <script>
     function showModal() {
-        var modal = new bootstrap.Modal(document.getElementById('upcomingToursModal'));
+        var modal = new bootstrap.Modal(document.getElementById('touristSitesModal'));
+        modal.show();
+    }
+
+    function editModal() {
+        var modal = new bootstrap.Modal(document.getElementById('editTouristSitesModal'));
         modal.show();
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        document.querySelector(".modal-footer .btn-custom:nth-child(1)").addEventListener("click", function () {
+        document.querySelector(".modal-footer .btn-custom").addEventListener("click", function () {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-thumbs-up"></i>',
+                title: "Confirm Details?",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup",
+                    confirmButton: "swal-custom-btn",
+                    cancelButton: "swal-custom-btn"
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        iconHtml: '<i class="fas fa-circle-check"></i>',
+                        title: "Tourist Site Successfully Added!",
+                        timer: 3000,
+                        showConfirmButton: false,
+                        customClass: {
+                            title: "swal2-title-custom",
+                            icon: "swal2-icon-custom",
+                            popup: "swal-custom-popup"
+                        }
+                    });
+                }
+            });
+        });
+
+        document.querySelector(".edit-modal-footer .btn-custom").addEventListener("click", function () {
             Swal.fire({
                 iconHtml: '<i class="fas fa-thumbs-up"></i>',
                 title: "Confirm Changes?",
@@ -752,7 +724,7 @@
                 if (result.isConfirmed) {
                     Swal.fire({
                         iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: "Tour Successfully Edited!",
+                        title: "Tourist Site Successfully Edited!",
                         timer: 3000,
                         showConfirmButton: false,
                         customClass: {
@@ -761,67 +733,6 @@
                             popup: "swal-custom-popup"
                         }
                     });
-                }
-            });
-        });
-        
-        document.querySelector(".modal-footer .btn-custom:nth-child(2)").addEventListener("click", function () {
-            var modal = bootstrap.Modal.getInstance(document.getElementById('upcomingToursModal'));
-            modal.hide(); 
-        });
-
-        document.querySelector(".button-container .btn-custom:nth-child(2)").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-up"></i>',
-                title: "Confirm Cancel?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var cancelModal = new bootstrap.Modal(document.getElementById("cancelReasonModal"));
-                    cancelModal.show();
-                }
-            });
-        });
-
-        document.getElementById("submitCancelReason").addEventListener("click", function () {
-            let reason = document.getElementById("cancelReasonInput").value.trim();
-
-            if (reason === "") {
-                Swal.fire({
-                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-                    title: "Please enter a reason!",
-                    timer: 3000,
-                    showConfirmButton: false,
-                    customClass: {
-                        title: "swal2-title-custom",
-                        icon: "swal2-icon-custom",
-                        popup: "swal-custom-popup"
-                    }
-                });
-                return;
-            }
-
-            var cancelModal = bootstrap.Modal.getInstance(document.getElementById("cancelReasonModal"));
-            cancelModal.hide();
-
-            Swal.fire({
-                iconHtml: '<i class="fas fa-circle-check"></i>',
-                title: "Tour Successfully Cancelled!",
-                timer: 3000,
-                showConfirmButton: false,
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup"
                 }
             });
         });
