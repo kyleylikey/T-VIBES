@@ -5,12 +5,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     .active, .nav:hover {
         font-weight: bold;
     }
-    
-    .hamburger {
-        display: none;
-        cursor: pointer;
-        padding: 10px;
-    }
 
     .logoforsmall {
         display: none;
@@ -21,35 +15,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     }
     
     @media screen and (max-width: 768px) {
-        .hamburger {
-            display: block;
-            font-size: 40px;
-            border: none; 
-            padding: 10px; 
-            border-radius: 5px; 
-            cursor: pointer;
-        }
-        
-        nav {
-            display: none;
-            width: 100%;
-            position: absolute;
-            top: 72px;
-            left: 0;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            z-index: 1000;
-        }
-        
-        nav.show {
-            display: block;
-        }
-        
-        nav a {
-            display: block;
-            margin: 10px 0 !important;
-        }
         
         header > div {
             position: relative;
@@ -67,56 +32,54 @@ $current_page = basename($_SERVER['PHP_SELF']);
         }
     }
 </style>
-
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+</head>
 <header>
-    <div>
-        <button class="hamburger">
-            <i class="bi bi-list"></i>
-        </button>
-        <span class="logoforsmall">*Logo*</span>
-        <nav id="mainNav">
-            <span class="logo">*Logo*</span>
-            <a href="/T-VIBES/public/" style="margin-right: 16px;" class="nav <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">Explore</a>
-            <a href="#about" style="margin-right: 16px;" class="nav <?php echo $current_page == 'about.php' ? 'active' : ''; ?>">About Us</a>
-            <a href="#contact" class="nav <?php echo $current_page == 'contact.php' ? 'active' : ''; ?>">Contact</a>
-        </nav>
-        <div>
-            <a href="<?php 
-            if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
-                echo "/T-VIBES/src/views/frontend/login.php";
-            }
-            else {
-                echo "/T-VIBES/src/views/frontend/tours/tourrequest.php";
-            }
-            ?>" class="btn" style="margin-right: 12px;">
-                <i class="<?php echo $current_page == 'tourrequest.php' ? 'bi bi-map-fill' : 'bi bi-map'; ?>" onmouseover="this.className='bi bi-map-fill'" onmouseout="this.className='<?php echo $current_page == 'tourrequest.php' ? 'bi bi-map-fill' : 'bi bi-map'; ?>'"></i>
-            </a>
-            <a href="<?php 
-            if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
-                echo "/T-VIBES/src/views/frontend/login.php";
-            }
-            else {
-                echo "/T-VIBES/src/views/frontend/account.php";
-            }
-            ?>" class="btn">
-                <i class="<?php echo $current_page == 'account.php' ? 'bi bi-person-fill' : 'bi bi-person'; ?>" onmouseover="this.className='bi bi-person-fill'" onmouseout="this.className='<?php echo $current_page == 'account.php' ? 'bi bi-person-fill' : 'bi bi-person'; ?>'"></i>
-            </a>
-        </div>
-    </div>
-</header>
-
-<script>
-document.querySelector('.hamburger').addEventListener('click', function() {
-    document.querySelector('nav').classList.toggle('show');
-});
-
-/* Add click outside handler */
-document.addEventListener('click', function(event) {
-    const nav = document.getElementById('mainNav');
-    const menuToggle = document.querySelector('.hamburger');
-    
-    if (!nav.contains(event.target) && !menuToggle.contains(event.target) && nav.classList.contains('show')) {
-        nav.classList.remove('show');
-    }
-});
-</script>
+          <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container-fluid">
+			<img src="/T-VIBES//public/assets/images/headerlogo.jpg" alt="" class="img-fluid" width="250" height="82"> 
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse ml-2" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item active">
+                    <a class="nav-link mb-0" href="/T-VIBES/public/#explore" style="margin-right: 16px;">Explore</a>
+                  </li>
+                  <li class="nav-item active">
+                    <a class="nav-link mb-0" href="/T-VIBES/public/#about" style="margin-right: 16px;">About Us</a>
+                  </li>
+                  <li class="nav-item active">
+                    <a class="nav-link mb-0" href="/T-VIBES/public/#contact">Contact</a>
+                  </li>
+                </ul>
+				<ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
+				<div>
+                    <a class="mx-2" href="<?php 
+                    if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
+                        echo "/T-VIBES/src/views/frontend/login.php";
+                    }
+                    else {
+                        echo "/T-VIBES/src/views/frontend/tours/tourrequest.php";
+                    }
+                    ?>" class="btn" style="margin-right: 12px;">
+                        <i class="h2 <?php echo $current_page == 'tourrequest.php' ? 'h2 bi bi-map-fill' : 'h2 bi bi-map'; ?>" onmouseover="this.className='h2 bi bi-map-fill'" onmouseout="this.className='<?php echo $current_page == 'tourrequest.php' ? 'h2 bi bi-map-fill' : 'h2 bi bi-map'; ?>'"></i>
+                    </a>
+                    <a class="mx-2" href="<?php 
+                    if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
+                        echo "/T-VIBES/src/views/frontend/login.php";
+                    }
+                    else {
+                        echo "/T-VIBES/src/views/frontend/account.php";
+                    }
+                    ?>" class="btn">
+                        <i class="<?php echo $current_page == 'account.php' ? 'h2 bi bi-person-fill' : 'h2 bi bi-person'; ?>" onmouseover="this.className='h2 bi bi-person-fill'" onmouseout="this.className='<?php echo $current_page == 'account.php' ? 'h2 bi bi-person-fill' : 'h2 bi bi-person'; ?>'"></i>
+                    </a>
+				</ul>`
+              </div>
+            </div>
+          </nav>
+    </header>

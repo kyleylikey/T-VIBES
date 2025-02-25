@@ -17,47 +17,7 @@ session_start();
     
 </head>
 <body>
-<header>
-          <nav class="navbar navbar-expand-lg navbar-light bg-white">
-            <div class="container-fluid">
-			<img src="assets/images/headerlogo.jpg" alt="" class="img-fluid" width="250" height="82"> 
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">Explore</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">About Us</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
-                  </li>
-                </ul>
-				<ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
-				<li class="nav-item">
-						<a href="../src/views/frontend/signup.php" class="nav-link">Sign Up</a>
-					</li>
-					<li class="nav-item">
-					<a href="T-VIBES/src/views/frontend/login.php" 
-					class="btn btn-danger rounded-pill px-3 py-1" 
-					style="font-size: 1.3rem;">
-						Login
-					</a>
-				</li>
-				</ul>`
-
-              </div>
-            </div>
-          </nav>
-    </header>
-
-    </header>
+<?php include '../src/views/templates/header.php'; ?>
 
     <!-- Main Content -->
     <main>
@@ -72,19 +32,19 @@ session_start();
 
 		<!-- Features Section -->
         <section class="features">
-            <div class="container">
+            <div id="explore" class="container">
                 <div class="row">
                     <div class="col-lg-6">
                         <h2 class="text-start">Upidatat dolor veniam ipsum culpa in nulla adipisicing ad magna minim ipsum reprehenderit mollit sit.</h2>
-                        <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover">
+                        <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded">
                     </div>
                     <div class="col-lg-6">
                         <div class="row">
                             <div class="col-lg-6">
-                                <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid">
+                                <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid rounded">
                             </div>
                             <div class="col-lg-6">
-                                <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid">
+                                <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid rounded">
                             </div>
                         </div>
                         <div class="row mt-5">
@@ -102,58 +62,54 @@ session_start();
 
         <!-- About Section -->
 		<section class="bg-gray-100 py-12">
-    <div class="max-w-6xl mx-auto px-6 text-center">
-        <h2 class="text-4xl font-bold text-gray-800">About Us</h2>
-        <p class="mt-4 text-gray-600">
-            We are a passionate team dedicated to delivering quality and innovation.  
-            Our goal is to create meaningful experiences and build lasting connections.
-        </p>
+        <div id="about" class="max-w-6xl mx-auto px-6 text-center">
+		<a href="#" class="btn btn-dark rounded-pill mt-4 mb-4 px-4 py-2 btn-lg">About Us</a>
 
         <div class="mt-10 grid grid-cols-1 md:grid-cols-5 gap-8 bg-gray-200 p-6 rounded-lg">
-			<div class="row">
-            <!-- Column 1 -->
+			<div class="row bg-light">
+            <!-- Column 1 --> 
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-				<i class="bi bi-geo-alt"></i>
+                <div class="p-6 top-60 inline-block">
+				    <i class="bi bi-geo-alt rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 1</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the first column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Discover Stuning Attractions</h4>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip.</p>
             </div>
 
             <!-- Column 2 -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-				<i class="bi bi-bell"></i>
+                <div class="p-6 top-50 inline-block">
+				<i class="bi bi-bell rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 2</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the second column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Stay Updated on Exciting Events</h5>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip..</p>
             </div>
 
             <!-- Column 3 -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-                <i class="bi bi-calendar4"></i>
+                <div class="p-6 top-50 inline-block">
+                <i class="bi bi-calendar4 rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 3</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the third column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Plan Your Trip with Ease</h5>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip.</p>
             </div>
 
             <!-- Column 4 -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-                <i class="bi bi-display"></i>
+                <div class="p-6 top-50 inline-block">
+                <i class="bi bi-display rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 4</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the fourth column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Book Reservations Hassle-Free</h5>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip..</p>
             </div>
 
             <!-- Column 5 -->
             <div class="col text-center">
-                <div class="rounded-circle bg-white p-6 top-50 inline-block shadow">
-				<i class="bi bi-info-circle"></i>
+                <div class="p-6 top-50 inline-block">
+				<i class="bi bi-info-circle rounded-circle h1 bg-light p-2 m-2 shadow"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mt-4">Title 5</h3>
-                <p class="text-gray-600 mt-2">This is a short description for the fifth column.</p>
+                <h5 class="text-xl font-bold text-gray-800 mt-4">Get Support from Your LGU</h5>
+                <p class="text-gray-600 mt-3 p-3">Adipisicing quis enim non occaecat amet esse. Sunt id qui adipisicing velit eiusmod irure occaecat anim nisi laborum. Ipsum ullamco qui mollit non. Magna sit nisi dolor aute aliquip.</p>
             </div>
         </div>
 		</div>
@@ -194,7 +150,7 @@ session_start();
                 </div>
             </div>
         </div>
-        <a href="#" class="btn btn-dark mt-4 px-4 py-2">Explore Destinations</a>
+        <a href="#" class="btn btn-dark rounded-pill mt-4 px-4 py-2">Explore Destinations</a>
     </section>
 
 
@@ -272,7 +228,7 @@ session_start();
 
     <!-- Footer Section -->
     <footer class="bg-light py-4 mt-5">
-        <div class="container">
+        <div id="contact" class="container">
             <div class="row">
                 <!-- Google Map -->
                 <div class="col-md-4">

@@ -6,6 +6,11 @@ use PHPMailer\PHPMailer\Exception;
 require '..\..\vendor\autoload.php';
 require_once '../config/dbconnect.php';
 
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', '/T-VIBES/temp/error.log');
+error_reporting(E_ALL);
+
 function sendconfirmationEmail($username, $email, $verificationToken) {
     $verificationLink = "localhost/T-VIBES/src/controllers/verify.php?token=" . urlencode($verificationToken);
 
@@ -19,7 +24,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         
         $mail->Host       = 'smtp.gmail.com';
         $mail->Username   = 'kyleashleighbaldoza.tomcat@gmail.com';
-        $mail->Password   = 'otlg tqtz gpwv kqjn';
+        $mail->Password   = 'ikkt npxt cghd dhbj';
         
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
