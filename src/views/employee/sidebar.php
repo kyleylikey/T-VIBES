@@ -172,7 +172,7 @@
     <div class="sidebar">
         <div class="pt-4 pb-1 px-2 text-center">
             <a href="#" class="text-decoration-none">
-                <img src="public/assets/images/headerlogo.jpg" alt="Header Logo" class="img-fluid">
+                <img src="../../../public/assets/images/headerlogo.jpg" alt="Header Logo" class="img-fluid">
             </a>
         </div>
 
