@@ -159,9 +159,6 @@ if ($_SESSION['usertype'] !== 'emp') {
             background-color: #E7EBEE;
             border-radius: 10px;
             border: 2px dashed #939393;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             position: relative;
             cursor: pointer;
             padding: 15px;
@@ -612,8 +609,8 @@ if ($_SESSION['usertype'] !== 'emp') {
                 </span>
             </div>
 
-            <div class="row mt-3 d-flex justify-content-start">
-                <div class="col-lg-4 col-md-6 col-12 mb-3">
+            <div class="mt-3 row justify-content-evenly">
+                <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
                     <div class="add-site-box" onclick="showModal()" style="cursor: pointer;">
                         <div class="plus-sign">+</div>
                         <p class="add-text">Add Tourist Site</p>
@@ -622,7 +619,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <?php
                         if (!empty($sites)) {
                             foreach ($sites as $site) {
-                                echo '<div class="col-lg-4 col-md-6 col-12 mb-3">';
+                                echo '<div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">';
                                 echo '<div class="info-box" onclick="editModal()" style="cursor: pointer;">';
                                 echo '<img src="/T-VIBES/public/uploads/' . htmlspecialchars($site['siteimage']) . '" alt="' . htmlspecialchars($site['sitename']) . '" class="destination-image">';
                                 echo '<p>'.htmlspecialchars($site['sitename']).'</p>';
