@@ -532,6 +532,9 @@ if ($_SESSION['usertype'] !== 'emp') {
             .modal-dialog {
                 max-width: 100%;
             }
+            .w-50 {
+                width: 100% !important;
+            }
         }
     </style>
 </head>
@@ -620,7 +623,13 @@ if ($_SESSION['usertype'] !== 'emp') {
                         if (!empty($sites)) {
                             foreach ($sites as $site) {
                                 echo '<div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">';
-                                echo '<div class="info-box" onclick="editModal()" style="cursor: pointer;">';
+                                echo '<div class="info-box siteitem" style="cursor: pointer;"
+                                data-siteid="' . htmlspecialchars($site['siteid']) . '" 
+                                data-sitename="' . htmlspecialchars($site['sitename']) . '" 
+                                data-siteimage="' . htmlspecialchars($site['siteimage']) . '" 
+                                data-sitedesc="' . htmlspecialchars($site['description']) . '" 
+                                data-siteopdays="' . htmlspecialchars($site['opdays']) . '" 
+                                data-price="' . htmlspecialchars($site['price']) . '">';
                                 echo '<img src="/T-VIBES/public/uploads/' . htmlspecialchars($site['siteimage']) . '" alt="' . htmlspecialchars($site['sitename']) . '" class="destination-image">';
                                 echo '<p>'.htmlspecialchars($site['sitename']).'</p>';
                                 echo '</div>';
@@ -645,29 +654,45 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <div class="image-upload-container d-flex flex-column align-items-center">
                         <div class="image-preview">
                             <i class="bi bi-image" id="previewIcon"></i>
+                            <img id="previewImage" style="display: none;" />
                         </div>
-                        <input type="file" id="imageUpload" class="form-control w-100 mt-2">
+                        <form class="w-100" id="addSiteForm" method="POST" enctype="multipart/form-data">   
+                        <input type="hidden" name="action" id="action" value="addSite">
+                        <input type="file" name="imageUpload" id="imageUpload" class="form-control w-100 mt-2">
                     </div>
-
-                    <form class="w-50">
+                    <div class="w-50">
                         <div class="mb-3">
-                            <input type="text" class="form-control w-100" id="tourLocation" placeholder="Location">
+                            <input type="text" name="siteName" class="form-control w-100" id="siteName" placeholder="Name">
                         </div>
                         <div class="mb-3">
-                            <input type="text" class="form-control w-100" id="tourPrice" placeholder="Price">
+                            <input type="number" name="sitePrice" min="0" class="form-control w-100" id="sitePrice" placeholder="Price">
+                        </div>
+                        <div class="input-group mb-3 col">
+                            <input type="text" id="asiteOpDays" name="asiteOpDays" hidden>
+                            <input type="checkbox" class="btn-check" id="asun" autocomplete="off" name="adays[]" value="0">
+                            <label class="btn btn-outline-primary" for="asun">Sun</label><br>
+                            <input type="checkbox" class="btn-check" id="amon" autocomplete="off" name="adays[]" value="1">
+                            <label class="btn btn-outline-primary" for="amon">Mon</label><br>
+                            <input type="checkbox" class="btn-check" id="atue" autocomplete="off" name="adays[]" value="2">
+                            <label class="btn btn-outline-primary" for="atue">Tue</label><br>
+                            <input type="checkbox" class="btn-check" id="awed" autocomplete="off" name="adays[]" value="3">
+                            <label class="btn btn-outline-primary" for="awed">Wed</label><br>
+                            <input type="checkbox" class="btn-check" id="athu" autocomplete="off" name="adays[]" value="4">
+                            <label class="btn btn-outline-primary" for="athu">Thu</label><br>
+                            <input type="checkbox" class="btn-check" id="afri" autocomplete="off" name="adays[]" value="5">
+                            <label class="btn btn-outline-primary" for="afri">Fri</label><br>
+                            <input type="checkbox" class="btn-check" id="asat" autocomplete="off" name="adays[]" value="6">
+                            <label class="btn btn-outline-primary" for="asat">Sat</label><br>
                         </div>
                         <div class="mb-3">
-                            <input type="text" class="form-control w-100" id="tourSchedule" placeholder="Schedule">
+                            <textarea name="siteDescription" id="siteDescription" class="form-control w-100" rows="5" placeholder="Description"></textarea>
                         </div>
-                        <div class="mb-3">
-                            <textarea id="descriptionInput" class="form-control w-100" rows="5" placeholder="Description"></textarea>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-
                 <div class="modal-footer">
-                    <button class="btn-custom">Submit</button>
+                    <button class="btn-custom" onclick="aupdateBitmask()">Submit</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -681,30 +706,85 @@ if ($_SESSION['usertype'] !== 'emp') {
                 </div>
                 <div class="modal-body d-flex gap-4">
                     <div class="image-upload-container d-flex flex-column align-items-center">
-                        <div class="image-preview">
-                            <i class="bi bi-image" id="previewIcon"></i>
-                        </div>
-                        <input type="file" id="imageUpload" class="form-control w-100 mt-2">
+                    <form class="w-100" id="editSiteForm" method="POST" enctype="multipart/form-data">
+                    <div class="image-preview" id="editimagePreview">
+                        <i class="bi bi-image" id="editpreviewIcon"></i>
+                        <img id="editpreviewImage" style="display: none; max-width: 100%; height: auto;" />
+                    </div>
+                        <input type="hidden" name="action" id="action" value="editSite">
+                        <input type="hidden" name="siteid" id="siteid">
+                        <input type="file" id="editimageUpload" name="editimageUpload" class="form-control w-100 mt-2">
                     </div>
 
-                    <form class="w-50">
+                    <div class="w-50">
                         <div class="mb-3">
-                            <input type="text" class="form-control w-100" id="tourLocation" placeholder="Location">
+                            <input type="text" class="form-control w-100" id="siteName" name="siteName" placeholder="Name">
                         </div>
                         <div class="mb-3">
-                            <input type="text" class="form-control w-100" id="tourPrice" placeholder="Price">
+                            <input type="number" class="form-control w-100" id="sitePrice" name="sitePrice" placeholder="Price" min="0">
+                        </div>
+                        <div class="input-group mb-3 col">
+                            <input type="text" id="siteOpDays" name="siteOpDays" hidden>
+                            <input type="checkbox" class="btn-check" id="sun" autocomplete="off" name="days[]" value="0">
+                            <label class="btn btn-outline-primary" for="sun">Sun</label><br>
+                            <input type="checkbox" class="btn-check" id="mon" autocomplete="off" name="days[]" value="1">
+                            <label class="btn btn-outline-primary" for="mon">Mon</label><br>
+                            <input type="checkbox" class="btn-check" id="tue" autocomplete="off" name="days[]" value="2">
+                            <label class="btn btn-outline-primary" for="tue">Tue</label><br>
+                            <input type="checkbox" class="btn-check" id="wed" autocomplete="off" name="days[]" value="3">
+                            <label class="btn btn-outline-primary" for="wed">Wed</label><br>
+                            <input type="checkbox" class="btn-check" id="thu" autocomplete="off" name="days[]" value="4">
+                            <label class="btn btn-outline-primary" for="thu">Thu</label><br>
+                            <input type="checkbox" class="btn-check" id="fri" autocomplete="off" name="days[]" value="5">
+                            <label class="btn btn-outline-primary" for="fri">Fri</label><br>
+                            <input type="checkbox" class="btn-check" id="sat" autocomplete="off" name="days[]" value="6">
+                            <label class="btn btn-outline-primary" for="sat">Sat</label><br>
                         </div>
                         <div class="mb-3">
-                            <input type="text" class="form-control w-100" id="tourSchedule" placeholder="Schedule">
+                            <textarea id="siteDescription" name="siteDescription" class="form-control w-100" rows="5" placeholder="Description"></textarea>
                         </div>
-                        <div class="mb-3">
-                            <textarea id="descriptionInput" class="form-control w-100" rows="5" placeholder="Description"></textarea>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-
                 <div class="edit-modal-footer">
-                    <button class="btn-custom">Submit</button>
+                    <button class="btn-custom editsitebtn" onclick="updateBitmask()">Submit</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="showDetailsModal" tabindex="-1" aria-labelledby="showDetailsModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title w-100">Edit Tourist Site</h5>
+                    <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex gap-4">
+                    <div class="image-upload-container d-flex flex-column align-items-center">
+                        <div class="image-preview">
+                            <img id="displayImage"></img>
+                        </div>
+                        <input type="text" id="displayFileName" class="form-control w-100 mt-2" readonly>
+                    </div>
+
+                    <div class="w-50">
+                        <div class="mb-3">
+                            <input type="text" class="form-control w-100" id="displaySiteName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control w-100" id="displaySitePrice" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control w-100" id="displaySiteSchedule" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <textarea id="displaySiteDescription" class="form-control w-100" rows="5" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-modal-footer">
+                    <button class="btn-custom" id="showeditmodal">Edit</button>
                 </div>
             </div>
         </div>
@@ -712,82 +792,8 @@ if ($_SESSION['usertype'] !== 'emp') {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+<script src="../../../public/assets/scripts/emptouristsites.js"></script>
 
-<script>
-    function showModal() {
-        var modal = new bootstrap.Modal(document.getElementById('touristSitesModal'));
-        modal.show();
-    }
-
-    function editModal() {
-        var modal = new bootstrap.Modal(document.getElementById('editTouristSitesModal'));
-        modal.show();
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelector(".modal-footer .btn-custom").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-up"></i>',
-                title: "Confirm Details?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: "Tourist Site Successfully Added!",
-                        timer: 3000,
-                        showConfirmButton: false,
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        }
-                    });
-                }
-            });
-        });
-
-        document.querySelector(".edit-modal-footer .btn-custom").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-up"></i>',
-                title: "Confirm Changes?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: "Tourist Site Successfully Edited!",
-                        timer: 3000,
-                        showConfirmButton: false,
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        }
-                    });
-                }
-            });
-        });
-    });
-</script>
 
 </body>
 </html>
