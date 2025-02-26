@@ -100,7 +100,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                 <?php
                     if (!empty($sites)) {
                         foreach ($sites as $site) {
-                            echo '<div class="griditem siteitem">';
+                            echo '<div class="griditem siteitem' . htmlspecialchars($site['siteid']) . '">';       
                             echo '<img src="/T-VIBES/public/uploads/' . htmlspecialchars($site['siteimage']) . '" alt="' . htmlspecialchars($site['sitename']) . '" class="siteimage">';
                             echo '<h2>' . htmlspecialchars($site['sitename']) . '</h2>';
                             echo '</div>';
