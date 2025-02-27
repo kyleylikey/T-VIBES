@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../../controllers/helpers.php';
+require_once '../../config/dbconnect.php';
 
 if (!isset($_SESSION['userid'])) {
     header('Location: ../frontend/login.php'); 
@@ -53,6 +54,22 @@ if ($_SESSION['usertype'] !== 'emp') {
     </html>";
     exit();
 }
+
+$conn = (new Database())->getConnection();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_id'], $_POST['status'])) {
+    $review_id = $_POST['review_id'];
+    $status = $_POST['status'];
+    $stmt = $conn->prepare("UPDATE rev SET status = ? WHERE revid = ?");
+    $stmt->execute([$status, $review_id]);
+    exit;
+}
+
+$statusFilter = $_GET['status'] ?? 'submitted';
+$stmt = $conn->prepare("SELECT rev.revid, rev.review, rev.date, rev.status, users.username, sites.sitename FROM rev JOIN users ON rev.userid = users.userid JOIN sites ON rev.siteid = sites.siteid WHERE rev.status = ?");
+$stmt->execute([$statusFilter]);
+$reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -296,6 +313,17 @@ if ($_SESSION['usertype'] !== 'emp') {
             color: white !important;
         }
 
+        .no-reviews {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #434343;
+            padding: 10px;
+            border-radius: 8px;
+            width: fit-content;
+            margin: 20px auto;
+        }
+
         @media (max-width: 1280px) {
             .btn-custom {
                 padding: 8px 16px;
@@ -461,7 +489,7 @@ if ($_SESSION['usertype'] !== 'emp') {
     <div class="sidebar">
         <div class="pt-4 pb-1 px-2 text-center">
             <a href="#" class="text-decoration-none">
-                <img src="../../../public/assets/images/headerlogo.jpg" alt="Header Logo" class="img-fluid">
+                <img src="public/assets/images/headerlogo.jpg" alt="Header Logo" class="img-fluid">
             </a>
         </div>
 
@@ -517,7 +545,7 @@ if ($_SESSION['usertype'] !== 'emp') {
         </ul>
     </div>
 
-    <div class="main-content">
+    <div class="main-content"> 
         <div class="content-container">
             <div class="header">
                 <h2>Reviews</h2>
@@ -532,75 +560,33 @@ if ($_SESSION['usertype'] !== 'emp') {
             </div>
 
             <div class="btn-group" role="group">
-                <button type="button" class="btn-custom active">Pending</button>
-                <button type="button" class="btn-custom">Approved</button>
-                <button type="button" class="btn-custom">Archived</button>
+                <button type="button" class="btn-custom <?= $statusFilter == 'submitted' ? 'active' : '' ?>" onclick="filterReviews('submitted')">Pending</button>
+                <button type="button" class="btn-custom <?= $statusFilter == 'displayed' ? 'active' : '' ?>" onclick="filterReviews('displayed')">Approved</button>
+                <button type="button" class="btn-custom <?= $statusFilter == 'archived' ? 'active' : '' ?>" onclick="filterReviews('archived')">Archived</button>
             </div>
 
             <div class="row mt-3 d-flex justify-content-start">
-                <div class="col-lg-4 col-md-6 col-12 mb-3">
-                    <div class="info-box" onclick="showModal()" style="cursor: pointer;">
-                        <span>Site</span>
-                        <br><br>
-                        <span>Author</span>
-                        <br>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <br>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12 mb-3">
-                    <div class="info-box" onclick="showModal()" style="cursor: pointer;">
-                        <span>Site</span>
-                        <br><br>
-                        <span>Author</span>
-                        <br>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <br>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12 mb-3">
-                    <div class="info-box" onclick="showModal()" style="cursor: pointer;">
-                        <span>Site</span>
-                        <br><br>
-                        <span>Author</span>
-                        <br>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <br>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12 mb-3">
-                    <div class="info-box" onclick="showModal()" style="cursor: pointer;">
-                        <span>Site</span>
-                        <br><br>
-                        <span>Author</span>
-                        <br>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <i class="bi bi-star-fill star-icon"></i>
-                        <br>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
-                    </div>
-                </div>
+                <?php if (empty($reviews)): ?>
+                    <div class="no-reviews">No reviews available.</div>
+                <?php else: ?>
+                    <?php foreach ($reviews as $review): ?>
+                        <div class="col-lg-4 col-md-6 col-12 mb-3">
+                            <div class="info-box" onclick='showModal(<?php echo json_encode($review); ?>)' style="cursor: pointer;">
+                                <span><?php echo htmlspecialchars($review['sitename']); ?></span>
+                                <br><br>
+                                <span><?php echo htmlspecialchars($review['username']); ?></span>
+                                <br>
+                                <i class="bi bi-star-fill star-icon"></i>
+                                <i class="bi bi-star-fill star-icon"></i>
+                                <i class="bi bi-star-fill star-icon"></i>
+                                <i class="bi bi-star-fill star-icon"></i>
+                                <i class="bi bi-star-fill star-icon"></i>
+                                <br>
+                                <p><?php echo htmlspecialchars($review['review']); ?></p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -617,19 +603,19 @@ if ($_SESSION['usertype'] !== 'emp') {
                 </div>
 
                 <div class="modal-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum dui vestibulum metus porta, in ultricies nibh tincidunt. Pellentesque in diam luctus, tempus nibh sed, efficitur mi. Nullam rutrum lacus nisi, ac fringilla nulla laoreet in.</p>
+                    <p></p>
                     <div class="user-info">
                         <i class="bi bi-person-circle user-icon"></i>
                         <div class="user-text">
                             <h5>User</h5>
-                            <p>3 weeks ago</p>
+                            <p></p>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <button class="btn-custom">Display</button>
-                    <button class="btn-custom">Archive</button>
+                <div class="modal-footer" id="modalFooter">
+                    <button class="btn-custom" id="displayBtn" onclick="updateReviewStatus('displayed')">Display</button>
+                    <button class="btn-custom" id="archiveBtn" onclick="updateReviewStatus('archived')">Archive</button>
                 </div>
             </div>
         </div>
@@ -638,31 +624,58 @@ if ($_SESSION['usertype'] !== 'emp') {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 
 <script>
-    function showModal() {
+    function filterReviews(status) {
+        window.location.href = '?status=' + status;
+    }
+
+    let currentReviewId;
+
+    function showModal(review) {
+        currentReviewId = review.revid;
+        document.querySelector(".modal-title").innerText = review.sitename;
+        document.querySelector(".modal-body p").innerText = review.review;
+        document.querySelector(".user-text h5").innerText = review.username;
+        document.querySelector(".user-text p").innerText = review.date;
+
+        const displayBtn = document.getElementById("displayBtn");
+        const archiveBtn = document.getElementById("archiveBtn");
+
+        if (review.status === "submitted") {
+            displayBtn.style.display = "inline-block";
+            archiveBtn.style.display = "inline-block";
+        } else {
+            displayBtn.style.display = "none";
+            archiveBtn.style.display = "none";
+        }
+
         var modal = new bootstrap.Modal(document.getElementById('reviewsModal'));
         modal.show();
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelector(".modal-footer .btn-custom:nth-child(1)").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-up"></i>',
-                title: "Display User Review?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
+    function updateReviewStatus(status) {
+        Swal.fire({
+            iconHtml: status === 'displayed' ? '<i class="fas fa-thumbs-up"></i>' : '<i class="fas fa-thumbs-down"></i>',
+            title: status === 'displayed' ? "Display User Review?" : "Archive User Review?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup",
+                confirmButton: "swal-custom-btn",
+                cancelButton: "swal-custom-btn"
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("reviews.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "review_id=" + currentReviewId + "&status=" + status
+                }).then(() => {
                     Swal.fire({
                         iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: "Successfully Displayed User Review!",
+                        title: status === 'displayed' ? "Successfully Displayed User Review!" : "Successfully Archived User Review!",
                         timer: 3000,
                         showConfirmButton: false,
                         customClass: {
@@ -670,42 +683,13 @@ if ($_SESSION['usertype'] !== 'emp') {
                             icon: "swal2-icon-custom",
                             popup: "swal-custom-popup"
                         }
+                    }).then(() => {
+                        window.location.reload();
                     });
-                }
-            });
+                });
+            }
         });
-
-        document.querySelector(".modal-footer .btn-custom:nth-child(2)").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-down"></i>',
-                title: "Archive User Review?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: "Successfully Archived User Review!",
-                        timer: 3000,
-                        showConfirmButton: false,
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        }
-                    });
-                }
-            });
-        });
-    });
+    }
 </script>
 </body>
 </html>
