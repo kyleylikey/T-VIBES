@@ -65,6 +65,7 @@ if ($_SESSION['usertype'] !== 'emp') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../../public/assets/scripts/main.js"></script>
     <style>
         * {
             font-family: 'Nunito', sans-serif;
@@ -591,9 +592,10 @@ if ($_SESSION['usertype'] !== 'emp') {
             </li>
             <li class="nav-item">
                 <a href="" class="nav-link text-dark">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="d-none d-sm-inline">Sign Out</span>
-                </a>
+                    <a href="javascript:void(0);" class="nav-link text-dark" onclick="logoutConfirm()">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span class="d-none d-sm-inline">Sign Out</span>
+                    </a>
             </li>
         </ul>
     </div>
