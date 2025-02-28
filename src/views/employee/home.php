@@ -64,7 +64,6 @@ if ($_SESSION['usertype'] !== 'emp') {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="../../../public/assets/scripts/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
@@ -248,6 +247,45 @@ if ($_SESSION['usertype'] !== 'emp') {
         .star-icon {
             font-size: 14px !important; 
             color: #434343 !important;
+        }
+
+        .swal2-icon {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .swal2-icon-custom {
+            font-size: 10px; 
+            color: #102E47; 
+        }
+
+        .swal2-title-custom {
+            font-size: 24px !important;
+            font-weight: bold;
+            color: #434343 !important;
+        }
+
+        .swal-custom-popup {
+            padding: 20px;
+            border-radius: 25px;
+        }
+
+        .swal-custom-btn {
+            padding: 10px 20px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border: 2px solid #102E47 !important;
+            border-radius: 25px !important;
+            background-color: white !important;
+            color: #102E47 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .swal-custom-btn:hover {
+            background-color: #102E47 !important;
+            color: white !important;
         }
 
         @media (max-width: 912px) {
@@ -656,5 +694,7 @@ if ($_SESSION['usertype'] !== 'emp') {
         </div>
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+<script src="../../../public/assets/scripts/main.js"></script>
 </body>
 </html>
