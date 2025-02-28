@@ -176,7 +176,7 @@ if ($_SESSION['usertype'] !== 'emp') {
         }
 
         .add-text {
-            font-size: 18px;
+            font-size: 16px;
             color: #939393;
             position: absolute;
             bottom: 10px;
@@ -218,7 +218,7 @@ if ($_SESSION['usertype'] !== 'emp') {
         }
 
         .info-box p {
-            font-size: 18px;
+            font-size: 16px;
             color: #434343;
             position: absolute;
             bottom: 10px;
@@ -234,7 +234,7 @@ if ($_SESSION['usertype'] !== 'emp') {
 
         .destination-image {
             width: 100%;
-            height: 82%;
+            height: 85%;
             object-fit: cover;
             border-radius: 10px 10px 0 0; 
             position: absolute;
