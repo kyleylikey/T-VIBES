@@ -395,11 +395,19 @@ if ($_SESSION['usertype'] !== 'emp') {
             }
 
             .destination-image {
-                height: 75%;
+                height: 82%;
             }
 
             .modal-dialog {
                 max-width: 60%;
+            }
+
+            .add-text {
+                font-size: 14px;
+            }
+
+            .info-box p {
+                font-size: 14px;
             }
         }
 
