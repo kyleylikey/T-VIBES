@@ -537,11 +537,10 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </a>
             </li>
             <li class="nav-item">
-                <a href="" class="nav-link text-dark">
-                    <a href="javascript:void(0);" class="nav-link text-dark" onclick="logoutConfirm()">
-                        <i class="bi bi-box-arrow-right"></i>
-                        <span class="d-none d-sm-inline">Sign Out</span>
-                    </a>
+                <a href="javascript:void(0);" class="nav-link text-dark" onclick="logoutConfirm()">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="d-none d-sm-inline">Sign Out</span>
+                </a>
             </li>
         </ul>
     </div>
