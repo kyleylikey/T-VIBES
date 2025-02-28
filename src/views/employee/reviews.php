@@ -560,27 +560,20 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="btn-group" role="group">
                 <button type="button" class="btn-custom <?= $statusFilter == 'submitted' ? 'active' : '' ?>" onclick="filterReviews('submitted')">Pending</button>
-                <button type="button" class="btn-custom <?= $statusFilter == 'displayed' ? 'active' : '' ?>" onclick="filterReviews('displayed')">Approved</button>
+                <button type="button" class="btn-custom <?= $statusFilter == 'displayed' ? 'active' : '' ?>" onclick="filterReviews('displayed')">Displayed</button>
                 <button type="button" class="btn-custom <?= $statusFilter == 'archived' ? 'active' : '' ?>" onclick="filterReviews('archived')">Archived</button>
             </div>
 
-            <div class="row mt-3 d-flex justify-content-start">
+            <div class="mt-3 row justify-content-start">
                 <?php if (empty($reviews)): ?>
                     <div class="no-reviews">No reviews available.</div>
                 <?php else: ?>
                     <?php foreach ($reviews as $review): ?>
-                        <div class="col-lg-4 col-md-6 col-12 mb-3">
+                        <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
                             <div class="info-box" onclick='showModal(<?php echo json_encode($review); ?>)' style="cursor: pointer;">
                                 <span><?php echo htmlspecialchars($review['sitename']); ?></span>
                                 <br><br>
                                 <span><?php echo htmlspecialchars($review['username']); ?></span>
-                                <br>
-                                <i class="bi bi-star-fill star-icon"></i>
-                                <i class="bi bi-star-fill star-icon"></i>
-                                <i class="bi bi-star-fill star-icon"></i>
-                                <i class="bi bi-star-fill star-icon"></i>
-                                <i class="bi bi-star-fill star-icon"></i>
-                                <br>
                                 <p><?php echo htmlspecialchars($review['review']); ?></p>
                             </div>
                         </div>
