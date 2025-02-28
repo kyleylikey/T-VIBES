@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../../controllers/helpers.php';
+require_once '../../controllers/monthlyperformancecontroller.php';
 
 if (!isset($_SESSION['userid'])) {
     header('Location: ../frontend/login.php'); 
@@ -60,6 +61,7 @@ header("Pragma: no-cache");
 header("Expires: 0");
 ?>
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -103,81 +105,89 @@ header("Expires: 0");
                 ?></h1></span>
             </div>
             <div class="statistics">
+                <!-- Tours This Month -->
                 <div class="toursthismonth" onclick="location.href='statistics/tourperformance.php';" style="cursor: pointer;">
-                    <h2>Tours this Month &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                    <h2>Tours this Month</h2>
                     <span class="bi bi-map-fill"></span>
-                    <h1>32</h1>
+                    <h1><?php echo $toursThisMonth; ?></h1>
                 </div>
+                <!-- Tour Statistics -->
                 <div class="tourstatistics" onclick="location.href='statistics/tourperformance.php';" style="cursor: pointer;">
+                    <!-- Approved Tours -->
                     <div class="approved">
-                        <h2>Approved Tours<span class="bi bi-arrow-up-circle-fill"> 37.5%</span></h2>
-                        <h1>22</h1>
-                        <p>vs. last month<span>16</span></p>
+                        <h2>Approved Tours <span class="bi bi-arrow-up-circle-fill"><?php echo $approvedDiff; ?>%</span></h2>
+                        <h1><?php echo $approvedToursCurrent; ?></h1>
+                        <p>vs. last month <span><?php echo $approvedToursLast; ?></span></p>
                     </div>
+                    <!-- Cancelled Tours -->
                     <div class="cancelled">
-                        <h2>Cancelled Tours<span class="bi bi-arrow-down-circle-fill"> 57.14</span></h2>
-                        <h1>7</h1>
-                        <p>vs. last month<span>15</span></p>
+                        <h2>Cancelled Tours <span class="bi bi-arrow-down-circle-fill"><?php echo $cancelledDiff; ?>%</span></h2>
+                        <h1><?php echo $cancelledToursCurrent; ?></h1>
+                        <p>vs. last month <span><?php echo $cancelledToursLast; ?></span></p>
                     </div>
+                    <!-- Completed Tours -->
                     <div class="completed">
-                        <h2>Completed Tours<span> = 0%</span></h2>
-                        <h1>20</h1>
-                        <p>vs. last month<span>20</span></p>
+                        <h2>Completed Tours <span>= <?php echo $completedDiff; ?>%</span></h2>
+                        <h1><?php echo $completedToursCurrent; ?></h1>
+                        <p>vs. last month <span><?php echo $completedToursLast; ?></span></p>
                     </div>
                 </div>
                 <div class="container">
-                        <div id="busiestdays" onclick="location.href='statistics/busiestmonths.php';" style="cursor: pointer;">
-                            <h2>Busiest Days</h2>
-                            <div class="busydays">
-                                <div class="busydaycontainer">
-                                    <h3>Jan</h3>
-                                    <h1>12</h1>
-                                    <p>7 tours</p>
-                                </div>
-                                <div class="busydaycontainer">
-                                    <h3>Jan</h3>
-                                    <h1>18</h1>
-                                    <p>5 tours</p>
-                                </div>
-                                <div class="busydaycontainer">
-                                    <h3>Jan</h3>
-                                    <h1>19</h1>
-                                    <p>3 tours</p>
-                                </div>
-                            </div>
+                    <!-- Busiest Days -->
+                    <div id="busiestdays" onclick="location.href='statistics/busiestmonths.php';" style="cursor: pointer;">
+                        <h2>Busiest Days</h2>
+                        <div class="busydays">
+                            <?php if(!empty($busiestDays)): ?>
+                                <?php foreach($busiestDays as $day): ?>
+                                    <div class="busydaycontainer">
+                                        <h3>Day <?php echo $day['day']; ?></h3>
+                                        <h1><?php echo $day['count']; ?></h1>
+                                        <p><?php echo $day['count']; ?> tours</p>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p>No data available for busiest days.</p>
+                            <?php endif; ?>
                         </div>
-                        <div id="topsites" onclick="location.href='statistics/toptouristsite.php';" style="cursor: pointer;">
-                            <h2>Top Tourist Sites</h2>
-                            <div class="topthree">
-                                <div class="topsitecontainer">
-                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span><!-- Replace with image -->
-                                    <p>Name</p>
-                                    <p style="display: flex; align-items: flex-end;"><i class="bi-star-fill"></i>&nbsp5.0</p>
-                                </div>
-                                <div class="topsitecontainer">
-                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
-                                    <p>Destination Name</p>
-                                    <p><i class="bi-star-fill"></i>&nbsp5.0</p>
-                                </div>
-                                <div class="topsitecontainer">
-                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
-                                    <p>Destination Name</p>
-                                    <p><i class="bi-star-fill"></i>&nbsp5.0</p>
-                                </div>
-                            </div>
+                    </div>
+                    <!-- Top Tourist Sites -->
+                    <div id="topsites" onclick="location.href='statistics/toptouristsite.php';" style="cursor: pointer;">
+                        <h2>Top Tourist Sites</h2>
+                        <div class="topthree">
+                            <?php if(!empty($topSites)): ?>
+                                <?php foreach($topSites as $site): ?>
+                                    <div class="topsitecontainer">
+                                        <span style="display: flex; justify-content: center;">
+                                            <?php if(!empty($site['siteimage'])): ?>
+                                                <img src="<?php echo $site['siteimage']; ?>" alt="<?php echo $site['sitename']; ?>" style="max-width:80px; max-height:80px;">
+                                            <?php else: ?>
+                                                <i class="bi bi-image-fill" style="font-size: 80px;"></i>
+                                            <?php endif; ?>
+                                        </span>
+                                        <p><?php echo $site['sitename']; ?></p>
+                                        <p style="display: flex; align-items: flex-end;">
+                                            <?php echo generateStarRating($site['ratings']); ?>&nbsp;<?php echo $site['ratings']; ?>
+                                        </p>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p>No top sites available.</p>
+                            <?php endif; ?>
                         </div>
+                    </div>
                 </div>
+                <!-- Visitor Chart and PDF Report -->
                 <div class="tablecontainer">
                     <div class="visitorchart" onclick="location.href='statistics/visitor.php';" style="cursor: pointer;">
                         <h2>Visitor Chart</h2>
                         <canvas id="visitorchartpreview"></canvas>
                     </div>
-                <button class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbspDownload PDF Report</button>
+                    <button class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbsp;Download PDF Report</button>
                 </div>
             </div>
         </div>
     </div>
-    <script src="../../../public/assets/scripts/dashboard.js"></script>
     <script src="../../../public/assets/scripts/monthlyperformance.js"></script>
-</body>
+    <script src="../../../public/assets/scripts/dashboard.js"></script>
+</body> 
 </html>

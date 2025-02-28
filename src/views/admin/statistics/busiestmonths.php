@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once(__DIR__ . '/../../../controllers/busiestMonthstatistics.php');
 
 if (!isset($_SESSION['userid'])) {
     header('Location: ../../frontend/login.php'); 
@@ -62,7 +63,7 @@ header("Expires: 0");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - Busiest Months</title>
     <link rel="stylesheet" href="../../../../public/assets/styles/main.css">
     <link rel="stylesheet" href="../../../../public/assets/styles/dashboard.css">
     <link rel="stylesheet" href="../../../../public/assets/styles/monthlyperformance.css">
@@ -96,62 +97,83 @@ header("Expires: 0");
     <div class="dashboardcontainer">
         <div class="content">
             <div class="header">
-                <h1><a href="../monthlyperformance.php" style="text-decoration: none; color: inherit;"><i class="bi bi-arrow-left-circle-fill" style="cursor: pointer;"></i>&nbspBusiest Months Statistics</a></h1>
-                <span class="date"><h1><?php 
-                    date_default_timezone_set('Asia/Manila');
-                    echo date('M d, Y | h:i A'); 
-                ?></h1></span>
+                <h1>
+                    <a href="../monthlyperformance.php" style="text-decoration: none; color: inherit;">
+                        <i class="bi bi-arrow-left-circle-fill" style="cursor: pointer;"></i>&nbsp;Busiest Months Statistics
+                    </a>
+                </h1>
+                <span class="date">
+                    <h1><?php 
+                        date_default_timezone_set('Asia/Manila');
+                        echo date('M d, Y | h:i A'); 
+                    ?></h1>
+                </span>
             </div>
             <div class="statistics">
                 <div>
                     <div class="chartcontainer">
+                        <!-- Chart canvas -->
                         <canvas id="busiestmonths"></canvas>
-                        <script>
-                            let busiestmonths = document.getElementById('busiestmonths').getContext('2d');
-
-                            let busiestmonthsstats = new Chart(busiestmonths, {
-                                type: 'bar',
-                                data: {
-                                    labels: ['01/25', '02/5', '03/25', '04/25', '05/25', '06/25', '07/25', '08/25', '09/25', '10/25', '11/25', '12/25'],
-                                    datasets: [{
-                                        label: 'Visitors',
-                                        data:[100, 200, 300, 600, 300, 600, 700, 800, 900, 1000, 1100, 1200]
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                }
-                            });
-                        </script>
                     </div>
                 </div>
             </div>
             <div class="summary">
                 <div>
                     <h4>Busiest Months:</h4>
-                    <p>12/25</p>
-                    <p>07/25</p>
-                    <p>04/25</p>
+                    <?php
+                        // Example: You could list out the months with the highest counts
+                        // Here we simply loop through the labels and data for demonstration
+                        if (isset($busiestMonthsLabels) && isset($busiestMonthsData)) {
+                            foreach ($busiestMonthsLabels as $index => $label) {
+                                echo "<p>{$label}: " . $busiestMonthsData[$index] . "</p>";
+                            }
+                        }
+                    ?>
                 </div>
                 <div>
                     <h4>Least Busy Months:</h4>
-                    <p>12/25</p>
-                    <p>07/25</p>
-                    <p>04/25</p>
+                    <!-- Add your code here if needed -->
                 </div>
                 <div>
                     <h4>Total Completed Tours This Year:</h4>
-                    <h4>449</h4>
+                    <!-- You can pass this value from your controller -->
+                    <h4><?php echo isset($totalCompletedYear) ? $totalCompletedYear : 'N/A'; ?></h4>
                 </div>
                 <div>
-                    <button id="downloadPdf" class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbspDownload PDF Report</button>
+                    <button id="downloadPdf" class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbsp;Download PDF Report</button>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        // Use the dynamic data provided by the controller for the chart.
+        // Ensure that the variables $busiestMonthsLabels and $busiestMonthsData are defined.
+        let busiestmonthsCtx = document.getElementById('busiestmonths').getContext('2d');
+        let busiestmonthsstats = new Chart(busiestmonthsCtx, {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode($busiestMonthsLabels); ?>,
+                datasets: [{
+                    label: 'Accepted Tours',
+                    data: <?php echo json_encode($busiestMonthsData); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        });
+    </script>
     <script src="../../../../public/assets/scripts/dashboard.js"></script>
     <script src="../../../../public/assets/scripts/downloadreport.js"></script>
-    
 </body>
 </html>
