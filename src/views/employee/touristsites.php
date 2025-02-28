@@ -614,7 +614,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                 </span>
             </div>
 
-            <div class="mt-3 row justify-content-evenly">
+            <div class="mt-3 row justify-content-start">
                 <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
                     <div class="add-site-box" onclick="showModal()" style="cursor: pointer;">
                         <div class="plus-sign">+</div>
