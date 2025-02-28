@@ -1,5 +1,7 @@
 <?php
 include '../../../includes/auth.php';
+require_once '../../config/dbconnect.php';
+require_once '../../controllers/employee/tourrequestscontroller.php';
 ?>
 
 <!DOCTYPE html>
@@ -106,62 +108,24 @@ include '../../../includes/auth.php';
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr onclick="showModal()" style="cursor: pointer;">
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr onclick="showModal()" style="cursor: pointer;">
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr onclick="showModal()" style="cursor: pointer;">
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr onclick="showModal()" style="cursor: pointer;">
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr onclick="showModal()" style="cursor: pointer;">
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr onclick="showModal()" style="cursor: pointer;">
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr onclick="showModal()" style="cursor: pointer;">
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr onclick="showModal()" style="cursor: pointer;">
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
+                                    <?php if(!empty($requests)) {
+                                        foreach ($requests as $request) {
+                                            echo "<tr onclick='showModal(this)' style='cursor: pointer;' 
+                                            data-tourid='" .htmlspecialchars($request['tourid'])."' 
+                                            data-userid='" .htmlspecialchars($request['userid'])."' 
+                                            >";
+                                            echo "<td>".$request['name']."</td>";
+                                            echo "<td>".$request['created_at']."</td>";
+                                            echo "<td>".$request['total_sites']."</td>";
+                                            echo "<td>".$request['date']."</td>";
+                                            echo "<td>".$request['companions']."</td>";
+                                            echo "</tr>";
+                                        }
+                                    } 
+                                    else {
+                                        echo "<p>No requests found.</p>";
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -171,37 +135,23 @@ include '../../../includes/auth.php';
 
         </div>
     </div>
-
     <div class="modal fade" id="tourRequestModal" tabindex="-1" aria-labelledby="tourRequestModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content p-4">
                 <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="tourRequestModalLabel">Tour Request</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex">
                     <div class="d-flex">
                         <div class="stepper">
-                            <div class="step">
-                                <div class="circle">1</div>
-                                <div class="dashed-line"></div>
-                            </div>
-                            <div class="step">
-                                <div class="circle">2</div>
+                            <div class='step'>
+                                <div class='circle'>1</div>
+                                <div class='dashed-line'></div>
                             </div>
                         </div>
-
-                        <div class="destination-container">
-                            <div class="destination-card first-card">
-                                <div class="image-placeholder">
-                                    <i class="bi bi-image"></i>
-                                </div>
-                                <div class="destination-info">
-                                    <h6>Destination Name</h6>
-                                    <p><i class="bi bi-calendar"></i> Date</p>
-                                </div>
-                            </div>
-
-                            <div class="destination-card second-card">
+                        <div class="destination-container d-flex">
+                            <div class="destination-card">
                                 <div class="image-placeholder">
                                     <i class="bi bi-image"></i>
                                 </div>
@@ -214,26 +164,24 @@ include '../../../includes/auth.php';
                     </div>
 
                     <div class="summary-container">
-                        <p><strong>Date Created</strong><br>DD M YYYY</p>
-                        <p><strong>Number of People</strong><br>2</p>
+                        <p><strong>Date Created</strong><br><span id="dateCreated">DD M YYYY</span></p>
+                        <p><strong>Number of People</strong><br><span id="numberOfPeople">2</span></p>
                         <p><strong>Estimated Fees</strong></p>
                         <div class="estimated-fees">
-                            <p>Destination Name <span>x2</span></p>
-                            <p>Destination Name </p>
+                            <p>Destination Name: Price </p>
+                            <p>Destination Name: Price </p>
                         </div>
-                        <p class="total-price"><strong>₱ 0.00</strong></p>
+                        <p class="total-price">₱ 0.00 x Pax = <strong id="estimatedFees">₱ 0.00*</strong></p>
                     </div>
-
                 </div>
-
                 <div class="modal-footer">
-                    <button class="btn-custom">Accept</button>
-                    <button class="btn-custom">Decline</button>
+                    <button class="btn-custom accept" data-tourid="" data-userid="">Accept</button>
+                    <button class="btn-custom decline" data-tourid="" data-userid="">Decline</button>
+                    * Fee is only an estimate and subject to change if the destination can accommodate special discounts
                 </div>
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm-custom">
             <div class="modal-content swal-custom-popup text-center">
