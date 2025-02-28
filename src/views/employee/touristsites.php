@@ -176,7 +176,7 @@ if ($_SESSION['usertype'] !== 'emp') {
         }
 
         .add-text {
-            font-size: 20px;
+            font-size: 18px;
             color: #939393;
             position: absolute;
             bottom: 10px;
@@ -218,7 +218,7 @@ if ($_SESSION['usertype'] !== 'emp') {
         }
 
         .info-box p {
-            font-size: 20px;
+            font-size: 18px;
             color: #434343;
             position: absolute;
             bottom: 10px;
