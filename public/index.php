@@ -17,7 +17,48 @@ session_start();
     
 </head>
 <body>
-<?php include '../src/views/templates/header.php'; ?>
+
+	<header>
+			<nav class="navbar navbar-expand-lg navbar-light bg-white">
+				<div class="container-fluid">
+				<img src="assets/images/headerlogo.jpg" alt="" class="img-fluid" width="250" height="82"> 
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarText">
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="#">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Explore</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">About Us</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Contact</a>
+					</li>
+					</ul>
+					<ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
+					<li class="nav-item">
+							<a href="../src/views/frontend/signup.php" class="nav-link">Sign Up</a>
+						</li>
+						<li class="nav-item">
+						<a href="T-VIBES/src/views/frontend/login.php" 
+						class="btn btn-danger rounded-pill px-3 py-1" 
+						style="font-size: 1.3rem;">
+							Login
+						</a>
+					</li>
+					</ul>`
+
+				</div>
+				</div>
+			</nav>
+		</header>
+
+    </header>
 
     <!-- Main Content -->
     <main>
@@ -223,62 +264,7 @@ session_start();
 
 	</main>
 
-
-
-
-    <!-- Footer Section -->
-    <footer class="bg-light py-4 mt-5">
-        <div id="contact" class="container">
-            <div class="row">
-                <!-- Google Map -->
-                <div class="col-md-4">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.8042315632833!2d120.92426707405195!3d13.87813958653986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d9000f3c83e3%3A0xaccfa8e3e1d5d687!2sTaal%2C%20Batangas!5e0!3m2!1sen!2sph!4v1700000000000" 
-                        width="100%" 
-                        height="200" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy">
-                    </iframe>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="col-md-4">
-					<div class="row">
-							<div class="col">
-							<ul class="list-unstyled">
-								<li><a href="#" class="text-dark text-decoration-none">About Us</a></li>
-								<li><a href="#" class="text-dark text-decoration-none">Contact Us</a></li>
-								<li><a href="#" class="text-dark text-decoration-none">FAQs</a></li>
-							</ul>
-						</div>
-						<div class="col">
-							<ul class="list-unstyled">
-								<li><a href="#" class="text-dark text-decoration-none">Tour Sites</a></li>
-								<li><a href="#" class="text-dark text-decoration-none">Events</a></li>
-							</ul>
-						</div>
-						<div class="col">
-							<ul class="list-unstyled">
-								<li><a href="#" class="text-dark text-decoration-none">Make a Reservation</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-
-                <!-- Social Media Icons -->
-                <div class="col-md-4">
-							<h5>Follow Us</h5>
-							<a href="#" class="text-dark me-3">
-								<i class="fab fa-facebook fa-2x"></i>
-							</a>
-				</div>
-            </div>
-
-            <hr>
-            <p class="text-center text-muted">© 2025 Your Website Name. All Rights Reserved.</p>
-        </div>
-    </footer>
+    <?php include '../src/views/templates/footer.html'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>

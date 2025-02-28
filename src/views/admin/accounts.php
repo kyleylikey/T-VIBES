@@ -121,7 +121,8 @@ header("Expires: 0");
                         if (!empty($accounts[$type])) {
                             foreach ($accounts[$type] as $account) {
                                 $opacity = ($account['status'] === 'inactive') ? "opacity: 0.5;" : "";
-                                echo '<div style="padding-top: 100px; ' . $opacity . '" class="griditem accountitem" data-userstatus="' . htmlspecialchars($account['status']) . '" data-usertype="' . $type . '" data-userid="' . htmlspecialchars($account['userid']) . '" data-name="' . htmlspecialchars($account['name']) . '" data-username="' . $account['username'] . '" data-email="' . htmlspecialchars($account['email']) . '" data-contact="' . htmlspecialchars($account['contactnum']) . '">';                                                                echo '<span class="bi bi-person-circle accounticon"></span>';
+                                echo '<div style="padding-top: 100px; ' . $opacity . '" class="griditem accountitem" data-userstatus="' . htmlspecialchars($account['status']) . '" data-usertype="' . $type . '" data-userid="' . htmlspecialchars($account['userid']) . '" data-name="' . htmlspecialchars($account['name']) . '" data-username="' . $account['username'] . '" data-email="' . htmlspecialchars($account['email']) . '" data-contact="' . htmlspecialchars($account['contactnum']) . '">';                                                               
+                                echo '<span class="bi bi-person-circle accounticon"></span>';
                                 echo '<h2>' . htmlspecialchars($account['name']) . '</h2>';
                                 echo '<p>' . $usertypes[$type] . '</p>';
                                 echo '</div>';

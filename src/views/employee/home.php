@@ -45,7 +45,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                 justify-content: center;
                 width: 60px;
                 height: 60px;
-                color: #333;
+                color: #102E47;
             }
         </style>
     </head>
@@ -54,157 +54,605 @@ if ($_SESSION['usertype'] !== 'emp') {
     exit();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Dashboard - Overview</title>
-    <link rel="stylesheet" href="../../../public/assets/styles/main.css">
-    <link rel="stylesheet" href="../../../public/assets/styles/dashboard.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Nunito', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: white;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .sidebar img {
+            max-width: 100%; 
+            height: auto;
+            display: block; 
+            margin: auto;
+            transition: all 0.3s ease-in-out; 
+        }
+
+        .menu-section {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .nav-link {
+            color: #102E47 !important;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-link.active {
+            background-color: #102E47 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .nav-link i {
+            color: inherit; 
+        }
+
+        .nav-link:hover {
+            background-color: #102E47 !important; 
+            color: white !important;
+            transition: background 0.3s ease;
+        }
+
+        .content-container {
+            background-color: #E7EBEE;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: all 0.3s ease-in-out;
+            width: calc(100% - 260px); 
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; 
+            gap: 10px; 
+        }
+
+        .date {
+            text-align: right; 
+            min-width: 150px; 
+            flex-shrink: 0; 
+        }
+
+        .content-container h2 {
+            font-weight: bold;
+        }
+
+        .info-box {
+            position: relative;
+            min-height: 150px;
+            min-width: 200px; 
+            background-color: #729AB8;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .info-box span {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .info-box i {
+            font-size: 40px;
+            opacity: 0.3;
+            align-self: flex-end;
+        }
+
+        .info-box h1 {
+            font-weight: bold;
+            align-self: flex-end;
+        }
+
+        .table-responsive {
+            overflow-x: auto; 
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px; 
+            margin: auto;
+            text-align: center;
+            overflow-x: auto;
+            min-width: 500px;
+        }
+
+        thead th {
+            color: black;
+            font-weight: bold;
+            padding-bottom: 10px;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        tbody tr {
+            background: #E7EBEE;
+            border-radius: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
+        }
+
+        tbody tr td {
+            padding: 10px;
+            border: none;
+        }
+
+        tbody tr td:first-child {
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+        }
+
+        tbody tr td:last-child {
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .btn-primary {
+            background-color: #102E47;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: block;
+            margin: 5px auto 0 auto;
+        }
+
+        .btn-primary:hover {
+            background-color: #163A5A; 
+        }
+
+        .star-icon {
+            font-size: 14px !important; 
+            color: #434343 !important;
+        }
+
+        @media (max-width: 912px) {
+            .sidebar {
+                width: 200px; 
+                padding: 15px;
+            }
+
+            .nav-link {
+                font-size: 14px; 
+                padding: 8px; 
+            }
+
+            .menu-section {
+                margin-top: auto;
+                margin-bottom: auto;
+                padding: 10px 0; 
+            }
+
+            .main-content {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                padding: 10px;
+            }
+
+            .sidebar img {
+                max-width: 60px; 
+            }
+
+            .main-content {
+                margin-left: 90px; 
+                width: calc(100% - 90px); 
+            }
+
+            .nav-link {
+                text-align: center;
+                padding: 10px;
+            }
+
+            .nav-link span {
+                display: none; 
+            }
+
+            .nav-link.active {
+                background-color: #102E47 !important;
+                color: white !important;
+                border-radius: 5px;
+            }
+
+            .nav-link:hover {
+                background-color: #102E47 !important; 
+                color: white !important;
+                transition: background 0.3s ease;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .date {
+                text-align: center; 
+                width: 100%; 
+            }
+
+            .row {
+                justify-content: center !important;
+            }
+
+            .info-box {
+                width: 100% !important; 
+                max-width: 300px; 
+                text-align: center;
+                align-items: center;
+                margin: 0 auto; 
+            }
+
+            .info-box i, 
+            .info-box h1 {
+                align-self: center;
+            }
+
+            .table-responsive {
+                overflow-x: auto; 
+            }
+
+            table {
+                font-size: 14px; 
+            }
+
+            thead th, tbody td {
+                white-space: nowrap; 
+                padding: 5px; 
+            }
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                width: 70px;
+                padding: 5px;
+            }
+
+            .main-content {
+                margin-left: 75px;
+                width: calc(100% - 75px);
+            }
+
+            .nav-link i {
+                font-size: 20px;
+            }
+
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link:hover {
+                background-color: #102E47 !important; 
+                color: white !important;
+                transition: background 0.3s ease;
+            }
+
+            .info-box {
+                min-height: 120px;
+                min-width: auto;
+                padding: 10px;
+            }
+
+            .info-box h1 {
+                font-size: 20px;
+            }
+
+            .info-box i {
+                font-size: 30px;
+            }
+
+            table {
+                font-size: 12px;
+                overflow-x: auto;
+            }
+
+            tbody tr td {
+                padding: 5px; 
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="vertnavbar">
-        <div class="logocontainer">
-            <img src="../../../public/assets/images/headerlogo.jpg" alt="Header Logo">
+    <div class="sidebar">
+        <div class="pt-4 pb-1 px-2 text-center">
+            <a href="#" class="text-decoration-none">
+                <img src="../../../public/assets/images/headerlogo.jpg" alt="Header Logo" class="img-fluid">
+            </a>
         </div>
-        <ul>
-            <li><a class="active"><i class="bi bi-grid-fill"></i><span class="nav-text">Overview</span></a></li>
-            <li><a href="tourrequests.php"><i class="bi bi-map"></i><span class="nav-text">Tour Requests</span></a></li>
-            <li><a href="upcomingtourstoday.php"><i class="bi bi-geo"></i><span class="nav-text">Upcoming Tours</span></a></li>
-            <li><a href="reviews.php"><i class="bi bi-pencil-square"></i><span class="nav-text">Reviews</span></a></li>
-            <li><a href="sites.php"><i class="bi bi-image"></i><span class="nav-text">Tourist Sites</span></a></li>
-        </ul> 
-        <div class="accountcontainer">
-            <ul>
-                <li class="accountname"><i class="bi bi-person-circle"></i><span class="nav-text">Employee Name</span></li>
-                <li><a onclick="logoutConfirm()"><i class="bi bi-arrow-left-square-fill"></i><span class="">Sign Out</span></a></li>
+
+        
+        <div class="menu-section">
+            <ul class="nav nav-pills flex-column mb-4">
+                <li class="nav-item mb-4">
+                    <a href="" class="nav-link active">
+                        <i class="bi bi-grid"></i>
+                        <span class="d-none d-sm-inline">Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-4">
+                    <a href="tourrequests.php" class="nav-link text-dark">
+                        <i class="bi bi-map"></i>
+                        <span class="d-none d-sm-inline">Tour Requests</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-4">
+                    <a href="upcomingtourstoday.php" class="nav-link text-dark">
+                        <i class="bi bi-geo"></i>
+                        <span class="d-none d-sm-inline">Upcoming Tours</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-4">
+                    <a href="reviews.php" class="nav-link text-dark">
+                        <i class="bi bi-pencil-square"></i>
+                        <span class="d-none d-sm-inline">Reviews</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-4">
+                    <a href="touristsites.php" class="nav-link text-dark">
+                        <i class="bi bi-image"></i>
+                        <span class="d-none d-sm-inline">Tourist Sites</span>
+                    </a>
+                </li>
             </ul>
         </div>
+        
+        <ul class="nav nav-pills flex-column mb-4">
+            <li class="nav-item mb-3">
+                <a href="" class="nav-link active">
+                    <i class="bi bi-person-circle"></i>
+                    <span class="d-none d-sm-inline">Employee Name</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="" class="nav-link text-dark">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="d-none d-sm-inline">Sign Out</span>
+                </a>
+            </li>
+        </ul>
     </div>
-    <div class="dashboardcontainer">
-        <div class="content">
+
+    <div class="main-content">
+        <div class="content-container">
             <div class="header">
-                <h1>Overview</h1>
-                <span class="date"><h1><?php 
-                    date_default_timezone_set('Asia/Manila');
-                    echo date('M d, Y | h:i A'); 
-                ?></h1></span>
+                <h2>Overview</h2>
+                <span class="date">
+                    <h2>
+                        <?php 
+                            date_default_timezone_set('Asia/Manila');
+                            echo date('M d, Y | h:i A'); 
+                        ?>
+                    </h2>
+                </span>
             </div>
-            <div class="statistics">
-                <div id="pendingtours">
-                    <h2>Pending Tours</h2>
-                    <span class="bi bi-map-fill"></span>
-                    <h1>12</h1>
+
+            <div class="row mt-3 d-flex justify-content-center">
+                <div class="col-lg-4 col-md-6 col-12 mb-3">
+                    <div class="info-box">
+                        <span>Pending Tours</span>
+                        <i class="bi bi-bookmark-fill"></i>
+                        <h1>12</h1>
+                    </div>
                 </div>
-                <div id="upcomingtours">
-                    <h2>Upcoming Tours</h2>
-                    <span class="bi bi-geo-fill"></span>
-                    <h1>8</h1>
+
+                <div class="col-lg-4 col-md-6 col-12 mb-3">
+                    <div class="info-box">
+                        <span>Upcoming Tours</span>
+                        <i class="bi bi-signpost"></i>
+                        <h1>8</h1>
+                    </div>
                 </div>
-                <div id="pendingreviews">
-                    <h2>Pending Reviews</h2>
-                    <span class="bi bi-pencil-square"></span>
-                    <h1>10</h1>
-                </div>
-                <div class="tablecontainer">
-                    <h2>Latest Tour Requests</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th class="hide-on-small">Submitted</th>
-                                <th class="hide-on-small">Destination</th>
-                                <th>Travel Date</th>
-                                <th>Pax</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td class="hide-on-small">Oct 10, 2023</td>
-                                <td class="hide-on-small">3</td>
-                                <td>Nov 15, 2023</td>
-                                <td>2</td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td class="hide-on-small">Oct 12, 2023</td>
-                                <td class="hide-on-small">2</td>
-                                <td>Dec 01, 2023</td>
-                                <td>4</td>
-                            </tr>
-                            <tr>
-                                <td>Michael Brown</td>
-                                <td class="hide-on-small">Oct 14, 2023</td>
-                                <td class="hide-on-small">1</td>
-                                <td>Nov 20, 2023</td>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td>Emily White</td>
-                                <td class="hide-on-small">Oct 16, 2023</td>
-                                <td class="hide-on-small">4</td>
-                                <td>Dec 05, 2023</td>
-                                <td>3</td>
-                            </tr>
-                            <tr>
-                                <td>Chris Green</td>
-                                <td class="hide-on-small">Oct 18, 2023</td>
-                                <td class="hide-on-small">2</td>
-                                <td>Nov 25, 2023</td>
-                                <td>5</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button class="bluebutton">See All</button>
-                </div>
-                <div class="tablecontainer">
-                    <h2>Recent Reviews</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Author</th>
-                                <th>Rating</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>John Doe</td>
-                            <td><?php echo generateStarRating(4.5); ?></td>
-                            <td>Oct 10, 2023</td>
-                        </tr>
-                        <tr>
-                            <td>Jane Smith</td>
-                            <td><?php echo generateStarRating(4.0); ?></td>
-                            <td>Oct 12, 2023</td>
-                        </tr>
-                        <tr>
-                            <td>Michael Brown</td>
-                            <td><?php echo generateStarRating(3.5); ?></td>
-                            <td>Oct 14, 2023</td>
-                        </tr>
-                        <tr>
-                            <td>Emily White</td>
-                            <td><?php echo generateStarRating(5.0); ?></td>
-                            <td>Oct 16, 2023</td>
-                        </tr>
-                        <tr>
-                            <td>Chris Green</td>
-                            <td><?php echo generateStarRating(4.2); ?></td>
-                            <td>Oct 18, 2023</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <button class="bluebutton">See All</button>
+
+                <div class="col-lg-4 col-md-6 col-12 mb-3">
+                    <div class="info-box">
+                        <span>Pending Reviews</span>
+                        <i class="bi bi-pencil-fill"></i>
+                        <h1>10</h1>
+                    </div>
                 </div>
             </div>
+
+            <div class="row mt-3 d-flex justify-content-center">
+                <div class="col-lg-6 col-md-12 col-12 mb-3">
+                    <div class="info-box">
+                        <span>Latest Tour Requests</span>
+                        <div class="table-responsive"> 
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Submitted On</th>
+                                        <th>Destinations</th>
+                                        <th>Travel Date</th>
+                                        <th>Pax</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                        <td>DD MMM YY</td>
+                                        <td>2</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="btn btn-primary">See All</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-12 col-12 mb-3">
+                    <div class="info-box">
+                        <span>Recent Reviews</span>
+                        <div class="table-responsive"> 
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Author</th>
+                                        <th>Rating</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                        </td>
+                                        <td>DD MMM YY</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                        </td>
+                                        <td>DD MMM YY</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                        </td>
+                                        <td>DD MMM YY</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                        </td>
+                                        <td>DD MMM YY</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                        </td>
+                                        <td>DD MMM YY</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User</td>
+                                        <td>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                            <i class="bi bi-star-fill star-icon"></i>
+                                        </td>
+                                        <td>DD MMM YY</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="btn btn-primary">See All</button>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
-    <script src="../../../public/assets/scripts/dashboard.js"></script>
-    <script src='../../../public/assets/scripts/main.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

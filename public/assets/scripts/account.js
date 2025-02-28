@@ -311,7 +311,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.querySelectorAll(".accountitem").forEach((item) => {
-    // Attach an event listener for the Edit button (this could be inside your detail modal)
     item.querySelector(".btn1").addEventListener("click", function (e) {
         e.stopPropagation(); // Prevent other click events if needed
 
