@@ -20,4 +20,23 @@ function generateStarRating($rating) {
 
     return $html;
 }
+
+function getMonthlyVisitCount($year = null, $month = null) {
+    // Use current year and month if not specified
+    if ($year === null) $year = date('Y');
+    $month = date('m');
+    
+    // Path to monthly counter file
+    $counterFile =  __DIR__ .'/../../src/data/' . $year . '_' . $month . '_visits.txt';
+    
+    // Return count if file exists, otherwise 0
+    return (file_exists($counterFile)) ? (int)file_get_contents($counterFile) : 0;
+}
+
+function getTotalVisitCount() {
+    $counterFile = __DIR__ .'/../../src/data/total_visits.txt';
+    
+    return (file_exists($counterFile)) ? (int)file_get_contents($counterFile) : 0;
+
+}
 ?>

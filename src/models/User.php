@@ -147,6 +147,13 @@ class User {
         return $accounts;
     }
 
+    public function getActiveEmpList() {
+        $query = "SELECT userid, name, username, email, contactnum FROM users WHERE usertype = 'emp' AND status = 'active'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
     public function disableEmpAcc($userid) {
         $query = "UPDATE " . $this->table . " SET status = 'inactive' WHERE userid = :userid";
         $stmt = $this->conn->prepare($query);

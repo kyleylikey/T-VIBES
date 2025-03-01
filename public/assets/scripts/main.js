@@ -1,6 +1,6 @@
 function logoutConfirm() {
     Swal.fire({
-        iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+        iconHtml: '<i class="bi bi-exclamation-circle-fill"></i>',
         title: 'Are you sure you want to sign out?',
         showCancelButton: true,
             confirmButtonText: "Yes",

@@ -1,6 +1,38 @@
 <?php
 session_start();
 
+function recordVisit() {
+    // Directory for storing counter files
+    $counterDir = __DIR__ . '/../src/data/';
+    
+    // Create directory if it doesn't exist
+    if (!is_dir($counterDir)) {
+        mkdir($counterDir, 0755, true);
+    }
+    
+    // Files for tracking visits
+    $totalCountFile = $counterDir . 'total_visits.txt';
+    $monthlyCountFile = $counterDir . date('Y_m') . '_visits.txt';
+    
+    // Only count once per session
+    if (!isset($_SESSION['visit_counted'])) {
+        // Total visits counter
+        $totalCount = (file_exists($totalCountFile)) ? (int)file_get_contents($totalCountFile) : 0;
+        $totalCount++;
+        file_put_contents($totalCountFile, $totalCount);
+        
+        // Monthly visits counter
+        $monthlyCount = (file_exists($monthlyCountFile)) ? (int)file_get_contents($monthlyCountFile) : 0;
+        $monthlyCount++;
+        file_put_contents($monthlyCountFile, $monthlyCount);
+        
+        // Mark this visit as counted in the session
+        $_SESSION['visit_counted'] = true;
+    }
+}
+
+// Record the visit
+recordVisit();
 ?>
 
 <!DOCTYPE html>

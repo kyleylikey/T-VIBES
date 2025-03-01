@@ -1,63 +1,8 @@
 <?php
-session_start();
 require_once '../../controllers/helpers.php';
-
-if (!isset($_SESSION['userid'])) {
-    header('Location: ../frontend/login.php'); 
-    exit();
-}
-
-if ($_SESSION['usertype'] !== 'mngr') {
-    echo "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <title>Access Denied</title>
-        <link rel='stylesheet' href='../../../public/assets/styles/main.css'>
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
-        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-        <script>
-            setTimeout(function() {
-                Swal.fire({
-                    iconHtml: '<i class=\"fas fa-exclamation-circle\"></i>',
-                    customClass: {
-                        icon: 'swal2-icon swal2-error-icon',
-                    },
-                    html: '<p style=\"font-size: 24px; font-weight: bold;\">Access Denied! You do not have permission to access this page.</p>',
-                    showConfirmButton: false,
-                    timer: 3000
-                }).then(() => {
-                    window.location.href = '../frontend/login.php';
-                });
-            }, 100);
-        </script>
-        <style>
-            .swal2-popup {
-                border-radius: 12px;
-                padding: 20px;
-            }
-            .swal2-icon.swal2-error-icon {
-                border: none;
-                font-size: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 60px;
-                height: 60px;
-                color: #333;
-            }
-        </style>
-    </head>
-    <body></body>
-    </html>";
-    exit();
-}
-
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header("Expires: 0");
+require_once '../../controllers/admin/homecontroller.php';
+include '../../../includes/auth.php';
+require_once '../../config/dbconnect.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -102,68 +47,69 @@ header("Expires: 0");
             </div>
             <div class="statistics">
                 <div id="requeststhismonth">
-                    <h2>Requests this Month &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                    <h2>Requests Left this Month &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
                     <span class="bi bi-map-fill"></span>
-                    <h1>32</h1>
+                    <h1><?php echo $requestcount; ?></h1>
                 </div>
                 <div id="websitevisits">
                     <h2>Website Visits this Month</h2>
                     <span class="bi bi-globe"></span>
-                    <h1>89</h1>
+                    <h1><?php echo $monthlyVisits; ?></h1>
+                    <p>Total: <?php echo $totalVisits; ?></p>
                 </div>
                 <div id="activeemployees">
                     <h2>Active Employees &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
                     <span class="bi bi-people-fill"></span>
-                    <h1>3</h1>
+                    <h1><?php echo $activeempcount; ?></h1>
                 </div>
                 <div class="container">
-                        <div id="busiestdays">
+                    <div id="busiestdays" onclick="location.href='statistics/busiestmonths.php';" style="cursor: pointer;">
                             <h2>Busiest Days</h2>
                             <div class="busydays">
-                                <div class="busydaycontainer">
-                                    <h3>Jan</h3>
-                                    <h1>12</h1>
-                                    <p>7 tours</p>
-                                </div>
-                                <div class="busydaycontainer">
-                                    <h3>Jan</h3>
-                                    <h1>18</h1>
-                                    <p>5 tours</p>
-                                </div>
-                                <div class="busydaycontainer">
-                                    <h3>Jan</h3>
-                                    <h1>19</h1>
-                                    <p>3 tours</p>
-                                </div>
+                                <?php if(!empty($busiestDays)): ?>
+                                    <?php foreach($busiestDays as $day): ?>
+                                        <div class="busydaycontainer">
+                                            <h3>Day <?php echo $day['day']; ?></h3>
+                                            <h1><?php echo $day['count']; ?></h1>
+                                            <p><?php echo $day['count']; ?> tour site visits</p>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <p>No data available for busiest days.</p>
+                                <?php endif; ?>
                             </div>
                         </div>
-                        <div id="topsites">
-                            <h2>Top Tourist Sites</h2>
-                            <div class="topthree">
-                                <div class="topsitecontainer">
-                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span><!-- Replace with image -->
-                                    <p>Name</p>
-                                    <p style="display: flex; align-items: flex-end;"><i class="bi-star-fill"></i>&nbsp5.0</p>
-                                </div>
-                                <div class="topsitecontainer">
-                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
-                                    <p>Destination Name</p>
-                                    <p><i class="bi-star-fill"></i>&nbsp5.0</p>
-                                </div>
-                                <div class="topsitecontainer">
-                                    <span style="display: flex; justify-content: center;"><i class="bi-image-fill" style="font-size: 80px;"></i></span>
-                                    <p>Destination Name</p>
-                                    <p><i class="bi-star-fill"></i>&nbsp5.0</p>
-                                </div>
-                            </div>
+                        <div id="topsites" onclick="location.href='statistics/toptouristsite.php';" style="cursor: pointer;">
+                        <h2>Top Tourist Sites</h2>
+                        <div class="topthree">
+                            <?php if(!empty($topSites)): ?>
+                                <?php foreach($topSites as $site): ?>
+                                    <div style="padding-top: 0;">
+                                        <div style="margin-top: 16px; margin-left: 0; padding: 0; width:100%; height: 160px; display: flex; justify-content: center;">
+                                            <?php if(!empty($site['siteimage'])): ?>
+                                                <img style="width: 100%; height: 100%; object-fit: cover; margin: 0;" style=""src="/T-VIBES/public/uploads/<?php echo $site['siteimage']; ?>" alt="<?php echo $site['sitename']; ?>" style="max-width:80px; max-height:80px;">
+                                            <?php else: ?>
+                                                <i class="bi bi-image-fill" style="font-size: 80px;"></i>
+                                            <?php endif; ?>
+                                            </div>
+                                        <p><?php echo $site['sitename']; ?></p>
+                                        <p style="display: flex; align-items: flex-end;">
+                                            <?php echo generateStarRating($site['ratings']); ?>&nbsp;<?php echo $site['ratings']; ?>
+                                        </p>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p>No top sites available.</p>
+                            <?php endif; ?>
                         </div>
+                    </div>
                 </div>
                 <div class="tablecontainer">
-                    <h2>Recent Reviews</h2>
+                    <h2>Recent Ratings</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th>Author</th>
+                                <th>Site</th>
                                 <th>Rating</th>
                                 <th>Date</th>
                             </tr>

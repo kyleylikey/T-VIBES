@@ -5,6 +5,46 @@ body {
 }
 
 
+.swal2-icon {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.swal2-icon-custom {
+    font-size: 10px; 
+    color: #102E47; 
+}
+
+.swal2-title-custom {
+    font-size: 24px !important;
+    font-weight: bold;
+    color: #434343 !important;
+}
+
+.swal-custom-popup {
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.swal-custom-btn {
+    padding: 10px 20px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    border: 2px solid #102E47 !important;
+    border-radius: 25px !important;
+    background-color: white !important;
+    color: #102E47 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.swal-custom-btn:hover {
+    background-color: #102E47 !important;
+    color: white !important;
+}
+
+
 .vertnavbar {
     list-style-type: none; /* Remove default list styling */
     margin: 0; /* Remove default margin */
