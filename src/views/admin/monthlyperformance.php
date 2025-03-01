@@ -128,7 +128,7 @@ require_once '../../config/dbconnect.php';
                     </div>
                     <!-- Top Tourist Sites -->
                     <div id="topsites" onclick="location.href='statistics/toptouristsite.php';" style="cursor: pointer;">
-                        <h2>Top Tourist Sites</h2>
+                        <h2>Top Tourist Sites this Month</h2>
                         <div class="topthree">
                             <?php if(!empty($topSites)): ?>
                                 <?php foreach($topSites as $site): ?>

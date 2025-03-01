@@ -171,12 +171,13 @@ $stmt->execute();
 $busiestDays = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
 
-// 7. Top Tourist Sites: Get details and count accepted tours per site
-$query = "SELECT s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.price, s.status, COUNT(t.tourid) as tour_count 
+// 7. Top Tourist Sites this Month: Get details and count accepted tours per site
+$query = "SELECT s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.price, s.status, SUM(t.companions) as visitor_count 
           FROM sites s 
           LEFT JOIN tour t ON s.siteid = t.siteid AND t.status = 'accepted'
+          WHERE MONTH(t.date) = :currentMonth AND YEAR(t.date) = :currentYear 
           GROUP BY s.siteid
-          ORDER BY tour_count DESC
+          ORDER BY visitor_count DESC
           LIMIT 3";
 $stmt = $conn->prepare($query);
 $stmt->execute();

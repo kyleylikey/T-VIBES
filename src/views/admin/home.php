@@ -80,7 +80,7 @@ require_once '../../config/dbconnect.php';
                             </div>
                         </div>
                         <div id="topsites" onclick="location.href='statistics/toptouristsite.php';" style="cursor: pointer;">
-                        <h2>Top Tourist Sites</h2>
+                        <h2>Top Tourist Sites this Month</h2>
                         <div class="topthree">
                             <?php if(!empty($topSites)): ?>
                                 <?php foreach($topSites as $site): ?>
@@ -94,7 +94,7 @@ require_once '../../config/dbconnect.php';
                                             </div>
                                         <p><?php echo $site['sitename']; ?></p>
                                         <p style="display: flex; align-items: flex-end;">
-                                            <?php echo generateStarRating($site['ratings']); ?>&nbsp;<?php echo $site['ratings']; ?>
+                                            <?php echo $site['visitor_count']; ?> total visitors
                                         </p>
                                     </div>
                                 <?php endforeach; ?>
