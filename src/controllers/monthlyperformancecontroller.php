@@ -1,12 +1,4 @@
 <?php
-
-// Only allow managers to access this controller
-if (!isset($_SESSION['userid']) || $_SESSION['usertype'] !== 'mngr') {
-    header('Location: ../views/admin/login.php');
-    exit();
-}
-
-// Include your Database configuration
 require_once __DIR__ .'/../config/dbconnect.php';
 
 // Create a database connection instance using PDO
@@ -27,93 +19,138 @@ if ($currentMonth == 1) {
 }
 
 // 1. Tours This Month: Count tours with status 'accepted'
-$query = "SELECT COUNT(*) as total FROM tour 
-          WHERE status = 'accepted'
-          AND MONTH(date) = :currentMonth AND YEAR(date) = :currentYear";
+$query = "SELECT COUNT(*) AS total_tours
+            FROM (
+                SELECT 1
+                FROM tour t
+                JOIN Users u ON t.userid = u.userid
+                WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
+                AND t.status = 'accepted'
+                GROUP BY t.tourid, t.userid
+            ) AS subquery";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$toursThisMonth = $row['total'];
+$toursThisMonth = $row['total_tours'];
 $stmt->closeCursor();
 
 // 2. Approved Tours (Current Month): Count tours with status 'accepted'
-$query = "SELECT COUNT(*) as total FROM tour 
-          WHERE status = 'accepted' 
-          AND MONTH(date) = :currentMonth AND YEAR(date) = :currentYear";
+$query = "SELECT COUNT(*) AS total_tours
+            FROM (
+                SELECT 1
+                FROM tour t
+                JOIN Users u ON t.userid = u.userid
+                WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
+                AND t.status = 'accepted'
+                GROUP BY t.tourid, t.userid
+            ) AS subquery";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$approvedToursCurrent = $row['total'];
+$approvedToursCurrent = $row['total_tours'];
 $stmt->closeCursor();
 
 // Approved Tours (Last Month)
-$query = "SELECT COUNT(*) as total FROM tour 
-          WHERE status = 'accepted' 
-          AND MONTH(date) = :lastMonth AND YEAR(date) = :lastYear";
+$query = "SELECT COUNT(*) AS total_tours
+            FROM (
+                SELECT 1
+                FROM tour t
+                JOIN Users u ON t.userid = u.userid
+                WHERE MONTH(date) = :lastMonth AND YEAR(date) = :lastYear
+                AND t.status = 'approved'
+                GROUP BY t.tourid, t.userid
+            ) AS subquery";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':lastMonth', $lastMonth, PDO::PARAM_INT);
 $stmt->bindParam(':lastYear', $lastYear, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$approvedToursLast = $row['total'];
+$approvedToursLast = $row['total_tours'];
 $stmt->closeCursor();
 
 // 3. Cancelled Tours (Current Month)
-$query = "SELECT COUNT(*) as total FROM tour 
-          WHERE status = 'cancelled' 
-          AND MONTH(date) = :currentMonth AND YEAR(date) = :currentYear";
+$query = "SELECT COUNT(*) AS total_tours
+            FROM (
+                SELECT 1
+                FROM tour t
+                JOIN Users u ON t.userid = u.userid
+                WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
+                AND t.status = 'cancelled'
+                GROUP BY t.tourid, t.userid
+            ) AS subquery";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$cancelledToursCurrent = $row['total'];
+$cancelledToursCurrent = $row['total_tours'];
 $stmt->closeCursor();
 
 // Cancelled Tours (Last Month)
-$query = "SELECT COUNT(*) as total FROM tour 
-          WHERE status = 'cancelled' 
-          AND MONTH(date) = :lastMonth AND YEAR(date) = :lastYear";
+$query = "SELECT COUNT(*) AS total_tours
+            FROM (
+                SELECT 1
+                FROM tour t
+                JOIN Users u ON t.userid = u.userid
+                WHERE MONTH(date) = :lastMonth AND YEAR(date) = :lastYear
+                AND t.status = 'cancelled'
+                GROUP BY t.tourid, t.userid
+            ) AS subquery";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':lastMonth', $lastMonth, PDO::PARAM_INT);
 $stmt->bindParam(':lastYear', $lastYear, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$cancelledToursLast = $row['total'];
+$cancelledToursLast = $row['total_tours'];
 $stmt->closeCursor();
 
 // 4. Completed Tours (Current Month): Count tours with status 'accepted' and tour date in the past
-$query = "SELECT COUNT(*) as total FROM tour 
-          WHERE status = 'accepted' AND date < CURDATE() 
-          AND MONTH(date) = :currentMonth AND YEAR(date) = :currentYear";
+$query = "SELECT COUNT(*) AS total_tours
+            FROM (
+                SELECT 1
+                FROM tour t
+                JOIN Users u ON t.userid = u.userid
+                WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
+                AND t.status = 'accepted' AND date < CURDATE()
+                GROUP BY t.tourid, t.userid
+            ) AS subquery";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$completedToursCurrent = $row['total'];
+$completedToursCurrent = $row['total_tours'];
 $stmt->closeCursor();
 
 // Completed Tours (Last Month)
-$query = "SELECT COUNT(*) as total FROM tour 
-          WHERE status = 'accepted' AND date < CURDATE() 
-          AND MONTH(date) = :lastMonth AND YEAR(date) = :lastYear";
+$query = "SELECT COUNT(*) AS total_tours
+            FROM (
+                SELECT 1
+                FROM tour t
+                JOIN Users u ON t.userid = u.userid
+                WHERE MONTH(date) = :lastMonth AND YEAR(date) = :lastYear
+                AND t.status = 'accepted' AND date < CURDATE()
+                GROUP BY t.tourid, t.userid
+            ) AS subquery";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':lastMonth', $lastMonth, PDO::PARAM_INT);
 $stmt->bindParam(':lastYear', $lastYear, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$completedToursLast = $row['total'];
+$completedToursLast = $row['total_tours'];
 $stmt->closeCursor();
 
 // 5. Calculate Percentage Differences
 function calculatePercentageDiff($current, $last) {
     if ($last == 0) {
-        return 0; // Avoid division by zero; adjust if needed
+        if ($current == 0) {
+            return 0; // No change if both are zero
+        }
+        return 'N/A'; // Show as 100% increase when going from 0 to something
     }
     return round((($current - $last) / $last) * 100, 2);
 }

@@ -1,64 +1,8 @@
 <?php
-session_start();
 require_once '../../controllers/helpers.php';
 require_once '../../controllers/monthlyperformancecontroller.php';
-
-if (!isset($_SESSION['userid'])) {
-    header('Location: ../frontend/login.php'); 
-    exit();
-}
-
-if ($_SESSION['usertype'] !== 'mngr') {
-    echo "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <title>Access Denied</title>
-        <link rel='stylesheet' href='../../../public/assets/styles/main.css'>
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
-        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-        <script>
-            setTimeout(function() {
-                Swal.fire({
-                    iconHtml: '<i class=\"fas fa-exclamation-circle\"></i>',
-                    customClass: {
-                        icon: 'swal2-icon swal2-error-icon',
-                    },
-                    html: '<p style=\"font-size: 24px; font-weight: bold;\">Access Denied! You do not have permission to access this page.</p>',
-                    showConfirmButton: false,
-                    timer: 3000
-                }).then(() => {
-                    window.location.href = '../frontend/login.php';
-                });
-            }, 100);
-        </script>
-        <style>
-            .swal2-popup {
-                border-radius: 12px;
-                padding: 20px;
-            }
-            .swal2-icon.swal2-error-icon {
-                border: none;
-                font-size: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 60px;
-                height: 60px;
-                color: #333;
-            }
-        </style>
-    </head>
-    <body></body>
-    </html>";
-    exit();
-}
-
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header("Expires: 0");
+include '../../../includes/auth.php';
+require_once '../../config/dbconnect.php';
 ?>
 <!DOCTYPE html>
 
@@ -115,19 +59,51 @@ header("Expires: 0");
                 <div class="tourstatistics" onclick="location.href='statistics/tourperformance.php';" style="cursor: pointer;">
                     <!-- Approved Tours -->
                     <div class="approved">
-                        <h2>Approved Tours <span class="bi bi-arrow-up-circle-fill"><?php echo $approvedDiff; ?>%</span></h2>
+                        <h2>Approved Tours 
+                        <?php if ($approvedDiff === 'N/A'): ?>
+                            <span class="text-success bi bi-arrow-up-circle-fill">
+                                New
+                            </span>
+                        <?php else: ?>
+                            <span class="<?php echo $approvedDiff > 0 ? 'text-success bi bi-arrow-up-circle-fill' : ($approvedDiff < 0 ? 'text-danger bi bi-arrow-down-circle-fill' : 'text-muted bi bi-dash-circle-fill'); ?>">
+                                &nbsp;<?php echo abs($approvedDiff); ?>%
+                            </span>
+                        <?php endif; ?>
+                        </h2>
                         <h1><?php echo $approvedToursCurrent; ?></h1>
                         <p>vs. last month <span><?php echo $approvedToursLast; ?></span></p>
                     </div>
+
                     <!-- Cancelled Tours -->
                     <div class="cancelled">
-                        <h2>Cancelled Tours <span class="bi bi-arrow-down-circle-fill"><?php echo $cancelledDiff; ?>%</span></h2>
+                        <h2>Cancelled Tours 
+                        <?php if ($cancelledDiff === 'N/A'): ?>
+                            <span class="text-success bi bi-arrow-up-circle-fill">
+                                New
+                            </span>
+                        <?php else: ?>
+                            <span class="<?php echo $cancelledDiff > 0 ? 'text-success bi bi-arrow-up-circle-fill' : ($cancelledDiff < 0 ? 'text-danger bi bi-arrow-down-circle-fill' : 'text-muted bi bi-dash-circle-fill'); ?>">
+                                &nbsp;<?php echo abs($cancelledDiff); ?>%
+                            </span>
+                        <?php endif; ?>
+                        </h2>
                         <h1><?php echo $cancelledToursCurrent; ?></h1>
                         <p>vs. last month <span><?php echo $cancelledToursLast; ?></span></p>
                     </div>
+
                     <!-- Completed Tours -->
                     <div class="completed">
-                        <h2>Completed Tours <span>= <?php echo $completedDiff; ?>%</span></h2>
+                        <h2>Completed Tours 
+                        <?php if ($completedDiff === 'N/A'): ?>
+                            <span class="text-success bi bi-arrow-up-circle-fill">
+                                New
+                            </span>
+                        <?php else: ?>
+                            <span class="<?php echo $completedDiff > 0 ? 'text-success bi bi-arrow-up-circle-fill' : ($completedDiff < 0 ? 'text-danger bi bi-arrow-down-circle-fill' : 'text-muted bi bi-dash-circle-fill'); ?>">
+                                &nbsp;<?php echo abs($completedDiff); ?>%
+                            </span>
+                        <?php endif; ?>
+                        </h2>
                         <h1><?php echo $completedToursCurrent; ?></h1>
                         <p>vs. last month <span><?php echo $completedToursLast; ?></span></p>
                     </div>
@@ -142,7 +118,7 @@ header("Expires: 0");
                                     <div class="busydaycontainer">
                                         <h3>Day <?php echo $day['day']; ?></h3>
                                         <h1><?php echo $day['count']; ?></h1>
-                                        <p><?php echo $day['count']; ?> tours</p>
+                                        <p><?php echo $day['count']; ?> tour site visits</p>
                                     </div>
                                 <?php endforeach; ?>
                             <?php else: ?>

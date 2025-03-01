@@ -27,8 +27,10 @@ body {
 }
 
 .logocontainer img {
-    margin: 20px;
-    width: 240px; /* Set the width of the logo */
+    margin: calc(1px + 0.5vw);
+    width: 100%;
+    max-width: 260px; 
+    min-width: 40px;
 }
 
 .vertnavbar .bi {
@@ -42,6 +44,7 @@ body {
     text-decoration: none; /* Remove underline */
     border-radius: 8px;
     color: black;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .vertnavbar li a.active {

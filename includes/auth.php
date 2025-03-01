@@ -10,7 +10,7 @@ $current_page = $_SERVER['REQUEST_URI'];
 $access_control = [
     'mngr' => ['/src/views/admin/'],
     'emp' => ['/src/views/employee/'],
-    'trst' => ['/src/views/frontend/'],
+    'trst' => ['/src/views/frontend/tours'],
 ];
 
 $allowed = false;
