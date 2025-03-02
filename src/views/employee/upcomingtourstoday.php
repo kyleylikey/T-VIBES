@@ -1,58 +1,7 @@
 <?php
-session_start();
-require_once '../../controllers/helpers.php';
-
-if (!isset($_SESSION['userid'])) {
-    header('Location: ../frontend/login.php'); 
-    exit();
-}
-
-if ($_SESSION['usertype'] !== 'emp') {
-    echo "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <title>Access Denied</title>
-        <link rel='stylesheet' href='../../../public/assets/styles/main.css'>
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
-        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-        <script>
-            setTimeout(function() {
-                Swal.fire({
-                    iconHtml: '<i class=\"fas fa-exclamation-circle\"></i>',
-                    customClass: {
-                        icon: 'swal2-icon swal2-error-icon',
-                    },
-                    html: '<p style=\"font-size: 24px; font-weight: bold;\">Access Denied! You do not have permission to access this page.</p>',
-                    showConfirmButton: false,
-                    timer: 3000
-                }).then(() => {
-                    window.location.href = '../frontend/login.php';
-                });
-            }, 100);
-        </script>
-        <style>
-            .swal2-popup {
-                border-radius: 12px;
-                padding: 20px;
-            }
-            .swal2-icon.swal2-error-icon {
-                border: none;
-                font-size: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 60px;
-                height: 60px;
-                color: #102E47;
-            }
-        </style>
-    </head>
-    <body></body>
-    </html>";
-    exit();
-}
+include '../../../includes/auth.php';
+require_once '../../config/dbconnect.php';
+require_once '../../controllers/upcomingtourscontroller.php';
 ?>
 
 <!DOCTYPE html>
@@ -65,7 +14,6 @@ if ($_SESSION['usertype'] !== 'emp') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../../../public/assets/scripts/main.js"></script>
     <style>
         * {
             font-family: 'Nunito', sans-serif;
@@ -183,7 +131,7 @@ if ($_SESSION['usertype'] !== 'emp') {
 
         .tour-container {
             margin-top: 30px;
-            background-color: #729AB8; 
+            background-color: #729AB8;
             padding: 20px;
             border-radius: 10px;
             display: flex;
@@ -196,6 +144,44 @@ if ($_SESSION['usertype'] !== 'emp') {
             gap: 20px;
             width: 50%;
             margin: 20px;
+            max-height: 350px;
+            overflow-y: auto; 
+            padding-right: 50px;
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent; 
+        }
+
+        .tour-list::-webkit-scrollbar {
+            width: 6px; 
+            border-radius: 6px;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0; 
+        }
+
+        .tour-list::-webkit-scrollbar-track {
+            background: rgba(231, 235, 238, 0.3); 
+            border-radius: 6px;
+        }
+
+        .tour-list::-webkit-scrollbar-thumb {
+            background: rgba(16, 46, 71, 0.7);
+            border-radius: 6px;
+            border: 2px solid rgba(231, 235, 238, 0.5);
+            transition: background 0.3s ease-in-out;
+        }
+
+        .tour-list:hover::-webkit-scrollbar,
+        .tour-list:focus-within::-webkit-scrollbar {
+            opacity: 1;
+        }
+
+        .tour-list:hover::-webkit-scrollbar-thumb,
+        .tour-list:focus-within::-webkit-scrollbar-thumb {
+            background: #102E47;
+        }
+
+        .tour-list:hover {
+            scrollbar-color: rgba(16, 46, 71, 0.7) rgba(231, 235, 238, 0.3);
         }
 
         .tour-details {
@@ -208,7 +194,7 @@ if ($_SESSION['usertype'] !== 'emp') {
             display: flex;
             flex-direction: column; 
             justify-content: space-between; 
-            min-height: 100%; 
+            height: 100%; 
         }
 
         .tour-item {
@@ -233,20 +219,23 @@ if ($_SESSION['usertype'] !== 'emp') {
         .tour-row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start; 
+            align-items: flex-start;
             width: 100%;
         }
 
         .tour-locations {
-            margin-left: 20px; 
-            padding-left: 10px; 
-            display: block; 
+            margin-left: 20px;
+            padding-left: 10px;
+            display: block;
+            flex-grow: 1; 
             margin-top: -15px;
         }
 
         .button-container {
             display: flex;
-            justify-content: center; 
+            justify-content: center;
+            margin-top: auto; 
+            gap: 10px;
         }
 
         .tour-info {
@@ -263,11 +252,11 @@ if ($_SESSION['usertype'] !== 'emp') {
         }
 
         .tour-info strong {
-            white-space: nowrap; 
+            white-space: nowrap;
         }
 
         .tour-info span {
-            margin-top: 5px; 
+            margin-top: 5px;
         }
 
         .modal-body {
@@ -343,6 +332,17 @@ if ($_SESSION['usertype'] !== 'emp') {
         .swal-custom-btn:hover {
             background-color: #102E47 !important;
             color: white !important;
+        }
+
+        .no-tours-message {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #434343;
+            padding: 10px;
+            border-radius: 8px;
+            width: fit-content;
+            margin: 20px auto;
         }
 
         @media (max-width: 1280px) {
@@ -528,13 +528,31 @@ if ($_SESSION['usertype'] !== 'emp') {
             }
 
             .tour-list {
-                gap: 10px;
+                display: flex;
+                flex-direction: row; 
+                overflow-x: auto; 
+                white-space: nowrap; 
+                padding: 10px;
+                gap: 15px;
                 width: 100%;
+                max-width: 100%;
+            }
+
+            .tour-list::-webkit-scrollbar {
+                height: 6px; 
+            }
+
+            .tour-list::-webkit-scrollbar-thumb {
+                background: rgba(16, 46, 71, 0.7);
+                border-radius: 6px;
             }
 
             .tour-item {
-                height: auto;
+                min-width: 100%; 
                 padding: 15px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             }
 
             .tour-info {
@@ -663,7 +681,7 @@ if ($_SESSION['usertype'] !== 'emp') {
                 </a>
             </li>
             <li class="nav-item">
-                <a href="javascript:void(0);" class="nav-link text-dark" onclick="logoutConfirm()">
+                <a href="" class="nav-link text-dark">
                     <i class="bi bi-box-arrow-right"></i>
                     <span class="d-none d-sm-inline">Sign Out</span>
                 </a>
@@ -690,50 +708,57 @@ if ($_SESSION['usertype'] !== 'emp') {
                 <button type="button" class="btn-custom" onclick="window.location.href='upcomingtoursall.php';">All</button>
             </div>
 
-            <div class="tour-container">
-                <div class="tour-list">
-                    <div class="tour-item active">
-                        <strong>Mr. Juan Dela Cruz</strong><br>
-                        3 Sites
+            <?php if (empty($toursToday)): ?>
+                <div class="no-tours-message">
+                    No upcoming tours today.
+                </div>
+            <?php else: ?>
+                <div class="tour-container">
+                    <div class="tour-list">
+                        <?php foreach ($toursToday as $tour): ?>
+                            <div class="tour-item <?php echo $tour === reset($toursToday) ? 'active' : ''; ?>" 
+                                data-tourid="<?php echo htmlspecialchars($tour['tourid']); ?>" 
+                                data-sites="<?php echo htmlspecialchars($tour['sites']); ?>" 
+                                data-date="<?php echo htmlspecialchars($tour['date']); ?>" 
+                                data-pax="<?php echo htmlspecialchars($tour['companions']); ?>">
+                                <strong><?php echo htmlspecialchars($tour['name']); ?></strong><br>
+                                <?php echo count(explode(', ', $tour['sites'])); ?> Sites
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                    <div class="tour-item">
-                        <strong>Mr. Jose Cruz</strong><br>
-                        1 Site
+
+                    <div class="tour-details">
+                        <?php $firstTour = reset($toursToday); ?>
+                        <strong><?php echo htmlspecialchars($firstTour['name']); ?></strong><br>
+                        <span class="tour-locations">
+                            <?php echo nl2br(htmlspecialchars($firstTour['sites'])); ?>
+                        </span>
+                        <br><br>
+
+                        <div class="tour-info">
+                            <div>
+                                <strong>Tour Date:</strong>
+                                <span><?php echo htmlspecialchars($firstTour['date']); ?></span>
+                            </div>
+                            <div>
+                                <strong>Pax:</strong>
+                                <span><?php echo htmlspecialchars($firstTour['companions']); ?></span>
+                            </div>
+                        </div>
+
+                        <br><br>
+
+                        <div class="button-container">
+                            <button class="btn-custom" onclick="showModal()" style="cursor: pointer;">Edit</button>
+                            <button class="btn-custom">Cancel</button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="tour-details">
-                    <strong>Mr. Juan Dela Cruz</strong><br>
-                    <span class="tour-locations">
-                        Taal Church<br>
-                        Goco Ancestral House<br>
-                        Sacred Well of Sta. Lucia
-                    </span>
-                    <br><br>
-
-                    <div class="tour-info">
-                        <div>
-                            <strong>Tour Date:</strong>
-                            <span>11/12/2024</span>
-                        </div>
-                        <div>
-                            <strong>Pax:</strong>
-                            <span>2</span>
-                        </div>
-                    </div>
-
-                    <br><br>
-
-                    <div class="button-container">
-                        <button class="btn-custom" onclick="showModal()" style="cursor: pointer;">Edit</button>
-                        <button class="btn-custom">Cancel</button>
-                    </div>
-                </div>
-            </div>
-
+            <?php endif; ?>
         </div>
     </div>
 
+    <!-- Edit Tour Modal -->
     <div class="modal fade" id="upcomingToursModal" tabindex="-1" aria-labelledby="upcomingToursModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content p-4">
@@ -742,10 +767,11 @@ if ($_SESSION['usertype'] !== 'emp') {
                     <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex flex-column align-items-center">
-                    <form class="w-75">
+                    <form id="editTourForm" class="w-75">
+                        <input type="hidden" id="editTourId"> <!-- Hidden field for tour ID -->
                         <div class="mb-3">
                             <label for="tourSites" class="form-label">Sites</label>
-                            <input type="text" class="form-control w-100" id="tourSites" placeholder="Enter Sites">
+                            <input type="text" class="form-control w-100" id="tourSites" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="tourDate" class="form-label">Tour Date</label>
@@ -757,23 +783,24 @@ if ($_SESSION['usertype'] !== 'emp') {
                         </div>
                     </form>
                 </div>
-
                 <div class="modal-footer">
-                    <button class="btn-custom">Save Changes</button>
-                    <button class="btn-custom">Cancel</button>
+                    <button id="saveTourChanges" class="btn-custom">Save Changes</button>
+                    <button type="button" class="btn-custom" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Cancellation Reason Modal -->
     <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm-custom"> 
             <div class="modal-content swal-custom-popup text-center"> 
                 <div class="modal-header border-0">
-                    <h5 class="modal-title swal2-title-custom w-100" id="cancelReasonLabel">Write Reason</h5>
+                    <h5 class="modal-title swal2-title-custom w-100" id="cancelReasonLabel">Reason for Cancellation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" id="cancelTourId"> <!-- Hidden field for tour ID -->
                     <textarea id="cancelReasonInput" class="form-control" rows="4" placeholder="Type here..."></textarea>
                 </div>
                 <div class="modal-footer justify-content-center">
@@ -784,107 +811,7 @@ if ($_SESSION['usertype'] !== 'emp') {
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
-
-<script>
-    function showModal() {
-        var modal = new bootstrap.Modal(document.getElementById('upcomingToursModal'));
-        modal.show();
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelector(".modal-footer .btn-custom:nth-child(1)").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-up"></i>',
-                title: "Confirm Changes?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: "Tour Successfully Edited!",
-                        timer: 3000,
-                        showConfirmButton: false,
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        }
-                    });
-                }
-            });
-        });
-        
-        document.querySelector(".modal-footer .btn-custom:nth-child(2)").addEventListener("click", function () {
-            var modal = bootstrap.Modal.getInstance(document.getElementById('upcomingToursModal'));
-            modal.hide(); 
-        });
-
-        document.querySelector(".button-container .btn-custom:nth-child(2)").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-up"></i>',
-                title: "Confirm Cancel?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var cancelModal = new bootstrap.Modal(document.getElementById("cancelReasonModal"));
-                    cancelModal.show();
-                }
-            });
-        });
-
-        document.getElementById("submitCancelReason").addEventListener("click", function () {
-            let reason = document.getElementById("cancelReasonInput").value.trim();
-
-            if (reason === "") {
-                Swal.fire({
-                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-                    title: "Please enter a reason!",
-                    timer: 3000,
-                    showConfirmButton: false,
-                    customClass: {
-                        title: "swal2-title-custom",
-                        icon: "swal2-icon-custom",
-                        popup: "swal-custom-popup"
-                    }
-                });
-                return;
-            }
-
-            var cancelModal = bootstrap.Modal.getInstance(document.getElementById("cancelReasonModal"));
-            cancelModal.hide();
-
-            Swal.fire({
-                iconHtml: '<i class="fas fa-circle-check"></i>',
-                title: "Tour Successfully Cancelled!",
-                timer: 3000,
-                showConfirmButton: false,
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup"
-                }
-            });
-        });
-    });
-</script>
+<script src="../../../public/assets/scripts/empupcomingtours.js"></script>
 
 </body>
 </html>

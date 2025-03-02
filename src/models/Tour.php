@@ -34,6 +34,7 @@ class Tour {
         
         return $stmt;
     }
+
     public function getTourRequestSites($tourid) {
         $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.tourid = ?";
         $stmt = $this->conn->prepare($query);
@@ -41,6 +42,7 @@ class Tour {
         $stmt->execute();
         return $stmt;
     }
+
     public function acceptTourRequest($tourid, $userid) {
         $query = "UPDATE " . $this->table . " SET status = 'accepted' WHERE tourid = ? AND userid = ?";
         $stmt = $this->conn->prepare($query);
@@ -49,6 +51,7 @@ class Tour {
         $result = $stmt->execute();
         return $result;
     }
+
     public function declineTourRequest($tourid, $userid) {
         $query = "UPDATE " . $this->table . " SET status = 'cancelled' WHERE tourid = ? AND userid = ?";
         $stmt = $this->conn->prepare($query);
@@ -56,6 +59,50 @@ class Tour {
         $stmt->bindParam(2, $userid);
         $result = $stmt->execute();
         return $result;
+    }
+
+    public function getToursForToday() {
+        $today = date('Y-m-d');
+        $query = "SELECT t.tourid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
+                  FROM tour t
+                  JOIN users u ON t.userid = u.userid
+                  JOIN sites s ON t.siteid = s.siteid
+                  WHERE DATE(t.date) = :today AND t.status = 'accepted'
+                  GROUP BY t.tourid, u.name, t.date, t.companions";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':today', $today);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllUpcomingTours() {
+        $query = "SELECT t.tourid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
+                    FROM tour t
+                    JOIN users u ON t.userid = u.userid
+                    JOIN sites s ON t.siteid = s.siteid
+                    WHERE t.status = 'accepted' AND DATE(t.date) >= CURDATE()
+                    GROUP BY t.tourid, u.name, t.date, t.companions
+                    ORDER BY t.date ASC";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateTour($tourId, $date, $companions) {
+        $query = "UPDATE tour SET date = :date, companions = :companions WHERE tourid = :tourid";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':date', $date);
+        $stmt->bindParam(':companions', $companions, PDO::PARAM_INT);
+        $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function cancelTour($tourId) {
+        $query = "UPDATE tour SET status = 'cancelled' WHERE tourid = :tourid";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }
 
