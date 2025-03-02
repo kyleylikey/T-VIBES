@@ -334,10 +334,51 @@ session_start();
         .progress-row:last-child {
             margin-bottom: 0;
         }
+
+        /* Toast notification styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        .success-toast {
+            background-color: #fff1f0;
+            color: #102E47;
+            border: none;
+            border-radius: 8px;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-toast .toast-body {
+            padding: 1.25rem;
+        }
+
+        .toast-link {
+            color: #dc3545;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toast-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <?php include '../templates/header.php'; ?>
+
+    <!-- Toast Container -->
+    <div class="toast-container">
+        <div class="toast success-toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+            <div class="toast-body">
+                <div class="fw-bold mb-2">Destination Added to Tour!</div>
+                <div><a href="#" class="toast-link">Click here to view your Tour details</a></div>
+            </div>
+        </div>
+    </div>
 
     <main class="container py-4">
         <div class="d-flex flex-column mb-3">
@@ -439,10 +480,10 @@ session_start();
             </div>
             <div class="col-lg-3 position-relative">
                 <div class="sticky-top" style="top: 2rem;">
-                    <button class="btn text-white position-relative w-100 py-5 fw-bold" style="background-color: #EC6350; font-size: 1.5rem; text-align: left; padding-top: 10px; padding-left: 15px;">
-                        <span class="position-absolute" style="top: 10px; left: 15px;">Add To Your <br>Tour</span>
-						<br>
-						<br>
+                    <button class="btn text-white position-relative w-100 py-5 fw-bold" 
+                            style="background-color: #EC6350; font-size: 1.5rem; text-align: left; padding-top: 10px; padding-left: 15px;"
+                            onclick="showAddedToTourNotification()">
+                        <span class="position-absolute" style="top: 10px; left: 15px;">Add To Your Tour</span>
                         <span class="position-absolute" style="bottom: 15px; right: 15px;">
                             <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
                         </span>
@@ -528,6 +569,16 @@ session_start();
                 });
             });
         });
+
+        // Add notification functionality
+        function showAddedToTourNotification() {
+            const toast = new bootstrap.Toast(document.getElementById('successToast'), {
+                animation: true,
+                autohide: true,
+                delay: 5000
+            });
+            toast.show();
+        }
     </script>
 </body>
 </html>
