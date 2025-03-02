@@ -15,7 +15,6 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../../../public/assets/scripts/main.js"></script>
     <link rel="stylesheet" href="../../../public/assets/styles/employee/tourrequests.css">
 </head>
 
@@ -200,6 +199,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <script src="../../../public/assets/scripts/main.js"></script>
     <script src="../../../public/assets/scripts/employee/tourrequests.js"></script>
 </body>
 

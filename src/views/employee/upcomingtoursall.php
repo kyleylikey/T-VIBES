@@ -697,7 +697,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
                 </a>
             </li>
             <li class="nav-item">
-                <a href="" class="nav-link text-dark">
+                <a href="javascript:void(0);" class="nav-link text-dark" onclick="logoutConfirm()">
                     <i class="bi bi-box-arrow-right"></i>
                     <span class="d-none d-sm-inline">Sign Out</span>
                 </a>
@@ -846,6 +846,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+<script src="../../../public/assets/scripts/main.js"></script>
 <script src="../../../public/assets/scripts/empupcomingtours.js"></script>
 
 </body>
