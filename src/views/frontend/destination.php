@@ -483,7 +483,9 @@ session_start();
                     <button class="btn text-white position-relative w-100 py-5 fw-bold" 
                             style="background-color: #EC6350; font-size: 1.5rem; text-align: left; padding-top: 10px; padding-left: 15px;"
                             onclick="showAddedToTourNotification()">
-                        <span class="position-absolute" style="top: 10px; left: 15px;">Add To Your Tour</span>
+                        <span class="position-absolute" style="top: 10px; left: 15px;">Add To Your <br>Tour</span>
+						<br>
+						<br>
                         <span class="position-absolute" style="bottom: 15px; right: 15px;">
                             <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
                         </span>
