@@ -1,75 +1,7 @@
 <?php
-session_start();
-require_once '../../controllers/helpers.php';
+require_once '../../controllers/reviewscontroller.php';
+include '../../../includes/auth.php';
 require_once '../../config/dbconnect.php';
-
-if (!isset($_SESSION['userid'])) {
-    header('Location: ../frontend/login.php'); 
-    exit();
-}
-
-if ($_SESSION['usertype'] !== 'emp') {
-    echo "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <title>Access Denied</title>
-        <link rel='stylesheet' href='../../../public/assets/styles/main.css'>
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
-        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-        <script>
-            setTimeout(function() {
-                Swal.fire({
-                    iconHtml: '<i class=\"fas fa-exclamation-circle\"></i>',
-                    customClass: {
-                        icon: 'swal2-icon swal2-error-icon',
-                    },
-                    html: '<p style=\"font-size: 24px; font-weight: bold;\">Access Denied! You do not have permission to access this page.</p>',
-                    showConfirmButton: false,
-                    timer: 3000
-                }).then(() => {
-                    window.location.href = '../frontend/login.php';
-                });
-            }, 100);
-        </script>
-        <style>
-            .swal2-popup {
-                border-radius: 12px;
-                padding: 20px;
-            }
-            .swal2-icon.swal2-error-icon {
-                border: none;
-                font-size: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 60px;
-                height: 60px;
-                color: #102E47;
-            }
-        </style>
-    </head>
-    <body></body>
-    </html>";
-    exit();
-}
-
-$conn = (new Database())->getConnection();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_id'], $_POST['status'])) {
-    $review_id = $_POST['review_id'];
-    $status = $_POST['status'];
-    $stmt = $conn->prepare("UPDATE rev SET status = ? WHERE revid = ?");
-    $stmt->execute([$status, $review_id]);
-    exit;
-}
-
-$statusFilter = $_GET['status'] ?? 'submitted';
-$stmt = $conn->prepare("SELECT rev.revid, rev.review, rev.date, rev.status, users.username, sites.sitename FROM rev JOIN users ON rev.userid = users.userid JOIN sites ON rev.siteid = sites.siteid WHERE rev.status = ?");
-$stmt->execute([$statusFilter]);
-$reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -615,74 +547,7 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="../../../public/assets/scripts/main.js"></script>
+<script src="../../../public/assets/scripts/empreviews.js"></script>
 
-<script>
-    function filterReviews(status) {
-        window.location.href = '?status=' + status;
-    }
-
-    let currentReviewId;
-
-    function showModal(review) {
-        currentReviewId = review.revid;
-        document.querySelector(".modal-title").innerText = review.sitename;
-        document.querySelector(".modal-body p").innerText = review.review;
-        document.querySelector(".user-text h5").innerText = review.username;
-        document.querySelector(".user-text p").innerText = review.date;
-
-        const displayBtn = document.getElementById("displayBtn");
-        const archiveBtn = document.getElementById("archiveBtn");
-
-        if (review.status === "submitted") {
-            displayBtn.style.display = "inline-block";
-            archiveBtn.style.display = "inline-block";
-        } else {
-            displayBtn.style.display = "none";
-            archiveBtn.style.display = "none";
-        }
-
-        var modal = new bootstrap.Modal(document.getElementById('reviewsModal'));
-        modal.show();
-    }
-
-    function updateReviewStatus(status) {
-        Swal.fire({
-            iconHtml: status === 'displayed' ? '<i class="fas fa-thumbs-up"></i>' : '<i class="fas fa-thumbs-down"></i>',
-            title: status === 'displayed' ? "Display User Review?" : "Archive User Review?",
-            showCancelButton: true,
-            confirmButtonText: "Yes",
-            cancelButtonText: "No",
-            customClass: {
-                title: "swal2-title-custom",
-                icon: "swal2-icon-custom",
-                popup: "swal-custom-popup",
-                confirmButton: "swal-custom-btn",
-                cancelButton: "swal-custom-btn"
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch("reviews.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "review_id=" + currentReviewId + "&status=" + status
-                }).then(() => {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: status === 'displayed' ? "Successfully Displayed User Review!" : "Successfully Archived User Review!",
-                        timer: 3000,
-                        showConfirmButton: false,
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        }
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                });
-            }
-        });
-    }
-</script>
 </body>
 </html>
