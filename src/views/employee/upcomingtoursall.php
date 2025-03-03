@@ -16,11 +16,11 @@ require_once '../../controllers/upcomingtourscontroller.php';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
-            font-family: 'Nunito', sans-serif;
             box-sizing: border-box;
         }
-
+        
         .sidebar {
+            font-family: 'Raleway', sans-serif;
             position: fixed;
             top: 0;
             left: 0;
@@ -49,26 +49,38 @@ require_once '../../controllers/upcomingtourscontroller.php';
         }
 
         .nav-link {
-            color: #102E47 !important;
+            color: #434343 !important;
             padding: 10px;
             border-radius: 5px;
-            transition: background 0.3s ease;
+            font-weight: bold; 
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .nav-link.active {
-            background-color: #102E47 !important;
-            color: white !important;
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
             font-weight: bold;
+        }
+
+        .nav-link:hover {
+            background-color: #EC6350 !important; 
+            color: #FFFFFF !important;
         }
 
         .nav-link i {
             color: inherit; 
         }
+        
+        .employee-name.active {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+            font-weight: bold;
+        }
 
-        .nav-link:hover {
-            background-color: #102E47 !important; 
-            color: white !important;
-            transition: background 0.3s ease;
+        .sign-out.active {
+            background-color: #E7EBEE !important;
+            color: #102E47 !important;
+            font-weight: bold;
         }
 
         .content-container {
@@ -86,6 +98,11 @@ require_once '../../controllers/upcomingtourscontroller.php';
 
         .content-container h2 {
             font-weight: bold;
+        }
+
+        .content-container h2, 
+        .content-container .date h2 {
+            color: #434343 !important;
         }
 
         .header {
@@ -653,17 +670,16 @@ require_once '../../controllers/upcomingtourscontroller.php';
             </a>
         </div>
 
-        
         <div class="menu-section">
             <ul class="nav nav-pills flex-column mb-4">
                 <li class="nav-item mb-4">
-                    <a href="home.php" class="nav-link text-dark">
+                    <a href="home.php" class="nav-link">
                         <i class="bi bi-grid"></i>
                         <span class="d-none d-sm-inline">Overview</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="tourrequests.php" class="nav-link text-dark">
+                    <a href="tourrequests.php" class="nav-link">
                         <i class="bi bi-map"></i>
                         <span class="d-none d-sm-inline">Tour Requests</span>
                     </a>
@@ -675,13 +691,13 @@ require_once '../../controllers/upcomingtourscontroller.php';
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="reviews.php" class="nav-link text-dark">
+                    <a href="reviews.php" class="nav-link">
                         <i class="bi bi-pencil-square"></i>
                         <span class="d-none d-sm-inline">Reviews</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="touristsites.php" class="nav-link text-dark">
+                    <a href="touristsites.php" class="nav-link">
                         <i class="bi bi-image"></i>
                         <span class="d-none d-sm-inline">Tourist Sites</span>
                     </a>
@@ -691,13 +707,13 @@ require_once '../../controllers/upcomingtourscontroller.php';
         
         <ul class="nav nav-pills flex-column mb-4">
             <li class="nav-item mb-3">
-                <a href="" class="nav-link active">
+                <a href="" class="nav-link employee-name active">
                     <i class="bi bi-person-circle"></i>
                     <span class="d-none d-sm-inline">Employee Name</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="javascript:void(0);" class="nav-link text-dark" onclick="logoutConfirm()">
+                <a href="javascript:void(0);" class="nav-link sign-out active" onclick="logoutConfirm()">
                     <i class="bi bi-box-arrow-right"></i>
                     <span class="d-none d-sm-inline">Sign Out</span>
                 </a>

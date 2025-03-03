@@ -17,11 +17,11 @@ require_once '../../controllers/homecontroller.php';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
-            font-family: 'Nunito', sans-serif;
             box-sizing: border-box;
         }
-
+        
         .sidebar {
+            font-family: 'Raleway', sans-serif;
             position: fixed;
             top: 0;
             left: 0;
@@ -31,7 +31,7 @@ require_once '../../controllers/homecontroller.php';
             flex-direction: column;
             justify-content: space-between;
             padding: 20px;
-            background-color: white;
+            background-color: #FFFFFF;
             z-index: 1000;
             transition: all 0.3s ease-in-out;
         }
@@ -50,26 +50,38 @@ require_once '../../controllers/homecontroller.php';
         }
 
         .nav-link {
-            color: #102E47 !important;
+            color: #434343 !important;
             padding: 10px;
             border-radius: 5px;
-            transition: background 0.3s ease;
+            font-weight: bold; 
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .nav-link.active {
-            background-color: #102E47 !important;
-            color: white !important;
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
             font-weight: bold;
+        }
+
+        .nav-link:hover {
+            background-color: #EC6350 !important; 
+            color: #FFFFFF !important;
         }
 
         .nav-link i {
             color: inherit; 
         }
+        
+        .employee-name.active {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+            font-weight: bold;
+        }
 
-        .nav-link:hover {
-            background-color: #102E47 !important; 
-            color: white !important;
-            transition: background 0.3s ease;
+        .sign-out.active {
+            background-color: #E7EBEE !important;
+            color: #102E47 !important;
+            font-weight: bold;
         }
 
         .content-container {
@@ -103,10 +115,15 @@ require_once '../../controllers/homecontroller.php';
             font-weight: bold;
         }
 
+        .content-container h2, 
+        .content-container .date h2 {
+            color: #434343 !important;
+        }
+
         .info-box {
             position: relative;
             min-height: 150px;
-            min-width: 200px; 
+            min-width: 200px;
             background-color: #729AB8;
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
@@ -116,34 +133,53 @@ require_once '../../controllers/homecontroller.php';
             justify-content: space-between;
             align-items: flex-start;
             text-align: left;
+            color: #FFFFFF; 
         }
 
         .info-box span {
             font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 4px;
+            font-weight: bold; 
+            color: #FFFFFF; 
+        }
+
+        .info-box h1 {
+            font-weight: 900;
+            align-self: flex-end;
+            color: #FFFFFF; 
         }
 
         .info-box i {
             font-size: 40px;
             opacity: 0.3;
             align-self: flex-end;
+            color: inherit; 
         }
 
-        .info-box h1 {
-            font-weight: bold;
-            align-self: flex-end;
+        
+        .latest-reviews-box, .latest-tours-box {
+            background-color: rgba(114, 154, 184, 0.2); 
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            color: #434343; 
         }
 
+        .latest-reviews-box span, .latest-tours-box span {
+            font-size: 18px;
+            font-weight: bold; 
+            color: #434343;
+        }
+
+        
         .table-responsive {
-            overflow-x: auto; 
+            overflow-x: auto;
             width: 100%;
         }
 
         table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 10px; 
+            border-spacing: 0 10px;
             margin: auto;
             text-align: center;
             overflow-x: auto;
@@ -151,7 +187,7 @@ require_once '../../controllers/homecontroller.php';
         }
 
         thead th {
-            color: black;
+            color: #434343; 
             font-weight: bold;
             padding-bottom: 10px;
             background: none !important;
@@ -160,9 +196,10 @@ require_once '../../controllers/homecontroller.php';
         }
 
         tbody tr {
-            background: #E7EBEE;
+            background: #FFFFFF; 
             border-radius: 15px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            color: #434343; 
         }
 
         tbody tr td {
@@ -186,8 +223,8 @@ require_once '../../controllers/homecontroller.php';
             font-weight: bold;
             border: 2px solid #102E47;
             border-radius: 25px;
-            background-color: white;
-            color: #102E47;
+            background-color: #FFFFFF; 
+            color: #434343; 
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
@@ -197,12 +234,8 @@ require_once '../../controllers/homecontroller.php';
 
         .btn-custom:hover {
             background-color: #102E47;
-            color: white;
-        }
-
-        .star-icon {
-            font-size: 14px !important; 
-            color: #434343 !important;
+            color: #FFFFFF;
+            border: 2px solid #102E47;
         }
 
         .swal2-icon {
@@ -244,15 +277,40 @@ require_once '../../controllers/homecontroller.php';
             color: white !important;
         }
 
+        .info-box span,
+        .info-box h1,
+        .info-box i,
+        .table,
+        .btn-custom,
+        .swal2-title-custom,
+        .swal-custom-btn {
+            font-family: 'Nunito', sans-serif !important;
+        }
+
         @media (max-width: 912px) {
             .sidebar {
                 width: 200px; 
                 padding: 15px;
+                background-color: #FFFFFF; 
             }
 
             .nav-link {
                 font-size: 14px; 
                 padding: 8px; 
+                color: #434343 !important; 
+                font-weight: bold; 
+                transition: background 0.3s ease, color 0.3s ease;
+            }
+
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .nav-link:hover {
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
             }
 
             .menu-section {
@@ -271,6 +329,7 @@ require_once '../../controllers/homecontroller.php';
             .sidebar {
                 width: 80px;
                 padding: 10px;
+                background-color: #FFFFFF;
             }
 
             .sidebar img {
@@ -285,6 +344,8 @@ require_once '../../controllers/homecontroller.php';
             .nav-link {
                 text-align: center;
                 padding: 10px;
+                color: #434343 !important; 
+                font-weight: bold;
             }
 
             .nav-link span {
@@ -292,15 +353,26 @@ require_once '../../controllers/homecontroller.php';
             }
 
             .nav-link.active {
-                background-color: #102E47 !important;
-                color: white !important;
-                border-radius: 5px;
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
             }
 
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .header {
@@ -349,11 +421,17 @@ require_once '../../controllers/homecontroller.php';
             .sidebar {
                 width: 70px;
                 padding: 5px;
+                background-color: #FFFFFF;
             }
 
             .main-content {
                 margin-left: 75px;
                 width: calc(100% - 75px);
+            }
+
+            .nav-link {
+                color: #434343 !important;
+                font-weight: bold;
             }
 
             .nav-link i {
@@ -364,10 +442,27 @@ require_once '../../controllers/homecontroller.php';
                 display: none;
             }
 
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .info-box {
@@ -403,7 +498,6 @@ require_once '../../controllers/homecontroller.php';
             </a>
         </div>
 
-        
         <div class="menu-section">
             <ul class="nav nav-pills flex-column mb-4">
                 <li class="nav-item mb-4">
@@ -413,25 +507,25 @@ require_once '../../controllers/homecontroller.php';
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="tourrequests.php" class="nav-link text-dark">
+                    <a href="tourrequests.php" class="nav-link">
                         <i class="bi bi-map"></i>
                         <span class="d-none d-sm-inline">Tour Requests</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="upcomingtourstoday.php" class="nav-link text-dark">
+                    <a href="upcomingtourstoday.php" class="nav-link">
                         <i class="bi bi-geo"></i>
                         <span class="d-none d-sm-inline">Upcoming Tours</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="reviews.php" class="nav-link text-dark">
+                    <a href="reviews.php" class="nav-link">
                         <i class="bi bi-pencil-square"></i>
                         <span class="d-none d-sm-inline">Reviews</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="touristsites.php" class="nav-link text-dark">
+                    <a href="touristsites.php" class="nav-link">
                         <i class="bi bi-image"></i>
                         <span class="d-none d-sm-inline">Tourist Sites</span>
                     </a>
@@ -441,13 +535,13 @@ require_once '../../controllers/homecontroller.php';
         
         <ul class="nav nav-pills flex-column mb-4">
             <li class="nav-item mb-3">
-                <a href="" class="nav-link active">
+                <a href="" class="nav-link employee-name active">
                     <i class="bi bi-person-circle"></i>
                     <span class="d-none d-sm-inline">Employee Name</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="javascript:void(0);" class="nav-link text-dark" onclick="logoutConfirm()">
+                <a href="javascript:void(0);" class="nav-link sign-out active" onclick="logoutConfirm()">
                     <i class="bi bi-box-arrow-right"></i>
                     <span class="d-none d-sm-inline">Sign Out</span>
                 </a>
@@ -495,9 +589,9 @@ require_once '../../controllers/homecontroller.php';
 
             <div class="row mt-3 d-flex justify-content-center">
                 <div class="col-lg-6 col-md-12 col-12 mb-3">
-                    <div class="info-box">
+                    <div class="info-box latest-tours-box">
                         <span>Latest Tour Requests</span>
-                        <div class="table-responsive"> 
+                        <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -532,9 +626,9 @@ require_once '../../controllers/homecontroller.php';
                 </div>
 
                 <div class="col-lg-6 col-md-12 col-12 mb-3">
-                    <div class="info-box">
+                    <div class="info-box latest-reviews-box">
                         <span>Recent Reviews</span>
-                        <div class="table-responsive"> 
+                        <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>

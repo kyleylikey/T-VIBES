@@ -15,7 +15,720 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="../../../public/assets/styles/employee/tourrequests.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        .sidebar {
+            font-family: 'Raleway', sans-serif;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: white;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .sidebar img {
+            max-width: 100%; 
+            height: auto;
+            display: block; 
+            margin: auto;
+            transition: all 0.3s ease-in-out; 
+        }
+
+        .menu-section {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .nav-link {
+            color: #434343 !important;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold; 
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-link.active {
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            background-color: #EC6350 !important; 
+            color: #FFFFFF !important;
+        }
+
+        .nav-link i {
+            color: inherit; 
+        }
+        
+        .employee-name.active {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+            font-weight: bold;
+        }
+
+        .sign-out.active {
+            background-color: #E7EBEE !important;
+            color: #102E47 !important;
+            font-weight: bold;
+        }
+
+        .content-container {
+            background-color: #E7EBEE;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: all 0.3s ease-in-out;
+            width: calc(100% - 260px); 
+        }
+
+        .content-container h2 {
+            font-weight: bold;
+        }
+
+        .content-container h2, 
+        .content-container .date h2 {
+            color: #434343 !important;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; 
+            gap: 10px; 
+        }
+
+        .date {
+            text-align: right; 
+            min-width: 150px; 
+            flex-shrink: 0; 
+        }
+
+        .info-box {
+            position: relative;
+            min-height: 150px;
+            min-width: 200px; 
+            background-color: #729AB8;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .info-box span {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .info-box i {
+            font-size: 40px;
+            opacity: 0.3;
+            align-self: flex-end;
+        }
+
+        .table-responsive {
+            overflow-x: auto; 
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px; 
+            margin: auto;
+            text-align: center;
+            overflow-x: auto;
+            min-width: 500px;
+        }
+
+        thead th {
+            color: black;
+            font-weight: bold;
+            padding-bottom: 10px;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        tbody tr {
+            background: #E7EBEE;
+            border-radius: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
+        }
+
+        tbody tr td {
+            padding: 10px;
+            border: none;
+        }
+
+        tbody tr td:first-child {
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+        }
+
+        tbody tr td:last-child {
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .stepper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: white; 
+            border: 4px solid #102E47; 
+            color: #102E47; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .dashed-line {
+            width: 2px;
+            height: 120px; /* Adjust height dynamically */
+            border-left: 4px dashed #102E47;
+        }
+
+        .destination-card {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            width: 100%;
+            min-width: 360px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .image-placeholder {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #E7EBEE;
+            border-radius: 8px;
+        }
+
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .destination-info {
+            margin-left: 12px;
+        }
+
+        .destination-info h6 {
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        .destination-info p {
+            margin-bottom: 0;
+            color: #6c757d;
+        }
+
+        .modal-body {
+            display: flex;
+            align-items: center; 
+            gap: 20px;
+        }
+
+        .d-flex {
+            display: flex;
+            gap: 20px;
+        }
+
+        .destination-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+        }
+
+        .modal-dialog {
+            max-width: 50%;
+        }
+
+        .modal-content {
+            min-height: 50%; 
+            border-radius: 25px;
+        }
+
+        .summary-container {
+            flex-grow: 1; 
+            min-height: 250px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .summary-container p:nth-child(1) { margin-bottom: 20px; } /* Date Created */
+        .summary-container p:nth-child(2) { margin-bottom: 20px; } /* Number of People */
+        .summary-container p:nth-child(3) { margin-bottom: 25px; } /* Estimated Fees */
+
+        .summary-container p {
+            margin-bottom: 5px; 
+        }
+
+        .estimated-fees {
+            display: flex;
+            flex-direction: column;
+            gap: 4px; 
+            justify-content: flex-end;
+            text-align: right;
+        }
+
+        .estimated-fees p {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: -20px;
+        }
+
+        .total-price {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            border-top: none;
+        }
+
+        .btn-custom {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #102E47; 
+            border-radius: 25px;
+            background-color: white;
+            color: #102E47;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #102E47;
+            color: white;
+        }
+
+        .modal-sm-custom {
+            max-width: 35%; 
+        }
+
+        .modal-content {
+            border-radius: 25px; 
+        }
+
+        .form-control {
+            resize: none; 
+        }
+
+        .swal2-icon {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .swal2-icon-custom {
+            font-size: 10px; 
+            color: #102E47; 
+        }
+
+        .swal2-title-custom {
+            font-size: 24px !important;
+            font-weight: bold;
+            color: #434343 !important;
+        }
+
+        .swal-custom-popup {
+            padding: 20px;
+            border-radius: 25px;
+        }
+
+        .swal-custom-btn {
+            padding: 10px 20px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border: 2px solid #102E47 !important;
+            border-radius: 25px !important;
+            background-color: white !important;
+            color: #102E47 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .swal-custom-btn:hover {
+            background-color: #102E47 !important;
+            color: white !important;
+        }
+
+        @media (max-width: 1280px) {
+            .modal-sm-custom {
+                max-width: 50%;
+            }
+
+            .modal-dialog {
+                max-width: 60%;
+            }
+
+            .destination-card {
+                max-width: 300px;
+            }
+
+            .circle {
+                width: 25px;
+                height: 25px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 912px) {
+            .sidebar {
+                width: 200px; 
+                padding: 15px;
+            }
+
+            .nav-link {
+                font-size: 14px; 
+                padding: 8px; 
+            }
+
+            .menu-section {
+                margin-top: auto;
+                margin-bottom: auto;
+                padding: 10px 0; 
+            }
+
+            .main-content {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+
+            .modal-sm-custom {
+                max-width: 65%;
+            }
+
+            .modal-dialog {
+                max-width: 65%;
+            }
+
+            .modal-body {
+                flex-direction: column;
+                align-items: center;
+                margin-top: 20px;
+            }
+
+            .summary-container {
+                text-align: left; 
+                align-items: flex-start;
+                margin-top: 20px;
+            }
+
+            .destination-container {
+                align-items: center;
+            }
+
+            .estimated-fees {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .estimated-fees p {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .estimated-fees span {
+                margin-left: 120px;
+                text-align: right;
+            }
+
+            .total-price {
+                text-align: right;
+                width: 100%;
+                font-weight: bold;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                padding: 10px;
+            }
+
+            .sidebar img {
+                max-width: 60px; 
+            }
+
+            .main-content {
+                margin-left: 90px; 
+                width: calc(100% - 90px); 
+            }
+
+            .nav-link {
+                text-align: center;
+                padding: 10px;
+            }
+
+            .nav-link span {
+                display: none; 
+            }
+
+            .nav-link.active {
+                background-color: #102E47 !important;
+                color: white !important;
+                border-radius: 5px;
+            }
+
+            .nav-link:hover {
+                background-color: #102E47 !important; 
+                color: white !important;
+                transition: background 0.3s ease;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .date {
+                text-align: center; 
+                width: 100%; 
+            }
+
+            .row {
+                justify-content: center !important;
+            }
+
+            .info-box {
+                width: 100% !important; 
+                max-width: 300px; 
+                text-align: center;
+                align-items: center;
+                margin: 0 auto; 
+            }
+
+            .info-box i {
+                align-self: center;
+            }
+
+            .table-responsive {
+                overflow-x: auto; 
+            }
+
+            table {
+                font-size: 14px; 
+            }
+
+            thead th, tbody td {
+                white-space: nowrap; 
+                padding: 5px; 
+            }
+
+            .modal-sm-custom {
+                max-width: 70%;
+            }
+
+            .modal-dialog {
+                max-width: 70%;
+            }
+
+            .modal-body {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .destination-card {
+                max-width: 250px;
+            }
+
+            .summary-container {
+                text-align: left; 
+                align-items: flex-start;
+                margin-top: 20px;
+            }
+
+            .btn-custom {
+                width: 100%;
+            }
+
+            .estimated-fees {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .estimated-fees p {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .estimated-fees span {
+                margin-left: 120px;
+                text-align: right;
+            }
+
+            .total-price {
+                text-align: right;
+                width: 100%;
+                font-weight: bold;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .circle {
+                border: 2px solid #102E47;
+            }
+            .dashed-line {
+                border-left: 2px dashed #102E47;
+            }
+            .sidebar {
+                width: 70px;
+                padding: 5px;
+            }
+
+            .main-content {
+                margin-left: 75px;
+                width: calc(100% - 75px);
+            }
+
+            .nav-link i {
+                font-size: 20px;
+            }
+
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link:hover {
+                background-color: #102E47 !important; 
+                color: white !important;
+                transition: background 0.3s ease;
+            }
+
+            .info-box {
+                min-height: 120px;
+                min-width: auto;
+                padding: 10px;
+            }
+
+            .info-box i {
+                font-size: 30px;
+            }
+
+            table {
+                font-size: 12px;
+                overflow-x: auto;
+            }
+
+            tbody tr td {
+                padding: 5px; 
+            }
+
+            .modal-sm-custom {
+                max-width: 100%;
+            }
+
+            .modal-dialog {
+                max-width: 100%;
+            }
+
+            .destination-card {
+                max-width: 100%;
+            }
+
+            .summary-container {
+                text-align: left; /* Changed from center */
+                align-items: flex-start;
+                margin-top: 20px;
+            }
+
+            .btn-custom {
+                width: 100%;
+            }
+
+            .circle {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+
+            .estimated-fees {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .estimated-fees p {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .estimated-fees span {
+                margin-left: 120px;
+                text-align: right;
+            }
+
+            .total-price {
+                text-align: right;
+                width: 100%;
+                font-weight: bold;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .estimated-fees span {
+                margin-left: 70px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -26,11 +739,10 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             </a>
         </div>
 
-
         <div class="menu-section">
             <ul class="nav nav-pills flex-column mb-4">
                 <li class="nav-item mb-4">
-                    <a href="home.php" class="nav-link text-dark">
+                    <a href="home.php" class="nav-link">
                         <i class="bi bi-grid"></i>
                         <span class="d-none d-sm-inline">Overview</span>
                     </a>
@@ -42,35 +754,35 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="upcomingtourstoday.php" class="nav-link text-dark">
+                    <a href="upcomingtourstoday.php" class="nav-link">
                         <i class="bi bi-geo"></i>
                         <span class="d-none d-sm-inline">Upcoming Tours</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="reviews.php" class="nav-link text-dark">
+                    <a href="reviews.php" class="nav-link">
                         <i class="bi bi-pencil-square"></i>
                         <span class="d-none d-sm-inline">Reviews</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="touristsites.php" class="nav-link text-dark">
+                    <a href="touristsites.php" class="nav-link">
                         <i class="bi bi-image"></i>
                         <span class="d-none d-sm-inline">Tourist Sites</span>
                     </a>
                 </li>
             </ul>
         </div>
-
+        
         <ul class="nav nav-pills flex-column mb-4">
             <li class="nav-item mb-3">
-                <a href="" class="nav-link active">
+                <a href="" class="nav-link employee-name active">
                     <i class="bi bi-person-circle"></i>
                     <span class="d-none d-sm-inline">Employee Name</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="javascript:void(0);" class="nav-link text-dark" onclick="logoutConfirm()">
+                <a href="javascript:void(0);" class="nav-link sign-out active" onclick="logoutConfirm()">
                     <i class="bi bi-box-arrow-right"></i>
                     <span class="d-none d-sm-inline">Sign Out</span>
                 </a>
