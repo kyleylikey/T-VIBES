@@ -558,7 +558,7 @@ require_once '../../controllers/homecontroller.php';
                                 </tbody>
                             </table>
                         </div>
-                        <button class="btn-custom" onclick="window.location.href='reviews.php'">See All</button>
+                        <button class="btn-custom" onclick="window.location.href='reviews.php?status=displayed'">See All</button>
                     </div>
                 </div>
             </div>
