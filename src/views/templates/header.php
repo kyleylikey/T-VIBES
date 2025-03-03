@@ -2,16 +2,53 @@
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <style>
-    .active, .nav:hover {
-        font-weight: bold;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
+    body {
+        font-family: Arial, sans-serif !important;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f5f5; /* Light gray background */
+    }
+   
     .logoforsmall {
         display: none;
     }
 
     .logo {
         margin: 8px;
+    }
+    .object-fit-cover {
+        object-fit: cover;
+    }
+    .navbar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    header div{
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px; 
+    }
+
+    header a {
+        text-decoration: none; 
+        font-size: 20px; 
+    }
+
+    header .btn {
+        font-size: 40px;
+        border: none; 
+        padding: 10px; 
+        border-radius: 5px; 
+        cursor: pointer;
     }
     
     @media screen and (max-width: 768px) {
@@ -38,48 +75,41 @@ $current_page = basename($_SERVER['PHP_SELF']);
 </head>
 </head>
 <header>
-          <nav class="navbar navbar-expand-lg navbar-light bg-white">
-            <div class="container-fluid">
-			<img src="/T-VIBES//public/assets/images/headerlogo.jpg" alt="" class="img-fluid" width="250" height="82"> 
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse ml-2" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item active">
-                    <a class="nav-link mb-0" href="/T-VIBES/public/#explore" style="margin-right: 16px;">Explore</a>
-                  </li>
-                  <li class="nav-item active">
-                    <a class="nav-link mb-0" href="/T-VIBES/public/#about" style="margin-right: 16px;">About Us</a>
-                  </li>
-                  <li class="nav-item active">
-                    <a class="nav-link mb-0" href="/T-VIBES/public/#contact">Contact</a>
-                  </li>
-                </ul>
-				<ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
-				<div>
-                    <a class="mx-2" href="<?php 
-                    if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
-                        echo "/T-VIBES/src/views/frontend/login.php";
-                    }
-                    else {
-                        echo "/T-VIBES/src/views/frontend/tours/tourrequest.php";
-                    }
-                    ?>" class="btn" style="margin-right: 12px;">
-                        <i class="h2 <?php echo $current_page == 'tourrequest.php' ? 'h2 bi bi-map-fill' : 'h2 bi bi-map'; ?>" onmouseover="this.className='h2 bi bi-map-fill'" onmouseout="this.className='<?php echo $current_page == 'tourrequest.php' ? 'h2 bi bi-map-fill' : 'h2 bi bi-map'; ?>'"></i>
-                    </a>
-                    <a class="mx-2" href="<?php 
-                    if (!isset($_SESSION['userid']) || (isset($_SESSION['usertype']) && $_SESSION['usertype'] != 'trst')) {
-                        echo "/T-VIBES/src/views/frontend/login.php";
-                    }
-                    else {
-                        echo "/T-VIBES/src/views/frontend/account.php";
-                    }
-                    ?>" class="btn">
-                        <i class="<?php echo $current_page == 'account.php' ? 'h2 bi bi-person-fill' : 'h2 bi bi-person'; ?>" onmouseover="this.className='h2 bi bi-person-fill'" onmouseout="this.className='<?php echo $current_page == 'account.php' ? 'h2 bi bi-person-fill' : 'h2 bi bi-person'; ?>'"></i>
-                    </a>
-				</ul>`
-              </div>
-            </div>
-          </nav>
-    </header>
+			<nav class="navbar navbar-expand-lg navbar-light bg-white">
+				<div class="container-fluid">
+				<img src="/T-VIBES/public/assets/images/headerlogo.jpg" alt="" class="img-fluid" width="250" height="82"> 
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarText">
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>" aria-current="page" href="/T-VIBES/public/index.php">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo ($current_page == 'explore.php') ? 'active' : ''; ?>" href="/T-VIBES/src/views/frontend/explore.php">Explore</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo ($current_page == 'aboutus.php') ? 'active' : ''; ?>" href="/T-VIBES/src/views/frontend/aboutus.php">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo ($current_page == 'contactus.php') ? 'active' : ''; ?>" href="/T-VIBES/src/views/frontend/contactus.php">Contact</a>
+                        </li>
+					</ul>
+					<ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
+					<li class="nav-item">
+							<a href="T-VIBES/src/views/frontend/signup.php" class="nav-link">Sign Up</a>
+						</li>
+						<li class="nav-item">
+						<a href="T-VIBES/src/views/frontend/login.php" 
+						class="btn btn-danger rounded-pill px-3 py-1" 
+						style="font-size: 1.3rem;">
+							Login
+						</a>
+					</li>
+					</ul>`
+
+				</div>
+				</div>
+			</nav>
+		</header>
