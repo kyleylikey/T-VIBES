@@ -113,13 +113,13 @@ class Tour {
     }    
 
     public function getUpcomingToursCount() {
-        $query = "SELECT COUNT(DISTINCT userid) AS upcoming_count 
+        $query = "SELECT COUNT(DISTINCT CONCAT(userid, '_', date)) AS upcoming_count 
                   FROM tour 
                   WHERE status = 'accepted' AND date >= CURDATE()";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['upcoming_count'];
-    }    
+    }            
 
     public function getLatestTourRequests() {
         $query = "SELECT users.name, tour.date AS travel_date, COUNT(tour.siteid) AS destinations, 
