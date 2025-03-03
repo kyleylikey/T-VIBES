@@ -505,23 +505,32 @@ require_once '../../controllers/homecontroller.php';
                                         <th>Submitted On</th>
                                         <th>Destinations</th>
                                         <th>Travel Date</th>
+                                        <th>Pax</th> 
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($latestRequests as $request) : ?>
+                                    <?php if (empty($latestRequests)) : ?>
                                         <tr>
-                                            <td><?php echo $request['name']; ?></td>
-                                            <td><?php echo date('d M Y', strtotime($request['created_at'])); ?></td>
-                                            <td><?php echo $request['destinations']; ?></td>
-                                            <td><?php echo date('d M Y', strtotime($request['travel_date'])); ?></td>
+                                            <td colspan="5" class="text-center">No tour requests available</td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php else : ?>
+                                        <?php foreach ($latestRequests as $request) : ?>
+                                            <tr>
+                                                <td><?php echo $request['name']; ?></td>
+                                                <td><?php echo date('d M Y', strtotime($request['created_at'])); ?></td>
+                                                <td><?php echo $request['destinations']; ?></td>
+                                                <td><?php echo date('d M Y', strtotime($request['travel_date'])); ?></td>
+                                                <td><?php echo $request['companions']; ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
                         <button class="btn-custom" onclick="window.location.href='tourrequests.php'">See All</button>    
                     </div>
                 </div>
+
                 <div class="col-lg-6 col-md-12 col-12 mb-3">
                     <div class="info-box">
                         <span>Recent Reviews</span>
@@ -530,22 +539,22 @@ require_once '../../controllers/homecontroller.php';
                                 <thead>
                                     <tr>
                                         <th>Author</th>
-                                        <th>Rating</th>
                                         <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($recentReviews as $review) : ?>
+                                    <?php if (empty($recentReviews)) : ?>
                                         <tr>
-                                            <td><?php echo $review['author']; ?></td>
-                                            <td>
-                                                <?php for ($i = 0; $i < $review['rating']; $i++) : ?>
-                                                    <i class="bi bi-star-fill star-icon"></i>
-                                                <?php endfor; ?>
-                                            </td>
-                                            <td><?php echo date('d M Y', strtotime($review['date'])); ?></td>
+                                            <td colspan="2" class="text-center">No reviews available</td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php else : ?>
+                                        <?php foreach ($recentReviews as $review) : ?>
+                                            <tr>
+                                                <td><?php echo $review['author']; ?></td>
+                                                <td><?php echo date('d M Y', strtotime($review['date'])); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>

@@ -122,7 +122,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
                                         }
                                     } 
                                     else {
-                                        echo "<p>No requests found.</p>";
+                                        echo "<tr><td colspan='5' class='text-center'>No requests found.</td></tr>";
                                     }
                                     ?>
                                 </tbody>
