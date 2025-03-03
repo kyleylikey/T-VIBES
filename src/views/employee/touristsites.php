@@ -1,8 +1,8 @@
 <?php
 require_once '../../controllers/helpers.php';
-require_once '../../controllers/sitecontroller.php';
 include '../../../includes/auth.php';
 require_once '../../config/dbconnect.php';
+require_once '../../controllers/sitecontroller.php';
 ?>
 
 <!DOCTYPE html>

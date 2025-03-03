@@ -1,7 +1,7 @@
 <?php
-require_once '../../controllers/reviewscontroller.php';
 include '../../../includes/auth.php';
 require_once '../../config/dbconnect.php';
+require_once '../../controllers/reviewscontroller.php';
 ?>
 
 <!DOCTYPE html>

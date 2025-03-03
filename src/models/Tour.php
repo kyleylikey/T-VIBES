@@ -104,6 +104,32 @@ class Tour {
         $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
+    public function getPendingToursCount() {
+        $query = "SELECT COUNT(*) AS pending_count FROM tour WHERE status = 'request'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['pending_count'];
+    }
+
+    public function getUpcomingToursCount() {
+        $query = "SELECT COUNT(*) AS upcoming_count FROM tour WHERE status = 'accepted' AND date >= CURDATE()";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['upcoming_count'];
+    }
+
+    public function getLatestTourRequests() {
+        $query = "SELECT users.name, tour.date AS travel_date, COUNT(tour.siteid) AS destinations, tour.created_at 
+                  FROM tour 
+                  JOIN users ON tour.userid = users.userid 
+                  GROUP BY tour.tourid 
+                  ORDER BY tour.created_at DESC 
+                  LIMIT 6";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 
 

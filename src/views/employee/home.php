@@ -1,6 +1,8 @@
 <?php
 require_once '../../controllers/helpers.php';
 include '../../../includes/auth.php';
+require_once '../../config/dbconnect.php';
+require_once '../../controllers/homecontroller.php';
 ?>
 
 <!DOCTYPE html>
@@ -178,18 +180,24 @@ include '../../../includes/auth.php';
             border-bottom-right-radius: 15px;
         }
 
-        .btn-primary {
-            background-color: #102E47;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 25px;
+        .btn-custom {
+            padding: 10px 20px;
+            font-size: 16px;
             font-weight: bold;
+            border: 2px solid #102E47;
+            border-radius: 25px;
+            background-color: white;
+            color: #102E47;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
             display: block;
             margin: 5px auto 0 auto;
         }
 
-        .btn-primary:hover {
-            background-color: #163A5A; 
+        .btn-custom:hover {
+            background-color: #102E47;
+            color: white;
         }
 
         .star-icon {
@@ -466,23 +474,21 @@ include '../../../includes/auth.php';
                     <div class="info-box">
                         <span>Pending Tours</span>
                         <i class="bi bi-bookmark-fill"></i>
-                        <h1>12</h1>
+                        <h1><?php echo $pendingTours; ?></h1>
                     </div>
                 </div>
-
                 <div class="col-lg-4 col-md-6 col-12 mb-3">
                     <div class="info-box">
                         <span>Upcoming Tours</span>
                         <i class="bi bi-signpost"></i>
-                        <h1>8</h1>
+                        <h1><?php echo $upcomingTours; ?></h1>
                     </div>
                 </div>
-
                 <div class="col-lg-4 col-md-6 col-12 mb-3">
                     <div class="info-box">
                         <span>Pending Reviews</span>
                         <i class="bi bi-pencil-fill"></i>
-                        <h1>10</h1>
+                        <h1><?php echo $pendingReviews; ?></h1>
                     </div>
                 </div>
             </div>
@@ -499,59 +505,23 @@ include '../../../includes/auth.php';
                                         <th>Submitted On</th>
                                         <th>Destinations</th>
                                         <th>Travel Date</th>
-                                        <th>Pax</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                        <td>DD MMM YY</td>
-                                        <td>2</td>
-                                    </tr>
+                                    <?php foreach ($latestRequests as $request) : ?>
+                                        <tr>
+                                            <td><?php echo $request['name']; ?></td>
+                                            <td><?php echo date('d M Y', strtotime($request['created_at'])); ?></td>
+                                            <td><?php echo $request['destinations']; ?></td>
+                                            <td><?php echo date('d M Y', strtotime($request['travel_date'])); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
-                        <button class="btn btn-primary">See All</button>
+                        <button class="btn-custom" onclick="window.location.href='tourrequests.php'">See All</button>    
                     </div>
                 </div>
-
                 <div class="col-lg-6 col-md-12 col-12 mb-3">
                     <div class="info-box">
                         <span>Recent Reviews</span>
@@ -565,80 +535,24 @@ include '../../../includes/auth.php';
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                        </td>
-                                        <td>DD MMM YY</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                        </td>
-                                        <td>DD MMM YY</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                        </td>
-                                        <td>DD MMM YY</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                        </td>
-                                        <td>DD MMM YY</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                        </td>
-                                        <td>DD MMM YY</td>
-                                    </tr>
-                                    <tr>
-                                        <td>User</td>
-                                        <td>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                            <i class="bi bi-star-fill star-icon"></i>
-                                        </td>
-                                        <td>DD MMM YY</td>
-                                    </tr>
+                                    <?php foreach ($recentReviews as $review) : ?>
+                                        <tr>
+                                            <td><?php echo $review['author']; ?></td>
+                                            <td>
+                                                <?php for ($i = 0; $i < $review['rating']; $i++) : ?>
+                                                    <i class="bi bi-star-fill star-icon"></i>
+                                                <?php endfor; ?>
+                                            </td>
+                                            <td><?php echo date('d M Y', strtotime($review['date'])); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
-                        <button class="btn btn-primary">See All</button>
+                        <button class="btn-custom" onclick="window.location.href='reviews.php'">See All</button>
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
