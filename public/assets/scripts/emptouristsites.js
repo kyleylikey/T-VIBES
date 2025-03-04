@@ -2,11 +2,10 @@ function bitmaskToDays(bitmaskStr) {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
     let result = [];
     
-    // Convert binary string to integer
     let bitmask = parseInt(bitmaskStr, 2);
 
     for (let i = 0; i < days.length; i++) {
-        if (bitmask & (1 << (6 - i))) { // Adjust the bit order
+        if (bitmask & (1 << (6 - i))) { 
             result.push(days[i]);
         }
     }
@@ -22,11 +21,11 @@ function daysToBitmask(daysString) {
     selectedDays.forEach(day => {
         const index = days.indexOf(day);
         if (index !== -1) {
-            bitmask |= (1 << (6 - index)); // Adjust bit position
+            bitmask |= (1 << (6 - index)); 
         }
     });
 
-    return bitmask.toString(2).padStart(7, '0'); // Convert to binary string
+    return bitmask.toString(2).padStart(7, '0'); 
 }
 
 
@@ -34,7 +33,7 @@ function updateBitmask() {
     let bitmask = 0;
     
     document.querySelectorAll('input[name="days[]"]:checked').forEach(checkbox => {
-        bitmask |= (1 << (6 - checkbox.value)); // Adjust for correct bit position
+        bitmask |= (1 << (6 - checkbox.value)); 
     });
 
     let binaryString = bitmask.toString(2).padStart(7, '0');
@@ -46,7 +45,7 @@ function aupdateBitmask() {
     let bitmask = 0;
     
     document.querySelectorAll('input[name="adays[]"]:checked').forEach(checkbox => {
-        bitmask |= (1 << (6 - checkbox.value)); // Adjust for correct bit position
+        bitmask |= (1 << (6 - checkbox.value)); 
     });
 
     let binaryString = bitmask.toString(2).padStart(7, '0');
@@ -116,113 +115,97 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document
-        .getElementById("editSiteForm")
-        .addEventListener("submit", function (event) {
-            event.preventDefault();
+    .getElementById("editSiteForm")
+    .addEventListener("submit", function (event) {
+        event.preventDefault();
 
-            const formData = new FormData(this);
+        const formData = new FormData(this);
 
-            fetch("../../controllers/sitecontroller.php", {
-                method: "POST",
-                body: formData,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.status === "success") {
-                        Swal.fire({
-                            icon: "success",
-                            html:
-                                '<p style="font-size: 24px; font-weight: bold;">' +
-                                data.message +
-                                "</p>",
-                            showConfirmButton: false,
-                            timer: 3000,
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            html:
-                                '<p style="font-size: 24px; font-weight: bold;">' +
-                                data.message +
-                                "</p>",
-                            showConfirmButton: false,
-                            timer: 3000,
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    Swal.fire({
-                        icon: "error",
-                        html: '<p style="font-size: 24px; font-weight: bold;">Something went wrong. Please try again later.</p>',
-                        showConfirmButton: false,
-                        timer: 3000,
-                    });
-                });
-        });
-
-        document
-        .getElementById("addSiteForm")
-        .addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            const formData = new FormData(this);
-            if (!inputSiteName.value || !inputSiteImage.files.length || !inputSitePrice.value || !inputaSiteOpDays.value || !inputSiteDesc.value) {
+        fetch("../../controllers/sitecontroller.php", {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
                 Swal.fire({
-                    iconHtml: '<i class="fas fa-exclamation-triangle"></i>',
-                    title: "Please fill out all fields!",
+                    iconHtml: data.status === "success" ? '<i class="fas fa-circle-check"></i>' : '<i class="fas fa-exclamation-circle"></i>',
+                    html: `<p class="swal2-title-custom">${data.message}</p>`,
+                    showConfirmButton: false,
+                    timer: 3000,
                     customClass: {
-                        title: "swal2-title-custom",
-                        icon: "swal2-icon-custom",
-                        popup: "swal-custom-popup"
+                        popup: "swal-custom-popup",
+                        icon: "swal2-icon-custom"
+                    }
+                }).then(() => {
+                    if (data.status === "success") location.reload();
+                });
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                Swal.fire({
+                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                    html: '<p class="swal2-title-custom">Something went wrong. Please try again later.</p>',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    customClass: {
+                        popup: "swal-custom-popup",
+                        icon: "swal2-icon-custom"
                     }
                 });
-            }
-            else {
+            });
+    });
+
+    document
+    .getElementById("addSiteForm")
+    .addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        if (!inputSiteName.value || !inputSiteImage.files.length || !inputSitePrice.value || !inputaSiteOpDays.value || !inputSiteDesc.value) {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "Please fill out all fields!",
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
+            });
+        } else {
             fetch("../../controllers/sitecontroller.php", {
                 method: "POST",
                 body: formData,
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    if (data.status === "success") {
-                        Swal.fire({
-                            icon: "success",
-                            html:
-                                '<p style="font-size: 24px; font-weight: bold;">' +
-                                data.message +
-                                "</p>",
-                            showConfirmButton: false,
-                            timer: 3000,
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            html:
-                                '<p style="font-size: 24px; font-weight: bold;">' +
-                                data.message +
-                                "</p>",
-                            showConfirmButton: false,
-                            timer: 3000,
-                        });
-                    }
+                    Swal.fire({
+                        iconHtml: data.status === "success" ? '<i class="fas fa-circle-check"></i>' : '<i class="fas fa-exclamation-circle"></i>',
+                        html: `<p class="swal2-title-custom">${data.message}</p>`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        customClass: {
+                            popup: "swal-custom-popup",
+                            icon: "swal2-icon-custom"
+                        }
+                    }).then(() => {
+                        if (data.status === "success") location.reload();
+                    });
                 })
                 .catch((error) => {
                     console.error("Error:", error);
                     Swal.fire({
-                        icon: "error",
-                        html: '<p style="font-size: 24px; font-weight: bold;">Something went wrong. Please try again later.</p>',
+                        iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                        html: '<p class="swal2-title-custom">Something went wrong. Please try again later.</p>',
                         showConfirmButton: false,
                         timer: 3000,
+                        customClass: {
+                            popup: "swal-custom-popup",
+                            icon: "swal2-icon-custom"
+                        }
                     });
                 });
-            }
-        });
-
+        }
+    });
 
     const fileInput = document.getElementById('imageUpload');
     const editfileInput = document.getElementById('editimageUpload');
@@ -264,6 +247,5 @@ document.addEventListener("DOMContentLoaded", function () {
             editpreviewIcon.style.display = 'block';
         }
     });
-
 
 });

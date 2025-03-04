@@ -126,44 +126,49 @@ require_once '../../controllers/reviewscontroller.php';
             border: 2px solid #102E47;
             border-radius: 25px;
             background-color: white;
-            color: #102E47;
+            color: #434343;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-right: 10px;
             margin-top: 10px;
             min-width: 80px;
             text-align: center;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .btn-custom.active {
             background-color: #102E47 !important;
-            color: white !important;
+            color: #FFFFFF !important;
             font-weight: bold;
         }
 
         .btn-custom:hover {
             background-color: #102E47;
-            color: white;
+            color: #FFFFFF;
+            font-weight: bold;
         }
 
         .info-box {
             height: 290px;
             width: 375px;
-            background-color: #729AB8;
+            background-color: #FFFFFF;
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             padding: 15px;
             margin-top: 15px;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .info-box span {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 4px;
+            color: #102E47;
         }
 
         .info-box p {
             text-align: justify;
+            color: #757575;
         }
 
         .info-box:hover {
@@ -176,7 +181,9 @@ require_once '../../controllers/reviewscontroller.php';
         }
 
         .modal-content {
-            border-radius: 25px; 
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important; 
+            background-color: #E7EBEE;
         }
 
         .modal-footer {
@@ -190,12 +197,17 @@ require_once '../../controllers/reviewscontroller.php';
         .modal-title {
             font-size: 24px;
             font-weight: bold;
-            color: #434343;
+            color: #102E47;
+        }
+
+        .modal-icon i {
+            color: #729AB8;
         }
 
         .modal-body p {
             font-size: 18px;
             text-align: justify;
+            color: #757575;
         }
 
         .user-info {
@@ -221,6 +233,7 @@ require_once '../../controllers/reviewscontroller.php';
         .user-text p {
             margin: 0;
             font-size: 14px;
+            color: #757575;
         }
 
         .swal2-icon {
@@ -231,7 +244,7 @@ require_once '../../controllers/reviewscontroller.php';
 
         .swal2-icon-custom {
             font-size: 10px; 
-            color: #102E47; 
+            color: #EC6350; 
         }
 
         .swal2-title-custom {
@@ -243,6 +256,7 @@ require_once '../../controllers/reviewscontroller.php';
         .swal-custom-popup {
             padding: 20px;
             border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .swal-custom-btn {
@@ -251,15 +265,15 @@ require_once '../../controllers/reviewscontroller.php';
             font-weight: bold !important;
             border: 2px solid #102E47 !important;
             border-radius: 25px !important;
-            background-color: white !important;
-            color: #102E47 !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
         }
 
         .swal-custom-btn:hover {
             background-color: #102E47 !important;
-            color: white !important;
+            color: #FFFFFF !important;
         }
 
         .no-reviews {
@@ -271,6 +285,7 @@ require_once '../../controllers/reviewscontroller.php';
             border-radius: 8px;
             width: fit-content;
             margin: 20px auto;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         @media (max-width: 1280px) {
@@ -298,6 +313,29 @@ require_once '../../controllers/reviewscontroller.php';
             .nav-link {
                 font-size: 14px; 
                 padding: 8px; 
+            }
+
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .nav-link:hover {
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .menu-section {
@@ -347,15 +385,26 @@ require_once '../../controllers/reviewscontroller.php';
             }
 
             .nav-link.active {
-                background-color: #102E47 !important;
-                color: white !important;
-                border-radius: 5px;
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
             }
 
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .header {
@@ -398,10 +447,27 @@ require_once '../../controllers/reviewscontroller.php';
                 display: none;
             }
 
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .btn-group {
@@ -537,8 +603,8 @@ require_once '../../controllers/reviewscontroller.php';
             <div class="modal-content p-4">
                 <div class="modal-header border-0 position-relative">
                     <h5 class="modal-title w-100">Site</h5>
-                    <div class="position-absolute end-0 d-flex align-items-center">
-                        <i class="bi bi-quote fs-3 text-secondary me-3"></i> 
+                    <div class="modal-icon position-absolute end-0 d-flex align-items-center">
+                        <i class="bi bi-quote fs-3 me-3"></i> 
                         <button type="button" class="btn-close me-3" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                 </div>

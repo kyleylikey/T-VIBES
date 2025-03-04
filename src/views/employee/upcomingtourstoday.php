@@ -126,33 +126,36 @@ require_once '../../controllers/upcomingtourscontroller.php';
             border: 2px solid #102E47;
             border-radius: 25px;
             background-color: white;
-            color: #102E47;
+            color: #434343;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-right: 10px;
             margin-top: 10px;
             min-width: 80px;
             text-align: center;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .btn-custom.active {
             background-color: #102E47 !important;
-            color: white !important;
+            color: #FFFFFF !important;
             font-weight: bold;
         }
 
         .btn-custom:hover {
             background-color: #102E47;
-            color: white;
+            color: #FFFFFF;
+            font-weight: bold;
         }
 
         .tour-container {
             margin-top: 30px;
-            background-color: #729AB8;
+            background-color: #FFFFFF;
             padding: 20px;
             border-radius: 10px;
             display: flex;
             gap: 10px;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .tour-list {
@@ -165,7 +168,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
             overflow-y: auto; 
             padding-right: 50px;
             scrollbar-width: thin;
-            scrollbar-color: transparent transparent; 
+            scrollbar-color: #102E47 #E7EBEE; 
         }
 
         .tour-list::-webkit-scrollbar {
@@ -176,14 +179,14 @@ require_once '../../controllers/upcomingtourscontroller.php';
         }
 
         .tour-list::-webkit-scrollbar-track {
-            background: rgba(231, 235, 238, 0.3); 
+            background: #E7EBEE; 
             border-radius: 6px;
         }
 
         .tour-list::-webkit-scrollbar-thumb {
-            background: rgba(16, 46, 71, 0.7);
+            background: #102E47;
             border-radius: 6px;
-            border: 2px solid rgba(231, 235, 238, 0.5);
+            border: 2px solid #E7EBEE;
             transition: background 0.3s ease-in-out;
         }
 
@@ -194,15 +197,15 @@ require_once '../../controllers/upcomingtourscontroller.php';
 
         .tour-list:hover::-webkit-scrollbar-thumb,
         .tour-list:focus-within::-webkit-scrollbar-thumb {
-            background: #102E47;
+            background: #729AB8;
         }
 
         .tour-list:hover {
-            scrollbar-color: rgba(16, 46, 71, 0.7) rgba(231, 235, 238, 0.3);
+            scrollbar-color: #102E47 #E7EBEE;
         }
 
         .tour-details {
-            background-color: white;
+            background-color: #E7EBEE;
             border-radius: 8px;
             padding: 20px;
             width: 60%;
@@ -214,9 +217,13 @@ require_once '../../controllers/upcomingtourscontroller.php';
             height: 100%; 
         }
 
+        .tour-details strong {
+            color: #434343;
+        }
+
         .tour-item {
-            background-color: white;
-            border: 2px solid #102E47;
+            background-color: #E7EBEE;
+            color: #434343;
             border-radius: 8px;
             padding: 20px;
             transition: background-color 0.3s, color 0.3s;
@@ -224,13 +231,14 @@ require_once '../../controllers/upcomingtourscontroller.php';
         }
 
         .tour-item:hover {
-            background-color: #102E47;
-            color: white;
+            background-color: rgba(114, 154, 184, 0.2);
+            color: #102E47;
         }
 
         .tour-item.active {
-            background-color: #102E47;
-            color: white;
+            background-color: rgba(114, 154, 184, 0.2);
+            color: #102E47;
+            border: 2px solid #102E47;
         }
 
         .tour-row {
@@ -246,6 +254,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
             display: block;
             flex-grow: 1; 
             margin-top: -15px;
+            color: #757575;
         }
 
         .button-container {
@@ -270,16 +279,20 @@ require_once '../../controllers/upcomingtourscontroller.php';
 
         .tour-info strong {
             white-space: nowrap;
+            color: #434343;
         }
 
         .tour-info span {
             margin-top: 5px;
+            color: #757575;
         }
 
         .modal-body {
             display: flex;
             align-items: center; 
             gap: 20px;
+            color: #434343;
+            font-weight: bold;
         }
 
         .modal-dialog {
@@ -287,7 +300,9 @@ require_once '../../controllers/upcomingtourscontroller.php';
         }
 
         .modal-content {
-            border-radius: 25px; 
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important; 
+            background-color: #E7EBEE;
         }
 
         .modal-sm-custom {
@@ -320,7 +335,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
 
         .swal2-icon-custom {
             font-size: 10px; 
-            color: #102E47; 
+            color: #EC6350; 
         }
 
         .swal2-title-custom {
@@ -332,6 +347,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
         .swal-custom-popup {
             padding: 20px;
             border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .swal-custom-btn {
@@ -340,15 +356,15 @@ require_once '../../controllers/upcomingtourscontroller.php';
             font-weight: bold !important;
             border: 2px solid #102E47 !important;
             border-radius: 25px !important;
-            background-color: white !important;
-            color: #102E47 !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
         }
 
         .swal-custom-btn:hover {
             background-color: #102E47 !important;
-            color: white !important;
+            color: #FFFFFF !important;
         }
 
         .no-tours-message {
@@ -360,6 +376,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
             border-radius: 8px;
             width: fit-content;
             margin: 20px auto;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         @media (max-width: 1280px) {
@@ -390,6 +407,29 @@ require_once '../../controllers/upcomingtourscontroller.php';
             .nav-link {
                 font-size: 14px; 
                 padding: 8px; 
+            }
+
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .nav-link:hover {
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .menu-section {
@@ -453,15 +493,26 @@ require_once '../../controllers/upcomingtourscontroller.php';
             }
 
             .nav-link.active {
-                background-color: #102E47 !important;
-                color: white !important;
-                border-radius: 5px;
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
             }
 
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .header {
@@ -525,10 +576,27 @@ require_once '../../controllers/upcomingtourscontroller.php';
                 display: none;
             }
 
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .btn-group {
@@ -784,7 +852,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
                 </div>
                 <div class="modal-body d-flex flex-column align-items-center">
                     <form id="editTourForm" class="w-75">
-                        <input type="hidden" id="editTourId"> <!-- Hidden field for tour ID -->
+                        <input type="hidden" id="editTourId"> 
                         <div class="mb-3">
                             <label for="tourSites" class="form-label">Sites</label>
                             <input type="text" class="form-control w-100" id="tourSites" readonly>
@@ -816,7 +884,7 @@ require_once '../../controllers/upcomingtourscontroller.php';
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="cancelTourId"> <!-- Hidden field for tour ID -->
+                    <input type="hidden" id="cancelTourId"> 
                     <textarea id="cancelReasonInput" class="form-control" rows="4" placeholder="Type here..."></textarea>
                 </div>
                 <div class="modal-footer justify-content-center">

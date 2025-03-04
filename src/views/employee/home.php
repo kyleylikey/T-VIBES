@@ -236,6 +236,7 @@ require_once '../../controllers/homecontroller.php';
             background-color: #102E47;
             color: #FFFFFF;
             border: 2px solid #102E47;
+            font-weight: bold;
         }
 
         .swal2-icon {
@@ -246,7 +247,7 @@ require_once '../../controllers/homecontroller.php';
 
         .swal2-icon-custom {
             font-size: 10px; 
-            color: #102E47; 
+            color: #EC6350; 
         }
 
         .swal2-title-custom {
@@ -258,6 +259,7 @@ require_once '../../controllers/homecontroller.php';
         .swal-custom-popup {
             padding: 20px;
             border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .swal-custom-btn {
@@ -266,15 +268,15 @@ require_once '../../controllers/homecontroller.php';
             font-weight: bold !important;
             border: 2px solid #102E47 !important;
             border-radius: 25px !important;
-            background-color: white !important;
-            color: #102E47 !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
         }
 
         .swal-custom-btn:hover {
             background-color: #102E47 !important;
-            color: white !important;
+            color: #FFFFFF !important;
         }
 
         .info-box span,
@@ -311,6 +313,18 @@ require_once '../../controllers/homecontroller.php';
             .nav-link:hover {
                 background-color: #EC6350 !important; 
                 color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .menu-section {

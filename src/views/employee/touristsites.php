@@ -131,6 +131,7 @@ require_once '../../controllers/sitecontroller.php';
             padding: 15px;
             margin-top: 15px;
             transition: background-color 0.3s ease, border-color 0.3s ease;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .plus-sign {
@@ -154,19 +155,19 @@ require_once '../../controllers/sitecontroller.php';
         }
 
         .add-site-box:hover {
-            background-color: #D0D5DA; 
-            border-color: #757575;
+            background-color: rgba(114, 154, 184, 0.2);  
+            border-color: #729AB8;
         }
 
         .add-site-box:hover .plus-sign,
         .add-site-box:hover .add-text {
-            color: #757575; 
+            color: #729AB8; 
         }
 
         .info-box {
             height: 290px;
             width: 375px;
-            background-color: #729AB8;
+            background-color: #E7EBEE;
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             padding: 15px;
@@ -176,6 +177,7 @@ require_once '../../controllers/sitecontroller.php';
             justify-content: center;
             position: relative;
             cursor: pointer;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .info-box span {
@@ -186,7 +188,7 @@ require_once '../../controllers/sitecontroller.php';
 
         .info-box p {
             font-size: 16px;
-            color: #434343;
+            color: #102E47;
             position: absolute;
             bottom: 10px;
             left: 15px;
@@ -221,6 +223,8 @@ require_once '../../controllers/sitecontroller.php';
 
         .modal-content {
             border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important; 
+            background-color: #E7EBEE;
         }
 
         .modal-footer {
@@ -256,6 +260,7 @@ require_once '../../controllers/sitecontroller.php';
             overflow: hidden;
             border-radius: 10px;
             background-color: #E7EBEE;
+            border: 2px solid #939393;
         }
 
         .image-preview img {
@@ -282,28 +287,47 @@ require_once '../../controllers/sitecontroller.php';
             border: 2px solid #102E47;
             border-radius: 25px;
             background-color: white;
-            color: #102E47;
+            color: #434343;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-right: 10px;
             margin-top: 10px;
             min-width: 80px;
             text-align: center;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .btn-custom.active {
             background-color: #102E47 !important;
-            color: white !important;
+            color: #FFFFFF !important;
             font-weight: bold;
         }
 
         .btn-custom:hover {
             background-color: #102E47;
-            color: white;
+            color: #FFFFFF;
+            font-weight: bold;
         }
 
         .form-control {
             resize: none;
+        }
+        
+        .input-group .btn-outline-primary {
+            color: #434343;
+            border-color: #102E47;
+            font-weight: bold;
+            padding: 8px 15px;
+            text-align: center;
+        }
+
+        .input-group .btn-outline-primary.active,
+        .input-group .btn-outline-primary:hover,
+        .input-group .btn-check:checked + .btn-outline-primary {
+            background-color: #102E47;
+            color: #FFFFFF;
+            border-color: transparent; 
+            box-shadow: none;
         }
 
         .swal2-icon {
@@ -314,7 +338,7 @@ require_once '../../controllers/sitecontroller.php';
 
         .swal2-icon-custom {
             font-size: 10px; 
-            color: #102E47; 
+            color: #EC6350; 
         }
 
         .swal2-title-custom {
@@ -326,6 +350,7 @@ require_once '../../controllers/sitecontroller.php';
         .swal-custom-popup {
             padding: 20px;
             border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .swal-custom-btn {
@@ -334,15 +359,15 @@ require_once '../../controllers/sitecontroller.php';
             font-weight: bold !important;
             border: 2px solid #102E47 !important;
             border-radius: 25px !important;
-            background-color: white !important;
-            color: #102E47 !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
         }
 
         .swal-custom-btn:hover {
             background-color: #102E47 !important;
-            color: white !important;
+            color: #FFFFFF !important;
         }
 
         .edit-modal-footer {
@@ -386,6 +411,29 @@ require_once '../../controllers/sitecontroller.php';
             .nav-link {
                 font-size: 14px; 
                 padding: 8px; 
+            }
+
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .nav-link:hover {
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .menu-section {
@@ -443,15 +491,26 @@ require_once '../../controllers/sitecontroller.php';
             }
 
             .nav-link.active {
-                background-color: #102E47 !important;
-                color: white !important;
-                border-radius: 5px;
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
             }
 
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .header {
@@ -494,10 +553,27 @@ require_once '../../controllers/sitecontroller.php';
                 display: none;
             }
 
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .info-box {
@@ -641,22 +717,29 @@ require_once '../../controllers/sitecontroller.php';
                         <div class="mb-3">
                             <input type="number" name="sitePrice" min="0" class="form-control w-100" id="sitePrice" placeholder="Price">
                         </div>
-                        <div class="input-group mb-3 col">
+                        <div class="input-group mb-3 d-flex flex-wrap justify-content-center gap-2">
                             <input type="text" id="asiteOpDays" name="asiteOpDays" hidden>
+                            
                             <input type="checkbox" class="btn-check" id="asun" autocomplete="off" name="adays[]" value="0">
-                            <label class="btn btn-outline-primary" for="asun">Sun</label><br>
+                            <label class="btn btn-outline-primary" for="asun">Sun</label>
+
                             <input type="checkbox" class="btn-check" id="amon" autocomplete="off" name="adays[]" value="1">
-                            <label class="btn btn-outline-primary" for="amon">Mon</label><br>
+                            <label class="btn btn-outline-primary" for="amon">Mon</label>
+
                             <input type="checkbox" class="btn-check" id="atue" autocomplete="off" name="adays[]" value="2">
-                            <label class="btn btn-outline-primary" for="atue">Tue</label><br>
+                            <label class="btn btn-outline-primary" for="atue">Tue</label>
+
                             <input type="checkbox" class="btn-check" id="awed" autocomplete="off" name="adays[]" value="3">
-                            <label class="btn btn-outline-primary" for="awed">Wed</label><br>
+                            <label class="btn btn-outline-primary" for="awed">Wed</label>
+
                             <input type="checkbox" class="btn-check" id="athu" autocomplete="off" name="adays[]" value="4">
-                            <label class="btn btn-outline-primary" for="athu">Thu</label><br>
+                            <label class="btn btn-outline-primary" for="athu">Thu</label>
+
                             <input type="checkbox" class="btn-check" id="afri" autocomplete="off" name="adays[]" value="5">
-                            <label class="btn btn-outline-primary" for="afri">Fri</label><br>
+                            <label class="btn btn-outline-primary" for="afri">Fri</label>
+
                             <input type="checkbox" class="btn-check" id="asat" autocomplete="off" name="adays[]" value="6">
-                            <label class="btn btn-outline-primary" for="asat">Sat</label><br>
+                            <label class="btn btn-outline-primary" for="asat">Sat</label>
                         </div>
                         <div class="mb-3">
                             <textarea name="siteDescription" id="siteDescription" class="form-control w-100" rows="5" placeholder="Description"></textarea>
@@ -697,22 +780,29 @@ require_once '../../controllers/sitecontroller.php';
                         <div class="mb-3">
                             <input type="number" class="form-control w-100" id="sitePrice" name="sitePrice" placeholder="Price" min="0">
                         </div>
-                        <div class="input-group mb-3 col">
-                            <input type="text" id="siteOpDays" name="siteOpDays" hidden>
-                            <input type="checkbox" class="btn-check" id="sun" autocomplete="off" name="days[]" value="0">
-                            <label class="btn btn-outline-primary" for="sun">Sun</label><br>
-                            <input type="checkbox" class="btn-check" id="mon" autocomplete="off" name="days[]" value="1">
-                            <label class="btn btn-outline-primary" for="mon">Mon</label><br>
-                            <input type="checkbox" class="btn-check" id="tue" autocomplete="off" name="days[]" value="2">
-                            <label class="btn btn-outline-primary" for="tue">Tue</label><br>
-                            <input type="checkbox" class="btn-check" id="wed" autocomplete="off" name="days[]" value="3">
-                            <label class="btn btn-outline-primary" for="wed">Wed</label><br>
-                            <input type="checkbox" class="btn-check" id="thu" autocomplete="off" name="days[]" value="4">
-                            <label class="btn btn-outline-primary" for="thu">Thu</label><br>
-                            <input type="checkbox" class="btn-check" id="fri" autocomplete="off" name="days[]" value="5">
-                            <label class="btn btn-outline-primary" for="fri">Fri</label><br>
-                            <input type="checkbox" class="btn-check" id="sat" autocomplete="off" name="days[]" value="6">
-                            <label class="btn btn-outline-primary" for="sat">Sat</label><br>
+                        <div class="input-group mb-3 d-flex flex-wrap justify-content-center gap-2">
+                            <input type="text" id="asiteOpDays" name="asiteOpDays" hidden>
+                            
+                            <input type="checkbox" class="btn-check" id="asun" autocomplete="off" name="adays[]" value="0">
+                            <label class="btn btn-outline-primary" for="asun">Sun</label>
+
+                            <input type="checkbox" class="btn-check" id="amon" autocomplete="off" name="adays[]" value="1">
+                            <label class="btn btn-outline-primary" for="amon">Mon</label>
+
+                            <input type="checkbox" class="btn-check" id="atue" autocomplete="off" name="adays[]" value="2">
+                            <label class="btn btn-outline-primary" for="atue">Tue</label>
+
+                            <input type="checkbox" class="btn-check" id="awed" autocomplete="off" name="adays[]" value="3">
+                            <label class="btn btn-outline-primary" for="awed">Wed</label>
+
+                            <input type="checkbox" class="btn-check" id="athu" autocomplete="off" name="adays[]" value="4">
+                            <label class="btn btn-outline-primary" for="athu">Thu</label>
+
+                            <input type="checkbox" class="btn-check" id="afri" autocomplete="off" name="adays[]" value="5">
+                            <label class="btn btn-outline-primary" for="afri">Fri</label>
+
+                            <input type="checkbox" class="btn-check" id="asat" autocomplete="off" name="adays[]" value="6">
+                            <label class="btn btn-outline-primary" for="asat">Sat</label>
                         </div>
                         <div class="mb-3">
                             <textarea id="siteDescription" name="siteDescription" class="form-control w-100" rows="5" placeholder="Description"></textarea>

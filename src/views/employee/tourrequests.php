@@ -124,7 +124,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             position: relative;
             min-height: 150px;
             min-width: 200px; 
-            background-color: #729AB8;
+            background-color: rgba(114, 154, 184, 0.2); 
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             padding: 15px;
@@ -133,6 +133,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             justify-content: space-between;
             align-items: flex-start;
             text-align: left;
+            font-family: 'Nunito', sans-serif;
         }
 
         .info-box span {
@@ -160,10 +161,11 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             text-align: center;
             overflow-x: auto;
             min-width: 500px;
+            font-family: 'Nunito', sans-serif;
         }
 
         thead th {
-            color: black;
+            color: #434343; 
             font-weight: bold;
             padding-bottom: 10px;
             background: none !important;
@@ -172,7 +174,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
         }
 
         tbody tr {
-            background: #E7EBEE;
+            background: #FFFFFF; 
             border-radius: 15px;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
         }
@@ -180,6 +182,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
         tbody tr td {
             padding: 10px;
             border: none;
+            color: #434343; 
         }
 
         tbody tr td:first-child {
@@ -190,6 +193,10 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
         tbody tr td:last-child {
             border-top-right-radius: 15px;
             border-bottom-right-radius: 15px;
+        }
+
+        .modal-title {
+            color: #102E47;
         }
 
         .stepper {
@@ -209,9 +216,9 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            background-color: white; 
-            border: 4px solid #102E47; 
-            color: #102E47; 
+            background-color: #FFFFFF;
+            border: 4px solid #102E47;
+            color: #434343;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -220,8 +227,8 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
 
         .dashed-line {
             width: 2px;
-            height: 120px; /* Adjust height dynamically */
-            border-left: 4px dashed #102E47;
+            height: 120px;
+            border-left: 4px dashed #434343;
         }
 
         .destination-card {
@@ -232,7 +239,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             min-width: 360px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
+            background-color: #FFFFFF;
         }
 
         .image-placeholder {
@@ -258,11 +265,12 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
         .destination-info h6 {
             margin-bottom: 4px;
             font-weight: bold;
+            color: #102E47;
         }
 
         .destination-info p {
             margin-bottom: 0;
-            color: #6c757d;
+            color: #757575;
         }
 
         .modal-body {
@@ -287,8 +295,10 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
         }
 
         .modal-content {
-            min-height: 50%; 
+            background-color: #E7EBEE;
             border-radius: 25px;
+            min-height: 50%;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .summary-container {
@@ -299,9 +309,27 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             justify-content: space-between;
         }
 
-        .summary-container p:nth-child(1) { margin-bottom: 20px; } /* Date Created */
-        .summary-container p:nth-child(2) { margin-bottom: 20px; } /* Number of People */
-        .summary-container p:nth-child(3) { margin-bottom: 25px; } /* Estimated Fees */
+        .summary-container p:nth-child(1) { 
+            margin-bottom: 20px; 
+            color: #102E47;
+        }
+
+        .summary-container p:nth-child(2) { 
+            margin-bottom: 20px; 
+            color: #102E47;
+        }
+
+        .summary-container p:nth-child(3) { 
+            margin-bottom: 25px; 
+            color: #102E47;
+        } 
+
+        .summary-container p:nth-child(1) span,
+        .summary-container p:nth-child(2) span,
+        .summary-container .estimated-fees p,
+        .summary-container .total-price {
+            color: #757575;
+        }
 
         .summary-container p {
             margin-bottom: 5px; 
@@ -326,6 +354,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             font-size: 16px;
             font-weight: bold;
             text-align: right;
+            color: #434343;
         }
 
         .modal-footer {
@@ -336,29 +365,31 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             border-top: none;
         }
 
+        .modal-footer p {
+            color: #757575;
+        }
+
         .btn-custom {
             padding: 10px 20px;
             font-size: 16px;
             font-weight: bold;
-            border: 2px solid #102E47; 
+            border: 2px solid #102E47;
             border-radius: 25px;
-            background-color: white;
-            color: #102E47;
+            background-color: #FFFFFF;
+            color: #434343;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-custom:hover {
             background-color: #102E47;
-            color: white;
+            border-color: #102E47;
+            color: #FFFFFF;
+            font-weight: bold;
         }
 
         .modal-sm-custom {
             max-width: 35%; 
-        }
-
-        .modal-content {
-            border-radius: 25px; 
         }
 
         .form-control {
@@ -373,7 +404,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
 
         .swal2-icon-custom {
             font-size: 10px; 
-            color: #102E47; 
+            color: #EC6350; 
         }
 
         .swal2-title-custom {
@@ -385,6 +416,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
         .swal-custom-popup {
             padding: 20px;
             border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .swal-custom-btn {
@@ -393,15 +425,15 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             font-weight: bold !important;
             border: 2px solid #102E47 !important;
             border-radius: 25px !important;
-            background-color: white !important;
-            color: #102E47 !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
         }
 
         .swal-custom-btn:hover {
             background-color: #102E47 !important;
-            color: white !important;
+            color: #FFFFFF !important;
         }
 
         @media (max-width: 1280px) {
@@ -433,6 +465,29 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             .nav-link {
                 font-size: 14px; 
                 padding: 8px; 
+            }
+
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .nav-link:hover {
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .menu-section {
@@ -519,15 +574,26 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             }
 
             .nav-link.active {
-                background-color: #102E47 !important;
-                color: white !important;
-                border-radius: 5px;
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
             }
 
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .header {
@@ -646,10 +712,27 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
                 display: none;
             }
 
+            .nav-link.active {
+                background-color: #EC6350 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
             .nav-link:hover {
-                background-color: #102E47 !important; 
-                color: white !important;
-                transition: background 0.3s ease;
+                background-color: #EC6350 !important; 
+                color: #FFFFFF !important;
+            }
+
+            .employee-name.active {
+                background-color: #102E47 !important;
+                color: #FFFFFF !important;
+                font-weight: bold;
+            }
+
+            .sign-out.active {
+                background-color: #E7EBEE !important;
+                color: #102E47 !important;
+                font-weight: bold;
             }
 
             .info-box {
@@ -684,7 +767,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
             }
 
             .summary-container {
-                text-align: left; /* Changed from center */
+                text-align: left; 
                 align-items: flex-start;
                 margin-top: 20px;
             }
@@ -888,7 +971,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
                 <div class="modal-footer">
                     <button class="btn-custom accept" data-tourid="" data-userid="">Accept</button>
                     <button class="btn-custom decline" data-tourid="" data-userid="">Decline</button>
-                    * Fee is only an estimate and subject to change if the destination can accommodate special discounts
+                    <p>*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</p>
                 </div>
             </div>
         </div>
