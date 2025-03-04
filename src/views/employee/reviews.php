@@ -106,6 +106,7 @@ require_once '../../controllers/reviewscontroller.php';
         }
 
         .header {
+            font-family: 'Raleway', sans-serif;
             display: flex;
             justify-content: space-between;
             align-items: center;

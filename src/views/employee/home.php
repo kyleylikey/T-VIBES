@@ -98,6 +98,7 @@ require_once '../../controllers/homecontroller.php';
         }
 
         .header {
+            font-family: 'Raleway', sans-serif;
             display: flex;
             justify-content: space-between;
             align-items: center;

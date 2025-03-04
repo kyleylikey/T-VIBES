@@ -107,6 +107,7 @@ require_once '../../controllers/employee/tourrequestscontroller.php';
         }
 
         .header {
+            font-family: 'Raleway', sans-serif;
             display: flex;
             justify-content: space-between;
             align-items: center;
