@@ -167,7 +167,7 @@ require_once '../../controllers/sitecontroller.php';
         .info-box {
             height: 290px;
             width: 375px;
-            background-color: #E7EBEE;
+            background-color: rgba(114, 154, 184, 0.2); 
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             padding: 15px;
