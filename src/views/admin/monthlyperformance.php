@@ -132,17 +132,17 @@ require_once '../../config/dbconnect.php';
                         <div class="topthree">
                             <?php if(!empty($topSites)): ?>
                                 <?php foreach($topSites as $site): ?>
-                                    <div class="topsitecontainer">
-                                        <span style="display: flex; justify-content: center;">
+                                    <div style="padding-top: 0;">
+                                        <div style="margin-top: 16px; margin-left: 0; padding: 0; width:100%; height: 160px; display: flex; justify-content: center;">
                                             <?php if(!empty($site['siteimage'])): ?>
-                                                <img src="<?php echo $site['siteimage']; ?>" alt="<?php echo $site['sitename']; ?>" style="max-width:80px; max-height:80px;">
+                                                <img style="width: 100%; height: 100%; object-fit: cover; margin: 0;" style=""src="/T-VIBES/public/uploads/<?php echo $site['siteimage']; ?>" alt="<?php echo $site['sitename']; ?>" style="max-width:80px; max-height:80px;">
                                             <?php else: ?>
                                                 <i class="bi bi-image-fill" style="font-size: 80px;"></i>
                                             <?php endif; ?>
-                                        </span>
+                                            </div>
                                         <p><?php echo $site['sitename']; ?></p>
                                         <p style="display: flex; align-items: flex-end;">
-                                            <?php echo generateStarRating($site['ratings']); ?>&nbsp;<?php echo $site['ratings']; ?>
+                                            <?php echo $site['visitor_count']; ?> total visitors
                                         </p>
                                     </div>
                                 <?php endforeach; ?>
@@ -154,9 +154,14 @@ require_once '../../config/dbconnect.php';
                 </div>
                 <!-- Visitor Chart and PDF Report -->
                 <div class="tablecontainer">
-                    <div class="visitorchart" onclick="location.href='statistics/visitor.php';" style="cursor: pointer;">
+                    <div class="visitorchart" onclick="location.href='statistics/visitor.php';" style="cursor: pointer; height: 700px; position: relative;">
                         <h2>Visitor Chart</h2>
-                        <canvas id="visitorchartpreview"></canvas>
+                        <script>
+                            // Data from PHP
+                            const chartDays = <?php echo $daysJSON; ?>;
+                            const chartVisitors = <?php echo $visitorsJSON; ?>;
+                        </script>
+                        <canvas style="height:100%; width: 100%;" id="visitorchartpreview"></canvas>
                     </div>
                     <button class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbsp;Download PDF Report</button>
                 </div>

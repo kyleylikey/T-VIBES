@@ -67,7 +67,7 @@ body {
 }
 
 .logocontainer img {
-    margin: calc(1px + 0.5vw);
+    margin: calc(1px + 0.4vw);
     width: 100%;
     max-width: 260px; 
     min-width: 40px;

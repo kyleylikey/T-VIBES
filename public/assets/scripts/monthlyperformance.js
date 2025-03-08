@@ -3,13 +3,17 @@ let visitorchartpreview = document.getElementById('visitorchartpreview').getCont
 let visitorchartpreviewstats = new Chart(visitorchartpreview, {
     type: 'line',
     data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        labels: chartDays, // Use PHP-generated days array
         datasets: [{
             label: 'Visitors',
-            data:[100, 200, 300, 600, 300, 600, 700]
+            data: chartVisitors, // Use PHP-generated visitors array
+            borderColor: '#102E47',
+            backgroundColor: 'rgba(16, 46, 71, 0.1)',
+            fill: true,
         }]
     },
-    options: {}
- });
-
- 
+    options: {
+        responsive: true,
+        maintainAspectRatio: true // This is crucial for height control
+    }
+});

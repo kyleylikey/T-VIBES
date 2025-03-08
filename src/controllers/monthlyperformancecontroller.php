@@ -180,32 +180,37 @@ $query = "SELECT s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.r
           ORDER BY visitor_count DESC
           LIMIT 3";
 $stmt = $conn->prepare($query);
+$stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
+$stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $stmt->execute();
 $topSites = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
 
-// 8. Visitor Chart Data: Get the total number of companions per month for the current year
-$query = "SELECT MONTH(date) as month, SUM(companions) as total 
+// 8. Visitor Chart Data: Get the total number of companions per day for the current month
+$query = "SELECT DAY(date) as day, SUM(companions) as total 
           FROM tour 
-          WHERE YEAR(date) = :currentYear 
-          GROUP BY MONTH(date) 
-          ORDER BY month ASC";
+          WHERE MONTH(date) = :currentMonth 
+          GROUP BY DAY(date) 
+          ORDER BY day ASC";
 $stmt = $conn->prepare($query);
-$stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
+$stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
 $stmt->execute();
 $chartResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
 
-// Initialize an array for 12 months (1 to 12) with 0 values
-$visitorChartData = array_fill(1, 12, 0);
+// Initialize arrays for days and visitors
+$days = []; // Will hold the day numbers (1-31)
+$visitors = []; // Will hold the visitor counts
 
-// Populate the visitorChartData array using query results
+// Populate the arrays from query results
 foreach ($chartResults as $row) {
-    $month = (int)$row['month'];
-    $visitorChartData[$month] = (int)$row['total'];
+    $days[] = $row['day'];
+    $visitors[] = (int)$row['total'];
 }
-// Re-index the array so it starts from index 0 (for use in Chart.js)
-$visitorChartData = array_values($visitorChartData);
+
+// Convert to JSON for JavaScript
+$daysJSON = json_encode($days);
+$visitorsJSON = json_encode($visitors);
 
 // Now include the view file which will use these variables:
 include_once __DIR__ . '/../views/admin/monthlyperformance.php';
