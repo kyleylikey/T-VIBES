@@ -1,10 +1,5 @@
 <?php
 
-// Only allow managers to access this controller
-if (!isset($_SESSION['userid']) || $_SESSION['usertype'] !== 'mngr') {
-    header('Location: ../views/admin/login.php');
-    exit();
-}
 
 // Include your Database configuration
 require_once __DIR__ . '/../config/dbconnect.php';
