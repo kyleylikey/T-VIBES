@@ -37,7 +37,7 @@ $toursThisMonth = $row['total_tours'];
 $stmt->closeCursor();
 
 // 2. Approved Tours (Current Month): Count tours with status 'accepted'
-$query = "SELECT COUfNT(*) AS total_tours
+$query = "SELECT COUNT(*) AS total_tours
             FROM (
                 SELECT 1
                 FROM tour t
