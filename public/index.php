@@ -77,7 +77,7 @@ recordVisit();
                         <a href="../src/views/frontend/signup.php" class="nav-link">Sign Up</a>
                     </li>
                     <li class="nav-item">
-                    <a href="T-VIBES/src/views/frontend/login.php" 
+                    <a href="../src/views/frontend/login.php" 
                     class="btn btn-danger rounded-pill px-3 py-1" 
                     style="font-size: 1.3rem;">
                         Login

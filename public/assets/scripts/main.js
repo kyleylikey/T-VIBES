@@ -14,7 +14,7 @@ function logoutConfirm() {
             }
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "../../../src/controllers/logout.php";
+            window.location.href = "/T-VIBES/src/controllers/logout.php";
         }
     });
 }
