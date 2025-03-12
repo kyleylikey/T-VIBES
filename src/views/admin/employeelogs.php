@@ -241,10 +241,81 @@ require_once '../../controllers/logscontroller.php';
             font-family: 'Nunito', sans-serif !important;
         }
 
+        .swal2-icon {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .swal2-icon-custom {
+            font-size: 10px; 
+            color: #EC6350; 
+        }
+
+        .swal2-title-custom {
+            font-size: 24px !important;
+            font-weight: bold;
+            color: #434343 !important;
+        }
+
+        .swal-custom-popup {
+            padding: 20px;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .swal-custom-btn {
+            padding: 10px 20px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border: 2px solid #102E47 !important;
+            border-radius: 25px !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .swal-custom-btn:hover {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+        }
+
         @media (max-width: 1280px) {
             .search-wrapper {
                 position: relative;
                 width: 100%;
+            }
+
+            .info-box {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                display: block;
+                width: 100%;
+            }
+
+            table {
+                min-width: 900px;
+                font-size: 17px; 
+            }
+
+            thead th,
+            tbody td {
+                padding: 14px;
+                font-size: 16px;
+            }
+
+            .search-wrapper input {
+                font-size: 18px;
+            }
+
+            .no-logs {
+                font-size: 18px;
+                padding: 14px;
             }
         }
 
@@ -272,6 +343,37 @@ require_once '../../controllers/logscontroller.php';
             .main-content {
                 margin-left: 250px;
                 width: calc(100% - 250px); 
+            }
+
+            .info-box {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                display: block;
+                width: 100%;
+            }
+
+            table {
+                min-width: 750px; 
+                font-size: 16px; 
+            }
+
+            thead th,
+            tbody td {
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            .search-wrapper input {
+                font-size: 16px;
+            }
+
+            .no-logs {
+                font-size: 17px;
+                padding: 12px;
             }
         }
 
@@ -322,6 +424,37 @@ require_once '../../controllers/logscontroller.php';
             .main-content {
                 margin-left: 200px;
                 width: calc(100% - 200px);
+            }
+
+            .info-box {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                display: block;
+                width: 100%;
+            }
+
+            table {
+                min-width: 700px; 
+                font-size: 15px; 
+            }
+
+            thead th,
+            tbody td {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .search-wrapper input {
+                font-size: 15px;
+            }
+
+            .no-logs {
+                font-size: 16px;
+                padding: 12px;
             }
         }
 
@@ -386,6 +519,37 @@ require_once '../../controllers/logscontroller.php';
                 text-align: center; 
                 width: 100%; 
             }
+
+            .info-box {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                display: block;
+                width: 100%;
+            }
+
+            table {
+                min-width: 600px; 
+                font-size: 14px;
+            }
+
+            thead th,
+            tbody td {
+                padding: 8px;
+                font-size: 13px; 
+            }
+
+            .search-wrapper input {
+                font-size: 14px;
+            }
+
+            .no-logs {
+                font-size: 16px;
+                padding: 12px;
+            }
         }
 
         @media (max-width: 600px) {
@@ -434,6 +598,65 @@ require_once '../../controllers/logscontroller.php';
             .main-content {
                 margin-left: 80px;
                 width: calc(100% - 80px);
+            }
+
+            .info-box {
+                min-width: 100%;
+                padding: 12px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                width: 100%;
+            }
+
+            table {
+                min-width: 100%;
+                font-size: 14px; 
+            }
+
+            thead th,
+            tbody td {
+                padding: 8px; 
+                font-size: 13px; 
+            }
+
+            .search-wrapper input {
+                font-size: 14px; 
+            }
+
+            .no-logs {
+                font-size: 16px; 
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .info-box {
+                min-width: 100%; 
+                padding: 10px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                width: 100%;
+            }
+
+            table {
+                min-width: 100%; 
+                font-size: 12px; 
+            }
+
+            thead th, tbody td {
+                padding: 6px; 
+            }
+
+            .search-wrapper input {
+                font-size: 14px; 
+            }
+
+            .no-logs {
+                font-size: 14px;
             }
         }
     </style>
