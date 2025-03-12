@@ -14,7 +14,7 @@ class Review {
     }
 
     public function getRecentReviews() {
-        $query = "SELECT users.name AS author, sites.rating, rev.date FROM rev 
+        $query = "SELECT users.name AS author, sites.rating, rev.date, rev.review, sites.sitename FROM rev 
                   JOIN users ON rev.userid = users.userid 
                   JOIN sites ON rev.siteid = sites.siteid 
                   WHERE rev.status = 'displayed' 

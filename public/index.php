@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once __DIR__ . '/../src/controllers/indexcontroller.php';
+
 
 function recordVisit() {
     // Directory for storing counter files
@@ -188,86 +190,64 @@ recordVisit();
 </section>
 
 
-
-    <!-- Top Destinations Section -->
-    <section class="container my-5 text-center">
+<!-- Top Destinations Section -->
+<section class="container my-5 text-center">
         <h2 class="mb-4 fw-bold">Top Destinations</h2>
         <div class="row justify-content-center g-4">
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 text-center">
-                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="bi bi-image" style="font-size: 3rem; color: gray;"></i>
+            <?php foreach ($topSites as $site): ?>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-lg p-3 text-center">
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <?php if (!empty($site['siteimage'])): ?>
+                                <img class="card border-0" src="/T-VIBES/public/uploads/<?php echo $site['siteimage']; ?>" alt="<?php echo $site['sitename']; ?>" style="height: 100%; width: 100%; object-fit: cover;">
+                            <?php else: ?>
+                                <i class="bi bi-image" style="font-size: 3rem; color: gray;"></i>
+                            <?php endif; ?>
+                        </div>
+                        <h5 class="mt-3"><?php echo $site['sitename']; ?></h5>
+                        <p>★ <?php echo $site['ratings']; ?></p>
                     </div>
-                    <h5 class="mt-3">Destination Name</h5>
-                    <p>★ 5.0</p>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 text-center">
-                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
-                        <i class="bi bi-image" style="font-size: 3rem; color: gray;"></i>
-                    </div>
-                    <h5 class="mt-3">Destination Name</h5>
-                    <p>★ 5.0</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 text-center">
-                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="bi bi-image" style="font-size: 3rem; color: gray;"></i>
-                    </div>
-                    <h5 class="mt-3">Destination Name</h5>
-                    <p>★ 5.0</p>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
         <a href="#" class="btn btn-dark rounded-pill mt-4 px-4 py-2">Explore Destinations</a>
     </section>
 
 
 
-    <!-- Stories Worth Telling Section -->
-    <section class="container my-5">
+
+     <!-- Stories Worth Telling Section -->
+     <section class="container my-5">
         <div class="row align-items-center">
             <div class="col-md-2 text-start">
                 <button class="btn btn-dark rounded-circle me-2" data-bs-target="#storiesCarousel" data-bs-slide="prev">
-                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-left text-white"></i>
                 </button>
                 <button class="btn btn-dark rounded-circle" data-bs-target="#storiesCarousel" data-bs-slide="next">
-                    <i class="bi bi-chevron-right"></i>
+                    <i class="bi bi-chevron-right text-white"></i>
                 </button>
             </div>
             <div class="col-md-10 text-end">
                 <h2 class="fw-bold">Stories Worth Telling</h2>
-				<p>Straight From Our Guests</p>
+                <p>Straight From Our Guests</p>
             </div>
         </div>
         <div id="storiesCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner text-start">
-                <div class="carousel-item active">
-                    <blockquote class="blockquote p-4 bg-light text-white rounded text-center">
-                        <i class="bi bi-person-circle" style="font-size: 3rem;"></i><br>
-                        <p class="fw-bold fs-4 fst-italic">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."</p>
-                        <footer class="blockquote-footer bg-light text-dark">Username | Destination</footer>
-                    </blockquote>
-                </div>
-                <div class="carousel-item">
-                    <blockquote class="blockquote p-4 bg-light text-white rounded text-center">
-                        <i class="bi bi-person-circle" style="font-size: 3rem;"></i><br>
-                        <p class="fw-bold fs-4 fst-italic">"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."</p>
-                        <footer class="blockquote-footer bg-light text-dark">Username | Destination</footer>
-                    </blockquote>
-                </div>
-                <div class="carousel-item">
-                    <blockquote class="blockquote p-4 bg-light text-white rounded text-center">
-                        <i class="bi bi-person-circle" style="font-size: 3rem;"></i><br>
-                        <p class="fw-bold fs-4 fst-italic">"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."</p>
-                        <footer class="blockquote-footer bg-light text-dark">Username | Destination</footer>
-                    </blockquote>
-                </div>
+                <?php foreach ($recentReviews as $index => $review): ?>
+                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                        <blockquote class="blockquote p-4 bg-light text-white rounded text-center">
+                            <i class="bi bi-person-circle" style="font-size: 3rem;"></i><br>
+                            <h5 class="fw-bold"><?php echo $review['author']; ?></h5>
+                            <p class="fw-bold fs-4 fst-italic">"<?php echo $review['review']; ?>"</p>
+                            <h4 class=""><?php echo $review['sitename']; ?> | <?php echo $review['date']; ?></h4>
+                        </blockquote>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
+
 
 <!-- Trivia Section -->
 <section class="container my-5 text-center">

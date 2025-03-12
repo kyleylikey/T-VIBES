@@ -57,6 +57,20 @@ class Site {
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute($params);
     }
+
+    public function getTopSites($currentYear) {
+        $query = "SELECT s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.price, s.status, SUM(t.companions) as visitor_count 
+                  FROM sites s 
+                  LEFT JOIN tour t ON s.siteid = t.siteid AND t.status = 'accepted'
+                  WHERE YEAR(t.date) = :currentYear 
+                  GROUP BY s.siteid
+                  ORDER BY visitor_count DESC
+                  LIMIT 3";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt;
+    }
 }
 
 

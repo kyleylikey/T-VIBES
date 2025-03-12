@@ -9,135 +9,249 @@
     <link rel="stylesheet" href="../../../../public/assets/styles/tourrequest.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <style>
+        .rounded-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .delete-btn, .counter-btn {
+            background-color: #A9221C;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .delete-btn:hover, .counter-btn:hover {
+            background-color: #8a1b16;
+        }
+        .destination-item {
+            cursor: grab;
+            background-color: #f8f9fa;
+            padding: 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.2s ease;
+        }
+        .destination-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-grow: 1;
+        }
+        .destination-image {
+            width: 80px;
+            height: 80px;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            font-size: 36px;
+            color: #6c757d;
+        }
+        .destination-number {
+            margin-right: 12px;
+            font-weight: bold;
+        }
+        .destination-details span:first-child {
+            font-weight: bold;
+            color: #102E47;
+        }
+        .trash-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+        .people-counter label {
+            font-weight: bold;
+            color: #102E47;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .counter-btn {
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+        }
+        input[type="number"] {
+            width: 60px;
+            text-align: center;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 6px;
+            margin: 0;
+        }
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+        }
+        .estimated-fees h2 {
+            font-weight: bold;
+            color: #102E47;
+        }
+
+        /* Confirmation Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 320px;
+            text-align: center;
+        }
+        .modal-content i {
+            font-size: 40px;
+            color: #A9221C;
+            margin-bottom: 12px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .modal-buttons button {
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: none;
+        }
+        .modal-buttons .confirm-btn {
+            background-color: #102E47;
+            color: white;
+        }
+        .modal-buttons .cancel-btn {
+            background-color: #fff;
+            color: #102E47;
+            border: 2px solid #102E47;
+        }
+    </style>
 </head>
 <body>
-    <?php include '../../templates/header.php'; ?>
+    <?php include '../../templates/headertours.php'; ?>
     <?php include '../../templates/toursnav.php'; ?>
+
     <div class="content">
-        <div class="tourcontainer">
-            <table class="sitelist">
-                <tr class="site">
-                    <td class="sitenumber">
-                        <h2 class="circle">1</h2>
-                    </td>
-                    <td class="sitecontainer">
-                        <div class="siteimage">
-                            <i class="bi bi-image"></i>
+        <div class="tour-container" id="destination-list">
+            <?php for ($i = 1; $i <= 3; $i++): ?>
+                <div class="destination-wrapper">
+                    <div class="destination-number"><?= $i ?></div>
+                    <div class="destination-item">
+                        <div class="destination-info">
+                            <div class="destination-image"><i class="bi bi-image"></i></div>
+                            <div class="destination-details">
+                                <span>Destination Name <?= $i ?></span>
+                            </div>
+                            <div class="trash-container">
+                                <span class="destination-price">₱ 0.00</span>
+                                <button class="delete-btn rounded-circle"><i class="bi bi-trash"></i></button>
+                            </div>
                         </div>
-                        <div class="siteinfo">
-                            <div class="sitename"><h3>Site Name</h3></div>
-                            <div></div>
-                            <div class="price"><h3>P100.00</h3></div>
-                            <div class="filler3"></div>
-                            <div class="filler2"></div>
-                            <div class="btndel"><button><i class="bi bi-trash"></i></button></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="site">
-                    <td class="sitenumber">
-                        <h2 class="circle">2</h2>
-                    </td>
-                    <td class="sitecontainer">
-                        <div class="siteimage">
-                            <i class="bi bi-image"></i>
-                        </div>
-                        <div class="siteinfo">
-                            <div class="sitename"><h3>Site Name</h3></div>
-                            <div></div>
-                            <div class="price"><h3>P100.00</h3></div>
-                            <div class="filler3"></div>
-                            <div class="filler2"></div>
-                            <div class="btndel"><button><i class="bi bi-trash"></i></button></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="site">
-                    <td class="sitenumber">
-                        <h2 class="circle">3</h2>
-                    </td>
-                    <td class="sitecontainer">
-                        <div class="siteimage">
-                            <i class="bi bi-image"></i>
-                        </div>
-                        <div class="siteinfo">
-                            <div class="sitename"><h3>Site Name</h3></div>
-                            <div></div>
-                            <div class="price"><h3>P100.00</h3></div>
-                            <div class="filler3"></div>
-                            <div class="filler2"></div>
-                            <div class="btndel"><button><i class="bi bi-trash"></i></button></div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <div class="addmorecontainer">
-                <a href="/T-VIBES/public/" class="addmore"><i class="bi bi-plus-lg"></i>&nbspAdd More Sites</a>
-            </div>
-            <div class="pax">
-                <h2>How Many Tourists?</h2>
-                <div class="pax-input">
-                    <button type="button" id="minus-btn">-</button>
-                    <input type="number" name="pax" id="pax" min="1" max="255" value="1" oninput="if(this.value > 255) this.value = 255; if(this.value < 1) this.value = 1;">
-                    <style>
-                        /* Remove the up and down arrows from the input number field */
-                        input[type=number]::-webkit-inner-spin-button, 
-                        input[type=number]::-webkit-outer-spin-button { 
-                            -webkit-appearance: none; 
-                            margin: 0; 
-                        }
-                        input[type=number] {
-                            appearance: textfield;
-                            -moz-appearance: textfield;
-                        }
-                    </style>
-                    <button type="button" id="plus-btn">+</button>
+                    </div>
                 </div>
-            </div>
-            <div class="selectdate">
-                <h2>Selected Date</h2>
-                <input type="date" name="tour_date" id="tour_date" min="<?php echo date('Y-m-d'); ?>">
-            </div>
-            <div class="accommodation">
-                Any special requests? (e.g. PWD/Senior Accommodation) Please contact us <a href="#contact">here</a>
-            </div>
+            <?php endfor; ?>
         </div>
-        <div class="tourfees">
-            <h2>Estimated Fees</h2>
-            <table>
-                <tr>
-                    <td>Site Name</td>
-                    <td>P300.00</td>
-                </tr>
-                <tr>
-                    <td>Site Name</td>
-                    <td>P0.00</td>
-                </tr>
-                <tr>
-                    <td>Site Name</td>
-                    <td>P300.00</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td style="font-weight: bold;">P600.00</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td style="font-weight: bold;">x 17 pax</td>
-                </tr>
-                <tfoot>
-                    <tr>
-                        <td>&nbsp</td>
-                    </tr>
-                    <tr>
-                        <td><h2>Total:</h2></td>
-                        <td><h2>P1500</h2></td>
-                    </tr>
-                </tfoot>
-            </table>
-            <button class="submit">Submit Request</button>
+
+        <!-- Counter -->
+        <div class="people-counter">
+            <label for="counter-input">How Many People?</label>
+            <div>
+                <button class="counter-btn" id="minus-btn">-</button>
+                <input type="number" value="1" min="1" max="255" id="counter-input">
+                <button class="counter-btn" id="plus-btn">+</button>
+            </div>
         </div>
     </div>
-    <script src="../../../../public/assets/scripts/tours.js"></script> 
+
+    <?php include '../../templates/footer.html'; ?>
+
+    <script>
+    // Draggable destinations
+    new Sortable(document.getElementById('destination-list'), {
+        animation: 150,
+        handle: '.destination-item',
+        onEnd: () => updateDestinationNumbers()
+    });
+
+    function updateDestinationNumbers() {
+        document.querySelectorAll('.destination-number').forEach((el, index) => {
+            el.textContent = index + 1;
+        });
+    }
+
+    // Confirmation modal
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const destination = e.target.closest('.destination-wrapper');
+
+            const modal = document.createElement('div');
+            modal.classList.add('modal-overlay');
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <i class="bi bi-trash"></i>
+                    <p>Delete This Destination?</p>
+                    <div class="modal-buttons">
+                        <button class="confirm-btn">Yes</button>
+                        <button class="cancel-btn">No</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            modal.querySelector('.confirm-btn').addEventListener('click', () => {
+                destination.remove();
+                updateDestinationNumbers();
+                modal.remove();
+            });
+
+            modal.querySelector('.cancel-btn').addEventListener('click', () => {
+                modal.remove();
+            });
+        });
+    });
+
+    // Counter functionality (fixed)
+    const counterInput = document.getElementById('counter-input');
+    const minusBtn = document.getElementById('minus-btn');
+    const plusBtn = document.getElementById('plus-btn');
+
+    minusBtn.addEventListener('click', () => {
+        let value = parseInt(counterInput.value);
+        if (value > 1) counterInput.value = value - 1;
+    });
+
+    plusBtn.addEventListener('click', () => {
+        let value = parseInt(counterInput.value);
+        if (value < 255) counterInput.value = value + 1;
+    });
+</script>
+
 </body>
 </html>
