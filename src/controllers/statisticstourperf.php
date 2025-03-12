@@ -55,30 +55,42 @@ $completedChartData = array_fill(1, 12, 0);
 $cancelledChartData = array_fill(1, 12, 0);
 
 // Approved Tours per month
-$query = "SELECT MONTH(date) as month, COUNT(*) as total 
-          FROM tour 
-          WHERE status = 'approved' AND YEAR(date) = :currentYear 
-          GROUP BY MONTH(date)";
+$query = "SELECT MONTH(t.date) AS month, COUNT(DISTINCT t.tourid) AS total 
+          FROM tour t
+          JOIN Users u ON t.userid = u.userid
+          WHERE t.status = 'accepted' 
+          AND YEAR(t.date) = :currentYear 
+          GROUP BY MONTH(t.date)
+          ORDER BY MONTH(t.date)";
+
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
-foreach($results as $row){
+
+
+foreach ($results as $row) {
     $approvedChartData[(int)$row['month']] = (int)$row['total'];
 }
 
 // Completed Tours per month
-$query = "SELECT MONTH(date) as month, COUNT(*) as total 
-          FROM tour 
-          WHERE status = 'accepted' AND date < CURDATE() AND YEAR(date) = :currentYear 
-          GROUP BY MONTH(date)";
+$query = "SELECT MONTH(t.date) AS month, COUNT(DISTINCT t.tourid) AS total 
+          FROM tour t
+          JOIN Users u ON t.userid = u.userid
+          WHERE t.status = 'accepted' 
+          AND t.date < CURDATE() 
+          AND YEAR(t.date) = :currentYear 
+          GROUP BY MONTH(t.date)
+          ORDER BY MONTH(t.date)";
+
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
-foreach($results as $row){
+
+foreach ($results as $row) {
     $completedChartData[(int)$row['month']] = (int)$row['total'];
 }
 
