@@ -55,22 +55,28 @@ $approvedToursCurrent = $row['total_tours'];
 $stmt->closeCursor();
 
 // Approved Tours (Last Month)
-$query = "SELECT COUNT(*) AS total_tours
-            FROM (
-                SELECT 1
-                FROM tour t
-                JOIN Users u ON t.userid = u.userid
-                WHERE MONTH(date) = :lastMonth AND YEAR(date) = :lastYear
-                AND t.status = 'approved'
-                GROUP BY t.tourid, t.userid
-            ) AS subquery";
+$lastMonth = date('n') - 1;
+$currentYear = date('Y');
+
+if ($lastMonth === 0) {
+    $lastMonth = 12;
+}
+
+$query = "SELECT COUNT(DISTINCT t.tourid) AS total_tours
+          FROM tour t
+          JOIN Users u ON t.userid = u.userid
+          WHERE t.status = 'accepted' 
+          AND MONTH(t.date) = :lastMonth 
+          AND YEAR(t.date) = :currentYear";
+
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':lastMonth', $lastMonth, PDO::PARAM_INT);
-$stmt->bindParam(':lastYear', $lastYear, PDO::PARAM_INT);
+$stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$approvedToursLast = $row['total_tours'];
+$approvedToursLast = $row['total_tours'] ?? 0; // Ensure default value if no data
 $stmt->closeCursor();
+
 
 // 3. Cancelled Tours (Current Month)
 $query = "SELECT COUNT(*) AS total_tours
