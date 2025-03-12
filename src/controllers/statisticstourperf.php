@@ -57,7 +57,7 @@ $cancelledChartData = array_fill(1, 12, 0);
 // Approved Tours per month
 $query = "SELECT MONTH(date) as month, COUNT(*) as total 
           FROM tour 
-          WHERE status = 'accepted' AND YEAR(date) = :currentYear 
+          WHERE status = 'approved' AND YEAR(date) = :currentYear 
           GROUP BY MONTH(date)";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);

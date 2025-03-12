@@ -98,10 +98,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
 					</ul>
 					<ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
 					<li class="nav-item">
-							<a href="T-VIBES/src/views/frontend/signup.php" class="nav-link">Sign Up</a>
+							<a href="/T-VIBES/src/views/frontend/signup.php" class="nav-link">Sign Up</a>
 						</li>
 						<li class="nav-item">
-						<a href="T-VIBES/src/views/frontend/login.php" 
+						<a href="/T-VIBES/src/views/frontend/login.php" 
 						class="btn btn-danger rounded-pill px-3 py-1" 
 						style="font-size: 1.3rem;">
 							Login

@@ -1,61 +1,8 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['userid'])) {
-    header('Location: ../../frontend/login.php'); 
-    exit();
-}
-
-if ($_SESSION['usertype'] !== 'mngr') {
-    echo "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <title>Access Denied</title>
-        <link rel='stylesheet' href='../../../../public/assets/styles/main.css'>
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
-        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-        <script>
-            setTimeout(function() {
-                Swal.fire({
-                    iconHtml: '<i class=\"fas fa-exclamation-circle\"></i>',
-                    customClass: {
-                        icon: 'swal2-icon swal2-error-icon',
-                    },
-                    html: '<p style=\"font-size: 24px; font-weight: bold;\">Access Denied! You do not have permission to access this page.</p>',
-                    showConfirmButton: false,
-                    timer: 3000
-                }).then(() => {
-                    window.location.href = '../../frontend/login.php';
-                });
-            }, 100);
-        </script>
-        <style>
-            .swal2-popup {
-                border-radius: 12px;
-                padding: 20px;
-            }
-            .swal2-icon.swal2-error-icon {
-                border: none;
-                font-size: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 60px;
-                height: 60px;
-                color: #333;
-            }
-        </style>
-    </head>
-    <body></body>
-    </html>";
-    exit();
-}
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header("Expires: 0");
+require_once '../../../controllers/helpers.php';
+require_once '../../../controllers/admin/toptouristsitecontroller.php';
+include '../../../../includes/auth.php';
+require_once '../../../config/dbconnect.php';
 ?>
 
 <!DOCTYPE html>
@@ -108,35 +55,44 @@ header("Expires: 0");
                     <div class="chartcontainer">
                         <canvas id="topsite"></canvas>
                         <script>
+                            // Data from PHP
+                            const siteNames = <?php echo $siteNamesJSON; ?>;
+                            const visitorCounts = <?php echo $visitorCountsJSON; ?>;
+                       
+
                             let topsite = document.getElementById('topsite').getContext('2d');
 
                             let topsiteChart = new Chart(topsite, {
                                 type: 'pie',
                                 data: {
-                                    labels: ['Taal Church', 'Taal Park', 'Taal Public Market'],
-                                    datasets: [
-                                        {
-                                            label: 'Top Tourist Sites',
-                                            data: [4000, 2000, 500],
-                                            backgroundColor: [
-                                                'rgba(75, 192, 192, 0.6)',
-                                                'rgba(54, 162, 235, 0.6)',
-                                                'rgba(255, 206, 86, 0.6)'
-                                            ],
-                                            borderColor: [
-                                                'rgba(75, 192, 192, 1)',
-                                                'rgba(54, 162, 235, 1)',
-                                                'rgba(255, 206, 86, 1)'
-                                            ],
-                                            borderWidth: 1
-                                        }
-                                    ]
+                                    labels: siteNames, // Use PHP-generated site names
+                                    datasets: [{
+                                        label: 'Visitors',
+                                        data: visitorCounts, // Use PHP-generated visitor counts
+                                        backgroundColor: [
+                                            'rgba(75, 192, 192, 0.6)',
+                                            'rgba(54, 162, 235, 0.6)',
+                                            'rgba(255, 206, 86, 0.6)',
+                                            'rgba(255, 99, 132, 0.6)',
+                                            'rgba(153, 102, 255, 0.6)',
+                                            'rgba(255, 159, 64, 0.6)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(255, 99, 132, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 159, 64, 1)'
+                                        ],
+                                        borderWidth: 1
+                                    }]
                                 },
                                 options: {
                                     plugins: {
-                                            legend: {
-                                                position: 'right'
-                                            }
+                                        legend: {
+                                            position: 'right'
+                                        }
                                     },
                                     responsive: true,
                                     maintainAspectRatio: false
@@ -149,7 +105,7 @@ header("Expires: 0");
             <div class="summary">
                 <div>
                     <h4>Total Visitors This Year:</h4>
-                    <h4>6000</h4>
+                    <h4><?php echo $totalVisitors; ?></h4>
                 </div>
                 <div>
                     <button id="downloadPdf" class="bluebutton download bi bi-file-earmark-arrow-down-fill">&nbspDownload PDF Report</button>
