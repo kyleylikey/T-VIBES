@@ -988,7 +988,7 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </a>
             </li>
             <li class="nav-item mb-4">
-                <a href="monthlyperformance/monthlyperformance.php" class="nav-link">
+                <a href="monthlyperformance.php" class="nav-link">
                     <i class="bi bi-bar-chart-line"></i>
                     <span class="d-none d-sm-inline">Monthly Performance</span>
                 </a>

@@ -134,6 +134,18 @@ class Tour {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-        
+       
+    public function getTourHistory() {
+        $query = "SELECT users.name, tour.tourid, tour.date AS travel_date, tour.companions, tour.status, 
+                         tour.created_at AS submitted_on, sites.sitename, sites.price, sites.siteimage 
+                  FROM tour
+                  JOIN users ON tour.userid = users.userid
+                  JOIN sites ON tour.siteid = sites.siteid
+                  ORDER BY tour.date DESC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>
