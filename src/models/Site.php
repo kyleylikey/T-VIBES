@@ -19,7 +19,7 @@ class Site {
         $query = "SELECT * FROM " . $this->table;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        return $stmt;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updateSite($siteid, $updateData) {
@@ -71,6 +71,23 @@ class Site {
         $stmt->execute();
         return $stmt;
     }
+
+    public function deleteSite($siteId) {
+        $deleteQuery = "DELETE FROM sites WHERE siteid = ?";
+        $stmt = $this->conn->prepare($deleteQuery);
+        return $stmt->execute([$siteId]);
+    }
+
+    public static function binaryToDays($binaryString) {
+        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $schedule = [];
+        for ($i = 0; $i < 7; $i++) {
+            if ($binaryString[$i] === '1') {
+                $schedule[] = $days[$i];
+            }
+        }
+        return implode(', ', $schedule);
+    }    
 }
 
 

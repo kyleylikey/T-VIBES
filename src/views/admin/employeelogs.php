@@ -697,7 +697,7 @@ require_once '../../controllers/logscontroller.php';
                 </a>
             </li>
             <li class="nav-item mb-4">
-                <a href="accounts.php" class="nav-link">
+                <a href="accounts.php?usertype=mngr" class="nav-link">
                     <i class="bi bi-people"></i>
                     <span class="d-none d-sm-inline">Accounts</span>
                 </a>

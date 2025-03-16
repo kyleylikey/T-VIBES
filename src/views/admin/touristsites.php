@@ -1,3 +1,9 @@
+<?php
+include '../../../includes/auth.php';
+require_once '../../config/dbconnect.php';
+require_once '../../controllers/sitecontroller.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,6 +160,16 @@
             color: #939393;
         }
 
+        .destination-image {
+            width: 100%;
+            height: 85%;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0; 
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
         .modal-body {
             display: flex;
             align-items: stretch; 
@@ -203,6 +219,7 @@
             overflow: hidden;
             border-radius: 10px;
             background-color: #FFFFFF; 
+            border: 1px solid #102E47;
         }
 
         .image-preview img {
@@ -292,6 +309,19 @@
             color: #FFFFFF !important;
         }
 
+        .no-sites {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #434343;
+            padding: 10px;
+            border-radius: 8px;
+            width: fit-content;
+            margin: auto;
+            margin-bottom: 30px;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
         @media (max-width: 1280px) {
             .info-box {
                 width: 320px; 
@@ -351,9 +381,14 @@
             }
 
             .info-box p {
-                font-size: 15px; 
+                font-size: 12px; 
                 bottom: 8px;
                 left: 12px;
+            }
+
+            .destination-image {
+                height: 80%; 
+                border-radius: 8px 8px 0 0; 
             }
 
             .row.justify-content-start {
@@ -691,11 +726,16 @@
             .info-box p {
                 font-size: 14px; 
                 bottom: 8px; 
-                left: 12px;
+                left: 8px;
             }
 
             .info-box i {
                 font-size: 32px; 
+            }
+
+            .destination-image {
+                height: 80%; 
+                border-radius: 8px 8px 0 0; 
             }
 
             .modal-dialog {
@@ -758,9 +798,9 @@
             }
 
             .info-box p {
-                font-size: 14px; 
+                font-size: 12px; 
                 bottom: 8px; 
-                left: 10px;
+                left: 8px;
             }
 
             .info-box i {
@@ -851,7 +891,7 @@
                 </a>
             </li>
             <li class="nav-item mb-4">
-                <a href="accounts.php" class="nav-link">
+                <a href="accounts.php?usertype=mngr" class="nav-link">
                     <i class="bi bi-people"></i>
                     <span class="d-none d-sm-inline">Accounts</span>
                 </a>
@@ -895,54 +935,31 @@
             </span>
         </div>
         <div class="mt-3 row justify-content-start">
-            <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                <div class="info-box siteitem" onclick="showModal()" style="cursor: pointer;">
-                    <i class="bi bi-image"></i>
-                    <p>Destination Name</p>
+            <?php if (!empty($sites)): ?>
+                <?php foreach ($sites as $site): ?>
+                    <?php $opdays = Site::binaryToDays($site['opdays']); ?> 
+                    <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="info-box siteitem" 
+                            data-siteid="<?= htmlspecialchars($site['siteid']) ?>"
+                            onclick="showModal('<?= htmlspecialchars($site['sitename']) ?>', 
+                                                '<?= htmlspecialchars($site['siteimage']) ?>', 
+                                                '<?= htmlspecialchars($site['price']) ?>', 
+                                                '<?= htmlspecialchars($opdays) ?>', 
+                                                '<?= htmlspecialchars($site['description']) ?>',
+                                                '<?= htmlspecialchars($site['siteid']) ?>')"
+                            style="cursor: pointer;">
+                            <img src="/T-VIBES/public/uploads/<?= htmlspecialchars($site['siteimage']) ?>" 
+                                alt="<?= htmlspecialchars($site['sitename']) ?>" 
+                                class="destination-image">
+                            <p><?= htmlspecialchars($site['sitename']) ?></p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12 text-center">
+                    <p class="no-sites">No tourist sites available.</p>
                 </div>
-            </div>
-            <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                <div class="info-box siteitem" onclick="showModal()" style="cursor: pointer;">
-                    <i class="bi bi-image"></i>
-                    <p>Destination Name</p>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                <div class="info-box siteitem" onclick="showModal()" style="cursor: pointer;">
-                    <i class="bi bi-image"></i>
-                    <p>Destination Name</p>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                <div class="info-box siteitem" onclick="showModal()" style="cursor: pointer;">
-                    <i class="bi bi-image"></i>
-                    <p>Destination Name</p>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                <div class="info-box siteitem" onclick="showModal()" style="cursor: pointer;">
-                    <i class="bi bi-image"></i>
-                    <p>Destination Name</p>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                <div class="info-box siteitem" onclick="showModal()" style="cursor: pointer;">
-                    <i class="bi bi-image"></i>
-                    <p>Destination Name</p>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                <div class="info-box siteitem" onclick="showModal()" style="cursor: pointer;">
-                    <i class="bi bi-image"></i>
-                    <p>Destination Name</p>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                <div class="info-box siteitem" onclick="showModal()" style="cursor: pointer;">
-                    <i class="bi bi-image"></i>
-                    <p>Destination Name</p>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -957,18 +974,17 @@
             <div class="modal-body d-flex gap-4">
                 <div class="image-upload-container d-flex flex-column align-items-center">
                     <div class="image-preview d-flex align-items-center justify-content-center">
-                        <i class="bi bi-image" id="previewIcon"></i>
+                        <img id="modalImage" src="" class="image-preview">
                     </div>
                 </div>
                 <div class="w-50">
-                    <p><span>Location</span><br><strong>60 Calle Marcela Mariño Agoncillo, Taal, 4208 Batangas</strong></p>
-                    <p><span>Price</span><br><strong>₱500.00</strong></p>
-                    <p><span>Schedule</span><br><strong>10:00 AM - 5:00 PM<br>Tuesday - Sunday</strong></p>
-                    <p><span>Description</span><br><strong>jdc_030993</strong></p>
+                    <p><span>Price</span><br><strong id="modalPrice">₱0.00</strong></p>
+                    <p><span>Schedule</span><br><strong id="modalSchedule"></strong></p>
+                    <p><span>Description</span><br><strong id="modalDescription"></strong></p>
                 </div>
             </div>
             <div class="modal-footer border-0 d-flex justify-content-center">
-                <button class="btn-custom">Delete</button>
+                <button id="modalDeleteBtn" class="btn-custom" data-siteid="">Delete</button>
             </div>
         </div>
     </div>
@@ -977,75 +993,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="../../../public/assets/scripts/main.js"></script>
-<script>
-    function showModal() {
-        var myModal = new bootstrap.Modal(document.getElementById('touristSitesModal'));
-        myModal.show();
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelector(".modal-footer .btn-custom").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-up"></i>',
-                title: "Delete This Destination?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: "Tourist Site Deleted Successfully!",
-                        timer: 3000,
-                        showConfirmButton: false,
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        }
-                    });
-                }
-            });
-        });
-
-        document.querySelector(".edit-modal-footer .btn-custom").addEventListener("click", function () {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-thumbs-up"></i>',
-                title: "Confirm Changes?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-circle-check"></i>',
-                        title: "Account Updated Successfully!",
-                        timer: 3000,
-                        showConfirmButton: false,
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        }
-                    });
-                }
-            });
-        });
-    });
-</script>
+<script src="../../../public/assets/scripts/admtouristsites.js"></script>
 </body>
 </html>

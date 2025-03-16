@@ -96,13 +96,10 @@ require_once '../../controllers/upcomingtourscontroller.php';
             width: calc(100% - 260px); 
         }
 
-        .content-container h2 {
-            font-weight: bold;
-        }
-
         .content-container h2, 
         .content-container .date h2 {
-            color: #434343 !important;
+            color: #102E47;
+            font-weight: bold;
         }
 
         .header {
