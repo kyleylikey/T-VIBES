@@ -1,4 +1,5 @@
 <?php
+include '../../../includes/auth.php';
 require_once '../../config/dbconnect.php';
 
 $database = new Database();
