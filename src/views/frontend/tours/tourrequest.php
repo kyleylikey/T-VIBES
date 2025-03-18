@@ -193,7 +193,6 @@
         </div>
     </div>
 </div>
-
 <script>
     const dateInput = document.getElementById('tour-date');
     const checkBtn = document.getElementById('check-btn');
@@ -203,21 +202,49 @@
     const feesList = document.getElementById('estimated-fees');
     const totalCostDisplay = document.getElementById('total-cost');
 
+    const minusBtn = document.getElementById('minus-btn');
+    const plusBtn = document.getElementById('plus-btn');
+    const counterInput = document.getElementById('counter-input');
+
+    // Counter functionality
+    minusBtn.addEventListener('click', () => {
+        let value = parseInt(counterInput.value);
+        if (value > 1) {
+            counterInput.value = value - 1;
+            updateTotalCost();
+        }
+    });
+
+    plusBtn.addEventListener('click', () => {
+        let value = parseInt(counterInput.value);
+        if (value < 255) {
+            counterInput.value = value + 1;
+            updateTotalCost();
+        }
+    });
+
+    // Update total cost based on people count
+    function updateTotalCost() {
+        let totalCost = 0;
+        let peopleCount = parseInt(counterInput.value);
+
+        feesList.innerHTML = '';
+        document.querySelectorAll('.destination-wrapper').forEach(dest => {
+            const name = dest.querySelector('.destination-details span').innerText;
+            const price = parseFloat(dest.getAttribute('data-price'));
+            feesList.innerHTML += `<div>${name} x${peopleCount} - ₱${(price * peopleCount).toFixed(2)}</div>`;
+            totalCost += price * peopleCount;
+        });
+
+        totalCostDisplay.textContent = totalCost.toFixed(2);
+    }
+
     checkBtn.addEventListener('click', () => {
         dateInput.style.display = 'block';
     });
 
     dateInput.addEventListener('change', () => {
-        let totalCost = 0;
-        feesList.innerHTML = '';
-        document.querySelectorAll('.destination-wrapper').forEach(dest => {
-            const name = dest.querySelector('.destination-details span').innerText;
-            const price = parseFloat(dest.getAttribute('data-price'));
-            feesList.innerHTML += `<div>${name} x1 - ₱${price.toFixed(2)}</div>`;
-            totalCost += price;
-        });
-
-        totalCostDisplay.textContent = totalCost.toFixed(2);
+        updateTotalCost();
         submitBtn.style.display = 'block';
 
         // Hide buttons, show edit button
@@ -233,7 +260,28 @@
         submitBtn.style.display = 'none';
         editBtn.style.display = 'none';
     });
+
+    // Ensure total updates when manually changing the input value
+    counterInput.addEventListener('change', updateTotalCost);
 </script>
 
+<!--Sweetalerts-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.getElementById('submit-btn').addEventListener('click', () => {
+        Swal.fire({
+            icon: 'success',
+            html: `
+                <div style="font-size: 18px; font-weight: bold; margin-top: 10px; color: #102E47;">
+                    Your reservation request has been submitted and is awaiting review.<br>
+                    Please wait for confirmation.
+                </div>
+            `,
+            showConfirmButton: false,
+            timer: 3000 // Closes after 3 seconds
+        });
+    });
+</script>
 </body>
 </html>
