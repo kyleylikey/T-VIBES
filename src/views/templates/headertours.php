@@ -110,7 +110,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <!-- Right side icons -->
                 <div class="nav-icons">
                     <!-- Map Icon -->
-                    <a href="/T-VIBES/src/views/frontend/tourrequest.php">
+                    <a href="/T-VIBES/src/views/frontend/tours/tourrequest.php">
                         <i class="bi bi-map-fill"></i>
                     </a>
                     <!-- Profile Icon -->

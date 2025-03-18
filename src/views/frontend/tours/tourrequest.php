@@ -80,6 +80,46 @@
             font-weight: bold;
             color: #102E47;
         }
+		.delete-btn {
+		background-color: #A9221C;
+		color: #fff;
+		border: none;
+		padding: 8px;
+		border-radius: 50%;
+		cursor: pointer;
+		transition: background-color 0.2s;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		}
+		.delete-btn:hover {
+			background-color: #8a1b16;
+		}
+		.swal-btn-confirm {
+		background-color: #102E47 !important;
+		color: #fff !important;
+		border-radius: 20px !important;
+		padding: 8px 24px !important;
+		font-size: 16px;
+		font-weight: bold;
+		}
+		.swal-btn-cancel {
+			background-color: #fff !important;
+			color: #102E47 !important;
+			border: 1px solid #102E47 !important;
+			border-radius: 20px !important;
+			padding: 8px 24px !important;
+			font-size: 16px;
+			font-weight: bold;
+		}
+		.swal-btn-confirm:hover {
+			background-color: #0d2538 !important;
+		}
+		.swal-btn-cancel:hover {
+			background-color: #f1f1f1 !important;
+		}
         .people-counter {
             margin-top: 20px;
             text-align: center;
@@ -153,16 +193,22 @@
     <!-- Tour Container -->
     <div class="tour-container">
         <?php for ($i = 1; $i <= 3; $i++): ?>
-            <div class="destination-wrapper" data-price="<?= $i * 100 ?>">
-                <div class="destination-number"><?= $i ?></div>
-                <div class="destination-item">
-                    <div class="destination-image"><i class="bi bi-image"></i></div>
-                    <div class="destination-details">
-                        <span>Destination Name <?= $i ?></span>
-                    </div>
-                    <div class="destination-price">₱ <?= $i * 100 ?>.00</div>
-                </div>
-            </div>
+			<div class="destination-wrapper" data-index="<?= $i ?>" data-price="0">
+    <div class="destination-number"><?= $i ?></div>
+    <div class="destination-item">
+        <div class="destination-image"><i class="bi bi-image"></i></div>
+        <div class="destination-details">
+            <span>Destination Name <?= $i ?></span>
+        </div>
+        <div class="destination-actions">
+            <span class="destination-price">₱ 0.00</span>
+            <button class="delete-btn" onclick="deleteDestination(this)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
         <?php endfor; ?>
 
         <!-- People Counter -->
@@ -176,11 +222,15 @@
         <!-- Date Picker -->
         <input type="date" class="form-control" id="tour-date">
 
-        <div class="mt-3 text-center">
-            <button class="btn btn-danger" id="check-btn">Check Availability</button>
-            <button class="btn btn-secondary" id="add-btn">Add More Destinations</button>
-            <button class="edit-btn" id="edit-btn">Edit</button>
-        </div>
+		<div class="actions text-center mt-3">
+    <button id="add-btn" class="btn btn-pill" style="background-color: #EC6350; color: #fff; border-radius: 50px; padding: 10px 24px;">
+        Add More Destinations
+    </button>
+    <button id="check-btn" class="btn btn-pill" style="background-color: #EC6350; color: #fff; border-radius: 50px; padding: 10px 24px;">
+        Check Availability
+    </button>
+</div>
+
     </div>
 
     <!-- Estimated Fees -->
@@ -264,6 +314,47 @@
     // Ensure total updates when manually changing the input value
     counterInput.addEventListener('change', updateTotalCost);
 </script>
+
+<!--Delete Button-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function deleteDestination(button) {
+        Swal.fire({
+            iconHtml: '<i class="bi bi-trash" style="color: #EC6350; font-size: 48px;"></i>',
+            title: '<span style="font-size: 20px; color: #102E47;">Delete This Destination?</span>',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'swal-btn-confirm',
+                cancelButton: 'swal-btn-cancel'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const destination = button.closest('.destination-wrapper');
+                destination.remove(); // Remove from DOM
+
+                // Reorder the numbering after deletion
+                document.querySelectorAll('.destination-wrapper').forEach((item, index) => {
+                    item.querySelector('.destination-number').innerText = index + 1;
+                });
+
+                updateTotalCost(); // Update the total fees
+
+                // Success alert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Removed!',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
+        });
+    }
+</script>
+
 
 <!--Sweetalerts-->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
