@@ -102,22 +102,28 @@ $tours = [
 
 
         /* Rating Button */
-        .rate-btn {
-            background-color: #EC6350;
-            color: #fff;
-            border: none;
-            padding: 6px 18px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: fit-content;
-        }
+		.rate-review-container {
+    display: flex;
+    gap: 10px;
+}
 
-        .rate-btn:hover {
-            background-color: #e03e26;
-        }
+.rate-btn, .review-btn {
+    background-color: #EC6350;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex: 1; /* Make both buttons equal width */
+    text-align: center;
+}
+
+.rate-btn:hover, .review-btn:hover {
+    background-color: #e03e26;
+}
 
 		.review-btn {
 			background-color: #EC6350;
@@ -218,8 +224,11 @@ $tours = [
                                         </div>
                                         <div class="destination-details">
                                             <div class="destination-name"><?= $destination ?></div>
-                                            <button class="rate-btn" onclick="openRateModal()">Rate</button>
+                                            <div class="rate-review-container">
+											<button class="rate-btn" onclick="openRateModal()">Rate</button>
 											<button class="review-btn" onclick="openReviewModal()">Review</button>
+										</div>
+
 										</div>
 										
                                     </div>
