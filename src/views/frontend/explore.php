@@ -47,51 +47,34 @@ session_start();
         </button>
     </div>
 
-    <!-- Destination Cards -->
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-3">
+<!-- Destination Cards -->
+<div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+        <a href="destination.php?name=Taal Heritage Town" class="text-decoration-none">
             <div class="card border-0 shadow rounded-3 overflow-hidden position-relative">
                 <img src="../../../public/uploads/taal_heritage_town.jpg" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="Taal Heritage Town">
                 <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ 5.0</div>
                 <div class="card-body text-center">
-                    <h5 class="fw-bold">Taal Heritage Town</h5>
+                    <h5 class="fw-bold" style="color: #102E47;">Taal Heritage Town</h5>
                     <p class="text-muted">A glimpse into the historic town of Taal.</p>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
+        </a>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <a href="destination.php?name=Taal Basilica" class="text-decoration-none">
             <div class="card border-0 shadow rounded-3 overflow-hidden position-relative">
                 <img src="../../../public/uploads/taal_basilica.jpg" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="Taal Basilica">
                 <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ 5.0</div>
                 <div class="card-body text-center">
-                    <h5 class="fw-bold">Taal Basilica</h5>
+                    <h5 class="fw-bold" style="color: #102E47;">Taal Basilica</h5>
                     <p class="text-muted">Asia's largest Catholic church.</p>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="card border-0 shadow rounded-3 overflow-hidden position-relative">
-                <img src="../../../public/uploads/san_lorenzo_steps.jpg" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="San Lorenzo Steps">
-                <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ 5.0</div>
-                <div class="card-body text-center">
-                    <h5 class="fw-bold">San Lorenzo Steps</h5>
-                    <p class="text-muted">A scenic stairway leading to heritage sites.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="card border-0 shadow rounded-3 overflow-hidden position-relative">
-                <img src="../../../public/uploads/paradores_castillo.jpg" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="Paradores Castillo">
-                <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ 5.0</div>
-                <div class="card-body text-center">
-                    <h5 class="fw-bold">Paradores Castillo</h5>
-                    <p class="text-muted">A historic Spanish-style accommodation.</p>
-                </div>
-            </div>
-        </div>
+        </a>
     </div>
-</main>
-
+</div>
 
 
     <?php include '../templates/footer.html'; ?>
