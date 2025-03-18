@@ -14,6 +14,7 @@ $tours = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tour Requests</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,24 +44,63 @@ $tours = [
             background-color: #D9E2EC;
         }
 
-        .load-more-btn {
-            background-color: white;
-            color: #102E47;
-            border: 2px solid #A9BCC9;
-            border-radius: 30px;
-            padding: 8px 24px;
-            font-weight: bold;
-            transition: 0.3s;
+        /* Modal styles */
+        .modal-content {
+            padding: 20px;
+            border-radius: 12px;
         }
 
-        .load-more-btn:hover {
+        .destination-card {
+            background-color: #EDF1F5;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .destination-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
             background-color: #D9E2EC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .destination-image i {
+            font-size: 30px;
+            color: #7d7d7d;
+        }
+
+        .destination-name {
+            color: #102E47;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .summary-title {
+            font-weight: bold;
             color: #102E47;
         }
 
+        .summary-value {
+            color: #7d7d7d;
+        }
+
+        /* Status styling */
         .status-pending {
             color: #E74C3C;
             font-weight: bold;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .modal-body {
+            position: relative;
         }
     </style>
 </head>
@@ -92,51 +132,51 @@ $tours = [
         <!-- Modal -->
         <div class="modal fade" id="tourModal<?= $index ?>" tabindex="-1" aria-labelledby="modalLabel<?= $index ?>" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content p-4">
+                <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalLabel<?= $index ?>">Tour Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <?php foreach ($tour['destinations'] as $i => $destination) : ?>
-                            <div class="d-flex align-items-center mb-3" style="background-color: #EDF1F5; padding: 12px; border-radius: 8px;">
-                                <div class="me-3">
-                                    <div style="width: 36px; height: 36px; background-color: #fff; border: 2px solid #102E47; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                                        <?= $i + 1 ?>
+                        <div class="row">
+                            <!-- Left Section: Destination Cards -->
+                            <div class="col-md-6">
+                                <?php foreach ($tour['destinations'] as $i => $destination) : ?>
+                                    <div class="destination-card">
+                                        <div class="destination-image">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                        <div class="destination-name"><?= $destination ?></div>
                                     </div>
-                                </div>
-                                <div>
-                                    <strong><?= $destination ?></strong>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-
-                        <div class="row mt-4">
-                            <div class="col-6">
-                                <strong>Date Created:</strong>
-                                <div><?= $tour['created'] ?></div>
-                            </div>
-                            <div class="col-6">
-                                <strong>Number of People:</strong>
-                                <div><?= $tour['people'] ?></div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-3">
-                            <div class="col-6">
-                                <strong>Estimated Fees:</strong>
-                                <?php foreach ($tour['destinations'] as $destination) : ?>
-                                    <div><?= $destination ?> <span class="text-muted">x2</span></div>
                                 <?php endforeach; ?>
-                            </div>
-                            <div class="col-6">
-                                <strong>Total:</strong>
-                                <div>₱ 0.00</div>
-                            </div>
-                        </div>
 
-                        <div class="mt-4 status-pending">
-                            Status: Pending
+                                <!-- Status at bottom-left -->
+                                <div class="status-pending">
+                                    Status: Pending
+                                </div>
+                            </div>
+
+                            <!-- Right Section: Summary -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <div class="summary-title">Date Created:</div>
+                                    <div class="summary-value"><?= $tour['created'] ?></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="summary-title">Number of People:</div>
+                                    <div class="summary-value"><?= $tour['people'] ?></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="summary-title">Estimated Fees:</div>
+                                    <?php foreach ($tour['destinations'] as $destination) : ?>
+                                        <div class="summary-value"><?= $destination ?> x2</div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="summary-title">Total:</div>
+                                    <div class="summary-value">₱ 0.00</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -145,11 +185,10 @@ $tours = [
     <?php endforeach; ?>
 
     <div class="text-center mt-4">
-        <button class="load-more-btn">Load More</button>
+        <button class="btn btn-outline-secondary">Load More</button>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
