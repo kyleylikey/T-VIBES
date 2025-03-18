@@ -7,80 +7,64 @@ $db = $database->getConnection();
 $siteModel = new Site($db);
 $sites = $siteModel->getSiteList();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    $action = $_POST['action'];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
+    if ($_POST["action"] == "addSite") {
+        $siteName = $_POST["siteName"] ?? null;
+        $sitePrice = $_POST["sitePrice"] ?? null;
+        $siteDescription = $_POST["siteDescription"] ?? null;
 
-    if ($action === 'editSite') {
-        $siteid = $_POST['siteid'];
-        $name = !empty(trim($_POST['siteName'])) ? $_POST['siteName'] : null;
-        $price = !empty(trim($_POST['sitePrice'])) ? $_POST['sitePrice'] : null;
-        $opdays = !empty(trim($_POST['siteOpDays'])) ? $_POST['siteOpDays'] : null;
-        $desc = !empty(trim($_POST['siteDescription'])) ? $_POST['siteDescription'] : null;
-        $img = !empty($_FILES['editimageUpload']['name']) ? $_FILES['editimageUpload'] : null;
-        
-        $updateData = [];
-        if (!is_null($name)) {
-            $updateData['sitename'] = $name;
-        }
-        if (!is_null($price)) {
-            $updateData['price'] = $price;
-        }
-        if (!is_null($opdays)) {
-            $updateData['opdays'] = $opdays;
-        }
-        if (!is_null($desc)) {
-            $updateData['description'] = $desc;
-        }
-        if (!is_null($img)) {
-            // Handle file upload
-            $targetDir = __DIR__ . '/../../public/uploads/';
-            $targetFile = $targetDir . basename($img['name']);
-            if (move_uploaded_file($img['tmp_name'], $targetFile)) {
-                $updateData['siteimage'] = basename($img['name']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to upload image.']);
-                exit();
+        $opdays = str_repeat("0", 7);
+        if (!empty($_POST["adays"])) {
+            foreach ($_POST["adays"] as $day) {
+                $opdays[$day] = "1";
             }
         }
-        $result = $siteModel->updateSite($siteid, $updateData);
-        echo json_encode(['status' => $result ? 'success' : 'error', 'message' => $result ? 'Site updated successfully.' : 'Failed to update site.']);
-        exit();
+
+        $siteImage = $_FILES["imageUpload"]["name"] ?? "";
+
+        if ($siteName && $sitePrice && $siteDescription) {
+            $siteModel->addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage);
+            header("Location: touristsites.php");
+            exit();
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Missing required fields.']);
+            exit();
+        }
     }
-    elseif ($action === 'addSite') {
-        $name = !empty(trim($_POST['siteName'])) ? $_POST['siteName'] : null;
-        $price = !empty(trim($_POST['sitePrice'])) ? $_POST['sitePrice'] : null;
-        $opdays = !empty(trim($_POST['asiteOpDays'])) ? $_POST['asiteOpDays'] : null;
-        $desc = !empty(trim($_POST['siteDescription'])) ? $_POST['siteDescription'] : null;
-        $img = !empty($_FILES['imageUpload']['name']) ? $_FILES['imageUpload'] : null;
-        
-        $updateData = [];
-        if (!is_null($name)) {
-            $updateData['sitename'] = $name;
-        }
-        if (!is_null($price)) {
-            $updateData['price'] = $price;
-        }
-        if (!is_null($opdays)) {
-            $updateData['opdays'] = $opdays;
-        }
-        if (!is_null($desc)) {
-            $updateData['description'] = $desc;
-        }
-        if (!is_null($img)) {
-            // Handle file upload
-            $targetDir = __DIR__ . '/../../public/uploads/';
-            $targetFile = $targetDir . basename($img['name']);
-            if (move_uploaded_file($img['tmp_name'], $targetFile)) {
-                $updateData['siteimage'] = basename($img['name']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to upload image.']);
-                exit();
+
+    if ($_POST["action"] == "editSite") {
+        $siteId = $_POST["editSiteId"] ?? null;
+        $siteName = $_POST["siteName"] ?? null;
+        $sitePrice = $_POST["sitePrice"] ?? null;
+        $siteDescription = $_POST["siteDescription"] ?? null;
+
+        $opdays = str_repeat("0", 7);
+        if (!empty($_POST["editDays"])) {
+            foreach ($_POST["editDays"] as $day) {
+                $opdays[$day] = "1";
             }
         }
-        $result = $siteModel->addSite($updateData);
-        echo json_encode(['status' => $result ? 'success' : 'error', 'message' => $result ? 'Site added successfully.' : 'Failed to add site.']);
-        exit();
 
+        $imageName = null;
+        if (!empty($_FILES["imageUpload"]["name"])) {
+            $targetDir = "/T-VIBES/public/uploads/";
+            $imageName = basename($_FILES["imageUpload"]["name"]);
+            $targetFilePath = $_SERVER['DOCUMENT_ROOT'] . $targetDir . $imageName;
+
+            if (move_uploaded_file($_FILES["imageUpload"]["tmp_name"], $targetFilePath)) {
+                $siteModel->editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName);
+            }
+        } else {
+            $siteModel->editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays);
+        }
+
+        if ($siteId && $siteName && $sitePrice && $siteDescription) {
+            header("Location: touristsites.php?update=success");
+            exit();
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Missing required fields or invalid site ID.']);
+            exit();
+        }
     }
 }
 
@@ -95,6 +79,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_site'])) {
     }
     exit;
 }
-
 ?>
-
