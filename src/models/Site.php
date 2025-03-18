@@ -11,8 +11,54 @@ class Site {
     private $rating;
     private $price;
 
-    public function __construct($db) {
-        $this->conn = $db;
+    public function __construct() {
+        $database = new Database();
+        $this->conn = $database->getConnection();
+    }
+
+    public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
+        $query = "INSERT INTO sites (sitename, siteimage, description, opdays, price, status, rating, rating_cnt) 
+                    VALUES (:sitename, :siteimage, :description, :opdays, :price, 'displayed', 0, 0)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([
+            ":sitename" => $siteName,
+            ":siteimage" => $siteImage,
+            ":description" => $siteDescription,
+            ":opdays" => $opdays,
+            ":price" => $sitePrice
+        ]);
+    }
+
+    public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
+        if ($imageName) {
+            $query = "UPDATE sites SET sitename = :sitename, siteimage = :siteimage, description = :description, opdays = :opdays, price = :price WHERE siteid = :siteid";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([
+                ":sitename" => $siteName,
+                ":siteimage" => $imageName,
+                ":description" => $siteDescription,
+                ":opdays" => $opdays,
+                ":price" => $sitePrice,
+                ":siteid" => $siteId
+            ]);
+        } else {
+            $query = "UPDATE sites SET sitename = :sitename, description = :description, opdays = :opdays, price = :price WHERE siteid = :siteid";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([
+                ":sitename" => $siteName,
+                ":description" => $siteDescription,
+                ":opdays" => $opdays,
+                ":price" => $sitePrice,
+                ":siteid" => $siteId
+            ]);
+        }
+    }
+
+    public function getSites() {
+        $query = "SELECT siteid, sitename, siteimage, description, opdays, price FROM sites WHERE status = 'displayed'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getSiteList() {
@@ -33,7 +79,6 @@ class Site {
             $fields[] = "$column = :$column";
             $params[":$column"] = $value;
         }
-        // Add the account id for the WHERE clause
         $params[":siteid"] = $siteid;
         
         $sql = "UPDATE " . $this->table . " SET " . implode(", ", $fields) . " WHERE siteid = :siteid";
@@ -41,7 +86,7 @@ class Site {
         return $stmt->execute($params);
     }
 
-    public function addSite($updateData) {
+    public function addSiteRecord($updateData) {
         if (empty($updateData)) {
             return false;
         }
@@ -87,7 +132,8 @@ class Site {
             }
         }
         return implode(', ', $schedule);
-    }    
+    }
 }
+?>
 
 

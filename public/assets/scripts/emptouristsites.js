@@ -1,251 +1,197 @@
-function bitmaskToDays(bitmaskStr) {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
-    let result = [];
-    
-    let bitmask = parseInt(bitmaskStr, 2);
-
-    for (let i = 0; i < days.length; i++) {
-        if (bitmask & (1 << (6 - i))) { 
-            result.push(days[i]);
-        }
-    }
-
-    return result.join(', ');
-}
-
-function daysToBitmask(daysString) {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
-    const selectedDays = daysString.split(', ').map(day => day.trim());
-    let bitmask = 0;
-
-    selectedDays.forEach(day => {
-        const index = days.indexOf(day);
-        if (index !== -1) {
-            bitmask |= (1 << (6 - index)); 
-        }
-    });
-
-    return bitmask.toString(2).padStart(7, '0'); 
-}
-
-
-function updateBitmask() {
-    let bitmask = 0;
-    
-    document.querySelectorAll('input[name="days[]"]:checked').forEach(checkbox => {
-        bitmask |= (1 << (6 - checkbox.value)); 
-    });
-
-    let binaryString = bitmask.toString(2).padStart(7, '0');
-
-    document.getElementById('siteOpDays').value = binaryString;
-}
-
-function aupdateBitmask() {
-    let bitmask = 0;
-    
-    document.querySelectorAll('input[name="adays[]"]:checked').forEach(checkbox => {
-        bitmask |= (1 << (6 - checkbox.value)); 
-    });
-
-    let binaryString = bitmask.toString(2).padStart(7, '0');
-
-    document.getElementById('asiteOpDays').value = binaryString;
-}
-
-function showModal() {
-    var modal = new bootstrap.Modal(document.getElementById('touristSitesModal'));
-    modal.show();
-}
-
-function editModal(siteid) {
-    var detailsModalElement = document.getElementById('showDetailsModal');
-    var detailsModalInstance = bootstrap.Modal.getInstance(detailsModalElement);
-    if (detailsModalInstance) {
-        detailsModalInstance.hide();
-    }
-    const modalSiteId = document.getElementById("siteid");
-    modalSiteId.value = siteid;
-    var modal = new bootstrap.Modal(document.getElementById('editTouristSitesModal'));
-    modal.show();
-}
-
-function detailsModal(siteid, sitename, siteimage, sitedesc, siteopdays, siteprice) {
-    const displaySiteName = document.getElementById("displaySiteName");
-    const displaySiteImage = document.getElementById("displayFileName");
-    const displaySitePrice = document.getElementById("displaySitePrice");
-    const displaySiteOpDays = document.getElementById("displaySiteSchedule");
-    const displaySiteDesc = document.getElementById("displaySiteDescription");
-    const displayImage = document.getElementById("displayImage");
-    const toggleEditBtn = document.getElementById("showeditmodal");
-
-    displaySiteName.value = sitename;
-    displaySiteImage.value = siteimage;
-    displaySitePrice.value = siteprice;
-    displaySiteOpDays.value = bitmaskToDays(siteopdays);
-    displaySiteDesc.value = sitedesc;
-    displayImage.src = '/T-VIBES/public/uploads/' + siteimage;
-
-    var modal = new bootstrap.Modal(document.getElementById('showDetailsModal'));
-    modal.show();
-
-    toggleEditBtn.addEventListener("click", function () {
-        editModal(siteid);
-    });
-}
-
 document.addEventListener("DOMContentLoaded", function () {
-    const siteItems = document.querySelectorAll(".siteitem");
-    const inputSiteName = document.getElementById("siteName");
-    const inputSiteImage = document.getElementById("imageUpload");
-    const inputSitePrice = document.getElementById("sitePrice");
-    const inputaSiteOpDays = document.getElementById("asiteOpDays");
-    const inputSiteDesc = document.getElementById("siteDescription");
-    
-    siteItems.forEach((item) => {
-        item.addEventListener("click", function () {
-            const sitename = this.getAttribute("data-sitename");
-            const siteimage = this.getAttribute("data-siteimage");
-            const sitedesc = this.getAttribute("data-sitedesc");
-            const siteopdays = this.getAttribute("data-siteopdays");
-            const siteprice = this.getAttribute("data-price");
-            const siteid = this.getAttribute("data-siteid");
-            detailsModal(siteid, sitename, siteimage, sitedesc, siteopdays, siteprice);
-        });
+    document.querySelector(".add-site-box").addEventListener("click", function () {
+        var addModal = new bootstrap.Modal(document.getElementById("addTouristSitesModal"));
+        addModal.show();
     });
 
-    document
-    .getElementById("editSiteForm")
-    .addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const formData = new FormData(this);
-
-        fetch("../../controllers/sitecontroller.php", {
-            method: "POST",
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                Swal.fire({
-                    iconHtml: data.status === "success" ? '<i class="fas fa-circle-check"></i>' : '<i class="fas fa-exclamation-circle"></i>',
-                    html: `<p class="swal2-title-custom">${data.message}</p>`,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    customClass: {
-                        popup: "swal-custom-popup",
-                        icon: "swal2-icon-custom"
-                    }
-                }).then(() => {
-                    if (data.status === "success") location.reload();
-                });
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                Swal.fire({
-                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-                    html: '<p class="swal2-title-custom">Something went wrong. Please try again later.</p>',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    customClass: {
-                        popup: "swal-custom-popup",
-                        icon: "swal2-icon-custom"
-                    }
-                });
-            });
+    document.getElementById("imageUpload").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("previewImage").src = e.target.result;
+                document.getElementById("previewImage").style.display = "block";
+                document.getElementById("previewIcon").style.display = "none";
+            };
+            reader.readAsDataURL(file);
+        }
     });
 
-    document
-    .getElementById("addSiteForm")
-    .addEventListener("submit", function (event) {
+    document.getElementById("editImageUpload").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("editPreviewImage").src = e.target.result;
+                document.getElementById("editPreviewImage").style.display = "block";
+                document.getElementById("editPreviewIcon").style.display = "none";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById("submitAddSite").addEventListener("click", function (event) {
         event.preventDefault();
 
-        const formData = new FormData(this);
-        if (!inputSiteName.value || !inputSiteImage.files.length || !inputSitePrice.value || !inputaSiteOpDays.value || !inputSiteDesc.value) {
+        let siteName = document.getElementById("siteName").value.trim();
+        let sitePrice = document.getElementById("sitePrice").value.trim();
+        let siteDescription = document.getElementById("siteDescription").value.trim();
+        let imageUpload = document.getElementById("imageUpload").files.length;
+        let selectedDays = document.querySelectorAll("input[name='adays[]']:checked").length;
+
+        if (!siteName || !sitePrice || !siteDescription || imageUpload === 0 || selectedDays === 0) {
             Swal.fire({
                 iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                 title: "Please fill out all fields!",
+                timer: 3000,
+                showConfirmButton: false,
                 customClass: {
                     title: "swal2-title-custom",
                     icon: "swal2-icon-custom",
                     popup: "swal-custom-popup"
                 }
             });
-        } else {
-            fetch("../../controllers/sitecontroller.php", {
-                method: "POST",
-                body: formData,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    Swal.fire({
-                        iconHtml: data.status === "success" ? '<i class="fas fa-circle-check"></i>' : '<i class="fas fa-exclamation-circle"></i>',
-                        html: `<p class="swal2-title-custom">${data.message}</p>`,
-                        showConfirmButton: false,
-                        timer: 3000,
-                        customClass: {
-                            popup: "swal-custom-popup",
-                            icon: "swal2-icon-custom"
-                        }
-                    }).then(() => {
-                        if (data.status === "success") location.reload();
-                    });
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-                        html: '<p class="swal2-title-custom">Something went wrong. Please try again later.</p>',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        customClass: {
-                            popup: "swal-custom-popup",
-                            icon: "swal2-icon-custom"
-                        }
-                    });
+            return;
+        }
+
+        Swal.fire({
+            title: "Confirm Details?",
+            iconHtml: '<i class="fas fa-thumbs-up"></i>',
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup",
+                confirmButton: "swal-custom-btn",
+                cancelButton: "swal-custom-btn"
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Tourist Site Added Successfully!",
+                    iconHtml: '<i class="fas fa-circle-check"></i>',
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
+                }).then(() => {
+                    document.getElementById("addSiteForm").submit();
                 });
-        }
+            }
+        });
     });
 
-    const fileInput = document.getElementById('imageUpload');
-    const editfileInput = document.getElementById('editimageUpload');
+    document.querySelectorAll(".info-box").forEach((box) => {
+        box.addEventListener("click", function () {
+            var siteId = this.getAttribute("data-siteid");
+            var siteName = this.getAttribute("data-sitename");
+            var siteImage = this.getAttribute("data-siteimage");
+            var siteDescription = this.getAttribute("data-sitedescription");
+            var opdays = this.getAttribute("data-opdays");
+            var price = this.getAttribute("data-price");
 
-    fileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        const previewImage = document.getElementById('previewImage');
-        const previewIcon = document.getElementById('previewIcon');
+            document.getElementById("editSiteId").value = siteId;
+            document.getElementById("editSiteName").value = siteName;
+            document.getElementById("editSitePrice").value = price;
+            document.getElementById("editSiteDescription").value = siteDescription;
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                previewImage.style.display = 'block';
-                previewIcon.style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            previewImage.style.display = 'none';
-            previewIcon.style.display = 'block';
-        }
+            var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            for (var i = 0; i < 7; i++) {
+                document.getElementById("edit" + days[i]).checked = opdays[i] === "1";
+            }
+
+            if (siteImage) {
+                document.getElementById("editPreviewImage").src = "/T-VIBES/public/uploads/" + siteImage;
+                document.getElementById("editPreviewImage").style.display = "block";
+                document.getElementById("editPreviewIcon").style.display = "none";
+            } else {
+                document.getElementById("editPreviewImage").style.display = "none";
+                document.getElementById("editPreviewIcon").style.display = "block";
+            }
+
+            var editModal = new bootstrap.Modal(document.getElementById("editTouristSitesModal"));
+            editModal.show();
+        });
     });
 
-    editfileInput.addEventListener('change', function(event) {
-        const editfile = event.target.files[0];
-        const editpreviewImage = document.getElementById('editpreviewImage');
-        const editpreviewIcon = document.getElementById('editpreviewIcon');
+    document.querySelector("#editTouristSitesModal .btn-custom").addEventListener("click", function (event) {
+        event.preventDefault();
 
-        if (editfile) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                editpreviewImage.src = e.target.result;
-                editpreviewImage.style.display = 'block';
-                editpreviewIcon.style.display = 'none';
-            };
-            reader.readAsDataURL(editfile);
-        } else {
-            editpreviewImage.style.display = 'none';
-            editpreviewIcon.style.display = 'block';
+        let originalSiteName = document.getElementById("editSiteName").getAttribute("data-original");
+        let originalSitePrice = document.getElementById("editSitePrice").getAttribute("data-original");
+        let originalSiteDescription = document.getElementById("editSiteDescription").getAttribute("data-original");
+        let originalDays = document.getElementById("editSiteId").getAttribute("data-original-days");
+
+        let siteName = document.getElementById("editSiteName").value.trim();
+        let sitePrice = document.getElementById("editSitePrice").value.trim();
+        let siteDescription = document.getElementById("editSiteDescription").value.trim();
+        let selectedDays = Array.from(document.querySelectorAll("input[name='editDays[]']:checked"))
+            .map(day => day.value).join("");
+
+        if (!siteName || !sitePrice || !siteDescription || selectedDays.length === 0) {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "Please fill out all fields!",
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
+            });
+            return;
         }
-    });
 
+        if (siteName === originalSiteName && sitePrice === originalSitePrice && siteDescription === originalSiteDescription && selectedDays === originalDays) {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-info-circle"></i>',
+                title: "No changes were made!",
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Confirm Changes?",
+            iconHtml: '<i class="fas fa-thumbs-up"></i>',
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup",
+                confirmButton: "swal-custom-btn",
+                cancelButton: "swal-custom-btn"
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Tourist Site Updated Successfully!",
+                    iconHtml: '<i class="fas fa-circle-check"></i>',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
+                }).then(() => {
+                    document.querySelector("#editSiteForm").submit();
+                });
+            }
+        });
+    });
 });
