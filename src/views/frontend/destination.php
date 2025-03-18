@@ -382,9 +382,11 @@ session_start();
 
     <main class="container py-4">
         <div class="d-flex flex-column mb-3">
-            <button class="btn align-self-start" style="background-color: #EC6350; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                <i class="fas fa-arrow-left text-white"></i>
-            </button>
+		<button class="btn align-self-start" style="background-color: #EC6350; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" 
+    onclick="window.location.href='explore.php'">
+    <i class="fas fa-arrow-left text-white"></i>
+</button>
+
             <h1 class="fw-bold mt-2" style="color: #102E47;">Destination Name</h1>
         </div>
 
