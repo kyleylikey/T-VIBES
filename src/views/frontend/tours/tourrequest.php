@@ -223,7 +223,7 @@
         <input type="date" class="form-control" id="tour-date">
 
 		<div class="actions text-center mt-3">
-    <button id="add-btn" class="btn btn-pill" style="background-color: #EC6350; color: #fff; border-radius: 50px; padding: 10px 24px;">
+    <button id="addMoreDestinations" class="btn btn-pill" style="background-color: #EC6350; color: #fff; border-radius: 50px; padding: 10px 24px;">
         Add More Destinations
     </button>
     <button id="check-btn" class="btn btn-pill" style="background-color: #EC6350; color: #fff; border-radius: 50px; padding: 10px 24px;">
@@ -373,6 +373,24 @@
             timer: 3000 // Closes after 3 seconds
         });
     });
+
+	//ADD MORE DESTINATION
+	document.addEventListener("DOMContentLoaded", function () {
+    const calendarDates = document.querySelectorAll(".calendar-date");
+    const addMoreBtn = document.getElementById("addMoreDestinations");
+
+    calendarDates.forEach(date => {
+        date.addEventListener("click", function () {
+            // Do not hide the "Add More Destinations" button
+            console.log("Date selected:", this.innerText);
+        });
+    });
+
+    addMoreBtn.addEventListener("click", function () {
+        window.location.href = "../explore.php";
+    });
+});
+
 </script>
 </body>
 </html>

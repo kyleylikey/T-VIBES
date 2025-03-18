@@ -114,7 +114,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <i class="bi bi-map-fill"></i>
                     </a>
                     <!-- Profile Icon -->
-                    <a href="/T-VIBES/src/views/frontend/profile.php">
+                    <a href="/T-VIBES/src/views/frontend/tours/account.php">
                         <i class="bi bi-person-circle"></i>
                     </a>
                 </div>

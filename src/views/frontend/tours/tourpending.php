@@ -102,6 +102,21 @@ $tours = [
         .modal-body {
             position: relative;
         }
+
+		.load-more-btn {
+            background-color: white;
+            color: #102E47;
+            border: 2px solid #A9BCC9;
+            border-radius: 30px;
+            padding: 8px 24px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .load-more-btn:hover {
+            background-color: #D9E2EC;
+            color: #102E47;
+        }
     </style>
 </head>
 <body>
@@ -185,7 +200,7 @@ $tours = [
     <?php endforeach; ?>
 
     <div class="text-center mt-4">
-        <button class="btn btn-outline-secondary">Load More</button>
+        <button class="load-more-btn">Load More</button>
     </div>
 </div>
 
