@@ -1,4 +1,3 @@
-
 <?php
 // Sample data for demonstration
 $tours = [
@@ -36,6 +35,12 @@ $tours = [
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tour-row:hover {
+            background-color: #D9E2EC;
         }
 
         .load-more-btn {
@@ -52,11 +57,17 @@ $tours = [
             background-color: #D9E2EC;
             color: #102E47;
         }
+
+        .status-pending {
+            color: #E74C3C;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+
 <?php include '../../templates/headertours.php'; ?>
-    <?php include '../../templates/toursnav.php'; ?>
+<?php include '../../templates/toursnav.php'; ?>
 
 <div class="container table-container">
     <div class="row table-header py-2">
@@ -66,8 +77,8 @@ $tours = [
         <div class="col-4">Destinations</div>
     </div>
 
-    <?php foreach ($tours as $tour) : ?>
-        <div class="row align-items-center tour-row">
+    <?php foreach ($tours as $index => $tour) : ?>
+        <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $index ?>">
             <div class="col-3"><?= $tour['created'] ?></div>
             <div class="col-3"><?= $tour['planned'] ?></div>
             <div class="col-2"><?= $tour['people'] ?></div>
@@ -75,6 +86,60 @@ $tours = [
                 <?php foreach ($tour['destinations'] as $destination) : ?>
                     <div><?= $destination ?></div>
                 <?php endforeach; ?>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="tourModal<?= $index ?>" tabindex="-1" aria-labelledby="modalLabel<?= $index ?>" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content p-4">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel<?= $index ?>">Tour Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <?php foreach ($tour['destinations'] as $i => $destination) : ?>
+                            <div class="d-flex align-items-center mb-3" style="background-color: #EDF1F5; padding: 12px; border-radius: 8px;">
+                                <div class="me-3">
+                                    <div style="width: 36px; height: 36px; background-color: #fff; border: 2px solid #102E47; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                        <?= $i + 1 ?>
+                                    </div>
+                                </div>
+                                <div>
+                                    <strong><?= $destination ?></strong>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <strong>Date Created:</strong>
+                                <div><?= $tour['created'] ?></div>
+                            </div>
+                            <div class="col-6">
+                                <strong>Number of People:</strong>
+                                <div><?= $tour['people'] ?></div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <strong>Estimated Fees:</strong>
+                                <?php foreach ($tour['destinations'] as $destination) : ?>
+                                    <div><?= $destination ?> <span class="text-muted">x2</span></div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="col-6">
+                                <strong>Total:</strong>
+                                <div>₱ 0.00</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 status-pending">
+                            Status: Pending
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     <?php endforeach; ?>
@@ -85,5 +150,6 @@ $tours = [
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
