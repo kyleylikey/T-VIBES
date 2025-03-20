@@ -102,6 +102,15 @@ $stmt->execute();
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $visitorData[$row['day']] = $row['total_visitors'];
 }
+
+$userid = $_SESSION['userid'];
+$query = "SELECT name FROM Users WHERE userid = :userid LIMIT 1";
+$stmt = $conn->prepare($query);
+$stmt->bindParam(':userid', $userid);
+$stmt->execute();
+$admin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
 ?>
 
 <!DOCTYPE html>
@@ -1148,9 +1157,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         
     <ul class="nav nav-pills flex-column mb-4">
         <li class="nav-item mb-3">
-            <a href="" class="nav-link admin-name active">
+            <a href="javascript:void(0);" class="nav-link admin-name active">
                 <i class="bi bi-person-circle"></i>
-                <span class="d-none d-sm-inline">Manager Name</span>
+                <span class="d-none d-sm-inline"><?= $adminName; ?></span>
             </a>
         </li>
         <li class="nav-item">

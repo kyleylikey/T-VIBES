@@ -3,8 +3,8 @@ require_once  __DIR__ .'/../config/dbconnect.php';
 require_once  __DIR__ .'/../models/Site.php';
 
 $database = new Database();
-$db = $database->getConnection();
-$siteModel = new Site($db);
+$conn = $database->getConnection();
+$siteModel = new Site($conn);
 $sites = $siteModel->getSiteList();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {

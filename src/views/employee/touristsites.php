@@ -2,6 +2,15 @@
 include '../../../includes/auth.php';
 require_once '../../config/dbconnect.php';
 require_once '../../controllers/sitecontroller.php';
+
+$userid = $_SESSION['userid'];
+$query = "SELECT name FROM users WHERE userid = :userid LIMIT 1";
+$stmt = $conn->prepare($query);
+$stmt->bindParam(':userid', $userid);
+$stmt->execute();
+$employee = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
 ?>
 
 <!DOCTYPE html>
@@ -631,9 +640,9 @@ require_once '../../controllers/sitecontroller.php';
         
         <ul class="nav nav-pills flex-column mb-4">
             <li class="nav-item mb-3">
-                <a href="" class="nav-link employee-name active">
+                <a href="javascript:void(0);" class="nav-link employee-name active">
                     <i class="bi bi-person-circle"></i>
-                    <span class="d-none d-sm-inline">Employee Name</span>
+                    <span class="d-none d-sm-inline"><?= $employeeName; ?></span>
                 </a>
             </li>
             <li class="nav-item">

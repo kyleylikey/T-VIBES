@@ -8,8 +8,8 @@ require __DIR__ . '/../../../vendor/autoload.php';
 
 
 $database = new Database();
-$db = $database->getConnection();
-$tourModel = new Tour($db);
+$conn = $database->getConnection();
+$tourModel = new Tour($conn);
 $requests = $tourModel->getTourRequestList();
 
 $data = json_decode(file_get_contents("php://input"));

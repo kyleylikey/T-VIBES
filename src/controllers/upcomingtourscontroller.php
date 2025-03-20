@@ -5,8 +5,8 @@ require_once  __DIR__ .'/../models/Tour.php';
 date_default_timezone_set('Asia/Manila');
 
 $database = new Database();
-$db = $database->getConnection();
-$tourModel = new Tour($db);
+$conn = $database->getConnection();
+$tourModel = new Tour($conn);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ["status" => "error", "message" => "Invalid request"];
