@@ -15,7 +15,6 @@ if (isset($_GET['token'])) {
     $success = false; 
     $message = '';
     $iconHtml = '<i class=\"fas fa-exclamation-circle\"></i>';
-    $customClass = 'swal2-icon swal2-error-icon';
 
     if ($stmt->rowCount() > 0) {
         $updateQuery = "UPDATE users SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = :token";
@@ -25,7 +24,6 @@ if (isset($_GET['token'])) {
         if ($updateStmt->execute()) {
             $success = true;
             $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
-            $customClass = 'swal2-icon swal2-success-icon';
             $message = 'Your email has been successfully verified!';
         } else {
             $message = 'Failed to verify your email. Please try again later.';
@@ -40,42 +38,47 @@ if (isset($_GET['token'])) {
         <meta charset='UTF-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>Verify Email Address</title>
-        <link rel='stylesheet' href='../../public/assets/styles/main.css'>
-        <link rel='stylesheet' href='../../public/assets/styles/login.css'>
         <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
         <link href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap' rel='stylesheet'>
         <style>
-            * {
-                font-family: 'Nunito', sans-serif;
+            .swal2-icon {
+                background: none !important;
+                border: none !important;
+                box-shadow: none !important;
             }
 
-            .swal2-icon.swal2-error-icon, .swal2-icon.swal2-success-icon {
-                border: none;
-                font-size: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 60px;
-                height: 60px;
-                color: #333;
+            .swal2-icon-custom {
+                font-size: 10px; 
+                color: #EC6350; 
             }
-            .swal2-popup {
-                border-radius: 12px;
+
+            .swal2-title-custom {
+                font-size: 24px !important;
+                font-weight: bold;
+                color: #434343 !important;
+            }
+
+            .swal-custom-popup {
                 padding: 20px;
+                border-radius: 25px;
+                font-family: 'Nunito', sans-serif !important;
             }
         </style>
     </head>
     <body>
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz' crossorigin='anonymous'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js'></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
                     iconHtml: '$iconHtml', 
                     customClass: {
-                        icon: '$customClass',
-                        popup: 'swal2-popup'
+                        title: 'swal2-title-custom',
+                        icon: 'swal2-icon-custom',
+                        popup: 'swal-custom-popup'
                     },
-                    html: '<p style=\'font-size: 24px; font-weight: bold; text-align: center;\'>$message</p>',
+                    title: '$message',
                     showConfirmButton: false, 
                     timer: 3000
                 }).then(() => {

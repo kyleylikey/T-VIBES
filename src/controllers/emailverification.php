@@ -37,65 +37,88 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         $mail->isHTML(true);
         $mail->Subject = 'Verify Email Address';
         $mail->Body = "
-            <html>
+            <!DOCTYPE html>
+            <html lang='en'>
             <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
                 <title>Verify Your Email - Taal Tourism</title>
-                <link href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap' rel='stylesheet'>
+                <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
+                <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
+                <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
                 <style>
                     body {
-                        font-family: 'Nunito', sans-serif;
-                        background-color: #ffffff;
+                        background-color: #FFFFFF;
                         margin: 0;
                         padding: 0;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .email-container {
                         max-width: 600px;
                         margin: 20px auto;
-                        background-color: #ffffff;
+                        background-color: #FFFFFF;
                         border-radius: 10px;
                         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                         overflow: hidden;
                     }
+
                     .header {
-                        background-color: #102E47;
-                        color: #ffffff;
+                        background-color: #EC6350;
+                        color: #FFFFFF;
                         text-align: center;
                         padding: 20px;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .header h1 {
                         margin: 0;
                     }
+
                     .content {
                         padding: 20px;
                         color: #434343;
                         text-align: justify;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .content h2 {
                         color: #102E47;
                         text-align: center;
                     }
+
                     .button {
                         display: block;
                         width: fit-content;
                         margin: 20px auto;
                         padding: 10px 20px;
-                        background-color: #102E47;
-                        color: #ffffff !important;
+                        border: 2px solid #102E47;
+                        background-color: #FFFFFF;
                         text-decoration: none;
                         border-radius: 5px;
                         font-size: 16px;
                         text-align: center;
                         font-weight: bold;
+                        border-radius: 25px;
+                        color: #434343 !important;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
                     }
+
                     .button:hover {
-                        background-color: #729AB8;
+                        background-color: #102E47;
+                        color: #FFFFFF !important;
+                        border: 2px solid #102E47;
+                        font-weight: bold;
                     }
+
                     .footer {
                         background-color: #E7EBEE;
                         text-align: center;
                         padding: 10px;
                         font-size: 12px;
                         color: #434343;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
                 </style>
             </head>
@@ -114,6 +137,8 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                         <p>&copy; " . date("Y") . " Taal Tourism. All rights reserved.</p>
                     </div>
                 </div>
+            <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz' crossorigin='anonymous'></script>
+            <script src='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js'></script>
             </body>
             </html>";
 

@@ -20,20 +20,27 @@ error_reporting(E_ALL);
             font-family: 'Nunito', sans-serif;
         }
 
-        .swal2-popup {
-            border-radius: 12px;
-            padding: 20px;
+        .swal2-icon {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
         }
-        .swal2-icon.swal2-email-icon,
-        .swal2-icon.swal2-error-icon {
-            border: none; 
+
+        .swal2-icon-custom {
             font-size: 10px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px; 
-            height: 60px; 
-            color: #333; 
+            color: #EC6350; 
+        }
+
+        .swal2-title-custom {
+            font-size: 24px !important;
+            font-weight: bold;
+            color: #434343 !important;
+        }
+
+        .swal-custom-popup {
+            padding: 20px;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
         }
 
         .large-text-overlay-signup h1 {
@@ -83,21 +90,25 @@ error_reporting(E_ALL);
             .then(data => {
                 if (data.status === 'success') {
                     Swal.fire({
-                        iconHtml: '<i class="fas fa-envelope"></i>',
+                        iconHtml: '<i class="fas fa-envelope" style="color: #EC6350 !important;"></i>',
                         customClass: {
-                            icon: 'swal2-icon swal2-email-icon'
+                            title: "swal2-title-custom",
+                            icon: "swal2-icon-custom",
+                            popup: "swal-custom-popup"
                         },
-                        html: '<p style="font-size: 24px; font-weight: bold;">' + data.message + '</p>',
+                        title: data.message,
                         showConfirmButton: false, 
                         timer: 3000
                     });
                 } else {
                     Swal.fire({
-                        iconHtml: '<i class="fas fa-exclamation-circle"></i>', 
+                        iconHtml: '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>', 
                         customClass: {
-                            icon: 'swal2-icon swal2-error-icon', 
+                            title: "swal2-title-custom",
+                            icon: "swal2-icon-custom",
+                            popup: "swal-custom-popup"
                         },
-                        html: '<p style="font-size: 24px; font-weight: bold;">' + data.message + '</p>',
+                        title: data.message,
                         showConfirmButton: false,
                         timer: 3000
                     });
@@ -106,11 +117,13 @@ error_reporting(E_ALL);
             .catch(error => {
                 console.error('Error:', error);
                 Swal.fire({
-                    iconHtml: '<i class="fas fa-exclamation-circle"></i>', 
+                    iconHtml: '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>', 
                     customClass: {
-                        icon: 'swal2-icon swal2-error-icon', 
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
                     },
-                    html: '<p style="font-size: 24px; font-weight: bold;">Something went wrong. Please try again later.</p>',
+                    title: 'Something went wrong. Please try again later.',
                     showConfirmButton: false,
                     timer: 3000
                 });
