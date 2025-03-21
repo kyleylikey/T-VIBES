@@ -9,17 +9,16 @@ function showModal(row) {
         },
         body: JSON.stringify({ tourid: tourid, userid: userid })
     })
-    .then(response => response.text()) // Log raw response
+    .then(response => response.text()) 
     .then(text => {
-        console.log("Raw Response:", text);  // Check if it's valid JSON
-        return JSON.parse(text); // Try parsing manually
+        console.log("Raw Response:", text);  
+        return JSON.parse(text); 
     })
     .then(data => {
         document.getElementById('tourRequestModalLabel').innerText = 'Tour Request of ' + data.name;
         document.getElementById('dateCreated').innerText = data.created_at;
         document.getElementById('numberOfPeople').innerText = data.companions;
 
-        // Clear previous content
         const destinationContainer = document.querySelector('.destination-container');
         destinationContainer.innerHTML = '';
 
@@ -29,13 +28,11 @@ function showModal(row) {
         const estimatedFeesContainer = document.querySelector('.estimated-fees');
         estimatedFeesContainer.innerHTML = '';
 
-        let totalPrice = 0; // Initialize total price
-        const pax = parseInt(data.companions) || 1; // Get number of people
+        let totalPrice = 0; 
+        const pax = parseInt(data.companions) || 1; 
 
-        // Add sites to the modal
         if (data.sites && data.sites.length > 0) {
             data.sites.forEach((site, index) => {
-                // Stepper
                 const step = document.createElement('div');
                 step.classList.add('step');
                 step.innerHTML = `
@@ -44,7 +41,11 @@ function showModal(row) {
                 ;
                 stepper.appendChild(step);
 
-                // Destination card
+                const formatDate = (dateString) => {
+                    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+                    return new Date(dateString).toLocaleDateString('en-GB', options);
+                };
+
                 const card = document.createElement('div');
                 card.classList.add('destination-card');
                 card.innerHTML = `
@@ -53,45 +54,45 @@ function showModal(row) {
                     </div>
                     <div class="destination-info">
                         <h6>${site.sitename}</h6>
-                    </div>`
-                ;
+                        <p style="color: #757575; font-size: 16px;">
+                            <i class="bi bi-calendar"></i> ${formatDate(data.date)}
+                        </p>
+                        <p style="color: #757575; font-size: 16px;">
+                            <i class="bi bi-cash"></i> ₱${parseFloat(site.price).toFixed(2)} per pax
+                        </p>
+                    </div>`;
                 destinationContainer.appendChild(card);
 
-                // Estimated Fees Section
                 const feeItem = document.createElement('p');
-                feeItem.innerText = `${site.sitename}: ₱${site.price}`;
+                feeItem.innerHTML = `${site.sitename} <span style="float: right;">x${pax}</span>`; 
                 estimatedFeesContainer.appendChild(feeItem);
 
-                totalPrice += parseFloat(site.price); // Add to total price
+                totalPrice += parseFloat(site.price); 
             });
 
-            // Calculate final total price (total sites cost * pax)
             const finalTotal = totalPrice * pax;
 
-            // Update total price in modal
-            document.querySelector('.total-price').innerHTML = `₱${totalPrice.toFixed(2)} x ${pax} Pax = <strong id="estimatedFees">₱${finalTotal.toFixed(2)}*</strong>`;
+            document.querySelector('.total-price').innerHTML = `<strong id="estimatedFees">₱${finalTotal.toFixed(2)}</strong>`;
         } else {
             stepper.innerHTML = "<p>No destinations found.</p>";
             estimatedFeesContainer.innerHTML = "<p>No fees available.</p>";
-            document.querySelector('.total-price').innerHTML = "₱ 0.00 x 0 Pax = <strong id='estimatedFees'>₱ 0.00 *</strong>";
+            document.querySelector('.total-price').innerHTML = "₱ 0.00 x 0 Pax = <strong id='estimatedFees'>₱ 0.00</strong>";
         }
         document.querySelector(".btn-custom.accept").setAttribute("data-tourid", tourid);
         document.querySelector(".btn-custom.accept").setAttribute("data-userid", userid);
         document.querySelector(".btn-custom.decline").setAttribute("data-tourid", tourid);
         document.querySelector(".btn-custom.decline").setAttribute("data-userid", userid);
 
-        // Show the modal
+        
         var modal = new bootstrap.Modal(document.getElementById('tourRequestModal'));
         modal.show();
     })
     .catch(error => console.error('Error:', error));
 }
 
-
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".btn-custom:nth-child(1)").addEventListener("click", function () {
 
-        
         const tourid = this.getAttribute("data-tourid");
         const userid = this.getAttribute("data-userid");
 
@@ -110,7 +111,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Show loading spinner
                 Swal.fire({
                     title: 'Processing Request',
                     html: 'Sending confirmation email... Do not close this window.',
@@ -131,10 +131,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     },
                     body: JSON.stringify({ action: "accept", tourid: tourid, userid: userid }),
                 })
-                .then(response => response.text()) // Log raw response
+                .then(response => response.text()) 
                 .then(text => {
-                    console.log("Raw Response:", text);  // Check if it's valid JSON
-                    return JSON.parse(text); // Try parsing manually
+                    console.log("Raw Response:", text);  
+                    return JSON.parse(text); 
                 })
                 .then(data => {
                     if (data.success) {
@@ -149,7 +149,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                 popup: "swal-custom-popup"
                             }
                         }).then(() => {
-                            // Reload the page to update the list
                             location.reload();
                         });
                     } else {
@@ -171,7 +170,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Decline Button with Reason for Cancellation
     document.querySelector(".btn-custom:nth-child(2)").addEventListener("click", function () {
         const tourid = this.getAttribute("data-tourid");
         const userid = this.getAttribute("data-userid");
@@ -191,18 +189,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Store tourid and userid in the cancel modal
             document.getElementById("cancelReasonModal").setAttribute("data-tourid", tourid);
             document.getElementById("cancelReasonModal").setAttribute("data-userid", userid);
             
-            // Show Reason for Cancellation modal
             var cancelModal = new bootstrap.Modal(document.getElementById("cancelReasonModal"));
             cancelModal.show();
             }
         });
     });
 
-    // Submit Reason for Cancellation
     document.getElementById("submitCancelReason").addEventListener("click", function () {
         let reason = document.getElementById("cancelReasonInput").value.trim();
 
@@ -243,10 +238,10 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify({ action: "decline", tourid: tourid, userid: userid, reason: reason }),
         })
-        .then(response => response.text()) // Log raw response
+        .then(response => response.text()) 
         .then(text => {
-            console.log("Raw Response:", text);  // Check if it's valid JSON
-            return JSON.parse(text); // Try parsing manually
+            console.log("Raw Response:", text);  
+            return JSON.parse(text); 
         })
         .then(data => {
             if (data.success) {
@@ -261,7 +256,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         popup: "swal-custom-popup"
                     }
                 }).then(() => {
-                    // Reload the page to update the list
                     location.reload();
                 });
             } else {
@@ -279,7 +273,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
 
-        // Close the modal
         var cancelModal = bootstrap.Modal.getInstance(document.getElementById("cancelReasonModal"));
         cancelModal.hide();
 

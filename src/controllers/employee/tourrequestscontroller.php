@@ -123,74 +123,72 @@ function sendTourConfirmation($email, $username, $date) {
 
         // Content
         $mail->isHTML(true);
-        $mail->Subject = 'Your Tour Request Has Been Accepted.';
+        $mail->Subject = 'Your Tour Request Has Been Accepted!';
         $mail->Body = "
-            <html>
+            <!DOCTYPE html>
+            <html lang='en'>
             <head>
-                <title>Your Tour Request Has Been Accepted.</title>
-                <link href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap' rel='stylesheet'>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Accepted Tour Request - Taal Tourism</title>
+                <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
+                <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
+                <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
                 <style>
                     body {
-                        font-family: 'Nunito', sans-serif;
-                        background-color: #ffffff;
+                        background-color: #FFFFFF;
                         margin: 0;
                         padding: 0;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .email-container {
                         max-width: 600px;
                         margin: 20px auto;
-                        background-color: #ffffff;
+                        background-color: #FFFFFF;
                         border-radius: 10px;
                         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                         overflow: hidden;
                     }
+
                     .header {
-                        background-color: #102E47;
-                        color: #ffffff;
+                        background-color: #EC6350;
+                        color: #FFFFFF;
                         text-align: center;
                         padding: 20px;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .header h1 {
                         margin: 0;
                     }
+
                     .content {
                         padding: 20px;
                         color: #434343;
                         text-align: justify;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .content h2 {
                         color: #102E47;
                         text-align: center;
                     }
-                    .button {
-                        display: block;
-                        width: fit-content;
-                        margin: 20px auto;
-                        padding: 10px 20px;
-                        background-color: #102E47;
-                        color: #ffffff !important;
-                        text-decoration: none;
-                        border-radius: 5px;
-                        font-size: 16px;
-                        text-align: center;
-                        font-weight: bold;
-                    }
-                    .button:hover {
-                        background-color: #729AB8;
-                    }
+
                     .footer {
                         background-color: #E7EBEE;
                         text-align: center;
                         padding: 10px;
                         font-size: 12px;
                         color: #434343;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
                 </style>
             </head>
             <body>
                 <div class='email-container'>
                     <div class='header'>
-                        <h1>Request Accepted.</h1>
+                        <h1>Request Accepted</h1>
                     </div>
                     <div class='content'>
                         <h2>Hi $username,</h2>
@@ -234,78 +232,76 @@ function sendTourDecline($email, $username, $date, $message) {
 
         // Content
         $mail->isHTML(true);
-        $mail->Subject = 'Your Tour Request Has Been Declined.';
+        $mail->Subject = 'Your Tour Request Has Been Declined!';
         $mail->Body = "
-            <html>
+            <!DOCTYPE html>
+            <html lang='en'>
             <head>
-                <title>Your Tour Request Has Been Declined.</title>
-                <link href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap' rel='stylesheet'>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Declined Tour Request - Taal Tourism</title>
+                <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
+                <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
+                <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
                 <style>
                     body {
-                        font-family: 'Nunito', sans-serif;
-                        background-color: #ffffff;
+                        background-color: #FFFFFF;
                         margin: 0;
                         padding: 0;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .email-container {
                         max-width: 600px;
                         margin: 20px auto;
-                        background-color: #ffffff;
+                        background-color: #FFFFFF;
                         border-radius: 10px;
                         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                         overflow: hidden;
                     }
+
                     .header {
-                        background-color: #102E47;
-                        color: #ffffff;
+                        background-color: #EC6350;
+                        color: #FFFFFF;
                         text-align: center;
                         padding: 20px;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .header h1 {
                         margin: 0;
                     }
+
                     .content {
                         padding: 20px;
                         color: #434343;
                         text-align: justify;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
+
                     .content h2 {
                         color: #102E47;
                         text-align: center;
                     }
-                    .button {
-                        display: block;
-                        width: fit-content;
-                        margin: 20px auto;
-                        padding: 10px 20px;
-                        background-color: #102E47;
-                        color: #ffffff !important;
-                        text-decoration: none;
-                        border-radius: 5px;
-                        font-size: 16px;
-                        text-align: center;
-                        font-weight: bold;
-                    }
-                    .button:hover {
-                        background-color: #729AB8;
-                    }
+
                     .footer {
                         background-color: #E7EBEE;
                         text-align: center;
                         padding: 10px;
                         font-size: 12px;
                         color: #434343;
+                        font-family: 'Helvetica', Arial, sans-serif !important;
                     }
                 </style>
             </head>
             <body>
                 <div class='email-container'>
                     <div class='header'>
-                        <h1>Request Declined.</h1>
+                        <h1>Request Declined</h1>
                     </div>
                     <div class='content'>
                         <h2>Hi $username,</h2>
-                        <p>Your tour scheduled on $date has been declined.</p>
+                        <p>Your tour scheduled on $date has been declined!</p>
                         <p>We regret to inform you that your request has been declined due to the following reason(s):</p>
                         <p>$message</p>
                         <p>If there are any concerns, please let us know by contacting us through our Facebook Page or (number).</p>
