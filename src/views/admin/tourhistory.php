@@ -1027,7 +1027,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                 ?>
                                     <tr onclick="showModal(<?php echo $tourData; ?>)" style="cursor: pointer;">
                                         <td><?php echo htmlspecialchars($firstTour['name']); ?></td>
-                                        <td><?php echo date('d M Y', strtotime($firstTour['submitted_on'])); ?></td>
+                                        <td><?php echo date('d M Y | g:i A', strtotime($firstTour['submitted_on'])); ?></td>
                                         <td><?php echo $destinationCount; ?></td>
                                         <td><?php echo date('d M Y', strtotime($firstTour['travel_date'])); ?></td>
                                         <td><?php echo $firstTour['companions']; ?></td>
@@ -1065,7 +1065,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                 ?>
                                     <tr onclick="showModal(<?php echo $tourData; ?>)" style="cursor: pointer; background-color: #E7EBEE;">
                                         <td><?php echo htmlspecialchars($firstTour['name']); ?></td>
-                                        <td><?php echo date('d M Y', strtotime($firstTour['submitted_on'])); ?></td>
+                                        <td><?php echo date('d M Y | g:i A', strtotime($firstTour['submitted_on'])); ?></td>
                                         <td><?php echo $destinationCount; ?></td>
                                         <td><?php echo date('d M Y', strtotime($firstTour['travel_date'])); ?></td>
                                         <td><?php echo $firstTour['companions']; ?></td>
@@ -1124,11 +1124,14 @@ function showModal(tourData) {
 
     let totalPrice = 0;
     let companions = tourData[0].companions;
-    let dateCreated = new Date(tourData[0].submitted_on).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    let userName = tourData[0].name; 
+    let userName = tourData[0].name;
+
+    let dateObj = new Date(tourData[0].submitted_on);
+    let dateFormatted = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    let timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    let dateCreated = `${dateFormatted} | ${timeFormatted}`;
 
     document.getElementById('tourHistoryModalLabel').textContent = `Tour Request of ${userName}`;
-
     document.getElementById('date-created').textContent = dateCreated;
     document.getElementById('num-people').textContent = companions;
     document.getElementById('tour-status').textContent = "Tour has been " + tourData[0].status;
@@ -1140,7 +1143,6 @@ function showModal(tourData) {
                 ${index < tourData.length - 1 ? '<div class="dashed-line"></div>' : ''}
             </div>
         `;
-
         document.getElementById('stepper-container').innerHTML += stepperItem;
 
         let destinationCard = `

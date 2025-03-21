@@ -951,9 +951,9 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                                             data-userid='" .htmlspecialchars($request['userid'])."' 
                                             >";
                                             echo "<td>".$request['name']."</td>";
-                                            echo "<td>".$request['created_at']."</td>";
+                                            echo "<td>".date('d M Y | g:i A', strtotime($request['created_at']))."</td>";
                                             echo "<td>".$request['total_sites']."</td>";
-                                            echo "<td>".$request['date']."</td>";
+                                            echo "<td>".date('d M Y', strtotime($request['date']))."</td>"; 
                                             echo "<td>".$request['companions']."</td>";
                                             echo "</tr>";
                                         }
@@ -1055,8 +1055,20 @@ function showModal(row) {
         return JSON.parse(text); 
     })
     .then(data => {
+        const formatDateTime = (dateTimeString) => {
+            const dateObj = new Date(dateTimeString);
+            
+            const dateOptions = { day: '2-digit', month: 'short', year: 'numeric' };
+            const formattedDate = dateObj.toLocaleDateString('en-GB', dateOptions);
+
+            const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+            const formattedTime = dateObj.toLocaleTimeString('en-US', timeOptions);
+
+            return `${formattedDate} | ${formattedTime}`;
+        };
+
         document.getElementById('tourRequestModalLabel').innerText = 'Tour Request of ' + data.name;
-        document.getElementById('dateCreated').innerText = data.created_at;
+        document.getElementById('dateCreated').innerText = formatDateTime(data.created_at);
         document.getElementById('numberOfPeople').innerText = data.companions;
 
         const destinationContainer = document.querySelector('.destination-container');
@@ -1118,12 +1130,12 @@ function showModal(row) {
             estimatedFeesContainer.innerHTML = "<p>No fees available.</p>";
             document.querySelector('.total-price').innerHTML = "₱ 0.00 x 0 Pax = <strong id='estimatedFees'>₱ 0.00</strong>";
         }
+
         document.querySelector(".btn-custom.accept").setAttribute("data-tourid", tourid);
         document.querySelector(".btn-custom.accept").setAttribute("data-userid", userid);
         document.querySelector(".btn-custom.decline").setAttribute("data-tourid", tourid);
         document.querySelector(".btn-custom.decline").setAttribute("data-userid", userid);
 
-        
         var modal = new bootstrap.Modal(document.getElementById('tourRequestModal'));
         modal.show();
     })
