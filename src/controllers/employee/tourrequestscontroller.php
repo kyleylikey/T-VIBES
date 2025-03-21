@@ -18,25 +18,28 @@ if (isset($data->tourid) && isset($data->userid)) {
     $tourid = $data->tourid;
     $userid = $data->userid;
 
-    // Check if this is an accept action
     if (isset($data->action) && $data->action === 'accept') {
-        // Get tour request details before updating
         $stmt = $tourModel->getTourRequest($tourid, $userid);
         $requestDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($requestDetails) {
-            // Accept the tour request
-            $result = $tourModel->acceptTourRequest($tourid, $userid);
+            session_start();
+            $empid = $_SESSION['userid']; 
+    
+            $result = $tourModel->acceptTourRequest($tourid, $userid, $empid);
             
             if ($result) {
-                // Send confirmation email
                 $emailResult = sendTourConfirmation(
                     $requestDetails['email'],
                     $requestDetails['name'],
                     $requestDetails['date']
                 );
-                
-                echo json_encode(['success' => true, 'emailSent' => $emailResult === true]);
+    
+                echo json_encode([
+                    'success' => true, 
+                    'emailSent' => $emailResult === true,
+                    'logAdded' => true
+                ]);
                 exit;
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to update tour status']);
@@ -46,21 +49,21 @@ if (isset($data->tourid) && isset($data->userid)) {
             echo json_encode(['success' => false, 'message' => 'Tour request not found']);
             exit;
         }
-    }
-    // Check if this is an accept action
+    }    
+    
     if (isset($data->action) && $data->action === 'decline') {
-        // Get tour request details before updating
         $stmt = $tourModel->getTourRequest($tourid, $userid);
         $requestDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $reason = isset($data->reason) ? $data->reason : 'No reason provided';
         
         if ($requestDetails) {
-            // Decline the tour request
-            $result = $tourModel->declineTourRequest($tourid, $userid);
+            session_start();
+            $empid = $_SESSION['userid']; 
+            
+            $result = $tourModel->declineTourRequest($tourid, $userid, $empid);
             
             if ($result) {
-                // Send confirmation email
                 $emailResult = sendTourDecline(
                     $requestDetails['email'],
                     $requestDetails['name'],
@@ -68,7 +71,11 @@ if (isset($data->tourid) && isset($data->userid)) {
                     $reason
                 );
                 
-                echo json_encode(['success' => true, 'emailSent' => $emailResult === true]);
+                echo json_encode([
+                    'success' => true, 
+                    'emailSent' => $emailResult === true,
+                    'logAdded' => true
+                ]);
                 exit;
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to update tour status']);
@@ -80,15 +87,12 @@ if (isset($data->tourid) && isset($data->userid)) {
         }
     }
     
-    // Get tour request details for display
     $stmt = $tourModel->getTourRequest($tourid, $userid);
     $requestdet = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    // Get sites for this tour request
     $siteStmt = $tourModel->getTourRequestSites($tourid);
     $sites = $siteStmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Include sites in the response
     $requestdet['sites'] = $sites;
 
     echo json_encode($requestdet);

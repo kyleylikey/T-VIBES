@@ -780,7 +780,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                             <td><?php echo htmlspecialchars($log['name']); ?></td>
                                             <td><?php echo htmlspecialchars($log['action']); ?></td>
                                             <td><?php echo date('d M Y', strtotime($log['datetime'])); ?></td>
-                                            <td><?php echo date('H:i:s', strtotime($log['datetime'])); ?></td>
+                                            <td><?php echo date('g:i A', strtotime($log['datetime'])); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

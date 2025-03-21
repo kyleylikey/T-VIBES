@@ -15,11 +15,17 @@ class Tour {
     }
 
     public function getTourRequestList() {
-        $query = "SELECT t.*, u.name, COUNT(*) AS total_sites FROM " . $this->table . " t JOIN Users u on t.userid = u.userid WHERE t.status = 'submitted' GROUP BY tourid, userid";
+        $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid 
+                  WHERE t.status = 'submitted' 
+                  GROUP BY tourid, userid 
+                  ORDER BY t.created_at DESC";  
+    
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
-    }
+    }    
 
     public function getTourRequest($tourid, $userid) {
         $query = "SELECT t.*, u.name, u.email 
@@ -43,21 +49,37 @@ class Tour {
         return $stmt;
     }
 
-    public function acceptTourRequest($tourid, $userid) {
+    public function acceptTourRequest($tourid, $userid, $empid) {
         $query = "UPDATE " . $this->table . " SET status = 'accepted' WHERE tourid = ? AND userid = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $tourid);
         $stmt->bindParam(2, $userid);
         $result = $stmt->execute();
+    
+        if ($result) {
+            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES ('Accepted Tour Request', NOW(), ?)";
+            $logStmt = $this->conn->prepare($logQuery);
+            $logStmt->bindParam(1, $empid);
+            $logStmt->execute();
+        }
+    
         return $result;
-    }
+    }    
 
-    public function declineTourRequest($tourid, $userid) {
+    public function declineTourRequest($tourid, $userid, $empid) {
         $query = "UPDATE " . $this->table . " SET status = 'cancelled' WHERE tourid = ? AND userid = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $tourid);
         $stmt->bindParam(2, $userid);
         $result = $stmt->execute();
+
+        if ($result) {
+            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES ('Declined Tour Request', NOW(), ?)";
+            $logStmt = $this->conn->prepare($logQuery);
+            $logStmt->bindParam(1, $empid);
+            $logStmt->execute();
+        }
+
         return $result;
     }
 
