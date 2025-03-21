@@ -35,6 +35,20 @@ class Tour {
         return $stmt;
     }
 
+    public function getUpcomingTour($tourid, $userid) {
+        $query = "SELECT t.*, u.name, u.email, u.username 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid
+                  WHERE t.tourid = ? AND t.userid = ? AND t.status = 'accepted'";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $tourid);
+        $stmt->bindParam(2, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
     public function getTourRequestSites($tourid) {
         $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.tourid = ?";
         $stmt = $this->conn->prepare($query);
@@ -63,7 +77,7 @@ class Tour {
 
     public function getToursForToday() {
         $today = date('Y-m-d');
-        $query = "SELECT t.tourid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
+        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
                   FROM tour t
                   JOIN users u ON t.userid = u.userid
                   JOIN sites s ON t.siteid = s.siteid
@@ -76,7 +90,7 @@ class Tour {
     }
 
     public function getAllUpcomingTours() {
-        $query = "SELECT t.tourid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
+        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
                     FROM tour t
                     JOIN users u ON t.userid = u.userid
                     JOIN sites s ON t.siteid = s.siteid

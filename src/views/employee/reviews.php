@@ -1,9 +1,10 @@
 <?php
 include '../../../includes/auth.php';
 require_once '../../config/dbconnect.php';
-require_once '../../controllers/reviewscontroller.php';
 
 $userid = $_SESSION['userid'];
+require_once '../../controllers/reviewscontroller.php';
+
 $query = "SELECT name FROM users WHERE userid = :userid LIMIT 1";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);

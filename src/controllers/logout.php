@@ -1,5 +1,15 @@
 <?php
-session_start();
+require_once  __DIR__ .'/../models/Logs.php';
+require_once  __DIR__ .'/../config/dbconnect.php';
+
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if ($_SESSION['usertype']==="emp") {
+    $logs = new Logs();
+    $logs->logLogout($_SESSION['userid']);
+}
 session_unset();
 session_destroy();
 

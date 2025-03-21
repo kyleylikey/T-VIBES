@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var saveTourChanges = document.getElementById("saveTourChanges");
     var submitCancelReason = document.getElementById("submitCancelReason");
     var cancelTourIdField = document.getElementById("cancelTourId");
+    var cancelUserIdField = document.getElementById("cancelUserId");
     var cancelReasonInput = document.getElementById("cancelReasonInput");
 
     // Function to update tour details
@@ -133,7 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!activeTour) return;
 
             var tourId = activeTour.getAttribute("data-tourid");
-            cancelTourIdField.value = tourId; // Set the hidden field
+            cancelTourIdField.value = tourId;
+
 
             Swal.fire({
                 iconHtml: '<i class="fas fa-thumbs-up"></i>',
@@ -161,7 +163,28 @@ document.addEventListener("DOMContentLoaded", function () {
     submitCancelReason.addEventListener("click", function () {
         let reason = cancelReasonInput.value.trim();
         let tourId = cancelTourIdField.value;
-
+    
+        // Get the active tour item
+        var activeTour = document.querySelector(".tour-item.active");
+        if (!activeTour) {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "No active tour selected!",
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
+            });
+            return;
+        }
+    
+        // Retrieve userId from the active tour item
+        var userId = activeTour.getAttribute("data-userid");
+        cancelUserIdField.value = userId;
+    
         if (reason === "") {
             Swal.fire({
                 iconHtml: '<i class="fas fa-exclamation-circle"></i>',
@@ -176,18 +199,34 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             return;
         }
-
+    
+        // Show the spinner
+        Swal.fire({
+            title: 'Processing Request',
+            html: 'Sending confirmation email... Do not close this window.',
+            allowOutsideClick: false,
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup"
+            },
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    
+        // Send the cancellation request to the server
         fetch("../../controllers/upcomingtourscontroller.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `cancelTour=true&tourId=${encodeURIComponent(tourId)}`
+            body: `cancelTour=true&tourId=${encodeURIComponent(tourId)}&userId=${encodeURIComponent(userId)}&cancelReason=${encodeURIComponent(reason)}`
         })
         .then(response => response.json())
         .then(data => {
             if (data.status === "success") {
                 Swal.fire({
                     iconHtml: '<i class="fas fa-circle-check"></i>',
-                    title: "Tour Successfully Cancelled!",
+                    title: data.message,
                     timer: 3000,
                     showConfirmButton: false,
                     customClass: {
@@ -199,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 Swal.fire({
                     iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-                    title: "Failed to cancel tour.",
+                    title: data.message,
                     timer: 3000,
                     showConfirmButton: false,
                     customClass: {
@@ -209,8 +248,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 });
             }
+        })
+        .catch(error => {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "An error occurred. Please try again.",
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
+            });
+            console.error("Error:", error);
         });
-
+    
         var cancelModal = bootstrap.Modal.getInstance(document.getElementById("cancelReasonModal"));
         cancelModal.hide();
     });

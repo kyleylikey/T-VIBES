@@ -4,6 +4,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require_once __DIR__ . '/../../config/dbconnect.php';
 require_once  __DIR__ .'/../../models/Tour.php';
+require_once  __DIR__ .'/../../models/Logs.php';
 require __DIR__ . '/../../../vendor/autoload.php';
 
 
@@ -27,6 +28,9 @@ if (isset($data->tourid) && isset($data->userid)) {
         if ($requestDetails) {
             // Accept the tour request
             $result = $tourModel->acceptTourRequest($tourid, $userid);
+
+            $logs = new Logs();
+            $logs->logAcceptTourRequest($userid, $tourid);
             
             if ($result) {
                 // Send confirmation email
@@ -58,6 +62,9 @@ if (isset($data->tourid) && isset($data->userid)) {
         if ($requestDetails) {
             // Decline the tour request
             $result = $tourModel->declineTourRequest($tourid, $userid);
+
+            $logs = new Logs();
+            $logs->logDeclineTourRequest($userid, $tourid);
             
             if ($result) {
                 // Send confirmation email

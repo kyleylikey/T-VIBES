@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 session_start();
 require_once '../config/dbconnect.php';
 require_once '../models/User.php';
+require_once '../models/Logs.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
@@ -33,6 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($_SESSION['usertype'] === 'mngr') {
                 $redirectUrl = '../../views/admin/home.php';
             } elseif ($_SESSION['usertype'] === 'emp') {
+                $logs = new Logs();
+
+                $logs->logLogin($_SESSION['userid']);
                 $redirectUrl = '../../views/employee/home.php';
             }
 

@@ -8,15 +8,99 @@ class Logs {
         $this->conn = $database->getConnection();
     }
 
-    public function getAllLogs() {
-        $query = "SELECT logs.action, logs.datetime, users.name 
-                  FROM logs 
-                  INNER JOIN users ON logs.userid = users.userid 
-                  ORDER BY logs.datetime DESC";
-
-        $stmt = $this->conn->prepare($query);
+    public function getAllLogs($limit, $offset, $searchTerm = '') {
+        if (!empty($searchTerm)) {
+            $query = "SELECT logs.action, logs.datetime, users.name 
+                     FROM logs 
+                     INNER JOIN users ON logs.userid = users.userid 
+                     WHERE logs.action LIKE :searchTerm OR users.name LIKE :searchTerm 
+                     ORDER BY logs.datetime DESC 
+                     LIMIT :limit OFFSET :offset";
+            
+            $searchParam = "%{$searchTerm}%";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':searchTerm', $searchParam, PDO::PARAM_STR);
+        } else {
+            $query = "SELECT logs.action, logs.datetime, users.name 
+                     FROM logs 
+                     INNER JOIN users ON logs.userid = users.userid 
+                     ORDER BY logs.datetime DESC 
+                     LIMIT :limit OFFSET :offset";
+            
+            $stmt = $this->conn->prepare($query);
+        }
+        
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function getTotalLogsCount($searchTerm = '') {
+        if (!empty($searchTerm)) {
+            $query = "SELECT COUNT(*) as total 
+                     FROM logs 
+                     INNER JOIN users ON logs.userid = users.userid 
+                     WHERE logs.action LIKE :searchTerm OR users.name LIKE :searchTerm";
+            
+            $searchParam = "%{$searchTerm}%";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':searchTerm', $searchParam, PDO::PARAM_STR);
+        } else {
+            $query = "SELECT COUNT(*) as total FROM logs";
+            $stmt = $this->conn->prepare($query);
+        }
+        
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    }
+
+    public function logAction($userid, $action) {
+        $query = "INSERT INTO logs (userid, action, datetime) VALUES (:userid, :action, NOW())";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+        $stmt->bindParam(':action', $action, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    public function logLogin($userid) {
+        $this->logAction($userid, 'Logged in');
+    }
+
+    public function logLogout($userid) {
+        $this->logAction($userid, 'Logged out');
+    }
+
+    public function logAcceptTourRequest($userid, $tourid) {
+        $this->logAction($userid, "Accepted tour request (Tour ID: $tourid)");
+    }
+
+    public function logDeclineTourRequest($userid, $tourid) {
+        $this->logAction($userid, "Declined tour request (Tour ID: $tourid)");
+    }
+
+    public function logEditTour($userid, $tourid) {
+        $this->logAction($userid, "Edited tour (Tour ID: $tourid)");
+    }
+
+    public function logCancelTour($userid, $tourid) {
+        $this->logAction($userid, "Cancelled tour (Tour ID: $tourid)");
+    }
+
+    public function logDisplayReview($userid, $reviewid) {
+        $this->logAction($userid, "Displayed review (Review ID: $reviewid)");
+    }
+
+    public function logArchiveReview($userid, $reviewid) {
+        $this->logAction($userid, "Archived review (Review ID: $reviewid)");
+    }
+
+    public function logAddSite($userid, $sitename) {
+        $this->logAction($userid, "Added site (Site Name: $sitename)");
+    }
+
+    public function logEditSite($userid, $sitename) {
+        $this->logAction($userid, "Edited site (Site Name: $sitename)");
     }
 }
 
