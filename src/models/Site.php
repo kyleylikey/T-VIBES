@@ -55,7 +55,7 @@ class Site {
     }
 
     public function getSites() {
-        $query = "SELECT siteid, sitename, siteimage, description, opdays, price FROM sites WHERE status = 'displayed'";
+        $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price FROM sites WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

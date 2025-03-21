@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once '../../controllers/tourist/explorecontroller.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -30,20 +32,18 @@ session_start();
     <h2 class="fw-bold">Popular Destinations</h2>
     
     <!-- Carousel -->
-    <div id="destinationCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="../../../public/uploads/taal_heritage_town.jpg" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded" alt="Taal Heritage Town">
-            </div>
-            <div class="carousel-item">
-                <img src="../../../public/uploads/taal_basilica.jpg" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded" alt="Taal Basilica">
-            </div>
-            <div class="carousel-item">
-                <img src="../../../public/uploads/san_lorenzo_steps.jpg" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded" alt="San Lorenzo Steps">
-            </div>
-            <div class="carousel-item">
-                <img src="../../../public/uploads/paradores_castillo.jpg" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded" alt="Paradores Castillo">
-            </div>
+    <div id="destinationCarousel" class="carousel slide " data-bs-ride="carousel">
+        <div class="carousel-inner" style="height: 800px;">
+            <?php 
+            $isFirst = true; // Flag to track the first iteration
+            foreach ($topSites as $site): 
+            ?>
+                <div class="carousel-item <?php echo $isFirst ? 'active' : ''; ?> h-100">
+                    <img src="../../../public/uploads/<?php echo $site['siteimage']; ?>" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded" style="object-fit: cover;" alt="<?php echo $site['sitename']; ?>">
+                    <h2 class="my-3"><?php echo $site['sitename']; ?></h2>
+                </div>
+                <?php $isFirst = false; // Set the flag to false after the first iteration ?>
+            <?php endforeach; ?>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#destinationCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -53,33 +53,35 @@ session_start();
         </button>
     </div>
 
+    <h2 class="fw-bold">All Destinations</h2>
+    
+
 <!-- Destination Cards -->
 <div class="row g-4">
+    <?php foreach ($displaySites as $site): ?>
     <div class="col-md-6 col-lg-3">
-        <a href="destination.php?name=Taal Heritage Town" class="text-decoration-none">
+        <a href="destination.php?name=<?php echo $site['sitename'];?>" class="text-decoration-none">
             <div class="card border-0 shadow rounded-3 overflow-hidden position-relative">
-                <img src="../../../public/uploads/taal_heritage_town.jpg" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="Taal Heritage Town">
-                <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ 5.0</div>
+                <img src="../../../public/uploads/<?php echo $site['siteimage'];?>" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="<?php echo $site['sitename'];?>">
+                <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ <?php echo $site['rating'];?></div>
                 <div class="card-body text-center">
-                    <h5 class="fw-bold" style="color: #102E47;">Taal Heritage Town</h5>
-                    <p class="text-muted">A glimpse into the historic town of Taal.</p>
+                    <h5 class="fw-bold" style="color: #102E47;"><?php echo $site['sitename'];?></h5>
+                    <p class="text-muted">
+                        <?php 
+                        $description = $site['description'];
+                        $words = explode(' ', $description);
+                        $limitedWords = array_slice($words, 0, 10); 
+                        echo implode(' ', $limitedWords);
+                        if (count($words) > 10) {
+                            echo '...';
+                        }
+                        ?>
+                    </p>                
                 </div>
             </div>
         </a>
     </div>
-
-    <div class="col-md-6 col-lg-3">
-        <a href="destination.php?name=Taal Basilica" class="text-decoration-none">
-            <div class="card border-0 shadow rounded-3 overflow-hidden position-relative">
-                <img src="../../../public/uploads/taal_basilica.jpg" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="Taal Basilica">
-                <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ 5.0</div>
-                <div class="card-body text-center">
-                    <h5 class="fw-bold" style="color: #102E47;">Taal Basilica</h5>
-                    <p class="text-muted">Asia's largest Catholic church.</p>
-                </div>
-            </div>
-        </a>
-    </div>
+    <?php endforeach;?>
 </div>
 
 
