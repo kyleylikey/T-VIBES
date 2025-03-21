@@ -29,7 +29,12 @@ function showModal(tourData) {
                 </div>
                 <div class="destination-info ms-3">
                     <h6>${tour.sitename}</h6>
-                    <p><i class="bi bi-calendar"></i> ${new Date(tour.travel_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                    <p style="color: #757575; font-size: 16px;">
+                        <i class="bi bi-calendar"></i> ${new Date(tour.travel_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </p>
+                    <p style="color: #555; font-size: 16px;">
+                        <i class="bi bi-cash"></i> ₱${parseFloat(tour.price).toFixed(2)} per pax
+                    </p>
                 </div>
             </div>
         `;

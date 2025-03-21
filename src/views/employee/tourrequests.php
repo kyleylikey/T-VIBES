@@ -203,7 +203,9 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
         }
 
         .modal-title {
-            color: #102E47;
+            font-size: 24px;
+            font-weight: bold;
+            color: #434343;
         }
 
         .stepper {
@@ -243,7 +245,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             align-items: center;
             padding: 12px;
             width: 100%;
-            min-width: 360px;
+            max-width: 350px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             background-color: #FFFFFF;
@@ -374,6 +376,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
 
         .modal-footer p {
             color: #757575;
+            text-align: center;
         }
 
         .btn-custom {
@@ -460,6 +463,37 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                 width: 25px;
                 height: 25px;
                 font-size: 14px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px; 
+                padding: 15px;
+            }
+
+            .sidebar img {
+                margin-bottom: 0;
+            }
+
+            .nav-link {
+                font-size: 14px; 
+                margin-bottom: -5%;
+            }
+
+            .menu-section {
+                padding: 5px 0;
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+
+            .main-content {
+                margin-left: 250px;
+                width: calc(100% - 250px); 
+            }
+
+            .modal-dialog {
+                max-width: 80%; 
             }
         }
 
@@ -679,6 +713,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             .estimated-fees p {
                 display: flex;
                 justify-content: space-between;
+                text-align: justify;
                 width: 100%;
             }
 
@@ -969,10 +1004,10 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                         <p><strong>Number of People</strong><br><span id="numberOfPeople">2</span></p>
                         <p><strong>Estimated Fees</strong></p>
                         <div class="estimated-fees">
-                            <p>Destination Name: Price </p>
-                            <p>Destination Name: Price </p>
+                            <p>Destination Name</p> 
+                            <p>Destination Name</p>
                         </div>
-                        <p class="total-price">₱ 0.00 x Pax = <strong id="estimatedFees">₱ 0.00*</strong></p>
+                        <p class="total-price"><strong id="estimatedFees">₱ 0.00</strong></p> 
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -999,10 +1034,290 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
-    <script src="../../../public/assets/scripts/main.js"></script>
-    <script src="../../../public/assets/scripts/employee/tourrequests.js"></script>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+<script src="../../../public/assets/scripts/main.js"></script>
+<script>
+function showModal(row) {
+    var tourid = row.getAttribute('data-tourid');
+    var userid = row.getAttribute('data-userid');
 
+    fetch('/T-VIBES/src/controllers/employee/tourrequestscontroller.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ tourid: tourid, userid: userid })
+    })
+    .then(response => response.text()) 
+    .then(text => {
+        console.log("Raw Response:", text);  
+        return JSON.parse(text); 
+    })
+    .then(data => {
+        document.getElementById('tourRequestModalLabel').innerText = 'Tour Request of ' + data.name;
+        document.getElementById('dateCreated').innerText = data.created_at;
+        document.getElementById('numberOfPeople').innerText = data.companions;
+
+        const destinationContainer = document.querySelector('.destination-container');
+        destinationContainer.innerHTML = '';
+
+        const stepper = document.querySelector('.stepper');
+        stepper.innerHTML = '';
+
+        const estimatedFeesContainer = document.querySelector('.estimated-fees');
+        estimatedFeesContainer.innerHTML = '';
+
+        let totalPrice = 0; 
+        const pax = parseInt(data.companions) || 1; 
+
+        if (data.sites && data.sites.length > 0) {
+            data.sites.forEach((site, index) => {
+                const step = document.createElement('div');
+                step.classList.add('step');
+                step.innerHTML = `
+                    <div class="circle">${index + 1}</div>
+                    ${index < data.sites.length - 1 ? '<div class="dashed-line"></div>' : ''}`
+                ;
+                stepper.appendChild(step);
+
+                const formatDate = (dateString) => {
+                    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+                    return new Date(dateString).toLocaleDateString('en-GB', options);
+                };
+
+                const card = document.createElement('div');
+                card.classList.add('destination-card');
+                card.innerHTML = `
+                    <div class="image-placeholder">
+                        <img src="/T-VIBES/public/uploads/${site.siteimage}"></img>
+                    </div>
+                    <div class="destination-info">
+                        <h6>${site.sitename}</h6>
+                        <p style="color: #757575; font-size: 16px;">
+                            <i class="bi bi-calendar"></i> ${formatDate(data.date)}
+                        </p>
+                        <p style="color: #757575; font-size: 16px;">
+                            <i class="bi bi-cash"></i> ₱${parseFloat(site.price).toFixed(2)} per pax
+                        </p>
+                    </div>`;
+                destinationContainer.appendChild(card);
+
+                const feeItem = document.createElement('p');
+                feeItem.innerHTML = `${site.sitename} <span style="float: right;">x${pax}</span>`; 
+                estimatedFeesContainer.appendChild(feeItem);
+
+                totalPrice += parseFloat(site.price); 
+            });
+
+            const finalTotal = totalPrice * pax;
+
+            document.querySelector('.total-price').innerHTML = `<strong id="estimatedFees">₱${finalTotal.toFixed(2)}</strong>`;
+        } else {
+            stepper.innerHTML = "<p>No destinations found.</p>";
+            estimatedFeesContainer.innerHTML = "<p>No fees available.</p>";
+            document.querySelector('.total-price').innerHTML = "₱ 0.00 x 0 Pax = <strong id='estimatedFees'>₱ 0.00</strong>";
+        }
+        document.querySelector(".btn-custom.accept").setAttribute("data-tourid", tourid);
+        document.querySelector(".btn-custom.accept").setAttribute("data-userid", userid);
+        document.querySelector(".btn-custom.decline").setAttribute("data-tourid", tourid);
+        document.querySelector(".btn-custom.decline").setAttribute("data-userid", userid);
+
+        
+        var modal = new bootstrap.Modal(document.getElementById('tourRequestModal'));
+        modal.show();
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector(".btn-custom:nth-child(1)").addEventListener("click", function () {
+
+        const tourid = this.getAttribute("data-tourid");
+        const userid = this.getAttribute("data-userid");
+
+         Swal.fire({
+            iconHtml: '<i class="fas fa-thumbs-up"></i>',
+            title: "Accept Tour Request?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup",
+                confirmButton: "swal-custom-btn",
+                cancelButton: "swal-custom-btn"
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Processing Request',
+                    html: 'Sending confirmation email... Do not close this window.',
+                    allowOutsideClick: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    },
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                fetch("/T-VIBES/src/controllers/employee/tourrequestscontroller.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ action: "accept", tourid: tourid, userid: userid }),
+                })
+                .then(response => response.text()) 
+                .then(text => {
+                    console.log("Raw Response:", text);  
+                    return JSON.parse(text); 
+                })
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            iconHtml: '<i class="fas fa-circle-check"></i>',
+                            title: "Successfully Accepted Tour Request!",
+                            timer: 3000,
+                            showConfirmButton: false,
+                            customClass: {
+                                title: "swal2-title-custom",
+                                icon: "swal2-icon-custom",
+                                popup: "swal-custom-popup"
+                            }
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                            title: "Failed to Accept Tour Request. Please try again.",
+                            timer: 3000,
+                            showConfirmButton: false,
+                            customClass: {
+                                title: "swal2-title-custom",
+                                icon: "swal2-icon-custom",
+                                popup: "swal-custom-popup"
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            }
+        });
+    });
+
+    document.querySelector(".btn-custom:nth-child(2)").addEventListener("click", function () {
+        const tourid = this.getAttribute("data-tourid");
+        const userid = this.getAttribute("data-userid");
+
+        Swal.fire({
+            iconHtml: '<i class="fas fa-thumbs-down"></i>',
+            title: "Decline Tour Request?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup",
+                confirmButton: "swal-custom-btn",
+                cancelButton: "swal-custom-btn"
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+            document.getElementById("cancelReasonModal").setAttribute("data-tourid", tourid);
+            document.getElementById("cancelReasonModal").setAttribute("data-userid", userid);
+            
+            var cancelModal = new bootstrap.Modal(document.getElementById("cancelReasonModal"));
+            cancelModal.show();
+            }
+        });
+    });
+
+    document.getElementById("submitCancelReason").addEventListener("click", function () {
+        let reason = document.getElementById("cancelReasonInput").value.trim();
+
+        const tourid = document.getElementById("cancelReasonModal").getAttribute("data-tourid");
+        const userid = document.getElementById("cancelReasonModal").getAttribute("data-userid");
+
+        if (reason.trim() === "") {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "Please enter a reason!",
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
+            });
+            return;
+        }
+        Swal.fire({
+            title: 'Processing Request',
+            html: 'Sending decline notification... Do not close this window.',
+            allowOutsideClick: false,
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup"
+            },
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        fetch("/T-VIBES/src/controllers/employee/tourrequestscontroller.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ action: "decline", tourid: tourid, userid: userid, reason: reason }),
+        })
+        .then(response => response.text()) 
+        .then(text => {
+            console.log("Raw Response:", text);  
+            return JSON.parse(text); 
+        })
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    iconHtml: '<i class="fas fa-circle-check"></i>',
+                    title: "Successfully Declined Tour Request.",
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                    title: "Failed to Decline Tour Request. Please try again.",
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
+                });
+            }
+        })
+
+        var cancelModal = bootstrap.Modal.getInstance(document.getElementById("cancelReasonModal"));
+        cancelModal.hide();
+
+    });
+});
+</script>
+</body>
 </html>

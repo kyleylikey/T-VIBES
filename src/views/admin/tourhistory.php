@@ -407,6 +407,19 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
             border-radius: 25px; 
         }
 
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            border-top: none;
+        }
+
+        .modal-footer p {
+            color: #757575;
+            text-align: center;
+        }
+
         .tour-status {
             font-weight: bold;
             color: #102E47;
@@ -706,6 +719,10 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                 align-items: center;
             }
 
+            .dashed-line {
+                height: 165px; 
+            }
+
             .destination-card {
                 max-width: 250px;
             }
@@ -810,6 +827,10 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                 max-width: 100%;
             }
 
+            .dashed-line {
+                height: 120px; 
+            }
+
             .destination-card {
                 max-width: 100%;
             }
@@ -851,6 +872,36 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
 
             .tour-status {
                 text-align: center;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .dashed-line {
+                height: 135px; 
+            }
+        }
+
+        @media (max-width: 414px) {
+            .dashed-line {
+                height: 130px; 
+            }
+        }
+
+        @media (max-width: 400px) {
+            .dashed-line {
+                height: 160px; 
+            }
+        }
+
+        @media (max-width: 380px) {
+            .dashed-line {
+                height: 200px; 
+            }
+        }
+
+        @media (max-width: 375px) {
+            .dashed-line {
+                height: 250px; 
             }
         }
 
@@ -1054,7 +1105,9 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                     <p class="total-price"><strong>₱ <span id="total-price"></span></strong></p>
                 </div>
             </div>
-            
+            <div class="modal-footer">
+                <p>*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</p>
+            </div>
             <p class="tour-status" id="tour-status"></p>
         </div>
     </div>
@@ -1063,6 +1116,79 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="../../../public/assets/scripts/main.js"></script>
-<script src="../../../public/assets/scripts/admtourhistory.js"></script>
+<script>
+function showModal(tourData) {
+    document.getElementById('destination-container').innerHTML = "";
+    document.getElementById('stepper-container').innerHTML = "";
+    document.getElementById('estimated-fees').innerHTML = "";
+
+    let totalPrice = 0;
+    let companions = tourData[0].companions;
+    let dateCreated = new Date(tourData[0].submitted_on).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    let userName = tourData[0].name; 
+
+    document.getElementById('tourHistoryModalLabel').textContent = `Tour Request of ${userName}`;
+
+    document.getElementById('date-created').textContent = dateCreated;
+    document.getElementById('num-people').textContent = companions;
+    document.getElementById('tour-status').textContent = "Tour has been " + tourData[0].status;
+
+    tourData.forEach((tour, index) => {
+        let stepperItem = `
+            <div class="step">
+                <div class="circle">${index + 1}</div>
+                ${index < tourData.length - 1 ? '<div class="dashed-line"></div>' : ''}
+            </div>
+        `;
+
+        document.getElementById('stepper-container').innerHTML += stepperItem;
+
+        let destinationCard = `
+            <div class="destination-card d-flex align-items-center" style="margin-bottom: 15px;">
+                <div class="image-placeholder">
+                    <img src="/T-VIBES/public/uploads/${tour.siteimage}" alt="${tour.sitename}" 
+                        style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                </div>
+                <div class="destination-info ms-3">
+                    <h6>${tour.sitename}</h6>
+                    <p style="color: #757575; font-size: 16px;">
+                        <i class="bi bi-calendar"></i> ${new Date(tour.travel_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </p>
+                    <p style="color: #555; font-size: 16px;">
+                        <i class="bi bi-cash"></i> ₱${parseFloat(tour.price).toFixed(2)} per pax
+                    </p>
+                </div>
+            </div>
+        `;
+        document.getElementById('destination-container').innerHTML += destinationCard;
+
+        let feeItem = `<p>${tour.sitename} <span>x${companions}</span></p>`;
+        document.getElementById('estimated-fees').innerHTML += feeItem;
+
+        totalPrice += tour.price * companions;
+    });
+
+    document.getElementById('total-price').textContent = totalPrice.toFixed(2);
+
+    let modal = new bootstrap.Modal(document.getElementById('tourHistoryModal'));
+    modal.show();
+}
+
+function showCompleted() {
+    document.getElementById("completed-tours").style.display = "block";
+    document.getElementById("cancelled-tours").style.display = "none";
+
+    document.getElementById("completed-btn").classList.add("active");
+    document.getElementById("cancelled-btn").classList.remove("active");
+}
+
+function showCancelled() {
+    document.getElementById("completed-tours").style.display = "none";
+    document.getElementById("cancelled-tours").style.display = "block";
+
+    document.getElementById("completed-btn").classList.remove("active");
+    document.getElementById("cancelled-btn").classList.add("active");
+}
+</script>
 </body>
 </html>
