@@ -7,9 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
         .account-container {
             max-width: 800px;
             margin: 50px auto;
@@ -75,6 +72,55 @@
         .save-btn:hover {
             background-color: #d9534f;
         }
+        .swal2-icon {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .swal2-icon-custom {
+            font-size: 10px; 
+            color: #EC6350; 
+        }
+
+        .swal2-title-custom {
+            font-size: 24px !important;
+            font-weight: bold;
+            color: #434343 !important;
+        }
+
+        .swal-custom-popup {
+            padding: 20px;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .swal-custom-btn {
+            padding: 10px 20px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border: 2px solid #102E47 !important;
+            border-radius: 25px !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .swal-custom-btn:hover {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+        }
+
+        .info-box span,
+        .info-box h1,
+        .info-box i,
+        .table,
+        .btn-custom,
+        .swal2-title-custom,
+        .swal-custom-btn {
+            font-family: 'Nunito', sans-serif !important;
+        }
     </style>
 </head>
 <body>
@@ -88,9 +134,7 @@
         <div class="d-flex justify-content-between align-items-start">
             <h5>Personal Information</h5>
             <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#editModal">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706l-1.768 1.768-2.121-2.12 1.768-1.769a.5.5 0 0 1 .707 0l1.414 1.415ZM4 13.5V16h2.5l7.368-7.368-2.121-2.121L4 13.5Z"></path>
-                </svg>
+                <i class="bi bi-pencil-fill"></i>
                 Edit
             </button>
         </div>
@@ -113,7 +157,9 @@
             </div>
         </div>
     </div>
+    <button type="button" class="d-flex align-items-end my-4 btn btn-danger btn-lg rounded-pill ms-auto" onclick="logoutConfirm()">Log Out</button>
 </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -140,6 +186,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../../../public/assets/scripts/main.js"></script>
 <script>
     document.getElementById('editForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent actual form submission
@@ -150,11 +197,7 @@
 
         // Show success alert using SweetAlert
         Swal.fire({
-            iconHtml: `
-                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#729AB8" viewBox="0 0 16 16">
-                    <path d="M13.854 4.646a.5.5 0 0 0-.708 0L7 10.793 4.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0 0-.708z"/>
-                </svg>
-            `,
+            icon: 'success',
             title: 'Personal Information Successfully Updated',
             showConfirmButton: false,
             timer: 2000,

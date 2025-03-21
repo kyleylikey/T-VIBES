@@ -368,7 +368,14 @@ session_start();
     </style>
 </head>
 <body>
-    <?php include '../templates/header.php'; ?>
+    <?php 
+    if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
+        include '../templates/header.php';
+    } else {
+        include '../templates/headertours.php';
+    }
+    ?>
+
 
     <!-- Toast Container -->
     <div class="toast-container">

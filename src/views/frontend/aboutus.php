@@ -19,7 +19,6 @@ session_start();
             color: #102E47;
         }
 
-        /* 🎯 Style for Carousel Buttons */
         .trivia-carousel-btn {
             position: absolute;
             top: 50%;
@@ -44,7 +43,14 @@ session_start();
     </style>
 </head>
 <body>
-    <?php include '../templates/header.php'; ?>
+    
+    <?php 
+    if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
+        include '../templates/header.php';
+    } else {
+        include '../templates/headertours.php';
+    }
+    ?>
 
     <!-- Main Content -->
     <main>

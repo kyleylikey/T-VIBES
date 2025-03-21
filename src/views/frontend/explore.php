@@ -17,7 +17,13 @@ session_start();
 </head>
 <body>
 
-    <?php include '../templates/header.php'; ?>
+    <?php 
+    if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
+        include '../templates/header.php';
+    } else {
+        include '../templates/headertours.php';
+    }
+    ?>
 
     <!-- Main Content -->
 	<main class="container my-5">

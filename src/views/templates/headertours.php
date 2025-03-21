@@ -12,7 +12,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         font-family: Arial, sans-serif !important;
         line-height: 1.6;
         color: #333;
-        background-color: #f5f5f5;
+        background-color: #f5f5f5; /* Light gray background */
     }
    
     .logoforsmall {
@@ -22,23 +22,51 @@ $current_page = basename($_SERVER['PHP_SELF']);
     .logo {
         margin: 8px;
     }
-    
+    .object-fit-cover {
+        object-fit: cover;
+    }
     .navbar ul {
         list-style: none;
         padding: 0;
         margin: 0;
     }
 
-    header div {
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        padding: 10px; 
+    header div{
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px; 
     }
 
     header a {
         text-decoration: none; 
         font-size: 20px; 
+    }
+
+    header .btn {
+        font-size: 40px;
+        border: none; 
+        padding: 10px; 
+        border-radius: 5px; 
+        cursor: pointer;
+    }
+    
+    @media screen and (max-width: 768px) {
+        
+        header > div {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logoforsmall {
+            display: block; 
+            margin-left: 10px;
+        }
+
+        .logo {
+            display: none;
+        }
     }
 
     /* Icon Styling */
@@ -57,23 +85,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     .nav-icons i:hover {
         color: #5f88a3; /* Slightly darker shade on hover */
-    }
-
-    @media screen and (max-width: 768px) {
-        header > div {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logoforsmall {
-            display: block; 
-            margin-left: 10px;
-        }
-
-        .logo {
-            display: none;
-        }
     }
 </style>
 

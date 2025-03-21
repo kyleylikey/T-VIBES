@@ -51,46 +51,53 @@ recordVisit();
     
 </head>
 <body>
-
-	<header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
-            <div class="container-fluid">
-            <img src="assets/images/headerlogo.jpg" alt="" class="img-fluid" width="250" height="82"> 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+<?php
+// Check if the user is logged in as 'trst'
+if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
+    echo "<header>
+        <nav class='navbar navbar-expand-lg navbar-light bg-white'>
+            <div class='container-fluid'>
+            <img src='assets/images/headerlogo.jpg' alt='' class='img-fluid' width='250' height='82'> 
+            <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarText' aria-controls='navbarText' aria-expanded='false' aria-label='Toggle navigation'>
+                <span class='navbar-toggler-icon'></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <div class='collapse navbar-collapse' id='navbarText'>
+                <ul class='navbar-nav me-auto mb-2 mb-lg-0'>
+                <li class='nav-item'>
+                    <a class='nav-link active' aria-current='page' href='#'>Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../src/views/frontend/explore.php">Explore</a>
+                <li class='nav-item'>
+                    <a class='nav-link' href='../src/views/frontend/explore.php'>Explore</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../src/views/frontend/aboutus.php">About Us</a>
+                <li class='nav-item'>
+                    <a class='nav-link' href='../src/views/frontend/aboutus.php'>About Us</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../src/views/frontend/contactus.php">Contact</a>
+                <li class='nav-item'>
+                    <a class='nav-link' href='../src/views/frontend/contactus.php'>Contact</a>
                 </li>
                 </ul>
-                <ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
-                <li class="nav-item">
-                        <a href="../src/views/frontend/signup.php" class="nav-link">Sign Up</a>
+                <ul class='navbar-nav d-flex -flex-row gap-3 align-items-center'>
+                <li class='nav-item'>
+                        <a href='../src/views/frontend/signup.php' class='nav-link'>Sign Up</a>
                     </li>
-                    <li class="nav-item">
-                    <a href="../src/views/frontend/login.php" 
-                    class="btn btn-danger rounded-pill px-3 py-1" 
-                    style="font-size: 1.3rem;">
+                    <li class='nav-item'>
+                    <a href='../src/views/frontend/login.php' 
+                    class='btn btn-danger rounded-pill px-3 py-1' 
+                    style='font-size: 1.3rem;'>
                         Login
                     </a>
                 </li>
-                </ul>`
+                </ul>
 
             </div>
             </div>
         </nav>
-    </header>
+    </header>";
+}
+else {
+    include __DIR__ . '/../src/views/templates/headertours.php';
+}
+?>
 
     <!-- Main Content -->
     <main>
