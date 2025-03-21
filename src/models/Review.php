@@ -24,5 +24,17 @@ class Review {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getSiteReviews($siteid) {
+        $query = "SELECT users.name AS author, rev.date, rev.review, sites.sitename FROM rev 
+                  JOIN users ON rev.userid = users.userid 
+                  JOIN sites ON rev.siteid = sites.siteid 
+                  WHERE rev.status = 'displayed' AND rev.siteid = :siteid
+                  ORDER BY rev.date DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>

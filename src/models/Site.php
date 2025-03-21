@@ -67,6 +67,17 @@ class Site {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    function getSiteDetails($siteid) {
+        $db = new Database();
+        $conn = $db->getConnection();
+    
+        $query = "SELECT * FROM sites WHERE siteid = :siteid";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     public function updateSite($siteid, $updateData) {
         if (empty($updateData)) {

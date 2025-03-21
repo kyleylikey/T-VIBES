@@ -1,7 +1,17 @@
 <?php
 session_start();
-?>
+require_once '../../controllers/tourist/destinationcontroller.php';
+require_once '../../controllers/helpers.php';
 
+// Check if siteid is provided in the URL
+if (isset($_GET['siteid'])) {
+    $siteid = $_GET['siteid'];
+} else {
+    // Redirect to explore page if no siteid is provided
+    header('Location: explore.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -394,10 +404,11 @@ session_start();
     <i class="fas fa-arrow-left text-white"></i>
 </button>
 
-            <h1 class="fw-bold mt-2" style="color: #102E47;">Destination Name</h1>
+            <h1 class="fw-bold mt-2" style="color: #102E47;"><?php echo $siteDetails['sitename']; ?></h1>
         </div>
-
-        <div class="bg-light rounded" style="height: 200px;"></div>
+        <div style="height:600px;">
+            <img class="img-fluid h-100 w-100 object-fit-cover rounded" src="../../../public/uploads/<?php echo $siteDetails['siteimage']; ?>" style="object-fit: cover;"></img>
+        </div>
 
         <div class="row mt-4 gx-4">
             <div class="col-lg-9">
@@ -415,74 +426,39 @@ session_start();
 
                 <div class="tab-content" id="pills-tabContent">
                     <div class="tab-pane fade show active" id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
-                        <ul>
-                            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                            <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-                        </ul>
+                        <h3>Operating Days</h3>
+                        <h5><?php $opdays = Site::binaryToDays($siteDetails['opdays']); 
+                        echo $opdays;?></h5>
+                        <h3 class="mt-5">Description</h3>
+                        <p><?php echo $siteDetails['description']; ?></p>
                     </div>
                     <div class="tab-pane fade" id="pills-fees" role="tabpanel" aria-labelledby="pills-fees-tab">
-                        <p>Estimated Fees information goes here.</p>
+                        <h3>P<?php echo $siteDetails['price']; ?></h3>
+                        <p>per person</p>
                     </div>
                     <div class="tab-pane fade" id="pills-reviews" role="tabpanel" aria-labelledby="pills-reviews-tab">
                         <div class="row align-items-center mb-5">
                             <!-- Left Column: Rating Display -->
-                            <div class="col-md-4">
+                            <div>
                                 <div class="rating-display">
-                                    <h2 class="display-4 fw-bold">5.0</h2>
-                                    <div class="stars text-warning">★★★★★</div>
-                                    <span class="rating-count">All Ratings (400+)</span>
-                                </div>
-                            </div>
-
-                            <!-- Right Column: Progress Bars -->
-                            <div class="col-md-8">
-                                <div class="progress-section">
-                                    <div class="progress-row">
-                                        <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: 100%"></div>
-                                        </div>
-                                        <span class="progress-label">5.0</span>
-                                    </div>
-                                    <div class="progress-row">
-                                        <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: 80%"></div>
-                                        </div>
-                                        <span class="progress-label">4.0</span>
-                                    </div>
-                                    <div class="progress-row">
-                                        <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: 60%"></div>
-                                        </div>
-                                        <span class="progress-label">3.0</span>
-                                    </div>
-                                    <div class="progress-row">
-                                        <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: 40%"></div>
-                                        </div>
-                                        <span class="progress-label">2.0</span>
-                                    </div>
-                                    <div class="progress-row">
-                                        <div class="progress flex-grow-1">
-                                            <div class="progress-bar" role="progressbar" style="width: 20%"></div>
-                                        </div>
-                                        <span class="progress-label">1.0</span>
-                                    </div>
+                                    <h2 class="display-4 fw-bold"><?php echo $siteDetails['rating']; ?></h2>
+                                    <div class="stars text-warning">
+                                        <?php echo generateStarRating($siteDetails['rating']); ?>
+                                    </div>                                    
+                                    <span class="rating-count">All Ratings (<?php echo $siteDetails['rating_cnt']; ?>)</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Review Cards -->
                         <div class="mt-4">
-                            <div class="review-list-card" role="button" data-bs-toggle="modal" data-bs-target="#reviewModal" style="cursor: pointer;">
-                                <p class="fst-italic">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                                <strong>User</strong>
-                                <span class="text-muted">3 weeks ago</span>
-                            </div>
-                            <div class="review-list-card" role="button" data-bs-toggle="modal" data-bs-target="#reviewModal" style="cursor: pointer;">
-                                <p class="fst-italic">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                                <strong>User</strong>
-                                <span class="text-muted">5 months ago</span>
-                            </div>
+                            <?php foreach ($siteReviews as $review): ?>
+                                <div class="review-list-card" role="button" data-bs-toggle="modal" data-bs-target="#reviewModal" style="cursor: pointer;">
+                                    <p class="fst-italic"><?php echo htmlspecialchars($review['review']); ?></p>
+                                    <strong><?php echo htmlspecialchars($review['author']); ?></strong>
+                                    <span class="text-muted"><?php echo htmlspecialchars(date('F j, Y', strtotime($review['date']))); ?></span>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>
@@ -491,7 +467,12 @@ session_start();
                 <div class="sticky-top" style="top: 2rem;">
                     <button class="btn text-white position-relative w-100 py-5 fw-bold" 
                             style="background-color: #EC6350; font-size: 1.5rem; text-align: left; padding-top: 10px; padding-left: 15px;"
-                            onclick="showAddedToTourNotification()">
+                            <?php if (isset($_SESSION['userid'])&&$_SESSION['usertype']=='trst') { ?>
+                            onclick="showAddedToTourNotification()"
+                            <?php } else { 
+                                echo " onclick=location.href='login.php'";
+                            }?>
+                            >
                         <span class="position-absolute" style="top: 10px; left: 15px;">Add To Your <br>Tour</span>
 						<br>
 						<br>
@@ -505,59 +486,44 @@ session_start();
     </main>
 
     <div class="modal fade review-modal" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body p-0">
-                    <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <?php foreach ($siteReviews as $index => $review): ?>
+                            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
                                 <div class="review-card">
                                     <i class="fas fa-quote-right quote-icon"></i>
                                     <p class="review-text">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                        <?php echo htmlspecialchars($review['review']); ?>
                                     </p>
                                     <div class="user-info">
                                         <div class="user-avatar">
                                             <i class="fas fa-user"></i>
                                         </div>
                                         <div class="user-details">
-                                            <div class="user-name">User</div>
-                                            <div class="timestamp">3 weeks ago</div>
+                                            <div class="user-name"><?php echo htmlspecialchars($review['author']); ?></div>
+                                            <div class="timestamp"><?php echo htmlspecialchars(date('F j, Y', strtotime($review['date']))); ?></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="carousel-item">
-                                <div class="review-card">
-                                    <i class="fas fa-quote-right quote-icon"></i>
-                                    <p class="review-text">
-                                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                    </p>
-                                    <div class="user-info">
-                                        <div class="user-avatar">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <div class="user-details">
-                                            <div class="user-name">User</div>
-                                            <div class="timestamp">5 months ago</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#reviewCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
+                        <?php endforeach; ?>
                     </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#reviewCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <?php include '../templates/footer.html'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
