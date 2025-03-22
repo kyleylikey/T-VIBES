@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
     var cancelTourIdField = document.getElementById("cancelTourId");
     var cancelReasonInput = document.getElementById("cancelReasonInput");
 
-    // Function to update tour details
     function updateTourDetails(tourItem) {
         var tourDetails = document.querySelector(".tour-details");
         var tourId = tourItem.getAttribute("data-tourid");
@@ -31,14 +30,12 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    // Automatically select the first tour item if available
     if (tourItems.length > 0) {
         var firstTour = tourItems[0];
         firstTour.classList.add("active");
         updateTourDetails(firstTour);
     }
 
-    // Handle tour item selection
     tourItems.forEach(function (item) {
         item.addEventListener("click", function () {
             tourItems.forEach(i => i.classList.remove("active"));
@@ -47,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Show Edit Modal with data
     document.addEventListener("click", function (event) {
         if (event.target.matches(".edit-tour")) {
             var activeTour = document.querySelector(".tour-item.active");
@@ -68,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Save Tour Changes with AJAX
     saveTourChanges.addEventListener("click", function () {
         var tourId = document.getElementById("editTourId").value;
         var tourDate = document.getElementById("tourDate").value;
@@ -89,6 +84,19 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }).then((result) => {
             if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Processing Request',
+                    html: 'Sending confirmation email... Do not close this window.',
+                    allowOutsideClick: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    },
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
                 fetch("../../controllers/upcomingtourscontroller.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -126,14 +134,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Handle Cancellation
     document.addEventListener("click", function (event) {
         if (event.target.matches(".cancel-tour")) {
             var activeTour = document.querySelector(".tour-item.active");
             if (!activeTour) return;
 
             var tourId = activeTour.getAttribute("data-tourid");
-            cancelTourIdField.value = tourId; // Set the hidden field
+            cancelTourIdField.value = tourId; 
 
             Swal.fire({
                 iconHtml: '<i class="fas fa-thumbs-up"></i>',
@@ -157,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Submit Cancellation Reason
     submitCancelReason.addEventListener("click", function () {
         let reason = cancelReasonInput.value.trim();
         let tourId = cancelTourIdField.value;
@@ -177,10 +183,24 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        Swal.fire({
+            title: 'Processing Request',
+            html: 'Sending confirmation email... Do not close this window.',
+            allowOutsideClick: false,
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup"
+            },
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         fetch("../../controllers/upcomingtourscontroller.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `cancelTour=true&tourId=${encodeURIComponent(tourId)}`
+            body: `cancelTour=true&tourId=${encodeURIComponent(tourId)}&cancelReason=${encodeURIComponent(reason)}`
         })
         .then(response => response.json())
         .then(data => {

@@ -828,7 +828,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                         <?php 
                         $currentDate = "";
                         foreach ($allTours as $tour): 
-                            $tourDate = date('m/d/y', strtotime($tour['date']));
+                            $tourDate = date('d M Y', strtotime($tour['date']));
                             $tourDay = date('l', strtotime($tour['date']));
                             
                             if ($tourDate !== $currentDate):
@@ -866,7 +866,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                             <div class="tour-info">
                                 <div>
                                     <strong>Tour Date:</strong>
-                                    <span><?php echo htmlspecialchars($firstTour['date']); ?></span>
+                                    <span><?php echo date('d M Y', strtotime($firstTour['date'])); ?></span>
                                 </div>
                                 <div>
                                     <strong>Pax:</strong>
