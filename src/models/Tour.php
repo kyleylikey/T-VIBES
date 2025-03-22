@@ -83,6 +83,49 @@ class Tour {
         return $stmt;
     }
 
+    public function getTourRequestByUser($userid) {
+        $query = "SELECT t.*, u.name, u.email, s.sitename, s.price, s.siteimage, s.opdays 
+                FROM " . $this->table . " t 
+                JOIN Users u ON t.userid = u.userid
+                JOIN sites s ON t.siteid = s.siteid
+                WHERE t.userid = ? AND t.status = 'request'";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getTourRequestAvailability($userid) {
+       $query = "SELECT 
+            t.*, 
+            u.name, 
+            u.email, 
+            s.sitename, 
+            s.price, 
+            s.siteimage, 
+            s.opdays,
+            BIN(BIT_AND(s.opdays) & 127) AS all_opdays_and_binary
+        FROM 
+            tour t 
+        JOIN 
+            Users u ON t.userid = u.userid
+        JOIN 
+            sites s ON t.siteid = s.siteid
+        WHERE 
+            t.userid = ?
+            AND t.status = 'request'
+        GROUP BY
+            t.userid;";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
     public function getUpcomingTour($tourid, $userid) {
         $query = "SELECT t.*, u.name, u.email, u.username 
                   FROM " . $this->table . " t 

@@ -1,4 +1,9 @@
+<?php
+session_start();
 
+require_once '../../../controllers/tourist/tourrequestcontroller.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -192,24 +197,26 @@
 <div class="main-container">
     <!-- Tour Container -->
     <div class="tour-container">
-        <?php for ($i = 1; $i <= 3; $i++): ?>
-			<div class="destination-wrapper" data-index="<?= $i ?>" data-price="0">
-    <div class="destination-number"><?= $i ?></div>
-    <div class="destination-item">
-        <div class="destination-image"><i class="bi bi-image"></i></div>
-        <div class="destination-details">
-            <span>Destination Name <?= $i ?></span>
-        </div>
-        <div class="destination-actions">
-            <span class="destination-price">₱ 0.00</span>
-            <button class="delete-btn" onclick="deleteDestination(this)">
-                <i class="bi bi-trash"></i>
-            </button>
-        </div>
-    </div>
-</div>
+        <?php $i=1; foreach ($userTourRequest as $request):?>
+			<div class="destination-wrapper" data-index="<?= $i ?>" data-price=" <?php echo $request['price'];?>">
+                <div class="destination-number"><?= $i ?></div>
+                <div class="destination-item">
+                    <img src="../../../../public/uploads/<?= $request['siteimage'] ?>" alt="Destination Image" class="destination-image"></img>
+                    <div class="destination-details">
+                        <span><?php echo $request['sitename'];?></span>
+                    </div>
+                    <div class="destination-actions">
+                        <span class="destination-price">₱ <?php echo $request['price'];?></span>
+                        <button class="delete-btn" onclick="deleteDestination(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-        <?php endfor; ?>
+        <?php
+        $i++;
+        endforeach;?>
 
         <!-- People Counter -->
         <div class="people-counter">
@@ -220,13 +227,13 @@
         </div>
 
         <!-- Date Picker -->
-        <input type="date" class="form-control" id="tour-date">
+        <input type="date" class="form-control" id="tour-date" data-availabledate="<?php echo $getDate['all_opdays_and_binary']; ?>">
 
 		<div class="actions text-center mt-3">
     <button id="addMoreDestinations" class="btn btn-pill" style="background-color: #EC6350; color: #fff; border-radius: 50px; padding: 10px 24px;">
         Add More Destinations
     </button>
-    <button id="check-btn" class="btn btn-pill" style="background-color: #EC6350; color: #fff; border-radius: 50px; padding: 10px 24px;">
+    <button id="check-btn" class="btn btn-pill" style="background-color: #EC6350; color: #fff; border-radius: 50px; padding: 10px 24px;" onclick="verifyAvailableDate()">
         Check Availability
     </button>
 </div>
@@ -272,22 +279,6 @@
             updateTotalCost();
         }
     });
-
-    // Update total cost based on people count
-    function updateTotalCost() {
-        let totalCost = 0;
-        let peopleCount = parseInt(counterInput.value);
-
-        feesList.innerHTML = '';
-        document.querySelectorAll('.destination-wrapper').forEach(dest => {
-            const name = dest.querySelector('.destination-details span').innerText;
-            const price = parseFloat(dest.getAttribute('data-price'));
-            feesList.innerHTML += `<div>${name} x${peopleCount} - ₱${(price * peopleCount).toFixed(2)}</div>`;
-            totalCost += price * peopleCount;
-        });
-
-        totalCostDisplay.textContent = totalCost.toFixed(2);
-    }
 
     checkBtn.addEventListener('click', () => {
         dateInput.style.display = 'block';
@@ -360,6 +351,110 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+function verifyAvailableDate() {
+    // Get the binary representation of available days
+    const availableDateBinary = dateInput.getAttribute('data-availabledate');
+    
+    // Check if the binary value is 0 or invalid
+    const hasCommonDays = availableDateBinary && parseInt(availableDateBinary, 2) > 0;
+    
+    if (!hasCommonDays) {
+        // No common days available
+        Swal.fire({
+            icon: 'error',
+            title: 'No Common Available Days',
+            html: `
+                <div class="text-start mt-3">
+                    <p>The destinations you've selected don't have any common available days.</p>
+                    <p>Options:</p>
+                    <ul>
+                        <li>Remove some destinations</li>
+                        <li>Choose different destinations with compatible schedules</li>
+                    </ul>
+                </div>
+            `,
+            confirmButtonText: 'Understand',
+            confirmButtonColor: '#EC6350'
+        });
+        return false;
+    }
+    
+    // If we have common days, show the date input
+    dateInput.style.display = 'block';
+    return true;
+}
+
+// Update the check button click handler
+checkBtn.addEventListener('click', () => {
+    // Verify if there are common available days first
+    if (verifyAvailableDate()) {
+        // Only show date picker if verification passes
+        dateInput.style.display = 'block';
+    }
+});
+
+// Run verification when page loads if tours are already selected
+document.addEventListener('DOMContentLoaded', function() {
+    // Your existing code for initializing fees
+    document.querySelectorAll('.destination-wrapper').forEach(dest => {
+        const priceText = dest.querySelector('.destination-price').innerText;
+        const price = parseFloat(priceText.replace('₱', '').trim());
+        dest.setAttribute('data-price', price);
+    });
+    
+    // Calculate initial fees
+    updateTotalCost();
+    
+    // Check if there are destinations selected
+    if (document.querySelectorAll('.destination-wrapper').length > 0) {
+        // Optional: Check availability on page load
+        // verifyAvailableDate(); 
+    }
+});
+// Run this when the page loads to set initial fees
+document.addEventListener('DOMContentLoaded', function() {
+    // Update price attribute for each destination from the price display
+    document.querySelectorAll('.destination-wrapper').forEach(dest => {
+        const priceText = dest.querySelector('.destination-price').innerText;
+        const price = parseFloat(priceText.replace('₱', '').trim());
+        dest.setAttribute('data-price', price);
+    });
+    
+    // Calculate initial fees
+    updateTotalCost();
+});
+
+    // Update your existing updateTotalCost function
+    function updateTotalCost() {
+        let totalCost = 0;
+        let peopleCount = parseInt(counterInput.value);
+
+        feesList.innerHTML = '';
+        document.querySelectorAll('.destination-wrapper').forEach(dest => {
+            const name = dest.querySelector('.destination-details span').innerText;
+            const price = parseFloat(dest.getAttribute('data-price'));
+            
+            // Check if price is valid
+            if (!isNaN(price)) {
+                const itemCost = price * peopleCount;
+                feesList.innerHTML += `<div class="fee-item my-2">
+                    <div class="d-flex justify-content-between">
+                        <span>${name}</span>
+                        <span>${price} x ${peopleCount}</span>
+                    </div>
+                    <div class="text-end">₱${itemCost.toFixed(2)}</div>
+                </div>`;
+                totalCost += itemCost;
+            }
+        });
+        
+        // Add a separator before total
+        if (document.querySelectorAll('.destination-wrapper').length > 0) {
+            feesList.innerHTML += '<hr class="my-2">';
+        }
+        
+        totalCostDisplay.textContent = totalCost.toFixed(2);
+    }
     document.getElementById('submit-btn').addEventListener('click', () => {
         Swal.fire({
             icon: 'success',
