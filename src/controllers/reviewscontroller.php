@@ -1,5 +1,8 @@
 <?php
+session_start();
 require_once  __DIR__ .'/../config/dbconnect.php';
+require_once __DIR__.'/../models/Logs.php';
+
 
 $conn = (new Database())->getConnection();
 
@@ -7,6 +10,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_id'], $_POST['
     $review_id = $_POST['review_id'];
     $status = $_POST['status'];
     $stmt = $conn->prepare("UPDATE rev SET status = ? WHERE revid = ?");
+    if ($status === 'archived') {
+        $logs = new Logs();
+        $logs->logArchiveReview($_SESSION['userid'], $review_id);
+    }
+    else {
+        $logs = new Logs();
+        $logs->logDisplayReview($_SESSION['userid'], $review_id);
+    }
     $stmt->execute([$status, $review_id]);
     exit;
 }

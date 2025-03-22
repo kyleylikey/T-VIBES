@@ -808,6 +808,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                     <div class="tour-list">
                         <?php foreach ($toursToday as $tour): ?>
                             <div class="tour-item <?php echo $tour === reset($toursToday) ? 'active' : ''; ?>" 
+                                data-userid="<?php echo htmlspecialchars($tour['userid']); ?>"
                                 data-tourid="<?php echo htmlspecialchars($tour['tourid']); ?>" 
                                 data-sites="<?php echo htmlspecialchars($tour['sites']); ?>" 
                                 data-date="<?php echo htmlspecialchars($tour['date']); ?>" 

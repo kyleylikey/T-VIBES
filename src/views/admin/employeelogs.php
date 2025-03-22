@@ -759,7 +759,6 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                 <input type="text" class="form-control" id="searchBar" placeholder="Search">
             </div>
         </div>
-
         <div class="row mt-3 d-flex justify-content-center">
             <div class="col-lg-12 col-md-12 col-12 mb-3">
                 <div class="info-box">
@@ -793,6 +792,38 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
             </div>
         </div>
 
+        <!-- Pagination Links -->
+        <div class="row mt-3">
+            <div class="col-12 d-flex justify-content-center">
+                <nav>
+                    <ul class="pagination">
+                        <?php if ($totalPages > 1): ?>
+                            <?php if ($currentPage > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?php echo $i === $currentPage ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <?php if ($currentPage < $totalPages): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -90,8 +90,9 @@ $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
 $visitorData = array_fill(1, $daysInMonth, 0);
 
 $query = "SELECT DAY(date) AS day, SUM(companions) AS total_visitors 
-          FROM (SELECT DISTINCT userid, date, companions FROM tour 
-                WHERE YEAR(date) = :year AND MONTH(date) = :month AND status = 'accepted') AS distinct_tours
+          FROM (SELECT userid, date, companions FROM tour 
+                WHERE YEAR(date) = :year AND MONTH(date) = :month AND status = 'accepted' GROUP BY tourid, userid
+            ) AS distinct_tours
           GROUP BY DAY(date)";
 
 $stmt = $conn->prepare($query);

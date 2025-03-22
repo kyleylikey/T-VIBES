@@ -14,6 +14,48 @@ class Tour {
         return $stmt;
     }
 
+    public function doesTourRequestExist($userid) {
+        $query = "SELECT COUNT(*) as count FROM " . $this->table . " 
+                  WHERE userid = :userid AND status = 'request'";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'] > 0;
+    }
+
+    public function getExistingTourRequestId($userid) {
+        $query = "SELECT tourid FROM " . $this->table . " 
+                  WHERE userid = :userid AND status = 'request'
+                  LIMIT 1";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['tourid'] : null;
+    }
+
+    public function addToExistingTour($tourid, $siteid, $userid) {
+        $query = "INSERT INTO tour (tourid, siteid, userid, status) VALUES (:tourid, :siteid, :userid, 'request')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
+        $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function addToNewTour($siteid, $userid) {
+        $query = "INSERT INTO tour (siteid, userid, status) VALUES (:siteid, :userid, 'request')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
     public function getTourRequestList() {
         $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
                   FROM " . $this->table . " t 
@@ -32,6 +74,20 @@ class Tour {
                   FROM " . $this->table . " t 
                   JOIN Users u ON t.userid = u.userid
                   WHERE t.tourid = ? AND t.userid = ? AND t.status = 'submitted'";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $tourid);
+        $stmt->bindParam(2, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getUpcomingTour($tourid, $userid) {
+        $query = "SELECT t.*, u.name, u.email, u.username 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid
+                  WHERE t.tourid = ? AND t.userid = ? AND t.status = 'accepted'";
     
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $tourid);
@@ -85,7 +141,7 @@ class Tour {
 
     public function getToursForToday() {
         $today = date('Y-m-d');
-        $query = "SELECT t.tourid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
+        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
                   FROM tour t
                   JOIN users u ON t.userid = u.userid
                   JOIN sites s ON t.siteid = s.siteid
@@ -98,7 +154,7 @@ class Tour {
     }
 
     public function getAllUpcomingTours() {
-        $query = "SELECT t.tourid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
+        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
                     FROM tour t
                     JOIN users u ON t.userid = u.userid
                     JOIN sites s ON t.siteid = s.siteid

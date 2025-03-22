@@ -1,6 +1,7 @@
 <?php
 require_once  __DIR__ .'/../config/dbconnect.php';
 require_once  __DIR__ .'/../models/Site.php';
+require_once  __DIR__ .'/../models/Logs.php';
 
 $database = new Database();
 $conn = $database->getConnection();
@@ -24,6 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
 
         if ($siteName && $sitePrice && $siteDescription) {
             $siteModel->addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage);
+            $logs = new Logs();
+            $logs->logAddSite($_SESSION['userid'], $siteName);
             header("Location: touristsites.php");
             exit();
         } else {
@@ -53,9 +56,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
 
             if (move_uploaded_file($_FILES["imageUpload"]["tmp_name"], $targetFilePath)) {
                 $siteModel->editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName);
+                $logs = new Logs();
+                $logs->logEditSite($_SESSION['userid'], $siteName);
             }
         } else {
             $siteModel->editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays);
+            $logs = new Logs();
+            $logs->logEditSite($_SESSION['userid'], $siteName);
         }
 
         if ($siteId && $siteName && $sitePrice && $siteDescription) {

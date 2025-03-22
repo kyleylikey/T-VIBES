@@ -27,7 +27,7 @@ $currentYear = date('Y');
 
 try {
     $query = "SELECT SUM(companions) AS total_visitors FROM (
-                SELECT DISTINCT userid, companions
+                SELECT userid, companions
                 FROM tour
                 WHERE status = 'accepted' AND YEAR(date) = :currentYear
             ) AS distinct_tours";

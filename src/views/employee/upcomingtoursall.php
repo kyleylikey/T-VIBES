@@ -1,9 +1,10 @@
 <?php
 include '../../../includes/auth.php';
 require_once '../../config/dbconnect.php';
-require_once '../../controllers/upcomingtourscontroller.php';
 
 $userid = $_SESSION['userid'];
+require_once '../../controllers/upcomingtourscontroller.php';
+
 $query = "SELECT name FROM users WHERE userid = :userid LIMIT 1";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
@@ -844,6 +845,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                         <?php endif; ?>
 
                         <div class="tour-item" 
+                            data-userid="<?php echo htmlspecialchars($tour['userid']); ?>"
                             data-tourid="<?php echo htmlspecialchars($tour['tourid']); ?>"      
                             data-sites="<?php echo htmlspecialchars($tour['sites']); ?>" 
                             data-date="<?php echo htmlspecialchars($tour['date']); ?>" 
@@ -927,7 +929,8 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="cancelTourId"> <!-- Hidden field for tour ID -->
+                    <input type="hidden" id="cancelTourId">
+                    <input type="hidden" id="cancelUserId">
                     <textarea id="cancelReasonInput" class="form-control" rows="4" placeholder="Type here..."></textarea>
                 </div>
                 <div class="modal-footer justify-content-center">

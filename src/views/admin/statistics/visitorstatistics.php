@@ -14,7 +14,7 @@ try {
                 SELECT userid, tourid, MAX(companions) AS companions 
                 FROM tour 
                 WHERE status = 'accepted' AND YEAR(date) = :currentYear
-                GROUP BY userid, tourid
+                GROUP BY tourid, userid
             ) AS distinct_tours;";
     
     $stmt = $conn->prepare($query);
@@ -33,9 +33,10 @@ $monthlyVisitors = array_fill(0, 12, 0);
 
 try {
     $query = "SELECT MONTH(date) AS month, SUM(companions) AS monthly_visitors FROM (
-                SELECT DISTINCT userid, MONTH(date) AS month, companions, date
+                SELECT userid, MONTH(date) AS month, companions, date
                 FROM tour
                 WHERE status = 'accepted' AND YEAR(date) = :currentYear
+                GROUP BY tourid, userid
             ) AS distinct_tours
             GROUP BY MONTH(date)";
     
