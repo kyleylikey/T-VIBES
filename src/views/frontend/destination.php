@@ -21,361 +21,8 @@ if (isset($_GET['siteid'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .review-modal .modal-content {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: none;
-            border-radius: 1rem;
-            padding: 3rem;
-            min-height: 400px;
-            position: relative;
-        }
-
-        .review-modal .review-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 2.5rem;
-            margin: 0 auto;
-            max-width: 85%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .review-modal .quote-icon {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            font-size: 3rem;
-            color: #729AB8;
-            margin-bottom: 3rem; /* Added space below quote */
-        }
-
-        .review-modal .carousel-control-prev,
-        .review-modal .carousel-control-next {
-            background-color: #EC6350;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 1;
-            position: absolute;
-            z-index: 3;
-        }
-
-        .review-modal .carousel-control-prev {
-            left: -20px;
-        }
-
-        .review-modal .carousel-control-next {
-            right: -20px;
-        }
-
-        .review-modal .user-info {
-            margin-top: 2rem;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .review-modal .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #E2E8F0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .review-modal .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .review-modal .user-name {
-            font-weight: bold;
-            color: #1A202C;
-            margin-bottom: 0.25rem;
-            font-size: 1.1rem;
-        }
-
-        .review-modal .timestamp {
-            color: #718096;
-            font-size: 0.875rem;
-        }
-
-        .review-modal .review-text {
-            font-style: italic;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #4A5568;
-            margin-top: 4rem; /* Increased space above text after quote */
-            margin-bottom: 2rem;
-            text-align: left;
-            font-weight: normal;
-        }
-        /* Review list card styles */
-        .review-list-card {
-            border: none;
-            background: #F8F9FA;
-            transition: background-color 0.2s;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-        }
-
-        .review-list-card:hover {
-            background: #F1F3F5;
-        }
-
-        /* Modal styles */
-        .review-modal .modal-content {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: none;
-            border-radius: 1rem;
-            padding: 3rem;
-            min-height: 400px;
-            position: relative;
-        }
-
-        .review-modal .review-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 2.5rem;
-            margin: 0 auto;
-            max-width: 85%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .review-modal .quote-icon {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            font-size: 3rem;
-            color: #729AB8;
-            margin-bottom: 3rem;
-        }
-
-        .review-modal .carousel-control-prev,
-        .review-modal .carousel-control-next {
-            background-color: #EC6350;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 1;
-            position: absolute;
-            z-index: 3;
-        }
-
-        .review-modal .carousel-control-prev {
-            left: -20px;
-        }
-
-        .review-modal .carousel-control-next {
-            right: -20px;
-        }
-
-        .review-modal .user-info {
-            margin-top: 2rem;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .review-modal .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #E2E8F0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .review-modal .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .review-modal .user-name {
-            font-weight: bold;
-            color: #1A202C;
-            margin-bottom: 0.25rem;
-            font-size: 1.1rem;
-        }
-
-        .review-modal .timestamp {
-            color: #718096;
-            font-size: 0.875rem;
-        }
-
-        .review-modal .review-text {
-            font-style: italic;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #4A5568;
-            margin-top: 4rem;
-            margin-bottom: 2rem;
-            text-align: left;
-            font-weight: normal;
-        }
-        /* Update pills navigation styling */
-        #pills-tab {
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            background-color: #F8F9FA;
-            padding: 0.5rem;
-            border-radius: 2rem;
-            width: fit-content;
-        }
-
-        #pills-tab .nav-item {
-            margin: 0;
-        }
-
-        #pills-tab .nav-link {
-            border-radius: 50rem;
-            padding: 0.5rem 1.25rem;
-            font-weight: 600;
-            transition: all 0.2s ease-in-out;
-            font-size: 0.95rem;
-            margin: 0;
-            border: none;
-            white-space: nowrap;
-        }
-
-        #pills-tab .nav-link:not(.active) {
-            background-color: transparent;
-            color: #102E47;
-        }
-
-        #pills-tab .nav-link.active,
-        #pills-tab .nav-link:hover {
-            background-color: #102E47;
-            color: white;
-        }
-
-        /* Improve tab content transitions */
-        .tab-content > .tab-pane {
-            padding: 1.5rem 0;
-            opacity: 0;
-            transition: opacity 0.15s linear;
-        }
-
-        .tab-content > .active {
-            opacity: 1;
-        }
-
-        /* Add spacing between tab content sections */
-        .tab-content > .tab-pane:not(:last-child) {
-            margin-bottom: 2rem;
-        }
-
-        /* Update review section styles */
-        #pills-reviews .row {
-            margin-bottom: 3rem;
-        }
-
-        /* Rating display styles */
-        .rating-display {
-            text-align: center;
-            padding-right: 2rem;
-        }
-
-        .rating-display .display-4 {
-            font-size: 3.5rem;
-            line-height: 1;
-            margin-bottom: 0.25rem;
-            color: #102E47;
-        }
-
-        .rating-display .stars {
-            font-size: 1.5rem;
-            line-height: 1;
-            margin-bottom: 0.25rem;
-        }
-
-        .rating-display .rating-count {
-            color: #6B7280;
-            font-size: 0.875rem;
-        }
-
-        /* Progress bars styles */
-        .progress-section {
-            padding-top: 0.5rem;
-        }
-
-        .progress {
-            background-color: #E5E7EB;
-            border-radius: 9999px;
-            height: 6px;
-        }
-
-        .progress-bar {
-            transition: width 0.3s ease;
-            background-color: #102E47;
-        }
-
-        .progress-label {
-            min-width: 2rem;
-            text-align: right;
-            font-size: 0.8rem;
-            color: #4B5563;
-            margin-left: 0.75rem;
-        }
-
-        .progress-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .progress-row:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Toast notification styles */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
-        }
-
-        .success-toast {
-            background-color: #fff1f0;
-            color: #102E47;
-            border: none;
-            border-radius: 8px;
-            min-width: 300px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .success-toast .toast-body {
-            padding: 1.25rem;
-        }
-
-        .toast-link {
-            color: #dc3545;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .toast-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="../../../public/assets/styles/destination.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php 
@@ -387,15 +34,6 @@ if (isset($_GET['siteid'])) {
     ?>
 
 
-    <!-- Toast Container -->
-    <div class="toast-container">
-        <div class="toast success-toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
-            <div class="toast-body">
-                <div class="fw-bold mb-2">Destination Added to Tour!</div>
-                <div><a href="#" class="toast-link">Click here to view your Tour details</a></div>
-            </div>
-        </div>
-    </div>
 
     <main class="container py-4">
         <div class="d-flex flex-column mb-3">
@@ -465,21 +103,21 @@ if (isset($_GET['siteid'])) {
             </div>
             <div class="col-lg-3 position-relative">
                 <div class="sticky-top" style="top: 2rem;">
-                    <button class="btn text-white position-relative w-100 py-5 fw-bold" 
-                            style="background-color: #EC6350; font-size: 1.5rem; text-align: left; padding-top: 10px; padding-left: 15px;"
-                            <?php if (isset($_SESSION['userid'])&&$_SESSION['usertype']=='trst') { ?>
-                            onclick="showAddedToTourNotification()"
-                            <?php } else { 
-                                echo " onclick=location.href='login.php'";
-                            }?>
-                            >
-                        <span class="position-absolute" style="top: 10px; left: 15px;">Add To Your <br>Tour</span>
-						<br>
-						<br>
-                        <span class="position-absolute" style="bottom: 15px; right: 15px;">
-                            <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
-                        </span>
-                    </button>
+                <button class="btn text-white position-relative w-100 py-5 fw-bold" 
+                        style="background-color: #EC6350; font-size: 1.5rem; text-align: left; padding-top: 10px; padding-left: 15px;"
+                        <?php if (isset($_SESSION['userid']) && $_SESSION['usertype']=='trst') { ?>
+                        onclick="addToTour(<?php echo $siteid; ?>)"
+                        <?php } else { 
+                            echo " onclick='loginFirst()'";
+                        }?>
+                        >
+                    <span class="position-absolute" style="top: 10px; left: 15px;">Add To Your <br>Tour</span>
+                    <br>
+                    <br>
+                    <span class="position-absolute" style="bottom: 15px; right: 15px;">
+                        <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
+                    </span>
+                </button>
                 </div>
             </div>
         </div>
@@ -547,15 +185,101 @@ if (isset($_GET['siteid'])) {
             });
         });
 
-        // Add notification functionality
-        function showAddedToTourNotification() {
-            const toast = new bootstrap.Toast(document.getElementById('successToast'), {
-                animation: true,
-                autohide: true,
-                delay: 5000
+        function loginFirst() {
+            Swal.fire({
+                title: "Please log in to continue.",
+                text: "Log in to add destinations to your tour!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Log In",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                window.location.href = 'login.php';
+                }
             });
-            toast.show();
         }
+
+        function showAddedToTourNotification() {
+            
+            // Also show SweetAlert2
+            Swal.fire({
+                icon: 'success',
+                title: 'Added to Tour!',
+                text: 'This destination has been added to your tour.',
+                confirmButtonText: 'View My Tour',
+                confirmButtonColor: '#EC6350',
+                showCancelButton: true,
+                cancelButtonText: 'Continue Browsing'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to the tour page
+                    window.location.href = "tours/tourrequest.php";
+                }
+            });
+        }
+        // Function to add site to tour
+    function addToTour(siteId) {
+        // Create form data
+        const formData = new FormData();
+        formData.append('siteid', siteId);
+        
+        // Show loading indicator
+        Swal.fire({
+            title: 'Adding to Tour...',
+            text: 'Please wait',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        // Send AJAX request with explicit headers
+        fetch('../../controllers/tourist/addtotour.php', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            Swal.close();
+            
+            if (data.success) {
+                // Show the success notification
+                showAddedToTourNotification();
+            } else {
+                // Show error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.message || 'Failed to add site to tour'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            Swal.close();
+            
+            // Show error message
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Destination already added to your tour. Please check your tour page.',
+                confirmButtonText: 'View My Tour',
+                confirmButtonColor: '#EC6350',
+                showCancelButton: true,
+                cancelButtonText: 'Continue Browsing'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to the tour page
+                    window.location.href = "tours/tourrequest.php";
+                }
+            });
+        });
+    }
     </script>
 </body>
 </html>
