@@ -13,7 +13,7 @@ $tours = [
 <head>
 <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tour Requests</title>
+    <title>Tour Approved</title>
     <link rel="stylesheet" href="../../../../public/assets/styles/index.css">
 	<link rel="stylesheet" href="../../../../public/assets/styles/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
