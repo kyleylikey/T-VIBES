@@ -64,43 +64,43 @@ class Logs {
     }
 
     public function logLogin($userid) {
-        $this->logAction($userid, 'Logged in');
+        $this->logAction($userid, 'Logged In');
     }
 
     public function logLogout($userid) {
-        $this->logAction($userid, 'Logged out');
+        $this->logAction($userid, 'Logged Out');
     }
 
     public function logAcceptTourRequest($userid, $tourid) {
-        $this->logAction($userid, "Accepted tour request (Tour ID: $tourid)");
+        $this->logAction($userid, "Accepted Tour Request (Tour ID: $tourid)");
     }
 
     public function logDeclineTourRequest($userid, $tourid) {
-        $this->logAction($userid, "Declined tour request (Tour ID: $tourid)");
+        $this->logAction($userid, "Declined Tour Request (Tour ID: $tourid)");
     }
 
     public function logEditTour($userid, $tourid) {
-        $this->logAction($userid, "Edited tour (Tour ID: $tourid)");
+        $this->logAction($userid, "Edited Tour (Tour ID: $tourid)");
     }
 
     public function logCancelTour($userid, $tourid) {
-        $this->logAction($userid, "Cancelled tour (Tour ID: $tourid)");
+        $this->logAction($userid, "Cancelled Tour (Tour ID: $tourid)");
     }
 
     public function logDisplayReview($userid, $reviewid) {
-        $this->logAction($userid, "Displayed review (Review ID: $reviewid)");
+        $this->logAction($userid, "Displayed Review (Review ID: $reviewid)");
     }
 
     public function logArchiveReview($userid, $reviewid) {
-        $this->logAction($userid, "Archived review (Review ID: $reviewid)");
+        $this->logAction($userid, "Archived Review (Review ID: $reviewid)");
     }
 
     public function logAddSite($userid, $sitename) {
-        $this->logAction($userid, "Added site (Site Name: $sitename)");
+        $this->logAction($userid, "Added Site (Site Name: $sitename)");
     }
 
     public function logEditSite($userid, $sitename) {
-        $this->logAction($userid, "Edited site (Site Name: $sitename)");
+        $this->logAction($userid, "Edited Site (Site Name: $sitename)");
     }
 }
 
