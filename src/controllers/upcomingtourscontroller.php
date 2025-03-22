@@ -146,7 +146,7 @@ function sendEmailNotification($email, $username, $date, $companions) {
                 </style></head><body>
                 <div class='email-container'>
                     <div class='header'>
-                        <h1>Tour Update Notification</h1>
+                        <h1>Tour Updated</h1>
                     </div>
                     <div class='content'>
                         <h2>Hi $username,</h2>
@@ -227,7 +227,7 @@ function sendCancellationEmail($email, $username, $cancelReason) {
                 </style></head><body>
                 <div class='email-container'>
                     <div class='header'>
-                        <h1>Tour Cancellation Notification</h1>
+                        <h1>Tour Cancelled</h1>
                     </div>
                     <div class='content'>
                         <h2>Hi $username,</h2>
