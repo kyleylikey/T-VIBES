@@ -4,6 +4,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require_once  __DIR__ .'/../config/dbconnect.php';
 require_once  __DIR__ .'/../models/Tour.php';
+require_once __DIR__.'/../models/Logs.php';
 require __DIR__ . '/../../vendor/autoload.php'; 
 
 date_default_timezone_set('Asia/Manila');
@@ -57,12 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
         if ($tourModel->cancelTour($tourId)) {
-            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES (:action, NOW(), :userid)";
-            $logStmt = $conn->prepare($logQuery);
-            $action = "Cancelled Tour ID $tourId";
-            $logStmt->bindParam(':action', $action);
-            $logStmt->bindParam(':userid', $userId, PDO::PARAM_INT);
-            $logStmt->execute();
+            $logs = new Logs();
+            $logs->logCancelTour($userId, $tourId);
     
             if ($user) {
                 sendCancellationEmail($user['email'], $user['username'], $cancelReason);

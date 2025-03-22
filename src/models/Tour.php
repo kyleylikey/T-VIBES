@@ -156,10 +156,8 @@ class Tour {
         $result = $stmt->execute();
     
         if ($result) {
-            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES ('Accepted Tour Request', NOW(), ?)";
-            $logStmt = $this->conn->prepare($logQuery);
-            $logStmt->bindParam(1, $empid);
-            $logStmt->execute();
+            $logs = new Logs();
+            $logs->logAcceptTourRequest($empid, $tourid);
         }
     
         return $result;
@@ -173,10 +171,8 @@ class Tour {
         $result = $stmt->execute();
 
         if ($result) {
-            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES ('Declined Tour Request', NOW(), ?)";
-            $logStmt = $this->conn->prepare($logQuery);
-            $logStmt->bindParam(1, $empid);
-            $logStmt->execute();
+            $logs = new Logs();
+            $logs->logDeclineTourRequest($empid, $tourid);
         }
 
         return $result;
@@ -218,12 +214,8 @@ class Tour {
         $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
         
         if ($stmt->execute()) {
-            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES (:action, NOW(), :userid)";
-            $logStmt = $this->conn->prepare($logQuery);
-            $action = "Edited Tour ID $tourId - Date Changed to $date, Companions: $companions";
-            $logStmt->bindParam(':action', $action);
-            $logStmt->bindParam(':userid', $userId, PDO::PARAM_INT);
-            $logStmt->execute();
+            $logs = new Logs();
+            $logs->logEditTour($userId, $tourId);
     
             return true;
         }
