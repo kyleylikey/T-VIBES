@@ -141,12 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!activeTour) return;
 
             var tourId = activeTour.getAttribute("data-tourid");
-<<<<<<< HEAD
             cancelTourIdField.value = tourId; 
-=======
-            cancelTourIdField.value = tourId;
-
->>>>>>> 84496e9cbdaa0e8c884e648f46cf165cb8e7ce98
 
             Swal.fire({
                 iconHtml: '<i class="fas fa-thumbs-up"></i>',
@@ -209,12 +204,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             return;
         }
-<<<<<<< HEAD
-
-=======
-    
-        // Show the spinner
->>>>>>> 84496e9cbdaa0e8c884e648f46cf165cb8e7ce98
         Swal.fire({
             title: 'Processing Request',
             html: 'Sending confirmation email... Do not close this window.',
@@ -228,20 +217,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 Swal.showLoading();
             }
         });
-<<<<<<< HEAD
 
         fetch("../../controllers/upcomingtourscontroller.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: `cancelTour=true&tourId=${encodeURIComponent(tourId)}&cancelReason=${encodeURIComponent(reason)}`
-=======
-    
-        // Send the cancellation request to the server
-        fetch("../../controllers/upcomingtourscontroller.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `cancelTour=true&tourId=${encodeURIComponent(tourId)}&userId=${encodeURIComponent(userId)}&cancelReason=${encodeURIComponent(reason)}`
->>>>>>> 84496e9cbdaa0e8c884e648f46cf165cb8e7ce98
         })
         .then(response => response.json())
         .then(data => {
