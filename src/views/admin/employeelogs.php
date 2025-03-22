@@ -763,30 +763,30 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
             <div class="col-lg-12 col-md-12 col-12 mb-3">
                 <div class="info-box">
                     <div class="table-responsive">
-                    <?php if (count($logs) > 0): ?>
-                        <table class="table" id="logTable">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Activity</th>
-                                    <th>Date</th>
-                                    <th>Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($logs as $log): ?>
+                        <?php if (count($logs) > 0): ?>
+                            <table class="table" id="logTable">
+                                <thead>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($log['name']); ?></td>
-                                        <td><?php echo htmlspecialchars($log['action']); ?></td>
-                                        <td><?php echo date('d M Y', strtotime($log['datetime'])); ?></td>
-                                        <td><?php echo date('H:i:s', strtotime($log['datetime'])); ?></td>
+                                        <th>Name</th>
+                                        <th>Activity</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
                                     </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php else: ?>
-                        <div class="no-logs text-center">No matching employee logs found.</div>
-                    <?php endif; ?>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($logs as $log): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($log['name']); ?></td>
+                                            <td><?php echo htmlspecialchars($log['action']); ?></td>
+                                            <td><?php echo date('d M Y', strtotime($log['datetime'])); ?></td>
+                                            <td><?php echo date('g:i A', strtotime($log['datetime'])); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <div class="no-logs text-center">No matching employee logs found.</div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

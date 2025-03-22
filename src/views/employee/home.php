@@ -632,7 +632,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                                         <?php foreach ($latestRequests as $request) : ?>
                                             <tr>
                                                 <td><?php echo $request['name']; ?></td>
-                                                <td><?php echo date('d M Y', strtotime($request['created_at'])); ?></td>
+                                                <td><?php echo date('d M Y | g:i A', strtotime($request['created_at'])); ?></td>
                                                 <td><?php echo $request['destinations']; ?></td>
                                                 <td><?php echo date('d M Y', strtotime($request['travel_date'])); ?></td>
                                                 <td><?php echo $request['companions']; ?></td>
