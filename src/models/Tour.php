@@ -210,14 +210,26 @@ class Tour {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateTour($tourId, $date, $companions) {
+    public function updateTour($tourId, $date, $companions, $userId) {
         $query = "UPDATE tour SET date = :date, companions = :companions WHERE tourid = :tourid";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':date', $date);
         $stmt->bindParam(':companions', $companions, PDO::PARAM_INT);
         $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
+        
+        if ($stmt->execute()) {
+            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES (:action, NOW(), :userid)";
+            $logStmt = $this->conn->prepare($logQuery);
+            $action = "Edited Tour ID $tourId - Date Changed to $date, Companions: $companions";
+            $logStmt->bindParam(':action', $action);
+            $logStmt->bindParam(':userid', $userId, PDO::PARAM_INT);
+            $logStmt->execute();
+    
+            return true;
+        }
+    
+        return false;
+    }    
 
     public function cancelTour($tourId) {
         $query = "UPDATE tour SET status = 'cancelled' WHERE tourid = :tourid";

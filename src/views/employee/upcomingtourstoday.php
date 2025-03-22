@@ -830,7 +830,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                         <div class="tour-info">
                             <div>
                                 <strong>Tour Date:</strong>
-                                <span><?php echo htmlspecialchars($firstTour['date']); ?></span>
+                                <span><?php echo date('d M Y', strtotime($firstTour['date'])); ?></span>
                             </div>
                             <div>
                                 <strong>Pax:</strong>
