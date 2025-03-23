@@ -1,10 +1,8 @@
 <?php
-// Sample data for demonstration
-$tours = [
-    ['created' => 'DD M YYYY', 'planned' => 'DD M YYYY', 'people' => 2, 'destinations' => ['Destination Name']],
-    ['created' => 'DD M YYYY', 'planned' => 'DD M YYYY', 'people' => 2, 'destinations' => ['Destination Name', 'Destination Name']],
-    ['created' => 'DD M YYYY', 'planned' => 'DD M YYYY', 'people' => 2, 'destinations' => ['Destination Name']],
-];
+session_start();
+
+require_once '../../../controllers/tourist/tourpendingcontroller.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -97,9 +95,6 @@ $tours = [
         .status-pending {
             color: #E74C3C;
             font-weight: bold;
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
         }
 
         .modal-body {
@@ -130,80 +125,111 @@ $tours = [
 <div class="container table-container">
     <div class="row table-header py-2">
         <div class="col-3">Date Created</div>
-        <div class="col-3">Planned Date/s</div>
+        <div class="col-3">Planned Date</div>
         <div class="col-2">Number of People</div>
         <div class="col-4">Destinations</div>
     </div>
 
-    <?php foreach ($tours as $index => $tour) : ?>
-        <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $index ?>">
-            <div class="col-3"><?= $tour['created'] ?></div>
-            <div class="col-3"><?= $tour['planned'] ?></div>
-            <div class="col-2"><?= $tour['people'] ?></div>
-            <div class="col-4">
-                <?php foreach ($tour['destinations'] as $destination) : ?>
-                    <div><?= $destination ?></div>
-                <?php endforeach; ?>
-            </div>
+    <?php foreach ($userPendingTour as $pending) : ?>
+        <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $pending['tourid'] ?>">
+            <div class="col-3"><?= date('M d, Y', strtotime($pending['created_at'])) ?></div>
+            <div class="col-3"><?= date('M d, Y', strtotime($pending['date'])) ?></div>
+            <div class="col-2"><?= $pending['companions'] ?></div>
+            <div class="col-4"><?= $pending['total_sites'] ?></div>
         </div>
-
+        
         <!-- Modal -->
-        <div class="modal fade" id="tourModal<?= $index ?>" tabindex="-1" aria-labelledby="modalLabel<?= $index ?>" aria-hidden="true">
+        <div class="modal fade" id="tourModal<?= $pending['tourid'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $pending['tourid'] ?>" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
+                    <!-- Modal header -->
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalLabel<?= $index ?>">Tour Details</h5>
+                        <h5 class="modal-title" id="modalLabel<?= $pending['tourid'] ?>">Tour Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    
+                    <!-- Modal body -->
                     <div class="modal-body">
                         <div class="row">
                             <!-- Left Section: Destination Cards -->
                             <div class="col-md-6">
-                                <?php foreach ($tour['destinations'] as $i => $destination) : ?>
+                                <?php 
+                                // Get sites for this specific tour
+                                $tourSites = $tourModel->getPendingTourSitesByUser($pending['tourid'], $_SESSION['userid']);
+                                foreach ($tourSites as $site) : 
+                                ?>
                                     <div class="destination-card">
                                         <div class="destination-image">
-                                            <i class="bi bi-image"></i>
+                                            <?php if (!empty($site['siteimage'])): ?>
+                                                <img src="../../../../public/uploads/<?= $site['siteimage'] ?>" alt="<?= $site['sitename'] ?>" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <?php else: ?>
+                                                <i class="bi bi-image"></i>
+                                            <?php endif; ?>
                                         </div>
-                                        <div class="destination-name"><?= $destination ?></div>
+                                        <div class="destination-name"><?= $site['sitename'] ?></div>
                                     </div>
                                 <?php endforeach; ?>
 
-                                <!-- Status at bottom-left -->
-                                <div class="status-pending">
-                                    Status: Pending
-                                </div>
+                                
                             </div>
 
                             <!-- Right Section: Summary -->
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <div class="summary-title">Date Created:</div>
-                                    <div class="summary-value"><?= $tour['created'] ?></div>
+                                    <div class="summary-value"><?= date('M d, Y', strtotime($pending['created_at'])) ?></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="summary-title">Planned Date:</div>
+                                    <div class="summary-value"><?= date('M d, Y', strtotime($pending['date'])) ?></div>
                                 </div>
                                 <div class="mb-3">
                                     <div class="summary-title">Number of People:</div>
-                                    <div class="summary-value"><?= $tour['people'] ?></div>
+                                    <div class="summary-value"><?= $pending['companions'] ?></div>
                                 </div>
                                 <div class="mb-3">
                                     <div class="summary-title">Estimated Fees:</div>
-                                    <?php foreach ($tour['destinations'] as $destination) : ?>
-                                        <div class="summary-value"><?= $destination ?> x2</div>
-                                    <?php endforeach; ?>
+                                    <?php 
+                                    $tourSitesAndFees = $tourModel->getPendingTourSitesByUser($pending['tourid'], $_SESSION['userid']);
+                                    $totalFees = 0;
+                                    foreach ($tourSitesAndFees as $site) : 
+                                        ?>
+                                    <div class="summary-value">
+                                        <div class="row">
+                                            <div class="col-8 summary-value"><?= $site['sitename'] ?></div>
+                                            <div class="col-4 summary-value">P<?= $site['price'] ?></div>
+                                        </div>
+                                    </div>
+                                    <?php $totalFees += $site['price']; endforeach; ?>
+                                    <div class="summary-value">
+                                        <div class="row">
+                                            <div class="col-8"></div>
+                                            <div class="col-4 fw-bold">P<?= $totalFees ?></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="mt-3">
-                                    <div class="summary-title">Total:</div>
-                                    <div class="summary-value">₱ 0.00</div>
+                                <div class="mb-3">
+                                    <div class="summary-title">Total Fees:</div>
+                                    <div class="row">
+                                        <div class="col-8 summary-value"><?= $pending['companions'] ?> x P<?= $totalFees ?></div>
+                                        <div class="col-4 fs-5 fw-bolder"> = P<?= $pending['companions'] * $totalFees ?>*</div>
+                                    </div>
                                 </div>
                             </div>
+                            
                         </div>
+                    </div>
+                    <!-- Status at bottom-left -->
+                    <div class="modal-footer status-pending">
+                        Status: Pending
+                        <div class="summary-value fw-light fst-italic">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
                     </div>
                 </div>
             </div>
         </div>
     <?php endforeach; ?>
-
     <div class="text-center mt-4">
-        <button class="load-more-btn">Load More</button>
+        Need modifications with your tour? <a href="../contactus.php" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Contact Us</a>
     </div>
 </div>
 

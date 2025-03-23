@@ -210,7 +210,7 @@ require_once '../../../controllers/tourist/tourrequestcontroller.php';
                     <div class="destination-actions">
                         <span class="destination-price">₱ <?php echo $request['price'];?></span>
                         <button class="delete-btn" onclick="deleteDestination(this)">
-                            <i class="bi bi-trash"></i>
+                            <i class="text-white bi bi-trash-fill"></i>
                         </button>
                     </div>
                 </div>

@@ -140,6 +140,79 @@ class Tour {
         return $stmt;
     }
 
+    public function getPendingTourByUser($userid) {
+        $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid 
+                  WHERE t.userid = ? AND t.status = 'submitted' 
+                  GROUP BY tourid, userid 
+                  ORDER BY t.created_at DESC";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getPendingTourSitesByUser($tourid, $userid) {
+        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.tourid = ? and t.userid = ? and t.status = 'submitted'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $tourid);
+        $stmt->bindParam(2, $userid);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    public function getApprovedTourByUser($userid) {
+        $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid 
+                  WHERE t.userid = ? AND t.status = 'accepted' AND t.date >= CURDATE() 
+                  GROUP BY tourid, userid 
+                  ORDER BY t.created_at DESC";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getApprovedTourSitesByUser($tourid, $userid) {
+        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.date >= CURDATE() and t.tourid = ? and t.userid = ? and t.status = 'accepted'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $tourid);
+        $stmt->bindParam(2, $userid);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    public function getTourHistoryByUser($userid) {
+        $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid 
+                  WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CURDATE() 
+                  GROUP BY tourid, userid 
+                  ORDER BY t.created_at DESC";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getTourHistorySitesByUser($tourid, $userid) {
+        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.date < CURDATE() and t.tourid = ? and t.userid = ? and t.status = 'accepted'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $tourid);
+        $stmt->bindParam(2, $userid);
+        $stmt->execute();
+        return $stmt;
+    }
+
+
     public function getTourRequestSites($tourid) {
         $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.tourid = ?";
         $stmt = $this->conn->prepare($query);
