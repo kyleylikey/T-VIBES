@@ -627,6 +627,16 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
     var sites = <?php echo json_encode($sites); ?>;
     var visitors = <?php echo json_encode($visitors); ?>;
 
+    // Combine sites and visitors into an array of objects for sorting
+    var siteData = sites.map((site, index) => ({ site, visitors: visitors[index] }));
+
+    // Sort data from highest to lowest visitors
+    siteData.sort((a, b) => b.visitors - a.visitors);
+
+    // Extract sorted labels and data
+    var sortedSites = siteData.map(item => item.site);
+    var sortedVisitors = siteData.map(item => item.visitors);
+
     function generateColors(count) {
         var colors = [];
         for (var i = 0; i < count; i++) {
@@ -638,16 +648,16 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
         return colors;
     }
 
-    var backgroundColors = generateColors(sites.length);
+    var backgroundColors = generateColors(sortedSites.length);
 
     var topTouristSitesChart = new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: sites,
+            labels: sortedSites,
             datasets: [
                 {
                     label: 'Visitors',
-                    data: visitors,
+                    data: sortedVisitors,
                     backgroundColor: backgroundColors,
                     borderColor: '#FFFFFF',
                     borderWidth: 1

@@ -66,7 +66,7 @@ error_reporting(E_ALL);
                 <label for="privacyPolicy">Privacy Policy & Terms of Service</label>
             </div>
 
-            <button type="submit">Create Account</button>
+            <button type="submit" id="submitBtn">Create Account</button>
             <p class="login-redirect">Already have an account? <a href="login.php">Login</a></p>
         </form>
     </div>
@@ -77,58 +77,48 @@ error_reporting(E_ALL);
     </div>
 
     <script>
-        document.getElementById('signupForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(this);
+        const submitButton = document.getElementById('submitBtn');
+        submitButton.disabled = true;
+        submitButton.textContent = "Loading...";
 
-            const formData = new FormData(this);
+        fetch('../../controllers/signupcontroller.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire({
+                iconHtml: data.status === 'success' ? '<i class="fas fa-envelope"></i>' : '<i class="fas fa-exclamation-circle"></i>',
+                html: `<p style="font-size: 24px; font-weight: bold;">${data.message}</p>`,
+                showConfirmButton: false,
+                timer: 3000
+            });
 
-            fetch('../../controllers/signupcontroller.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-envelope" style="color: #EC6350 !important;"></i>',
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        },
-                        title: data.message,
-                        showConfirmButton: false, 
-                        timer: 3000
-                    });
-                } else {
-                    Swal.fire({
-                        iconHtml: '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>', 
-                        customClass: {
-                            title: "swal2-title-custom",
-                            icon: "swal2-icon-custom",
-                            popup: "swal-custom-popup"
-                        },
-                        title: data.message,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    iconHtml: '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>', 
-                    customClass: {
-                        title: "swal2-title-custom",
-                        icon: "swal2-icon-custom",
-                        popup: "swal-custom-popup"
-                    },
-                    title: 'Something went wrong. Please try again later.',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
+            if (data.status === 'success') {
+                submitButton.textContent = "Email Sent!";
+            } else {
+                submitButton.disabled = false;
+                submitButton.textContent = "Create Account";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                html: '<p style="font-size: 24px; font-weight: bold;">Something went wrong. Please try again later.</p>',
+                showConfirmButton: false,
+                timer: 3000
+            }).then(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = "Create Account";
             });
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>

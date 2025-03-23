@@ -1,13 +1,13 @@
 <?php
 
-// Include your Database configuration
+
 require_once __DIR__ . '/../../config/dbconnect.php';
 
-// Create a database connection instance using PDO
-$db   = new Database();
-$conn = $db->getConnection();  // This should return a PDO connection
 
-// Set the current year (you can change this to a range if needed)
+$db   = new Database();
+$conn = $db->getConnection(); 
+
+// Set the current year
 $currentYear = date('Y');
 
 // Query to get top tourist sites
