@@ -83,6 +83,49 @@ class Tour {
         return $stmt;
     }
 
+    public function getTourRequestByUser($userid) {
+        $query = "SELECT t.*, u.name, u.email, s.sitename, s.price, s.siteimage, s.opdays 
+                FROM " . $this->table . " t 
+                JOIN Users u ON t.userid = u.userid
+                JOIN sites s ON t.siteid = s.siteid
+                WHERE t.userid = ? AND t.status = 'request'";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getTourRequestAvailability($userid) {
+       $query = "SELECT 
+            t.*, 
+            u.name, 
+            u.email, 
+            s.sitename, 
+            s.price, 
+            s.siteimage, 
+            s.opdays,
+            BIN(BIT_AND(s.opdays) & 127) AS all_opdays_and_binary
+        FROM 
+            tour t 
+        JOIN 
+            Users u ON t.userid = u.userid
+        JOIN 
+            sites s ON t.siteid = s.siteid
+        WHERE 
+            t.userid = ?
+            AND t.status = 'request'
+        GROUP BY
+            t.userid;";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
     public function getUpcomingTour($tourid, $userid) {
         $query = "SELECT t.*, u.name, u.email, u.username 
                   FROM " . $this->table . " t 
@@ -96,6 +139,79 @@ class Tour {
         
         return $stmt;
     }
+
+    public function getPendingTourByUser($userid) {
+        $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid 
+                  WHERE t.userid = ? AND t.status = 'submitted' 
+                  GROUP BY tourid, userid 
+                  ORDER BY t.created_at DESC";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getPendingTourSitesByUser($tourid, $userid) {
+        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.tourid = ? and t.userid = ? and t.status = 'submitted'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $tourid);
+        $stmt->bindParam(2, $userid);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    public function getApprovedTourByUser($userid) {
+        $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid 
+                  WHERE t.userid = ? AND t.status = 'accepted' AND t.date >= CURDATE() 
+                  GROUP BY tourid, userid 
+                  ORDER BY t.created_at DESC";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getApprovedTourSitesByUser($tourid, $userid) {
+        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.date >= CURDATE() and t.tourid = ? and t.userid = ? and t.status = 'accepted'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $tourid);
+        $stmt->bindParam(2, $userid);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    public function getTourHistoryByUser($userid) {
+        $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
+                  FROM " . $this->table . " t 
+                  JOIN Users u ON t.userid = u.userid 
+                  WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CURDATE() 
+                  GROUP BY tourid, userid 
+                  ORDER BY t.created_at DESC";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $userid);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+
+    public function getTourHistorySitesByUser($tourid, $userid) {
+        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.date < CURDATE() and t.tourid = ? and t.userid = ? and t.status = 'accepted'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $tourid);
+        $stmt->bindParam(2, $userid);
+        $stmt->execute();
+        return $stmt;
+    }
+
 
     public function getTourRequestSites($tourid) {
         $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.tourid = ?";
@@ -113,10 +229,8 @@ class Tour {
         $result = $stmt->execute();
     
         if ($result) {
-            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES ('Accepted Tour Request', NOW(), ?)";
-            $logStmt = $this->conn->prepare($logQuery);
-            $logStmt->bindParam(1, $empid);
-            $logStmt->execute();
+            $logs = new Logs();
+            $logs->logAcceptTourRequest($empid, $tourid);
         }
     
         return $result;
@@ -130,10 +244,8 @@ class Tour {
         $result = $stmt->execute();
 
         if ($result) {
-            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES ('Declined Tour Request', NOW(), ?)";
-            $logStmt = $this->conn->prepare($logQuery);
-            $logStmt->bindParam(1, $empid);
-            $logStmt->execute();
+            $logs = new Logs();
+            $logs->logDeclineTourRequest($empid, $tourid);
         }
 
         return $result;
@@ -175,12 +287,8 @@ class Tour {
         $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
         
         if ($stmt->execute()) {
-            $logQuery = "INSERT INTO logs (action, datetime, userid) VALUES (:action, NOW(), :userid)";
-            $logStmt = $this->conn->prepare($logQuery);
-            $action = "Edited Tour ID $tourId - Date Changed to $date, Companions: $companions";
-            $logStmt->bindParam(':action', $action);
-            $logStmt->bindParam(':userid', $userId, PDO::PARAM_INT);
-            $logStmt->execute();
+            $logs = new Logs();
+            $logs->logEditTour($userId, $tourId);
     
             return true;
         }

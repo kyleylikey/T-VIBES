@@ -19,7 +19,7 @@
     text-decoration: none;
     border: 2px solid #102E47;
     color: #102E47;
-    font-weight: 500;
+    font-weight: 900;
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -29,14 +29,13 @@
     color: white;
 }
 
-/* Style for H1 */
-.toursnav h1 {
+.toursnav h2 {
     color: #102E47;
-    font-weight: 700; /* Bold */
+    font-weight: bold !important;
     margin: 0;
+    font-family: 'Raleway', sans-serif !important;
 }
 
-/* Collapsible menu */
 .toursnav .menu-toggle {
     display: none;
     cursor: pointer;
@@ -67,9 +66,8 @@
 </style>
 
 <div class="toursnav">
-    <span><h1>Tours</h1></span>
+    <span><h2>Tours</h2></span>
 
-    <!-- Menu Toggle Icon -->
     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
     
     <nav id="navLinks">
@@ -86,7 +84,6 @@ function toggleMenu() {
     nav.classList.toggle('open');
 }
 
-/* Close menu when clicking outside */
 document.addEventListener('click', function(event) {
     const nav = document.getElementById('navLinks');
     const menuToggle = document.querySelector('.menu-toggle');

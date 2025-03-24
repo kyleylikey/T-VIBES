@@ -4,33 +4,49 @@ require_once '../config/dbconnect.php';
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
     
+    // Log to PHP error log
+    error_log("Verification attempt with token: " . substr($token, 0, 5) . "...");
+    
     $database = new Database();
     $conn = $database->getConnection();
 
-    $query = "SELECT * FROM users WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > NOW()";
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':token', $token);
-    $stmt->execute();
+    try {
+        $query = "SELECT * FROM users WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > NOW()";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
 
-    $success = false; 
-    $message = '';
-    $iconHtml = '<i class=\"fas fa-exclamation-circle\"></i>';
+        $success = false; 
+        $message = '';
+        $iconHtml = '<i class=\"fas fa-exclamation-circle\"></i>';
+        $debugInfo = '';
 
-    if ($stmt->rowCount() > 0) {
-        $updateQuery = "UPDATE users SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = :token";
-        $updateStmt = $conn->prepare($updateQuery);
-        $updateStmt->bindParam(':token', $token);
+        if ($stmt->rowCount() > 0) {
+            $updateQuery = "UPDATE users SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = :token";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bindParam(':token', $token);
 
-        if ($updateStmt->execute()) {
-            $success = true;
-            $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
-            $message = 'Your email has been successfully verified!';
+            if ($updateStmt->execute()) {
+                $success = true;
+                $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
+                $message = 'Your email has been successfully verified!';
+                $debugInfo = 'User account activated successfully';
+            } else {
+                $message = 'Failed to verify your email. Please try again later.';
+                $debugInfo = 'Database update failed: ' . implode(', ', $updateStmt->errorInfo());
+            }
         } else {
-            $message = 'Failed to verify your email. Please try again later.';
+            $message = 'Your email is already verified, the link is invalid, or it has expired.';
+            $debugInfo = 'No matching token found or token expired';
         }
-    } else {
-        $message = 'Your email is already verified, the link is invalid, or it has expired.';
+    } catch (PDOException $e) {
+        $message = 'An error occurred during verification.';
+        $debugInfo = 'Database error: ' . $e->getMessage();
     }
+
+    // Escape quotes for JavaScript
+    $message = str_replace("'", "\\'", $message);
+    $debugInfo = str_replace("'", "\\'", $debugInfo);
 
     echo "<!DOCTYPE html>
     <html>
@@ -71,19 +87,33 @@ if (isset($_GET['token'])) {
     <script src='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js'></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    iconHtml: '$iconHtml', 
-                    customClass: {
-                        title: 'swal2-title-custom',
-                        icon: 'swal2-icon-custom',
-                        popup: 'swal-custom-popup'
-                    },
-                    title: '$message',
-                    showConfirmButton: false, 
-                    timer: 3000
-                }).then(() => {
-                    window.location.href = '../views/frontend/login.php'; 
-                });
+                // Debug information in console
+                console.log('Verification page loaded');
+                console.log('Success:', " . ($success ? 'true' : 'false') . ");
+                console.log('Message:', '$message');
+                console.log('Debug info:', '$debugInfo');
+                
+                // Try-catch to catch and log any errors during SweetAlert execution
+                try {
+                    Swal.fire({
+                        iconHtml: '$iconHtml', 
+                        customClass: {
+                            title: 'swal2-title-custom',
+                            icon: 'swal2-icon-custom',
+                            popup: 'swal-custom-popup'
+                        },
+                        title: '$message',
+                        showConfirmButton: false, 
+                        timer: 3000
+                    }).then(() => {
+                        console.log('Redirecting to login page...');
+                        window.location.href = '../views/frontend/login.php'; 
+                    }).catch(error => {
+                        console.error('SweetAlert error:', error);
+                    });
+                } catch (error) {
+                    console.error('Error in verification process:', error);
+                }
             });
         </script>
     </body>

@@ -9,10 +9,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
     }
 
     body {
-        font-family: Arial, sans-serif !important;
+        font-family: 'Nunito', sans-serif !important;
         line-height: 1.6;
-        color: #333;
-        background-color: #f5f5f5; /* Light gray background */
+        color: #434343 !important;
     }
    
     .logoforsmall {
@@ -22,9 +21,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
     .logo {
         margin: 8px;
     }
+
     .object-fit-cover {
         object-fit: cover;
     }
+    
     .navbar ul {
         list-style: none;
         padding: 0;
@@ -32,15 +33,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
     }
 
     header div{
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 10px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 10px; 
     }
 
     header a {
         text-decoration: none; 
-        font-size: 20px; 
+        font-size: 20px !important; 
+        font-weight: bold !important;
+        color: #757575 !important;
+    }
+
+    header a:hover {
+        color: #434343 !important;
     }
 
     header .btn {
@@ -69,7 +76,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         }
     }
 
-    /* Icon Styling */
     .nav-icons {
         display: flex;
         align-items: center;
@@ -78,13 +84,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     .nav-icons i {
         font-size: 1.8rem;
-        color: #729AB8; /* Updated color */
+        color: #729AB8; 
         transition: color 0.2s ease;
         cursor: pointer;
     }
 
     .nav-icons i:hover {
-        color: #5f88a3; /* Slightly darker shade on hover */
+        color: #5f88a3; 
     }
 </style>
 
@@ -118,13 +124,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     </li>
                 </ul>
 
-                <!-- Right side icons -->
                 <div class="nav-icons">
-                    <!-- Map Icon -->
                     <a href="/T-VIBES/src/views/frontend/tours/tourrequest.php">
                         <i class="bi bi-map-fill"></i>
                     </a>
-                    <!-- Profile Icon -->
+        
                     <a href="/T-VIBES/src/views/frontend/tours/account.php">
                         <i class="bi bi-person-circle"></i>
                     </a>

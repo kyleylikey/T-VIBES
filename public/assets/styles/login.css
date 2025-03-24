@@ -11,7 +11,6 @@ body {
     background-repeat: no-repeat;
 }
 
-/* Dim Background with Gradient */
 .taalbgpic::before {
     content: "";
     position: absolute;
@@ -23,7 +22,6 @@ body {
     z-index: -1;
 }
 
-/* Login Page Specific Styles */
 .login-container {
     position: relative;
     background-color: #ffffffd1;
@@ -105,7 +103,7 @@ input[type="text"], input[type="password"] {
 /* Sign-Up Page Specific Styles */
 .signup-container {
     position: relative;
-    background-color: #ffffffd1;
+    background-color: #E7EBEE;
     padding: 30px 50px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

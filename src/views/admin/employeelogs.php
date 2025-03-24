@@ -293,6 +293,23 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
             color: #FFFFFF !important;
         }
 
+        .pagination .page-item .page-link {
+            color: #434343;
+            border-color: #102E47;
+            background-color: #FFFFFF;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #102E47;
+            color: #FFFFFF;
+            border-color: #102E47;
+        }
+
+        .pagination .page-item .page-link:hover {
+            background-color: #102E47;
+            color: #FFFFFF;
+        }
+
         @media (max-width: 1280px) {
             .search-wrapper {
                 position: relative;
@@ -792,7 +809,6 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
             </div>
         </div>
 
-        <!-- Pagination Links -->
         <div class="row mt-3">
             <div class="col-12 d-flex justify-content-center">
                 <nav>

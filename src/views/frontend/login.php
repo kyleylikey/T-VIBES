@@ -39,6 +39,38 @@
 
         .large-text-overlay-login h1 {
             color: #FFFFFF !important;
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        .btn-custom {
+            font-weight: bold !important;
+            border: 2px solid #102E47 !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .btn-custom:hover {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
+        .login-container h1 {
+            font-family: 'Raleway', sans-serif !important;
+            color: #102E47 !important;
+            font-weight: bold !important;
+        }
+
+        .login-container p {
+            color: #434343 !important;
+        }
+
+        .forgot-password {
+            color: #102E47;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -50,8 +82,8 @@
             <input type="text" id="username" name="username" placeholder="Username" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
             <a href="resetpwemail.php" class="forgot-password">Forgot Password?</a>
-            <button type="submit" style="font-weight: bold;">Login</button>
-            <p style="margin-top: 20%; color: #333333; font-size: 14px;">Don't have an account? <a href="signup.php" style="color: #3a4989; text-decoration: none; font-weight: bold; font-size: 14px;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">Sign Up</a></p>
+            <button type="submit" style="font-weight: bold;" class="btn-custom">Login</button>
+            <p style="margin-top: 20%; color: #434343; font-size: 14px;">Don't have an account? <a href="signup.php" style="text-decoration: none; font-weight: bold; font-size: 14px; color: #102E47;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">Sign Up</a></p>
         </form>
     </div>
 

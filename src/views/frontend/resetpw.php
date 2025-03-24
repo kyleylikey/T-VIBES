@@ -16,8 +16,91 @@ unset($_SESSION['valid_reset']);
     <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css' rel='stylesheet'>
     <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css' rel='stylesheet'>
     <link rel='stylesheet' href='../../public/assets/styles/resetpw.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .card-body h1 {
+            font-family: 'Raleway', sans-serif !important;
+            font-weight: bold;
+            color: #102E47;
+            font-size: 35px;
+        }
+
+        .text-muted {
+            color: #434343;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .card {
+            border-radius: 25px;
+            transition: opacity 1s ease-in-out !important;
+        }
+
+        .btn-custom {
+            font-weight: bold !important;
+            border: 2px solid #102E47 !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            font-family: 'Nunito', sans-serif !important;
+            margin-top: 50px;
+        }
+
+        .btn-custom:hover {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
+        .taalbgpic {
+            background-image: url('../../../public/assets/images/taalvolcano.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .taalbgpic::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+            z-index: -1;
+        }
+
+        .swal2-icon {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .swal2-icon-custom {
+            font-size: 10px; 
+            color: #EC6350; 
+        }
+
+        .swal2-title-custom {
+            font-size: 24px !important;
+            font-weight: bold;
+            color: #434343 !important;
+        }
+
+        .swal-custom-popup {
+            padding: 20px;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
+        }
+    </style>
 </head>
-<body class='d-flex align-items-center justify-content-center vh-100'>
+<body class='d-flex align-items-center justify-content-center vh-100 taalbgpic'>
     <div class='position-absolute top-0 start-0 m-3'>
         <a href='../views/frontend/login.php' class='btn btn-secondary d-flex align-items-center rounded-circle p-2' style='width: 40px; height: 40px; justify-content: center;'>
             <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-arrow-left' viewBox='0 0 16 16'>
@@ -40,7 +123,7 @@ unset($_SESSION['valid_reset']);
                 <div class='mb-3'>
                     <input type='password' id='retypeNewPassword' name='retypeNewPassword' class='form-control rounded-pill' placeholder='Re-type New Password' required>
                 </div>
-                <button type='submit' class='btn btn-submit w-auto px-4 py-2 rounded-pill d-block mx-auto'>Submit</button>
+                <button type='submit' class='btn btn-custom w-auto px-4 py-2 rounded-pill d-block mx-auto'>Submit</button>
             </form>
         </div>
     </div>
@@ -104,7 +187,6 @@ unset($_SESSION['valid_reset']);
             submitButton.disabled = !isValid;
         }
 
-        // Event listeners for real-time validation
         passwordInput.addEventListener('input', validatePassword);
         confirmPasswordInput.addEventListener('input', validatePassword);
     });
