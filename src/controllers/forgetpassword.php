@@ -23,7 +23,6 @@ class ForgotPasswordController {
     }
 
     public function sendResetLink($email) {
-        // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             echo json_encode([
                 'status' => 'error',
@@ -32,7 +31,6 @@ class ForgotPasswordController {
             exit();
         }
 
-        // Check if email exists and is verified
         $query = "SELECT * FROM users WHERE email = :email AND emailveriftoken IS NULL";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
@@ -47,9 +45,8 @@ class ForgotPasswordController {
         }
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        $token = bin2hex(random_bytes(32)); // Secure token
+        $token = bin2hex(random_bytes(32)); 
 
-        // Store token with expiration (1 hour)
         $query = "UPDATE users SET emailveriftoken = :token, token_expiry = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':token', $token);
@@ -83,15 +80,89 @@ class ForgotPasswordController {
             $mail->isHTML(true);
             $mail->Subject = 'Password Reset Request';
             $mail->Body = "
-                <html>
+                <!DOCTYPE html>
+                <html lang='en'>
                 <head>
-                    <title>Reset Your Password</title>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <title>Reset Your Password - Taal Tourism</title>
+                    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
+                    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
+                    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
                     <style>
-                        body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
-                        .email-container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-                        .header { background-color: #3a4989; color: #ffffff; text-align: center; padding: 20px; }
-                        .button { display: block; width: fit-content; margin: 20px auto; padding: 10px 20px; background-color: #3a4989; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px; text-align: center; font-weight: bold; }
-                        .button:hover { background-color: #2f3c6d; }
+                        body {
+                            background-color: #FFFFFF;
+                            margin: 0;
+                            padding: 0;
+                            font-family: 'Helvetica', Arial, sans-serif !important;
+                        }
+
+                        .email-container {
+                            max-width: 600px;
+                            margin: 20px auto;
+                            background-color: #FFFFFF;
+                            border-radius: 10px;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            overflow: hidden;
+                        }
+
+                        .header {
+                            background-color: #EC6350;
+                            color: #FFFFFF;
+                            text-align: center;
+                            padding: 20px;
+                            font-family: 'Helvetica', Arial, sans-serif !important;
+                        }
+
+                        .header h1 {
+                            margin: 0;
+                        }
+
+                        .content {
+                            padding: 20px;
+                            color: #434343;
+                            text-align: justify;
+                            font-family: 'Helvetica', Arial, sans-serif !important;
+                        }
+
+                        .content h2 {
+                            color: #102E47;
+                            text-align: center;
+                        }
+
+                        .button {
+                            display: block;
+                            width: fit-content;
+                            margin: 20px auto;
+                            padding: 10px 20px;
+                            border: 2px solid #102E47;
+                            background-color: #FFFFFF;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            font-size: 16px;
+                            text-align: center;
+                            font-weight: bold;
+                            border-radius: 25px;
+                            color: #434343 !important;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        }
+
+                        .button:hover {
+                            background-color: #102E47;
+                            color: #FFFFFF !important;
+                            border: 2px solid #102E47;
+                            font-weight: bold;
+                        }
+
+                        .footer {
+                            background-color: #E7EBEE;
+                            text-align: center;
+                            padding: 10px;
+                            font-size: 12px;
+                            color: #434343;
+                            font-family: 'Helvetica', Arial, sans-serif !important;
+                        }
                     </style>
                 </head>
                 <body>
@@ -104,6 +175,9 @@ class ForgotPasswordController {
                             <p>Please click the button below to reset your password.</p>
                             <a href='$resetLink' class='button'>Reset Password</a>
                             <p>If you did not request this, please ignore this email.</p>
+                        </div>
+                        <div class='footer'>
+                            <p>&copy; " . date("Y") . " Taal Tourism. All rights reserved.</p>
                         </div>
                     </div>
                 </body>

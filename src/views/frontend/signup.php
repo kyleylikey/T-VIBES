@@ -45,6 +45,41 @@ error_reporting(E_ALL);
 
         .large-text-overlay-signup h1 {
             color: #FFFFFF !important;
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        .btn-custom {
+            font-weight: bold !important;
+            border: 2px solid #102E47 !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .btn-custom:hover {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
+        .font-link {
+            color: #102E47 !important;
+        }
+
+        .signup-container h1 {
+            font-family: 'Raleway', sans-serif !important;
+            color: #102E47 !important;
+            font-weight: bold !important;
+        }
+
+        .signup-container p {
+            color: #434343 !important;
+        }
+
+        .checkbox-container {
+            color: #434343 !important;
         }
     </style>
 </head>
@@ -66,8 +101,8 @@ error_reporting(E_ALL);
                 <label for="privacyPolicy">Privacy Policy & Terms of Service</label>
             </div>
 
-            <button type="submit">Create Account</button>
-            <p class="login-redirect">Already have an account? <a href="login.php">Login</a></p>
+            <button type="submit" class="btn-custom">Create Account</button>
+            <p class="login-redirect">Already have an account? <a href="login.php" class="font-link">Login</a></p>
         </form>
     </div>
 
