@@ -2,8 +2,79 @@
 include '../../../../includes/auth.php';
 require_once '../../../config/dbconnect.php';
 
+
 $database = new Database();
 $db = $database->getConnection();
+
+// Get individual site opdays instead of calculating the binary value in SQL
+$sitesOpDays = [];
+
+if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empty($_SESSION['tour_destinations'])) {
+    // Extract site IDs from session
+    $siteIds = array_map(function($destination) {
+        return $destination['siteid'];
+    }, $_SESSION['tour_destinations']);
+    
+    if (!empty($siteIds)) {
+        // Create placeholders for the IN clause
+        $placeholders = implode(',', array_fill(0, count($siteIds), '?'));
+        
+        // Prepare the query to get individual site opdays
+        $sitesQuery = "SELECT siteid, opdays FROM sites WHERE siteid IN ($placeholders)";
+        $sitesStmt = $db->prepare($sitesQuery);
+        
+        // Bind all site IDs as parameters
+        foreach ($siteIds as $index => $siteId) {
+            $sitesStmt->bindParam($index + 1, $siteIds[$index]);
+        }
+        
+        $sitesStmt->execute();
+        $sitesOpDays = $sitesStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+
+// Set a default empty value for all_opdays_and_binary - it will be calculated in JS
+$getDate = ['all_opdays_and_binary' => '0000000'];
+
+if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empty($_SESSION['tour_destinations'])) {
+    // Extract site IDs from session
+    $siteIds = array_map(function($destination) {
+        return $destination['siteid'];
+    }, $_SESSION['tour_destinations']);
+    
+    if (!empty($siteIds)) {
+        // Create placeholders for the IN clause
+        $placeholders = implode(',', array_fill(0, count($siteIds), '?'));
+        
+        // Prepare the query to get common available days
+        $availabilityQuery = "SELECT 
+            BIN(BIT_AND(s.opdays) & 127) AS all_opdays_and_binary
+        FROM 
+            sites s
+        WHERE 
+            s.siteid IN ($placeholders)";
+        
+        $availabilityStmt = $db->prepare($availabilityQuery);
+        
+        // Bind all site IDs as parameters
+        foreach ($siteIds as $index => $siteId) {
+            $availabilityStmt->bindParam($index + 1, $siteIds[$index]);
+        }
+        
+        $availabilityStmt->execute();
+        $getDate = $availabilityStmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Default to '0000000' if no results or if BIT_AND returns null
+        if (!$getDate || $getDate['all_opdays_and_binary'] === null) {
+            $getDate = ['all_opdays_and_binary' => '0000000'];
+        }
+    } else {
+        $getDate = ['all_opdays_and_binary' => '0000000'];
+    }
+} else {
+    $getDate = ['all_opdays_and_binary' => '0000000'];
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['userid']) && !isset($_SESSION['tour_destinations'])) {
     $userid = $_SESSION['userid'];
@@ -247,24 +318,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    
     if (isset($_POST['action']) && $_POST['action'] === "get_availability") {
         $datesAvailability = [];
         $currentYear = date("Y");
         $currentMonth = date("m");
-    
+
         if (!empty($_POST['sites'])) {
-            $siteIds = $_POST['sites'];
+            // Decode the JSON string into an array
+            $siteIds = json_decode($_POST['sites'], true);
+            
+            // Ensure we have an array to work with
+            if (!is_array($siteIds)) {
+                $siteIds = [$siteIds];
+            }
+            
             $siteIdPlaceholders = implode(',', array_fill(0, count($siteIds), '?'));
-    
+
             $stmt = $db->prepare("SELECT date, COUNT(*) as bookings FROM tour WHERE siteid IN ($siteIdPlaceholders) AND YEAR(date) = ? AND MONTH(date) = ? GROUP BY date");
             $params = array_merge($siteIds, [$currentYear, $currentMonth]);
             $stmt->execute($params);
             $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
             foreach ($bookings as $booking) {
                 $bookedDate = $booking['date'];
                 $bookingCount = (int) $booking['bookings'];
-    
+
                 if ($bookingCount >= 10) {
                     $datesAvailability[$bookedDate] = 'unavailable';
                 } else {
@@ -272,11 +351,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
-    
+
         echo json_encode(['success' => true, 'availability' => $datesAvailability]);
         exit();
     }
-
     if (isset($_POST['people_count'])) {
         $_SESSION['tour_people_count'] = (int)$_POST['people_count'];
         echo json_encode(['success' => true]);
@@ -838,7 +916,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
     <div class="tour-container">
         <?php if (!empty($_SESSION['tour_destinations'])): ?>
             <?php foreach ($_SESSION['tour_destinations'] as $index => $site): ?>
-                <div class="destination-wrapper" data-index="<?php echo $index + 1; ?>" data-price="<?php echo $site['price']; ?>">
+                <div class="destination-wrapper" data-index="<?php echo $index + 1; ?>" data-siteid="<?php echo $site['siteid']; ?>" data-price="<?php echo $site['price']; ?>">
                     <div class="destination-number"><?php echo $index + 1; ?></div>
                     <div class="destination-item">
                         <img src="../../../../public/uploads/<?php echo htmlspecialchars($site['siteimage']); ?>" alt="Destination Image" class="destination-image">
@@ -847,6 +925,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
                         </div>
                         <div class="destination-actions">
                             <span class="destination-price">₱ <?php echo number_format($site['price'], 2); ?></span>
+                            <!-- Update this line in the HTML section where destination buttons are created -->
                             <button class="delete-btn" onclick="confirmRemoveDestination(<?php echo $site['siteid']; ?>)">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -863,11 +942,13 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
             <input type="number" id="counter-input" value="1" min="1" max="255" style="width: 40px; text-align: center;">
             <button class="counter-btn" id="plus-btn">+</button>
 
-            <input type="date" class="form-control" id="tour-date" data-availabledate="1010101" style="display: none;">
-            
+            <input type="date" class="form-control" id="tour-date" 
+                data-availabledate="<?php echo isset($getDate['all_opdays_and_binary']) ? 
+                                    htmlspecialchars($getDate['all_opdays_and_binary']) : '0000000'; ?>" 
+                style="display: none;">            
             <div class="actions text-center mt-3">
                 <button id="addMoreDestinations" class="btn btn-action mb-3">Add More Destinations</button>
-                <button id="check-btn" class="btn btn-action mb-3" onclick="showModal()">Check Availability</button>
+                <button id="check-btn" class="btn btn-action mb-3" onclick="verifyAvailableDate()">Check Availability</button>
             </div>
         </div>
     </div>
@@ -919,9 +1000,8 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
                 </div>
 
                 <div class="weekdays">
-                    <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
                 </div>
-
                 <div class="days" id="calendar-days"></div>
 
                 <div class="legend">
@@ -940,6 +1020,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script>  
 document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.getElementById('tour-date');
     const minusBtn = document.getElementById("minus-btn");
     const plusBtn = document.getElementById("plus-btn");
     const counterInput = document.getElementById("counter-input");
@@ -1095,7 +1176,6 @@ function switchToEditMode() {
     originalPeopleCount = document.getElementById("counter-input").value;
     
     window.originalSelectedSites = getSelectedSites();
-    console.log("Original sites stored:", window.originalSelectedSites);
     
     document.getElementById("tour-date").value = "";
     isEditMode = true;
@@ -1212,9 +1292,6 @@ function saveChanges() {
     }
     
     let destinationsUnchanged = true;
-
-    console.log("Current sites:", currentSelectedSites);
-    console.log("Original sites:", window.originalSelectedSites || originalSelectedSites);
 
     const origSites = window.originalSelectedSites || originalSelectedSites;
 
@@ -1370,12 +1447,23 @@ function confirmRemoveDestination(siteid) {
 }
 
 function removeDestination(siteid) {
-    const destinationElement = document.querySelector(`.destination-wrapper[data-index="${siteid}"]`);
+    // Find the destination element by siteid
+    const destinationElement = document.querySelector(`.destination-wrapper[data-siteid="${siteid}"]`);
     if (destinationElement) {
         destinationElement.remove();
         updateDestinationIndexes();
         updateEstimatedFees();
         
+        // Update sitesOpDays by removing the deleted site
+        sitesOpDays = sitesOpDays.filter(site => site.siteid != siteid);
+        
+        // Recalculate common available days
+        const commonAvailableDays = calculateCommonAvailableDays(sitesOpDays);
+        
+        // Update the data attribute
+        const dateInput = document.getElementById("tour-date");
+        dateInput.setAttribute('data-availabledate', commonAvailableDays);
+                
         if (document.querySelectorAll(".destination-wrapper").length === 0) {
             if (isEditMode) {
                 resetToInitialState();
@@ -1414,7 +1502,6 @@ function removeDestination(siteid) {
         console.error("Fetch error:", error);
     });
 }
-
 function resetToInitialState() {
     const saveChangesBtn = document.getElementById("save-changes-btn");
     if (saveChangesBtn) {
@@ -1522,21 +1609,35 @@ async function fetchAvailability() {
     try {
         const response = await fetch("tourrequest.php", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "get_availability", sites: getSelectedSites() })
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }, // Changed from application/json
+            body: "action=get_availability&sites=" + JSON.stringify(getSelectedSites())
         });
-        const data = await response.json();
-        if (data.success) {
-            let modifiedAvailability = {};
-            for (let date in data.availability) {
-                if (data.availability[date] === "unavailable") {
-                    modifiedAvailability[date] = "unavailable";
+
+        // Get text first to inspect what's being returned
+        const text = await response.text();
+        
+        
+        
+        // Try to parse if it looks like JSON
+        let data;
+        try {
+            data = JSON.parse(text);
+            
+            if (data.success) {
+                let modifiedAvailability = {};
+                for (let date in data.availability) {
+                    if (data.availability[date] === "unavailable") {
+                        modifiedAvailability[date] = "unavailable";
+                    }
                 }
+                siteAvailability = modifiedAvailability;
+                renderCalendar();
+            } else {
+                console.error("Error fetching availability:", data.message);
             }
-            siteAvailability = modifiedAvailability;
-            renderCalendar();
-        } else {
-            console.error("Error fetching availability:", data.message);
+        } catch (parseError) {
+            console.error("Error parsing JSON response:", parseError);
+            console.error("Response wasn't valid JSON");
         }
     } catch (error) {
         console.error("Request failed:", error);
@@ -1563,20 +1664,39 @@ function renderCalendar() {
     monthSelect.value = month;
     yearSelect.value = year;
 
-    let firstDay = new Date(year, month, 1).getDay();
+    // Get the binary representation of available days
+    const commonAvailableDays = calculateCommonAvailableDays(sitesOpDays);
+    
+    // Convert to array of bits for easier access - reading from left to right
+    // Left to right: Sun(0), Mon(1), Tue(2), Wed(3), Thu(4), Fri(5), Sat(6)
+    const daysAvailable = commonAvailableDays.padStart(7, '0').split('').map(bit => bit === '1');
+    
+    let firstDay = new Date(year, month, 1).getDay(); // 0 is Sunday, 6 is Saturday
     let lastDate = new Date(year, month + 1, 0).getDate();
     let today = new Date();
     let days = "";
 
-    for (let x = firstDay === 0 ? 6 : firstDay - 1; x > 0; x--) {
+    // Add empty cells for days before the first day of the month
+    for (let x = 0; x < firstDay; x++) {
         days += `<span class="prev-month disabled"></span>`;
     }
 
     for (let i = 1; i <= lastDate; i++) {
         let dateStr = `${year}-${(month + 1).toString().padStart(2, "0")}-${i.toString().padStart(2, "0")}`;
         let className = "available";
+        
+        // Check site-specific availability
         if (siteAvailability[dateStr]) {
             className = siteAvailability[dateStr] === "unavailable" ? "disabled" : "available";
+        }
+        
+        // Check if this day of the week is available according to binary opdays
+        const date = new Date(year, month, i);
+        const dayOfWeek = date.getDay(); // 0 is Sunday, 6 is Saturday
+        
+        // For binary read left to right (Sun=0, Mon=1, etc.), use dayOfWeek directly as index
+        if (!daysAvailable[dayOfWeek]) {
+            className = "disabled";
         }
         
         let isSelected = (isEditMode && dateStr === previouslySelectedDate);
@@ -1586,12 +1706,90 @@ function renderCalendar() {
             selectedDate = dateStr; 
         }
         
-        let isPast = year < today.getFullYear() || (year === today.getFullYear() && month < today.getMonth()) || (year === today.getFullYear() && month === today.getMonth() && i < today.getDate());
+        // Also disable past dates
+        let isPast = year < today.getFullYear() || 
+                    (year === today.getFullYear() && month < today.getMonth()) || 
+                    (year === today.getFullYear() && month === today.getMonth() && i < today.getDate());
+        
         days += `<span class="${isPast ? 'disabled' : className}" data-date="${dateStr}" onclick="selectDate('${dateStr}', this)">${i}</span>`;
     }
     daysContainer.innerHTML = days;
+    
+    // Update the day legend
+    updateDayLegend(daysAvailable);
 }
 
+function updateDayLegend(daysAvailable) {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const legendContainer = document.querySelector('.legend');
+    
+    // Clear existing legend
+    legendContainer.innerHTML = '';
+    
+    // Add legend for available days
+    const legendText = document.createElement('span');
+    legendText.innerHTML = '<span class="legend-item available"></span> Available on: ';
+    legendContainer.appendChild(legendText);
+    
+    // Create span for each available day - reading left to right
+    const availableDays = [];
+    for (let i = 0; i < 7; i++) {
+        if (daysAvailable[i]) {
+            availableDays.push(dayNames[i]);
+        }
+    }
+    
+    if (availableDays.length > 0) {
+        const daysText = document.createElement('span');
+        daysText.textContent = availableDays.join(', ');
+        daysText.style.fontWeight = 'bold';
+        daysText.style.marginLeft = '5px';
+        legendContainer.appendChild(daysText);
+    } else {
+        const noDaysText = document.createElement('span');
+        noDaysText.textContent = 'None (please modify your selections)';
+        noDaysText.style.color = '#A9221C';
+        noDaysText.style.fontWeight = 'bold';
+        noDaysText.style.marginLeft = '5px';
+        legendContainer.appendChild(noDaysText);
+    }
+}
+
+function updateDayLegend(daysAvailable) {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const legendContainer = document.querySelector('.legend');
+    
+    // Clear existing legend
+    legendContainer.innerHTML = '';
+    
+    // Add legend for available days
+    const legendText = document.createElement('span');
+    legendText.innerHTML = '<span class="legend-item available"></span> Available on: ';
+    legendContainer.appendChild(legendText);
+    
+    // Create span for each available day
+    const availableDays = [];
+    for (let i = 0; i < 7; i++) {
+        if (daysAvailable[6 - i]) {
+            availableDays.push(dayNames[i]);
+        }
+    }
+    
+    if (availableDays.length > 0) {
+        const daysText = document.createElement('span');
+        daysText.textContent = availableDays.join(', ');
+        daysText.style.fontWeight = 'bold';
+        daysText.style.marginLeft = '5px';
+        legendContainer.appendChild(daysText);
+    } else {
+        const noDaysText = document.createElement('span');
+        noDaysText.textContent = 'None (please modify your selections)';
+        noDaysText.style.color = '#A9221C';
+        noDaysText.style.fontWeight = 'bold';
+        noDaysText.style.marginLeft = '5px';
+        legendContainer.appendChild(noDaysText);
+    }
+}
 window.selectDate = function (dateStr, element) {
     if (element.classList.contains("disabled")) return;
 
@@ -1642,8 +1840,46 @@ function populateYearOptions() {
         yearSelect.appendChild(option);
     }
 }
+function verifyAvailableDate() {
+    // Recalculate common available days
+    const commonAvailableDays = calculateCommonAvailableDays(sitesOpDays);
+    
+    // Update the data attribute
+    const dateInput = document.getElementById("tour-date");
+    dateInput.setAttribute('data-availabledate', commonAvailableDays);
+    
+    // Check if there are common days available
+    const hasCommonDays = parseInt(commonAvailableDays, 2) > 0;
+
+    
+    if (!hasCommonDays) {
+        // No common days available
+        Swal.fire({
+            icon: 'error',
+            title: 'No Common Available Days',
+            html: `
+                <div class="text-start mt-3">
+                    <p>The destinations you've selected don't have any common available days.</p>
+                    <p>Options:</p>
+                    <ul>
+                        <li>Remove some destinations</li>
+                        <li>Choose different destinations with compatible schedules</li>
+                    </ul>
+                </div>
+            `,
+            confirmButtonText: 'Understand',
+            confirmButtonColor: '#EC6350'
+        });
+        return false;
+    }
+    
+    // If we have common days, show the date input
+    showModal();
+    return true;
+}
 
 function showModal() {
+
     if (document.querySelectorAll(".destination-wrapper").length === 0) {
         Swal.fire({
             iconHtml: '<i class="fas fa-exclamation-circle"></i>',
@@ -1660,20 +1896,20 @@ function showModal() {
         return;
     }
 
-    let modal = document.getElementById("availabilityModal");
-    modal.style.display = "block";
-    setTimeout(() => {
-        modal.classList.add("show");
-    }, 10);
+        let modal = document.getElementById("availabilityModal");
+        modal.style.display = "block";
+        setTimeout(() => {
+            modal.classList.add("show");
+        }, 10);
 
-    currentDate = new Date();
-    populateYearOptions();
+        currentDate = new Date();
+        populateYearOptions();
 
-    document.getElementById("month-select").value = currentDate.getMonth();
-    document.getElementById("year-select").value = currentDate.getFullYear();
+        document.getElementById("month-select").value = currentDate.getMonth();
+        document.getElementById("year-select").value = currentDate.getFullYear();
 
-    renderCalendar();
-    fetchAvailability();
+        renderCalendar();
+        fetchAvailability();
 }
 
 function closeModal() {
@@ -1687,6 +1923,39 @@ function closeModal() {
         lockTourSelections();
     }
 }
+
+function calculateCommonAvailableDays(sitesOpDays) {
+    if (!sitesOpDays || sitesOpDays.length === 0) {
+        return '0000000';
+    }
+    
+    // Start with all bits set (7 days available)
+    let commonDays = 127; // 1111111 in binary
+    
+    // Perform binary AND on all sites' opdays
+    sitesOpDays.forEach(site => {
+        // Convert to a number if it's a string
+        const opdays = typeof site.opdays === 'string' ? parseInt(site.opdays, 2) : site.opdays;
+        commonDays &= opdays;
+    });
+    
+    // Convert to 7-digit binary string (padded with leading zeros)
+    return commonDays.toString(2).padStart(7, '0');
+}
+
+// Pass PHP site opdays data to JavaScript
+let sitesOpDays = <?php echo json_encode($sitesOpDays); ?>;
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Calculate common available days on page load
+    const commonAvailableDays = calculateCommonAvailableDays(sitesOpDays);
+    
+    // Set the data-availabledate attribute
+    const dateInput = document.getElementById("tour-date");
+    if (dateInput) {
+        dateInput.setAttribute('data-availabledate', commonAvailableDays);
+    }
+});
 
 document.querySelector(".modal-footer .btn").addEventListener("click", function () {
     if (!selectedDate) {
@@ -1940,12 +2209,18 @@ function unlockTourSelections() {
         button.disabled = false;
         button.style.opacity = 1;
         button.style.cursor = "pointer";
+        
+        // Get the parent wrapper and use data-siteid attribute
+        const wrapper = button.closest(".destination-wrapper");
+        const siteid = wrapper.getAttribute("data-siteid");
+        
+        // Set the correct click handler with the proper siteid
         button.onclick = function() {
-            const siteid = this.closest(".destination-wrapper").getAttribute("data-index");
             confirmRemoveDestination(siteid);
         };
     });
- 
+    
+    // Rest of the function remains the same
     const minusBtn = document.getElementById("minus-btn");
     const plusBtn = document.getElementById("plus-btn");
     const counterInput = document.getElementById("counter-input");
