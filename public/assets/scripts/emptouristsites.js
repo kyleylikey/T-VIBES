@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
                     title: "Tourist Site Updated Successfully!",
                     iconHtml: '<i class="fas fa-circle-check"></i>',
-                    timer: 2000,
+                    timer: 3000,
                     showConfirmButton: false,
                     customClass: {
                         title: "swal2-title-custom",
