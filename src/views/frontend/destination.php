@@ -248,62 +248,80 @@ function loginFirst() {
 }
 
 function addToTour(siteid) {
-    fetch('tours/tourrequest.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: 'siteid=' + siteid
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-circle-check"></i>',
-                title: "Added to your tour!",
-                text: "What would you like to do next?",
-                showCancelButton: true,
-                confirmButtonText: "View My Tour",
-                cancelButtonText: "Continue Browsing",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'tours/tourrequest.php';
-                } else {
-                    window.location.href = 'explore.php';
-                }
-            });
-        } else {
-            Swal.fire({
-                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-                title: "Already Added!",
-                text: data.message || "This destination is already in your tour list.",
-                showCancelButton: true,
-                confirmButtonText: "View My Tour",
-                cancelButtonText: "Continue Browsing",
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup",
-                    confirmButton: "swal-custom-btn",
-                    cancelButton: "swal-custom-btn"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'tours/tourrequest.php';
-                } else {
-                    window.location.href = 'explore.php';
-                }
-            });
+    Swal.fire({
+        iconHtml: '<i class="fas fa-map-marker-alt"></i>',
+        title: "Add to Tour?",
+        text: "Do you want to add this destination to your tour?",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        customClass: {
+            title: "swal2-title-custom",
+            icon: "swal2-icon-custom",
+            popup: "swal-custom-popup",
+            confirmButton: "swal-custom-btn",
+            cancelButton: "swal-custom-btn"
         }
-    })
-    .catch(error => console.error('Error:', error));
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('tours/tourrequest.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'siteid=' + siteid
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        iconHtml: '<i class="fas fa-circle-check"></i>',
+                        title: "Added to your tour!",
+                        text: "What would you like to do next?",
+                        showCancelButton: true,
+                        confirmButtonText: "View My Tour",
+                        cancelButtonText: "Continue Browsing",
+                        customClass: {
+                            title: "swal2-title-custom",
+                            icon: "swal2-icon-custom",
+                            popup: "swal-custom-popup",
+                            confirmButton: "swal-custom-btn",
+                            cancelButton: "swal-custom-btn"
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'tours/tourrequest.php';
+                        } else {
+                            window.location.href = 'explore.php';
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                        title: "Already Added!",
+                        text: data.message || "This destination is already in your tour list.",
+                        showCancelButton: true,
+                        confirmButtonText: "View My Tour",
+                        cancelButtonText: "Continue Browsing",
+                        customClass: {
+                            title: "swal2-title-custom",
+                            icon: "swal2-icon-custom",
+                            popup: "swal-custom-popup",
+                            confirmButton: "swal-custom-btn",
+                            cancelButton: "swal-custom-btn"
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'tours/tourrequest.php';
+                        } else {
+                            window.location.href = 'explore.php';
+                        }
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
 }
 
 function editModeError() {

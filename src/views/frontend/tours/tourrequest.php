@@ -1393,13 +1393,17 @@ function removeDestination(siteid) {
         if (data.success) {
             Swal.fire({
                 title: "Destination Deleted Successfully!",
-                iconHtml: '<i class="fas fa-circle-check"></i>',
-                timer: 3000,
+                iconHtml: '<i class="fas fa-check-circle"></i>',
+                timer: 2000,
                 showConfirmButton: false,
                 customClass: {
                     title: "swal2-title-custom",
                     icon: "swal2-icon-custom",
                     popup: "swal-custom-popup"
+                }
+            }).then(() => {
+                if (!document.getElementById("edit-btn")) {
+                    window.location.reload(); 
                 }
             });
         } else {
