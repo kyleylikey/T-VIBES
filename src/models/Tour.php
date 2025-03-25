@@ -304,7 +304,7 @@ class Tour {
     }
 
     public function getPendingToursCount() {
-        $query = "SELECT COUNT(DISTINCT userid) AS pending_count FROM tour WHERE status = 'submitted'";
+        $query = "SELECT COUNT(DISTINCT tourid) AS pending_count FROM tour WHERE status = 'submitted'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['pending_count'];

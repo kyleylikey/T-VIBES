@@ -1,10 +1,26 @@
 <?php
-// Sample data for demonstration
-$tours = [
-    ['created' => 'DD M YYYY', 'planned' => 'DD M YYYY', 'people' => 2, 'destinations' => ['Destination Name']],
-    ['created' => 'DD M YYYY', 'planned' => 'DD M YYYY', 'people' => 2, 'destinations' => ['Destination Name', 'Destination Name']],
-    ['created' => 'DD M YYYY', 'planned' => 'DD M YYYY', 'people' => 2, 'destinations' => ['Destination Name']],
-];
+include '../../../../includes/auth.php';
+require_once '../../../config/dbconnect.php';
+
+$database = new Database();
+$conn = $database->getConnection();
+
+$userid = $_SESSION['userid']; 
+
+$query = "SELECT t.tourid, t.date, t.status, t.created_at, t.companions, 
+                 GROUP_CONCAT(s.sitename ORDER BY s.sitename SEPARATOR ', ') AS destinations, 
+                 GROUP_CONCAT(s.price ORDER BY s.sitename SEPARATOR ', ') AS prices,
+                 GROUP_CONCAT(s.siteimage ORDER BY s.sitename SEPARATOR ', ') AS images
+          FROM tour t
+          JOIN sites s ON t.siteid = s.siteid
+          WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CURDATE()
+          GROUP BY t.tourid
+          ORDER BY t.created_at DESC";
+
+$stmt = $conn->prepare($query);
+$stmt->bindParam(1, $userid);
+$stmt->execute();
+$tours = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -13,11 +29,12 @@ $tours = [
 <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tour History</title>
-    <link rel="stylesheet" href="../../../../public/assets/styles/index.css">
-	<link rel="stylesheet" href="../../../../public/assets/styles/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,10 +64,16 @@ $tours = [
             background-color: #D9E2EC;
         }
 
-        /* Modal styles */
+        .modal-title {
+            font-family: 'Raleway', sans-serif !important;
+            color: #102E47;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
         .modal-content {
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 25px !important;
         }
 
         .destination-card {
@@ -78,6 +101,13 @@ $tours = [
             color: #7d7d7d;
         }
 
+        .destination-image img {
+            width: 50px !important;
+            height: 50px !important;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
         .destination-details {
             display: flex;
             flex-direction: column;
@@ -102,31 +132,28 @@ $tours = [
 			color: #7d7d7d;
 		}
 
-
-
-        /* Rating Button */
 		.rate-review-container {
-    display: flex;
-    gap: 10px;
-}
+            display: flex;
+            gap: 10px;
+        }
 
-.rate-btn, .review-btn {
-    background-color: #EC6350;
-    color: #fff;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    flex: 1; /* Make both buttons equal width */
-    text-align: center;
-}
+        .rate-btn, .review-btn {
+            background-color: #EC6350;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex: 1; 
+            text-align: center;
+        }
 
-.rate-btn:hover, .review-btn:hover {
-    background-color: #e03e26;
-}
+        .rate-btn:hover, .review-btn:hover {
+            background-color: #e03e26;
+        }
 
 		.review-btn {
 			background-color: #EC6350;
@@ -145,7 +172,6 @@ $tours = [
 			background-color: #e03e26;
 		}
 
-        /* Rating Stars */
         .stars .bi {
             font-size: 36px;
             cursor: pointer;
@@ -182,12 +208,28 @@ $tours = [
 		.rate-btn:hover, .review-btn:hover {
             background-color: #e03e26;
         }
+
+        .btn-custom {
+            border: 2px solid #EC6350 !important;
+            color: #EC6350 !important;
+            border-radius: 25px !important;
+            padding: 5px 10px !important;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            font-weight: bold !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .btn-custom:hover {
+            background-color: #EC6350;
+            color: #FFFFFF !important;
+        }
     </style>
 </head>
 <body>
 <?php include '../../templates/headertours.php'; ?>
 <?php include '../../templates/toursnav.php'; ?>
-
 
 <div class="container table-container">
     <div class="row table-header py-2">
@@ -197,83 +239,104 @@ $tours = [
         <div class="col-4">Destinations</div>
     </div>
 
-    <?php foreach ($tours as $index => $tour) : ?>
-        <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $index ?>">
-            <div class="col-3"><?= $tour['created'] ?></div>
-            <div class="col-3"><?= $tour['planned'] ?></div>
-            <div class="col-2"><?= $tour['people'] ?></div>
-            <div class="col-4">
-                <?php foreach ($tour['destinations'] as $destination) : ?>
-                    <div><?= $destination ?></div>
-                <?php endforeach; ?>
-            </div>
+    <?php foreach ($tours as $index => $tour) : 
+        $destinations = explode(',', $tour['destinations']); 
+        $prices = explode(',', $tour['prices']); 
+        $images = explode(',', $tour['images']); 
+        $num_people = $tour['companions']; 
+    ?>
+    <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $index ?>">
+        <div class="col-3"><?= date('d M Y', strtotime($tour['created_at'])) ?></div>
+        <div class="col-3"><?= date('d M Y', strtotime($tour['date'])) ?></div>
+        <div class="col-2"><?= $num_people ?></div>
+        <div class="col-4">
+            <?php foreach ($destinations as $destination) : ?>
+                <div><?= trim($destination) ?></div>
+            <?php endforeach; ?>
         </div>
+    </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="tourModal<?= $index ?>" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Tour Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <?php foreach ($tour['destinations'] as $destination) : ?>
-                                    <div class="destination-card">
-                                        <div class="destination-image">
-                                            <i class="bi bi-image"></i>
-                                        </div>
-                                        <div class="destination-details">
-                                            <div class="destination-name"><?= $destination ?></div>
-                                            <div class="rate-review-container">
-											<button class="rate-btn" onclick="openRateModal()">Rate</button>
-											<button class="review-btn" onclick="openReviewModal()">Review</button>
-										</div>
-
-										</div>
-										
+    <div class="modal fade" id="tourModal<?= $index ?>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tour Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php foreach ($destinations as $key => $destination) : ?>
+                                <div class="destination-card d-flex align-items-center p-2 mb-2" style="background: #f8f9fa; border-radius: 8px;">
+                                    <div class="destination-image me-2">
+                                        <img src="../../../../public/uploads/<?= trim($images[$key]) ?>" alt="<?= trim($destination) ?>" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
                                     </div>
-                                <?php endforeach; ?>
-                                <div class="status-pending">Status: Complete</div>
-                            </div>
-							
-							<div class="col-md-6">
-                            <div class="mb-3">
-								<span class="label-bold">Date Created:</span>
-								<span class="value-grey"><?= $tour['created'] ?></span>
-							</div>
-							<div class="mb-3">
-								<span class="label-bold">Number of People:</span>
-								<span class="value-grey"><?= $tour['people'] ?></span>
-							</div>
-							<div class="mb-3">
-								<span class="label-bold">Estimated Fees:</span>
-								<?php foreach ($tour['destinations'] as $destination) : ?>
-									<div class="value-grey"><?= $destination ?> x2</div>
-								<?php endforeach; ?>
-							</div>
-							<div class="mb-3">
-								<span class="label-bold">Destination Name:</span>
-								<?php foreach ($tour['destinations'] as $destination) : ?>
-									<div class="value-grey"><?= $destination ?></div>
-								<?php endforeach; ?>
-							</div>
-							<div>
-								<span class="label-bold">Total:</span>
-								<span class="value-grey">₱ 0.00</span>
-							</div>
-							</div>
+                                    <div class="destination-details flex-grow-1">
+                                        <div class="destination-name fw-bold"><?= trim($destination) ?></div>
+                                        <div class="rate-review-container mt-1">
+                                            <button class="btn btn-custom btn-sm">Rate</button>
+                                            <button class="btn btn-custom btn-sm">Review</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <span class="label-bold">Date Created:</span><br>
+                                <span class="value-grey"><?= date('M j, Y', strtotime($tour['created_at'])) ?></span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="label-bold">Planned Date:</span><br>
+                                <span class="value-grey"><?= date('M j, Y', strtotime($tour['date'])) ?></span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="label-bold">Number of People:</span><br>
+                                <span class="value-grey"><?= $num_people ?></span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="label-bold">Estimated Fees:</span><br>
+                                <div class="value-grey">
+                                    <?php 
+                                    $total_per_person = 0;
+                                    foreach ($destinations as $key => $destination) : 
+                                        $fee_per_destination = (int) $prices[$key];
+                                        $total_per_person += $fee_per_destination;
+                                    ?>
+                                        <div class="d-flex justify-content-between">
+                                            <span><?= trim($destination) ?></span>
+                                            <span>₱<?= number_format($fee_per_destination, 2) ?></span>                                       
+                                        </div>
+                                    <?php endforeach; ?>
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-8"></div>
+                                            <div class="fw-bold" style="text-align: right;">₱<?= number_format($total_per_person, 2) ?></div>                 
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="label-bold">Total Fees:</span><br>
+                                <div class="value-grey d-flex justify-content-between fw-bold">
+                                    <span>₱<?= number_format($total_per_person, 2) ?> x <?= $num_people ?></span>
+                                    <span style="color: #EC6350;">₱<?= number_format($total_per_person * $num_people, 2) ?></span>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="modal-footer">
+                        <div class="status-completed fw-bold mt-2 text-warning">Status: <span class="text-warning">Completed</span></div>
+                        <div class="summary-value fw-light fst-italic text-center">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     <?php endforeach; ?>
 </div>
 
-<!-- Rate Experience Modal -->
 <div class="modal fade" id="rateExperienceModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content p-4 text-center">
@@ -384,12 +447,21 @@ $tours = [
     });
 }
 
+function showTourDetails(tour) {
+    document.getElementById('destination-name').innerText = tour.destinations;
+    document.getElementById('tour-status').innerText = 'Status: ' + tour.status;
+    document.getElementById('tour-created').innerText = tour.created_at;
+    document.getElementById('tour-people').innerText = tour.companions;
+    document.getElementById('tour-fees').innerText = tour.destinations + ' x2';
+    document.getElementById('tour-destination').innerText = tour.destinations;
+    document.getElementById('tour-total').innerText = '₱ 0.00';
+
+    var modal = new bootstrap.Modal(document.getElementById('tourModal'));
+    modal.show();
+}
 
 </script>
-
-<!-- SweetAlert CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

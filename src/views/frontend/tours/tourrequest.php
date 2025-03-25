@@ -1855,7 +1855,7 @@ function verifyAvailableDate() {
     if (!hasCommonDays) {
         // No common days available
         Swal.fire({
-            icon: 'error',
+            iconHtml: '<i class="fas fa-exclamation-circle"></i>',
             title: 'No Common Available Days',
             html: `
                 <div class="text-start mt-3">
@@ -1867,8 +1867,14 @@ function verifyAvailableDate() {
                     </ul>
                 </div>
             `,
-            confirmButtonText: 'Understand',
-            confirmButtonColor: '#EC6350'
+            confirmButtonText: "Understand",
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup",
+                confirmButton: "swal-custom-btn",
+                cancelButton: "swal-custom-btn"
+            }
         });
         return false;
     }

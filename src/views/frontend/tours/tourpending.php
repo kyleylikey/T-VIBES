@@ -1,8 +1,6 @@
 <?php
-session_start();
-
+include '../../../../includes/auth.php';
 require_once '../../../controllers/tourist/tourpendingcontroller.php';
-
 ?>
 
 <!DOCTYPE html>
@@ -11,14 +9,18 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
 <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tour Pending</title>
-    <link rel="stylesheet" href="../../../../public/assets/styles/index.css">
-	<link rel="stylesheet" href="../../../../public/assets/styles/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        * {
+            font-family: 
+        }
+
         body {
-            font-family: Arial, sans-serif;
             background-color: #f9fafb;
             color: #333;
         }
@@ -45,10 +47,16 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
             background-color: #D9E2EC;
         }
 
-        /* Modal styles */
+        .modal-title {
+            font-family: 'Raleway', sans-serif !important;
+            color: #102E47;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
         .modal-content {
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 25px !important;
         }
 
         .destination-card {
@@ -80,6 +88,13 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
             color: #102E47;
             font-weight: bold;
             font-size: 18px;
+        }
+
+        .destination-image img {
+            width: 50px !important;
+            height: 50px !important;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
         .summary-title {
@@ -117,29 +132,31 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
 
     <?php foreach ($userPendingTour as $pending) : ?>
         <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $pending['tourid'] ?>">
-            <div class="col-3"><?= date('M d, Y', strtotime($pending['created_at'])) ?></div>
-            <div class="col-3"><?= date('M d, Y', strtotime($pending['date'])) ?></div>
+            <div class="col-3"><?= date('d M Y', strtotime($pending['created_at'])) ?></div>
+            <div class="col-3"><?= date('d M Y', strtotime($pending['date'])) ?></div>
             <div class="col-2"><?= $pending['companions'] ?></div>
-            <div class="col-4"><?= $pending['total_sites'] ?></div>
+            <div class="col-4">
+                <?php  
+                $tourSites = $tourModel->getPendingTourSitesByUser($pending['tourid'], $_SESSION['userid']);
+                foreach ($tourSites as $site) :  
+                ?>
+                    <div><?= $site['sitename'] ?></div>
+                <?php endforeach; ?>
+            </div>
         </div>
         
-        <!-- Modal -->
         <div class="modal fade" id="tourModal<?= $pending['tourid'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $pending['tourid'] ?>" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
-                    <!-- Modal header -->
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalLabel<?= $pending['tourid'] ?>">Tour Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     
-                    <!-- Modal body -->
                     <div class="modal-body">
                         <div class="row">
-                            <!-- Left Section: Destination Cards -->
                             <div class="col-md-6">
                                 <?php 
-                                // Get sites for this specific tour
                                 $tourSites = $tourModel->getPendingTourSitesByUser($pending['tourid'], $_SESSION['userid']);
                                 foreach ($tourSites as $site) : 
                                 ?>
@@ -158,7 +175,6 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
                                 
                             </div>
 
-                            <!-- Right Section: Summary -->
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <div class="summary-title">Date Created:</div>
@@ -182,32 +198,31 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
                                     <div class="summary-value">
                                         <div class="row">
                                             <div class="col-8 summary-value"><?= $site['sitename'] ?></div>
-                                            <div class="col-4 summary-value">P<?= $site['price'] ?></div>
+                                            <div class="col-4 summary-value">₱<?= $site['price'] ?></div>
                                         </div>
                                     </div>
                                     <?php $totalFees += $site['price']; endforeach; ?>
                                     <div class="summary-value">
                                         <div class="row">
                                             <div class="col-8"></div>
-                                            <div class="col-4 fw-bold">P<?= $totalFees ?></div>
+                                            <div class="col-4 fw-bold">₱<?= $totalFees ?></div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <div class="summary-title">Total Fees:</div>
                                     <div class="row">
-                                        <div class="col-8 summary-value"><?= $pending['companions'] ?> x P<?= $totalFees ?></div>
-                                        <div class="col-4 fs-5 fw-bolder"> = P<?= $pending['companions'] * $totalFees ?>*</div>
+                                        <div class="col-8 summary-value">₱<?= $totalFees ?> x <?= $pending['companions'] ?></div>
+                                        <div class="col-4 fw-bolder" style="color: #EC6350;">₱<?= $pending['companions'] * $totalFees ?></div>
                                     </div>
                                 </div>
                             </div>
                             
                         </div>
                     </div>
-                    <!-- Status at bottom-left -->
-                    <div class="modal-footer status-pending">
-                        Status: Pending
-                        <div class="summary-value fw-light fst-italic">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
+                    <div class="modal-footer">
+                        <div class="status-completed fw-bold mt-2 text-info">Status: <span class="text-info">Pending</span></div>
+                        <div class="summary-value fw-light fst-italic text-center">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
                     </div>
                 </div>
             </div>
@@ -218,6 +233,7 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
