@@ -27,7 +27,7 @@ error_reporting(E_ALL);
         }
 
         .swal2-icon-custom {
-            font-size: 10px; 
+            font-size: 10px;
             color: #EC6350; 
         }
 
@@ -101,7 +101,7 @@ error_reporting(E_ALL);
                 <label for="privacyPolicy">Privacy Policy & Terms of Service</label>
             </div>
 
-            <button type="submit" class="btn-custom">Create Account</button>
+            <button type="submit" id="submitBtn" class="btn-custom">Create Account</button>
             <p class="login-redirect">Already have an account? <a href="login.php" class="font-link">Login</a></p>
         </form>
     </div>
@@ -127,10 +127,15 @@ error_reporting(E_ALL);
         .then(response => response.json())
         .then(data => {
             Swal.fire({
-                iconHtml: data.status === 'success' ? '<i class="fas fa-envelope"></i>' : '<i class="fas fa-exclamation-circle"></i>',
-                html: `<p style="font-size: 24px; font-weight: bold;">${data.message}</p>`,
+                iconHtml: data.status === 'success' ? '<i class="fas fa-envelope" style="color: #EC6350 !important;"></i>' : '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>',
+                title: data.message,
                 showConfirmButton: false,
-                timer: 3000
+                timer: 3000,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
             });
 
             if (data.status === 'success') {
@@ -143,10 +148,15 @@ error_reporting(E_ALL);
         .catch(error => {
             console.error('Error:', error);
             Swal.fire({
-                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-                html: '<p style="font-size: 24px; font-weight: bold;">Something went wrong. Please try again later.</p>',
+                iconHtml: '<i class="fas fa-exclamation-circle" style: "color: #EC6350 !important;"></i>',
+                title: 'Something went wrong. Please try again later.',
                 showConfirmButton: false,
-                timer: 3000
+                timer: 3000,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
             }).then(() => {
                 submitButton.disabled = false;
                 submitButton.textContent = "Create Account";
