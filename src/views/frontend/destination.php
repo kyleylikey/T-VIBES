@@ -24,6 +24,10 @@ if (isset($_GET['siteid'])) {
     <link rel="stylesheet" href="../../../public/assets/styles/destination.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        * {
+            font-family: 'Nunito', sans-serif !important;
+        }
+        
         .swal2-icon {
             background: none !important;
             border: none !important;
@@ -63,6 +67,18 @@ if (isset($_GET['siteid'])) {
             background-color: #102E47 !important;
             color: #FFFFFF !important;
         }
+
+        h1 {
+            color: #102E47;
+            font-family: 'Raleway', sans-serif !important;
+            font-weight: bold;
+        }
+
+        h3 {
+            color: #102E47;
+            font-family: 'Raleway', sans-serif !important;
+            font-weight: bold !important;
+        }
     </style>
 </head>
 <body>
@@ -101,8 +117,8 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
                     <h3>Operating Days</h3>
-                    <h5><?php $opdays = Site::binaryToDays($siteDetails['opdays']); 
-                    echo $opdays;?></h5>
+                    <p><?php $opdays = Site::binaryToDays($siteDetails['opdays']); 
+                    echo $opdays;?></p>
                     <h3 class="mt-5">Description</h3>
                     <p><?php echo $siteDetails['description']; ?></p>
                 </div>
