@@ -147,7 +147,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                         <img id="modalImage" src="" class="image-preview">
                     </div>
                 </div>
-                <div class="w-50">
+                <div class="w-50" style="text-align: justify;">
                     <p><span>Price</span><br><strong id="modalPrice">₱0.00</strong></p>
                     <p><span>Schedule</span><br><strong id="modalSchedule"></strong></p>
                     <p><span>Description</span><br><strong id="modalDescription"></strong></p>
