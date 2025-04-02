@@ -26,22 +26,24 @@ $totalVisitors = 0;
 $currentYear = date('Y');
 
 try {
-    $query = "SELECT SUM(companions) AS total_visitors FROM (
-                SELECT userid, companions
-                FROM tour
-                WHERE status = 'accepted' AND YEAR(date) = :currentYear
-            ) AS distinct_tours";
-    
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
-    $stmt->execute();
-    
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($result && $result['total_visitors'] !== null) {
-        $totalVisitors = $result['total_visitors'];
-    }
+    $query = "SELECT SUM(companions) AS total_visitors 
+        FROM (
+            SELECT userid, tourid, MAX(companions) AS companions 
+            FROM tour 
+            WHERE status = 'accepted' AND YEAR(date) = :currentYear
+            GROUP BY tourid, userid
+        ) AS distinct_tours;";
+
+$stmt = $conn->prepare($query);
+$stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
+$stmt->execute();
+
+$result = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($result && $result['total_visitors'] !== null) {
+    $totalVisitors = $result['total_visitors'];
+}
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+echo "Error: " . $e->getMessage();
 }
 
 $userid = $_SESSION['userid'];
