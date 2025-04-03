@@ -191,6 +191,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             text-align: center;
             overflow-x: auto;
             min-width: 500px;
+            table-layout: fixed; 
         }
 
         thead th {
@@ -222,6 +223,13 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
         tbody tr td:last-child {
             border-top-right-radius: 15px;
             border-bottom-right-radius: 15px;
+        }
+
+        .table th, .table td {
+            width: 20%; 
+            white-space: nowrap; 
+            text-overflow: ellipsis; 
+            overflow: hidden; 
         }
 
         .btn-custom {
@@ -524,7 +532,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                 <li class="nav-item mb-4">
                     <a href="" class="nav-link active">
                         <i class="bi bi-grid"></i>
-                        <span class="d-none d-sm-inline">Overview</span>
+                        <span class="d-none d-sm-inline">Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
@@ -534,7 +542,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="upcomingtourstoday.php" class="nav-link">
+                    <a href="upcomingtours.php" class="nav-link">
                         <i class="bi bi-geo"></i>
                         <span class="d-none d-sm-inline">Upcoming Tours</span>
                     </a>
@@ -632,7 +640,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                                         <?php foreach ($latestRequests as $request) : ?>
                                             <tr>
                                                 <td><?php echo $request['name']; ?></td>
-                                                <td><?php echo date('d M Y | g:i A', strtotime($request['created_at'])); ?></td>
+                                                <td><?php echo date('d M Y', strtotime($request['created_at'])); ?></td>
                                                 <td><?php echo $request['destinations']; ?></td>
                                                 <td><?php echo date('d M Y', strtotime($request['travel_date'])); ?></td>
                                                 <td><?php echo $request['companions']; ?></td>

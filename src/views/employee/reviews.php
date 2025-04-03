@@ -521,7 +521,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                 <li class="nav-item mb-4">
                     <a href="home.php" class="nav-link">
                         <i class="bi bi-grid"></i>
-                        <span class="d-none d-sm-inline">Overview</span>
+                        <span class="d-none d-sm-inline">Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
@@ -531,7 +531,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="upcomingtourstoday.php" class="nav-link">
+                    <a href="upcomingtours.php" class="nav-link">
                         <i class="bi bi-geo"></i>
                         <span class="d-none d-sm-inline">Upcoming Tours</span>
                     </a>

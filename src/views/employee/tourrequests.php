@@ -169,6 +169,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             overflow-x: auto;
             min-width: 500px;
             font-family: 'Nunito', sans-serif;
+            table-layout: fixed; 
         }
 
         thead th {
@@ -200,6 +201,14 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
         tbody tr td:last-child {
             border-top-right-radius: 15px;
             border-bottom-right-radius: 15px;
+        }
+
+        .table th,
+        .table td {
+            width: 20%; 
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
         }
 
         .modal-title {
@@ -869,7 +878,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                 <li class="nav-item mb-4">
                     <a href="home.php" class="nav-link">
                         <i class="bi bi-grid"></i>
-                        <span class="d-none d-sm-inline">Overview</span>
+                        <span class="d-none d-sm-inline">Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item mb-4">
@@ -879,7 +888,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                     </a>
                 </li>
                 <li class="nav-item mb-4">
-                    <a href="upcomingtourstoday.php" class="nav-link">
+                    <a href="upcomingtours.php" class="nav-link">
                         <i class="bi bi-geo"></i>
                         <span class="d-none d-sm-inline">Upcoming Tours</span>
                     </a>
@@ -951,7 +960,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                                             data-userid='" .htmlspecialchars($request['userid'])."' 
                                             >";
                                             echo "<td>".$request['name']."</td>";
-                                            echo "<td>".date('d M Y | g:i A', strtotime($request['created_at']))."</td>";
+                                            echo "<td>".date('d M Y', strtotime($request['created_at']))."</td>";
                                             echo "<td>".$request['total_sites']."</td>";
                                             echo "<td>".date('d M Y', strtotime($request['date']))."</td>"; 
                                             echo "<td>".$request['companions']."</td>";

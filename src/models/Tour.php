@@ -253,12 +253,13 @@ class Tour {
 
     public function getToursForToday() {
         $today = date('Y-m-d');
-        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
-                  FROM tour t
-                  JOIN users u ON t.userid = u.userid
-                  JOIN sites s ON t.siteid = s.siteid
-                  WHERE DATE(t.date) = :today AND t.status = 'accepted'
-                  GROUP BY t.tourid, u.name, t.date, t.companions";
+        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, t.created_at,
+                GROUP_CONCAT(s.sitename ORDER BY s.siteid SEPARATOR '||') as sites
+                FROM tour t
+                JOIN users u ON t.userid = u.userid
+                JOIN sites s ON t.siteid = s.siteid
+                WHERE DATE(t.date) = :today AND t.status = 'accepted'
+                GROUP BY t.tourid, u.name, t.date, t.companions, t.created_at";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':today', $today);
         $stmt->execute();
@@ -266,14 +267,14 @@ class Tour {
     }
 
     public function getAllUpcomingTours() {
-        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, GROUP_CONCAT(s.sitename SEPARATOR ', ') as sites
-                    FROM tour t
-                    JOIN users u ON t.userid = u.userid
-                    JOIN sites s ON t.siteid = s.siteid
-                    WHERE t.status = 'accepted' AND DATE(t.date) >= CURDATE()
-                    GROUP BY t.tourid, u.name, t.date, t.companions
-                    ORDER BY t.date ASC";
-        
+        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, t.created_at,
+                GROUP_CONCAT(s.sitename ORDER BY s.siteid SEPARATOR '||') as sites
+                FROM tour t
+                JOIN users u ON t.userid = u.userid
+                JOIN sites s ON t.siteid = s.siteid
+                WHERE t.status = 'accepted' AND DATE(t.date) >= CURDATE()
+                GROUP BY t.tourid, u.name, t.date, t.companions, t.created_at
+                ORDER BY t.date ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
