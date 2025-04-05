@@ -872,177 +872,100 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
     let filteredRows = [];
     
     function initPagination() {
-        const tableRows = document.querySelectorAll('tbody tr');
-        filteredRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
-        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-        
-        const noToursMessage = document.querySelector('.no-filter-search');
-        const noToursVisible = noToursMessage && noToursMessage.style.display !== 'none';
-        
-        if (!document.querySelector('.pagination-controls')) {
-            const tableContainer = document.querySelector('.table-responsive');
-            if (tableContainer) {
-                const paginationControls = document.createElement('div');
-                paginationControls.className = 'pagination-controls';
-                paginationControls.style.display = noToursVisible ? 'none' : 'flex';
-                paginationControls.style.justifyContent = 'center';
-                paginationControls.style.alignItems = 'center';
-                paginationControls.style.marginTop = '-5px'; 
-                paginationControls.style.userSelect = 'none';
-                
-                const prevBtn = document.createElement('button');
-                prevBtn.innerHTML = '<strong>&lt;</strong>'; 
-                prevBtn.className = 'pagination-btn';
-                prevBtn.id = 'prevPage';
-                prevBtn.style.backgroundColor = 'transparent';
-                prevBtn.style.color = '#EC6350'; 
-                prevBtn.style.border = '1px solid #EC6350'; 
-                prevBtn.style.borderRadius = '50%';
-                prevBtn.style.width = '32px';
-                prevBtn.style.height = '32px';
-                prevBtn.style.margin = '0 10px';
-                prevBtn.style.cursor = 'pointer';
-                prevBtn.style.display = 'flex';
-                prevBtn.style.justifyContent = 'center';
-                prevBtn.style.alignItems = 'center';
-                prevBtn.style.fontSize = '16px';
-                prevBtn.style.fontWeight = 'bold';
-                prevBtn.style.transition = 'all 0.2s ease'; 
-                
-                prevBtn.addEventListener('mouseover', function() {
-                    if (!this.disabled) {
-                        this.style.backgroundColor = '#EC6350';
-                        this.style.color = '#FFFFFF';
-                    }
-                });
-                
-                prevBtn.addEventListener('mouseout', function() {
-                    if (!this.disabled) {
-                        this.style.backgroundColor = 'transparent';
-                        this.style.color = '#EC6350';
-                    }
-                });
-                
-                const pageInfo = document.createElement('div');
-                pageInfo.id = 'pageInfo';
-                pageInfo.style.margin = '0 15px';
-                pageInfo.style.fontFamily = 'Nunito, sans-serif';
-                pageInfo.style.color = '#434343';
-                
-                const nextBtn = document.createElement('button');
-                nextBtn.innerHTML = '<strong>&gt;</strong>';
-                nextBtn.className = 'pagination-btn';
-                nextBtn.id = 'nextPage';
-                nextBtn.style.backgroundColor = 'transparent';
-                nextBtn.style.color = '#EC6350';
-                nextBtn.style.border = '1px solid #EC6350'; 
-                nextBtn.style.borderRadius = '50%';
-                nextBtn.style.width = '32px';
-                nextBtn.style.height = '32px';
-                nextBtn.style.margin = '0 10px';
-                nextBtn.style.cursor = 'pointer';
-                nextBtn.style.display = 'flex';
-                nextBtn.style.justifyContent = 'center';
-                nextBtn.style.alignItems = 'center';
-                nextBtn.style.fontSize = '16px';
-                nextBtn.style.fontWeight = 'bold';
-                nextBtn.style.transition = 'all 0.2s ease';
-                
-                nextBtn.addEventListener('mouseover', function() {
-                    if (!this.disabled) {
-                        this.style.backgroundColor = '#EC6350';
-                        this.style.color = '#FFFFFF';
-                    }
-                });
-                
-                nextBtn.addEventListener('mouseout', function() {
-                    if (!this.disabled) {
-                        this.style.backgroundColor = 'transparent';
-                        this.style.color = '#EC6350';
-                    }
-                });
-                
-                paginationControls.appendChild(prevBtn);
-                paginationControls.appendChild(pageInfo);
-                paginationControls.appendChild(nextBtn);
-                
-                tableContainer.parentNode.appendChild(paginationControls);
-                
-                prevBtn.addEventListener('click', function() {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        showPage(currentPage);
-                    }
-                });
-                
-                nextBtn.addEventListener('click', function() {
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        showPage(currentPage);
-                    }
-                });
+    const tableRows = document.querySelectorAll('tbody tr');
+    filteredRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
+    const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+    
+    const noToursMessage = document.querySelector('.no-accounts');
+    const noToursVisible = noToursMessage && noToursMessage.style.display !== 'none';
+    
+    if (!document.querySelector('.pagination-controls')) {
+        const tableContainer = document.querySelector('.table-responsive');
+        if (tableContainer) {
+            const paginationControls = document.createElement('div');
+            paginationControls.className = 'pagination-controls';
+            if (noToursVisible) {
+                paginationControls.style.display = 'none';
             }
-        } else {
-            const paginationControls = document.querySelector('.pagination-controls');
-            if (paginationControls) {
-                paginationControls.style.display = noToursVisible ? 'none' : 'flex';
-            }
+            
+            const prevBtn = document.createElement('button');
+            prevBtn.innerHTML = '<strong>&lt;</strong>';
+            prevBtn.className = 'pagination-btn';
+            prevBtn.id = 'prevPage';
+            
+            const pageInfo = document.createElement('div');
+            pageInfo.id = 'pageInfo';
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.innerHTML = '<strong>&gt;</strong>';
+            nextBtn.className = 'pagination-btn';
+            nextBtn.id = 'nextPage';
+            
+            paginationControls.appendChild(prevBtn);
+            paginationControls.appendChild(pageInfo);
+            paginationControls.appendChild(nextBtn);
+            
+            tableContainer.parentNode.appendChild(paginationControls);
+            
+            prevBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
         }
-        
-        if (currentPage > totalPages && totalPages > 0) {
-            currentPage = 1;
+    } else {
+        const paginationControls = document.querySelector('.pagination-controls');
+        if (paginationControls) {
+            paginationControls.style.display = noToursVisible ? 'none' : 'flex';
         }
-        
-        showPage(currentPage);
     }
     
-    function showPage(page) {
-        const startIndex = (page - 1) * rowsPerPage;
-        const endIndex = startIndex + rowsPerPage;
-        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-        
-        filteredRows.forEach(row => {
-            row.style.display = 'none';
-        });
-        
-        for (let i = startIndex; i < endIndex && i < filteredRows.length; i++) {
-            filteredRows[i].style.display = '';
-        }
-        
-        const pageInfo = document.getElementById('pageInfo');
-        if (pageInfo) {
-            pageInfo.textContent = page + ' / ' + (totalPages || 1);
-        }
-        
-        const prevBtn = document.getElementById('prevPage');
-        const nextBtn = document.getElementById('nextPage');
-        
-        if (prevBtn) {
-            prevBtn.disabled = page === 1;
-            prevBtn.style.opacity = page === 1 ? '0.5' : '1';
-            prevBtn.style.cursor = page === 1 ? 'default' : 'pointer';
-            
-            if (page === 1) {
-                prevBtn.style.backgroundColor = 'transparent';
-                prevBtn.style.color = '#EC6350';
-                prevBtn.style.border = '1px solid #EC6350';
-            }
-        }
-        
-        if (nextBtn) {
-            nextBtn.disabled = page === totalPages || totalPages === 0;
-            nextBtn.style.opacity = (page === totalPages || totalPages === 0) ? '0.5' : '1';
-            nextBtn.style.cursor = (page === totalPages || totalPages === 0) ? 'default' : 'pointer';
-            
-            if (page === totalPages || totalPages === 0) {
-                nextBtn.style.backgroundColor = 'transparent';
-                nextBtn.style.color = '#EC6350';
-                nextBtn.style.border = '1px solid #EC6350';
-            }
-        }
-        
-        updateRowNumbers();
+    if (currentPage > totalPages && totalPages > 0) {
+        currentPage = 1;
     }
+    
+    showPage(currentPage);
+}
+
+function showPage(page) {
+    const startIndex = (page - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+    
+    filteredRows.forEach(row => {
+        row.style.display = 'none';
+    });
+    
+    for (let i = startIndex; i < endIndex && i < filteredRows.length; i++) {
+        filteredRows[i].style.display = '';
+    }
+    
+    const pageInfo = document.getElementById('pageInfo');
+    if (pageInfo) {
+        pageInfo.textContent = page + ' / ' + (totalPages || 1);
+    }
+    
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    
+    if (prevBtn) {
+        prevBtn.disabled = page === 1;
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = page === totalPages || totalPages === 0;
+    }
+    
+    updateRowNumbers();
+}
     
     function updateRowNumbers() {
         const visibleRows = Array.from(document.querySelectorAll('tbody tr')).filter(row => row.style.display !== 'none');

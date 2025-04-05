@@ -621,7 +621,7 @@ tbody tr td:last-child {
         width: 100%;
         margin-top: 10px;
         justify-content: center;
-    }f
+    }
     .sidebar {
         width: 100px;
         padding: 10px;
@@ -909,4 +909,51 @@ tbody tr td:last-child {
     align-items: center;
     margin-left: auto;
     gap: 10px;
+}
+
+/* Updated pagination-controls class */
+.pagination-controls {
+    display: flex;
+    justify-content: flex-start; /* Changed from center to flex-start */
+    align-items: center;
+    margin-top: 15px;
+    user-select: none;
+    padding: 10px 0;
+    margin-left: 10px; /* Added left margin for spacing */
+}
+
+.pagination-btn {
+    background-color: transparent;
+    color: #EC6350; 
+    border: 1px solid #EC6350;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    margin: 0 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #EC6350;
+    color: #FFFFFF;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+    border-color: #EC6350;
+}
+
+#pageInfo {
+    margin: 0 15px;
+    font-family: 'Nunito', sans-serif;
+    color: #434343;
+    font-weight: 600;
 }

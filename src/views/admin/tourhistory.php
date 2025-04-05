@@ -108,6 +108,12 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
         <div class="btn-group" role="group">
             <button type="button" id="completed-btn" class="btn-custom active" onclick="showCompleted()">Completed</button>
             <button type="button" id="cancelled-btn" class="btn-custom" onclick="showCancelled()">Cancelled</button>
+            <div class="filter-search-container">
+                <div class="search-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="form-control" id="searchBar" placeholder="Search">
+                </div>
+            </div>
         </div>
 
         <div class="row mt-3 d-flex justify-content-center">
@@ -222,80 +228,280 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="../../../public/assets/scripts/main.js"></script>
 <script>
-function showModal(tourData) {
-    document.getElementById('destination-container').innerHTML = "";
-    document.getElementById('stepper-container').innerHTML = "";
-    document.getElementById('estimated-fees').innerHTML = "";
-
-    let totalPrice = 0;
-    let companions = tourData[0].companions;
-    let userName = tourData[0].name;
-
-    let dateObj = new Date(tourData[0].submitted_on);
-    let dateFormatted = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    let timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-    let dateCreated = `${dateFormatted} | ${timeFormatted}`;
-
-    document.getElementById('tourHistoryModalLabel').textContent = `Tour History of ${userName}`;
-    document.getElementById('date-created').textContent = dateCreated;
-    document.getElementById('num-people').textContent = companions;
-    document.getElementById('tour-status').textContent = "Tour has been " + tourData[0].status;
-
-    tourData.forEach((tour, index) => {
-        let stepperItem = `
-            <div class="step">
-                <div class="circle">${index + 1}</div>
-                ${index < tourData.length - 1 ? '<div class="dashed-line"></div>' : ''}
-            </div>
-        `;
-        document.getElementById('stepper-container').innerHTML += stepperItem;
-
-        let destinationCard = `
-            <div class="destination-card d-flex align-items-center" style="margin-bottom: 15px;">
-                <div class="image-placeholder">
-                    <img src="/T-VIBES/public/uploads/${tour.siteimage}" alt="${tour.sitename}" 
-                        style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+document.addEventListener('DOMContentLoaded', function() {
+    // Pagination configuration
+    const rowsPerPage = 10;
+    let completedCurrentPage = 1;
+    let cancelledCurrentPage = 1;
+    
+    // Track filtered rows
+    let filteredCompletedRows = [];
+    let filteredCancelledRows = [];
+    
+    // Initialize pagination for both tabs
+    initTabPagination('completed-tours');
+    
+    // Setup search functionality
+    const searchBar = document.getElementById('searchBar');
+    if (searchBar) {
+        searchBar.addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase().trim();
+            searchTours(searchValue);
+        });
+    }
+    
+    // Function to filter tours based on search input
+    function searchTours(searchValue) {
+        // Get the currently active tab
+        const isCompletedActive = document.getElementById('completed-btn').classList.contains('active');
+        const activeTableId = isCompletedActive ? 'completed-tours' : 'cancelled-tours';
+        
+        // Get all table rows
+        const completedRows = document.querySelectorAll('#completed-tours tbody tr');
+        const cancelledRows = document.querySelectorAll('#cancelled-tours tbody tr');
+        
+        // Filter the rows for both tables
+        filteredCompletedRows = filterRowsBySearch(completedRows, searchValue);
+        filteredCancelledRows = filterRowsBySearch(cancelledRows, searchValue);
+        
+        // Get current active filtered rows
+        const activeFilteredRows = isCompletedActive ? filteredCompletedRows : filteredCancelledRows;
+        
+        // Update no results message if needed
+        updateNoResultsMessage(activeTableId, activeFilteredRows.length, searchValue);
+        
+        // Reset pagination to first page
+        if (isCompletedActive) {
+            completedCurrentPage = 1;
+            showTabPage('completed-tours', completedCurrentPage, filteredCompletedRows);
+        } else {
+            cancelledCurrentPage = 1;
+            showTabPage('cancelled-tours', cancelledCurrentPage, filteredCancelledRows);
+        }
+    }
+    
+    // Helper function to filter rows by search term
+    function filterRowsBySearch(rows, searchValue) {
+        const filtered = [];
+        
+        rows.forEach(row => {
+            // Get all text content from the row
+            const text = row.textContent.toLowerCase();
+            
+            // Check if the row contains the search value
+            if (text.includes(searchValue)) {
+                filtered.push(row);
+            }
+        });
+        
+        return filtered;
+    }
+    
+    // Function to update or create no results message
+    function updateNoResultsMessage(tableId, matchCount, searchValue) {
+        const isCompletedTab = tableId === 'completed-tours';
+        const noToursSelector = `.no-${isCompletedTab ? 'completed' : 'cancelled'}-tours`;
+        const noToursDiv = document.querySelector(`#${tableId} ${noToursSelector}`);
+        const infoBox = document.querySelector(`#${tableId} .info-box`);
+        
+        if (matchCount === 0) {
+            // No matches found
+            if (!noToursDiv) {
+                const noResultsDiv = document.createElement('div');
+                noResultsDiv.className = `no-${isCompletedTab ? 'completed' : 'cancelled'}-tours text-center`;
+                noResultsDiv.textContent = `No ${isCompletedTab ? 'completed' : 'cancelled'} tours found matching "${searchValue}".`;
+                
+                if (infoBox) {
+                    infoBox.style.display = 'none';
+                    infoBox.parentElement.appendChild(noResultsDiv);
+                }
+            } else {
+                noToursDiv.textContent = `No ${isCompletedTab ? 'completed' : 'cancelled'} tours found matching "${searchValue}".`;
+                noToursDiv.style.display = 'block';
+                
+                if (infoBox) infoBox.style.display = 'none';
+            }
+            
+            // Hide pagination when no results
+            const paginationId = isCompletedTab ? 'completed-pagination' : 'cancelled-pagination';
+            const pagination = document.getElementById(paginationId);
+            if (pagination) pagination.style.display = 'none';
+        } else {
+            // Matches found
+            if (infoBox) infoBox.style.display = 'block';
+            if (noToursDiv) noToursDiv.style.display = 'none';
+            
+            // Show pagination if needed
+            const paginationId = isCompletedTab ? 'completed-pagination' : 'cancelled-pagination';
+            const pagination = document.getElementById(paginationId);
+            if (pagination && matchCount > rowsPerPage) pagination.style.display = 'flex';
+        }
+    }
+    
+    // Function to initialize pagination for a specific tab
+    function initTabPagination(tabId) {
+        const tab = document.getElementById(tabId);
+        if (!tab) return;
+        
+        // Get all table rows in this tab
+        const tableRows = tab.querySelectorAll('tbody tr');
+        if (tableRows.length === 0) return;
+        
+        // Calculate total pages
+        const totalPages = Math.ceil(tableRows.length / rowsPerPage);
+        if (totalPages <= 1) return; // No pagination needed for 1 page
+        
+        // Create pagination container if it doesn't exist
+        let paginationId = tabId === 'completed-tours' ? 'completed-pagination' : 'cancelled-pagination';
+        
+        if (!document.getElementById(paginationId)) {
+            const tableContainer = tab.querySelector('.table-responsive');
+            if (!tableContainer) return;
+            
+            const paginationControls = document.createElement('div');
+            paginationControls.id = paginationId;
+            paginationControls.className = 'pagination-controls d-flex justify-content-start mt-3';
+            paginationControls.innerHTML = `
+                <div class="pagination-wrapper">
+                    <button class="btn btn-sm prev-btn" disabled>&lt;</button>
+                    <span class="page-indicator">1/${totalPages}</span>
+                    <button class="btn btn-sm next-btn">&gt;</button>
                 </div>
-                <div class="destination-info ms-3">
-                    <h6>${tour.sitename}</h6>
-                    <p style="color: #757575; font-size: 16px;">
-                        <i class="bi bi-calendar"></i> ${new Date(tour.travel_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
-                    </p>
-                    <p style="color: #555; font-size: 16px;">
-                        <i class="bi bi-cash"></i> ₱${parseFloat(tour.price).toFixed(2)} per pax
-                    </p>
-                </div>
-            </div>
-        `;
-        document.getElementById('destination-container').innerHTML += destinationCard;
-
-        let feeItem = `<p>${tour.sitename} <span>x${companions}</span></p>`;
-        document.getElementById('estimated-fees').innerHTML += feeItem;
-
-        totalPrice += tour.price * companions;
-    });
-
-    document.getElementById('total-price').textContent = totalPrice.toFixed(2);
-
-    let modal = new bootstrap.Modal(document.getElementById('tourHistoryModal'));
-    modal.show();
-}
-
-function showCompleted() {
-    document.getElementById("completed-tours").style.display = "block";
-    document.getElementById("cancelled-tours").style.display = "none";
-
-    document.getElementById("completed-btn").classList.add("active");
-    document.getElementById("cancelled-btn").classList.remove("active");
-}
-
-function showCancelled() {
-    document.getElementById("completed-tours").style.display = "none";
-    document.getElementById("cancelled-tours").style.display = "block";
-
-    document.getElementById("completed-btn").classList.remove("active");
-    document.getElementById("cancelled-btn").classList.add("active");
-}
+            `;
+            
+            tableContainer.parentNode.appendChild(paginationControls);
+            
+            // Add event listeners for pagination
+            const prevBtn = paginationControls.querySelector('.prev-btn');
+            const nextBtn = paginationControls.querySelector('.next-btn');
+            
+            prevBtn.addEventListener('click', function() {
+                if (tabId === 'completed-tours') {
+                    if (completedCurrentPage > 1) {
+                        completedCurrentPage--;
+                        showTabPage(tabId, completedCurrentPage, filteredCompletedRows);
+                    }
+                } else {
+                    if (cancelledCurrentPage > 1) {
+                        cancelledCurrentPage--;
+                        showTabPage(tabId, cancelledCurrentPage, filteredCancelledRows);
+                    }
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                const rowsToUse = tabId === 'completed-tours' ? 
+                    (filteredCompletedRows.length > 0 ? filteredCompletedRows : tab.querySelectorAll('tbody tr')) : 
+                    (filteredCancelledRows.length > 0 ? filteredCancelledRows : tab.querySelectorAll('tbody tr'));
+                
+                const totalPages = Math.ceil(rowsToUse.length / rowsPerPage);
+                
+                if (tabId === 'completed-tours') {
+                    if (completedCurrentPage < totalPages) {
+                        completedCurrentPage++;
+                        showTabPage(tabId, completedCurrentPage, filteredCompletedRows);
+                    }
+                } else {
+                    if (cancelledCurrentPage < totalPages) {
+                        cancelledCurrentPage++;
+                        showTabPage(tabId, cancelledCurrentPage, filteredCancelledRows);
+                    }
+                }
+            });
+        }
+        
+        // Initialize filtered rows arrays
+        filteredCompletedRows = Array.from(document.querySelectorAll('#completed-tours tbody tr'));
+        filteredCancelledRows = Array.from(document.querySelectorAll('#cancelled-tours tbody tr'));
+        
+        // Show initial page
+        if (tabId === 'completed-tours') {
+            showTabPage(tabId, completedCurrentPage, filteredCompletedRows);
+        } else {
+            showTabPage(tabId, cancelledCurrentPage, filteredCancelledRows);
+        }
+    }
+    
+    // Function to show specific page for a tab
+    function showTabPage(tabId, page, filteredRows = []) {
+        const tab = document.getElementById(tabId);
+        if (!tab) return;
+        
+        // Get all table rows or use filtered rows if provided
+        const allRows = tab.querySelectorAll('tbody tr');
+        const rowsToUse = filteredRows.length > 0 ? filteredRows : Array.from(allRows);
+        
+        // Calculate total pages
+        const totalPages = Math.ceil(rowsToUse.length / rowsPerPage);
+        
+        // First hide all rows
+        allRows.forEach(row => {
+            row.style.display = 'none';
+        });
+        
+        // Calculate start and end index
+        const startIndex = (page - 1) * rowsPerPage;
+        const endIndex = Math.min(startIndex + rowsPerPage, rowsToUse.length);
+        
+        // Show only rows for current page
+        for (let i = startIndex; i < endIndex; i++) {
+            rowsToUse[i].style.display = '';
+        }
+        
+        // Update pagination controls
+        const paginationId = tabId === 'completed-tours' ? 'completed-pagination' : 'cancelled-pagination';
+        const pagination = document.getElementById(paginationId);
+        
+        if (pagination) {
+            const prevBtn = pagination.querySelector('.prev-btn');
+            const nextBtn = pagination.querySelector('.next-btn');
+            const pageIndicator = pagination.querySelector('.page-indicator');
+            
+            prevBtn.disabled = page <= 1;
+            nextBtn.disabled = page >= totalPages;
+            pageIndicator.textContent = `${page}/${totalPages || 1}`;
+            
+            // Show/hide pagination based on number of results
+            pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+        }
+    }
+    
+    // Override the existing functions
+    window.showCompleted = function() {
+        document.getElementById("completed-tours").style.display = "block";
+        document.getElementById("cancelled-tours").style.display = "none";
+        document.getElementById("completed-btn").classList.add("active");
+        document.getElementById("cancelled-btn").classList.remove("active");
+        
+        // Show pagination for completed tab if needed
+        const searchValue = document.getElementById('searchBar').value.toLowerCase().trim();
+        if (searchValue) {
+            showTabPage('completed-tours', completedCurrentPage, filteredCompletedRows);
+        } else {
+            showTabPage('completed-tours', completedCurrentPage);
+        }
+    };
+    
+    window.showCancelled = function() {
+        document.getElementById("completed-tours").style.display = "none";
+        document.getElementById("cancelled-tours").style.display = "block";
+        document.getElementById("completed-btn").classList.remove("active");
+        document.getElementById("cancelled-btn").classList.add("active");
+        
+        // Initialize cancelled pagination if not already done
+        if (!document.getElementById("cancelled-pagination")) {
+            initTabPagination('cancelled-tours');
+        }
+        
+        // Show pagination for cancelled tab if needed
+        const searchValue = document.getElementById('searchBar').value.toLowerCase().trim();
+        if (searchValue) {
+            showTabPage('cancelled-tours', cancelledCurrentPage, filteredCancelledRows);
+        } else {
+            showTabPage('cancelled-tours', cancelledCurrentPage);
+        }
+    };
+});
 </script>
 </body>
 </html>

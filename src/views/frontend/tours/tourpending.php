@@ -17,7 +17,7 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
-            font-family: 
+            font-family: 'Nunito', sans-serif;
         }
 
         body {
