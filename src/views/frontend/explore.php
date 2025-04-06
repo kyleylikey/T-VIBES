@@ -69,7 +69,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
             <a href="destination.php?siteid=<?php echo $site['siteid'];?>" class="text-decoration-none">
                 <div class="card border-0 shadow rounded-3 overflow-hidden position-relative">
                     <img src="../../../public/uploads/<?php echo $site['siteimage'];?>" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="<?php echo $site['sitename'];?>">
-                    <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ <?php echo $site['rating'];?></div>
+                    <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ <?php echo ($site['rating_cnt'] == 0) ? '0.00' : number_format($site['rating'] / $site['rating_cnt'], 2); ?></div>
                     <div class="card-body text-center">
                         <h5 class="fw-bold" style="color: #102E47;"><?php echo $site['sitename'];?></h5>
                         <p class="text-muted">

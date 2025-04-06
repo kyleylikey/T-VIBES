@@ -130,9 +130,9 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                     <div class="row align-items-center mb-5">
                         <div>
                             <div class="rating-display">
-                                <h2 class="display-4 fw-bold"><?php echo $siteDetails['rating']; ?></h2>
+                                <h2 class="display-4 fw-bold"><?php echo ($siteDetails['rating_cnt'] == 0) ? 0 : number_format($siteDetails['rating']/$siteDetails['rating_cnt'], 2); ?></h2>
                                 <div class="stars text-warning">
-                                    <?php echo generateStarRating($siteDetails['rating']); ?>
+                                    <?php echo ($siteDetails['rating_cnt'] == 0) ? 0 : generateStarRating($siteDetails['rating']/$siteDetails['rating_cnt']); ?>
                                 </div>                                    
                                 <span class="rating-count">All Ratings (<?php echo $siteDetails['rating_cnt']; ?>)</span>
                             </div>

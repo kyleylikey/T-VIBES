@@ -55,7 +55,7 @@ class Site {
     }
 
     public function getSites() {
-        $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price FROM sites WHERE status = 'displayed'";
+        $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM sites WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -143,6 +143,15 @@ class Site {
             }
         }
         return implode(', ', $schedule);
+    }
+
+    public function rateSite($siteId, $rating) {
+        $query = "UPDATE sites SET rating = rating + :rating, rating_cnt = rating_cnt + 1 WHERE siteid = :siteid";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([
+            ":rating" => $rating,
+            ":siteid" => $siteId
+        ]);
     }
 }
 ?>

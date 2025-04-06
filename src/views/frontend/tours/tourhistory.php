@@ -2,15 +2,88 @@
 include '../../../../includes/auth.php';
 require_once '../../../config/dbconnect.php';
 
-$database = new Database();
-$conn = $database->getConnection();
+// Check if user is logged in
+if(!isset($_SESSION['userid'])) {
+    header("Location: ../../../auth/login.php");
+    exit;
+}
 
 $userid = $_SESSION['userid']; 
 
+// Handle POST request for ratings separately
+if($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get the site ID and rating from the form data
+    $siteId = $_POST['siteId'] ?? null;
+    $rating = $_POST['rating'] ?? null;
+    
+    // Validate inputs
+    if(!$siteId || !$rating || !is_numeric($siteId) || !is_numeric($rating) || $rating < 1 || $rating > 5) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+        exit;
+    }
+    
+    try {
+        // Initialize database connection
+        $database = new Database();
+        $conn = $database->getConnection();
+        
+        // Check if user has already rated this site
+        $checkQuery = "SELECT id FROM user_ratings WHERE user_id = :user_id AND site_id = :site_id";
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
+        $checkStmt->bindParam(':site_id', $siteId, PDO::PARAM_INT);
+        $checkStmt->execute();
+        
+        if($checkStmt->rowCount() > 0) {
+            // User has already rated this site
+            echo json_encode(['status' => 'error', 'message' => 'You have already rated this site', 'alreadyRated' => true]);
+            exit;
+        }
+        
+        // Begin transaction
+        $conn->beginTransaction();
+        
+        // Insert new rating into user_ratings table
+        $insertQuery = "INSERT INTO user_ratings (user_id, site_id, rating) VALUES (:user_id, :site_id, :rating)";
+        $insertStmt = $conn->prepare($insertQuery);
+        $insertStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
+        $insertStmt->bindParam(':site_id', $siteId, PDO::PARAM_INT);
+        $insertStmt->bindParam(':rating', $rating, PDO::PARAM_INT);
+        $insertResult = $insertStmt->execute();
+        
+        // Update site rating
+        $updateQuery = "UPDATE sites SET rating = rating + :rating, rating_cnt = rating_cnt + 1 WHERE siteid = :siteid";
+        $updateStmt = $conn->prepare($updateQuery);
+        $updateStmt->bindParam(':rating', $rating, PDO::PARAM_INT);
+        $updateStmt->bindParam(':siteid', $siteId, PDO::PARAM_INT);
+        $updateResult = $updateStmt->execute();
+        
+        if($insertResult && $updateResult) {
+            $conn->commit();
+            echo json_encode(['status' => 'success', 'message' => 'Rating submitted successfully']);
+        } else {
+            $conn->rollBack();
+            echo json_encode(['status' => 'error', 'message' => 'Failed to submit rating']);
+        }
+    } catch(PDOException $e) {
+        if(isset($conn) && $conn->inTransaction()) {
+            $conn->rollBack();
+        }
+        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+    }
+    exit; // Important: stop execution after responding to POST
+}
+
+// Continue with page rendering for GET requests
+$database = new Database();
+$conn = $database->getConnection();
+
+// Modified query to include siteids
 $query = "SELECT t.tourid, t.date, t.status, t.created_at, t.companions, 
-                 GROUP_CONCAT(s.sitename ORDER BY s.sitename SEPARATOR ', ') AS destinations, 
-                 GROUP_CONCAT(s.price ORDER BY s.sitename SEPARATOR ', ') AS prices,
-                 GROUP_CONCAT(s.siteimage ORDER BY s.sitename SEPARATOR ', ') AS images
+                 GROUP_CONCAT(s.siteid ORDER BY s.sitename SEPARATOR ',') AS siteids,
+                 GROUP_CONCAT(s.sitename ORDER BY s.sitename SEPARATOR ',') AS destinations, 
+                 GROUP_CONCAT(s.price ORDER BY s.sitename SEPARATOR ',') AS prices,
+                 GROUP_CONCAT(s.siteimage ORDER BY s.sitename SEPARATOR ',') AS images
           FROM tour t
           JOIN sites s ON t.siteid = s.siteid
           WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CURDATE()
@@ -21,6 +94,13 @@ $stmt = $conn->prepare($query);
 $stmt->bindParam(1, $userid);
 $stmt->execute();
 $tours = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch all sites the user has already rated
+$ratedSitesQuery = "SELECT site_id FROM user_ratings WHERE user_id = :user_id";
+$ratedSitesStmt = $conn->prepare($ratedSitesQuery);
+$ratedSitesStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
+$ratedSitesStmt->execute();
+$ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <!DOCTYPE html>
@@ -225,6 +305,19 @@ $tours = $stmt->fetchAll(PDO::FETCH_ASSOC);
             background-color: #EC6350;
             color: #FFFFFF !important;
         }
+        
+        /* Style for disabled buttons */
+        .rate-btn.disabled {
+            background-color: #cccccc !important;
+            color: #666666 !important;
+            cursor: not-allowed !important;
+            border-color: #cccccc !important;
+        }
+        
+        .rate-btn.disabled:hover {
+            background-color: #cccccc !important;
+            color: #666666 !important;
+        }
     </style>
 </head>
 <body>
@@ -243,6 +336,7 @@ $tours = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $destinations = explode(',', $tour['destinations']); 
         $prices = explode(',', $tour['prices']); 
         $images = explode(',', $tour['images']); 
+        $siteIds = explode(',', $tour['siteids']);
         $num_people = $tour['companions']; 
     ?>
     <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $index ?>">
@@ -266,16 +360,23 @@ $tours = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <?php foreach ($destinations as $key => $destination) : ?>
-                                <div class="destination-card d-flex align-items-center p-2 mb-2" style="background: #f8f9fa; border-radius: 8px;">
+                            <?php foreach ($destinations as $key => $destination) : 
+                                $siteId = trim($siteIds[$key]);
+                                $isRated = in_array($siteId, $ratedSites);
+                            ?>
+                                <div class="destination-card d-flex align-items-center p-2 mb-2" style="background: #f8f9fa; border-radius: 8px;" data-site-id="<?= $siteId ?>">
                                     <div class="destination-image me-2">
                                         <img src="../../../../public/uploads/<?= trim($images[$key]) ?>" alt="<?= trim($destination) ?>" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
                                     </div>
                                     <div class="destination-details flex-grow-1">
                                         <div class="destination-name fw-bold"><?= trim($destination) ?></div>
                                         <div class="rate-review-container mt-1">
-                                            <button class="btn btn-custom btn-sm">Rate</button>
-                                            <button class="btn btn-custom btn-sm">Review</button>
+                                            <button class="btn btn-custom btn-sm rate-btn <?= $isRated ? 'disabled' : '' ?>" 
+                                                    <?= $isRated ? 'disabled' : '' ?> 
+                                                    style="<?= $isRated ? 'background-color: #cccccc !important; color: #666666 !important; cursor: not-allowed;' : '' ?>">
+                                                <?= $isRated ? 'Rated' : 'Rate' ?>
+                                            </button>
+                                            <button class="btn btn-custom btn-sm review-btn">Review</button>
                                         </div>
                                     </div>
                                 </div>
@@ -351,116 +452,263 @@ $tours = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-<script>
-    function openRateModal() {
-        const modal = new bootstrap.Modal(document.getElementById('rateExperienceModal'));
-        modal.show();
-
-        document.querySelectorAll('.stars .bi').forEach(star => {
-            star.addEventListener('click', function () {
-                const value = this.getAttribute('data-value');
-                document.querySelectorAll('.stars .bi').forEach((s, i) => {
-                    s.classList.toggle('active', i < value);
-                });
-            });
-        });
-    }
-</script>
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content p-4 text-center">
+            <h5 class="modal-title mb-3">Leave a Review</h5>
+            <div class="form-group mb-3">
+                <textarea id="reviewText" class="form-control" rows="4" placeholder="Share your experience..."></textarea>
+            </div>
+            
+            <button id="submitReview" class="btn" style="background-color: #EC6350; color: #fff; border-radius: 30px; padding: 10px 24px; font-weight: bold;">Submit Review</button>
+        </div>
+    </div>
+</div>
 
 <script>
     let selectedRating = 0;
-
-    function openRateModal() {
-        const modal = new bootstrap.Modal(document.getElementById('rateExperienceModal'));
+    
+    function openReviewModal(siteId) {
+        const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+        
+        // Store the siteId in the modal for later use
+        document.getElementById('reviewModal').dataset.siteId = siteId;
+        
         modal.show();
 
-        // Handle star click events
-        document.querySelectorAll('.stars .bi').forEach(star => {
-            star.addEventListener('click', function () {
-                selectedRating = parseInt(this.getAttribute('data-value'));
-                document.querySelectorAll('.stars .bi').forEach((s, i) => {
-                    s.classList.toggle('active', i < selectedRating);
+        // Clear previous selection and text
+        document.getElementById('reviewText').value = '';
+    }
+
+    function submitReview(siteId, reviewText) {
+        // Create form data
+        const formData = new FormData();
+        formData.append('siteId', siteId);
+        formData.append('review', reviewText);
+        
+        // Close the modal first
+        const modal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
+        modal.hide();
+        
+        // Show success message (replace this with actual API call)
+        Swal.fire({
+            title: "Thank you!",
+            text: "Your review has been submitted successfully.",
+            icon: "success",
+            confirmButtonColor: "#EC6350"
+        });
+        
+        // In a real implementation, you would add an AJAX call here
+        // fetch('submit_review.php', {
+        //     method: 'POST',
+        //     body: formData
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //     // Show success message
+        //     Swal.fire({
+        //         title: "Thank you!",
+        //         text: "Your review has been submitted successfully.",
+        //         icon: "success",
+        //         confirmButtonColor: "#EC6350"
+        //     });
+        // })
+        // .catch(error => {
+        //     console.error('Error:', error);
+        //     Swal.fire({
+        //         title: "Error",
+        //         text: "There was a problem submitting your review. Please try again.",
+        //         icon: "error",
+        //         confirmButtonColor: "#EC6350"
+        //     });
+        // });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners to all Rate buttons
+        document.querySelectorAll('.rate-btn').forEach(button => {
+            if (!button.classList.contains('disabled')) {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent modal from closing
+                    
+                    // Get the parent destination-card element that has the data-site-id
+                    const destinationCard = this.closest('.destination-card');
+                    const siteId = destinationCard.dataset.siteId;
+                    
+                    openRateModal(siteId);
                 });
+            }
+        });
+        
+        // Add event listeners to all Review buttons
+        document.querySelectorAll('.review-btn').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevent modal from closing
+                
+                // Get the parent destination-card element that has the data-site-id
+                const destinationCard = this.closest('.destination-card');
+                const siteId = destinationCard.dataset.siteId;
+                
+                openReviewModal(siteId);
             });
         });
 
-        // Handle submit button
-        document.getElementById('submitRating').addEventListener('click', function () {
-            if (selectedRating > 0) {
-                // Close modal
-                modal.hide();
-
-                // Display SweetAlert confirmation
+        // Set up the star click events once (not every time the modal opens)
+        document.querySelectorAll('.stars .bi').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.getAttribute('data-value'));
+                document.querySelectorAll('.stars .bi').forEach((s, i) => {
+                    if (i < selectedRating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+        
+        // Set up the submit review button click event
+        document.getElementById('submitReview').addEventListener('click', function() {
+            const reviewText = document.getElementById('reviewText').value.trim();
+            const siteId = document.getElementById('reviewModal').dataset.siteId;
+            
+            if (reviewText === '') {
                 Swal.fire({
-                    title: "Thank you for leaving a rating!",
-                    text: `You rated ${selectedRating} star(s).`,
+                    title: "Error",
+                    text: "Please write a review before submitting.",
+                    icon: "error",
+                    confirmButtonColor: "#EC6350"
+                });
+                return;
+            }
+            
+            submitReview(siteId, reviewText);
+        });
+    });
+
+    // Modified openRateModal function to just open the modal and store the siteId
+    function openRateModal(siteId) {
+        const modal = new bootstrap.Modal(document.getElementById('rateExperienceModal'));
+        
+        // Store the siteId in the modal for later use
+        document.getElementById('rateExperienceModal').dataset.siteId = siteId;
+        
+        // Reset the stars
+        selectedRating = 0;
+        document.querySelectorAll('.stars .bi').forEach(star => {
+            star.classList.remove('active');
+        });
+        
+        modal.show();
+    }
+    
+    // Update the submit rating function to send rating to the server
+    document.getElementById('submitRating').addEventListener('click', function() {
+        if (selectedRating > 0) {
+            const siteId = document.getElementById('rateExperienceModal').dataset.siteId;
+            
+            // Send the rating to the server
+            submitRating(siteId, selectedRating);
+        } else {
+            // Display error if no rating is selected
+            Swal.fire({
+                title: "Error",
+                text: "Please select a rating before submitting.",
+                icon: "error",
+                confirmButtonColor: "#EC6350"
+            });
+        }
+    });
+
+    function submitRating(siteId, rating) {
+        // Create form data
+        const formData = new FormData();
+        formData.append('siteId', siteId);
+        formData.append('rating', rating);
+        
+        // Send AJAX request to the current page
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('rateExperienceModal'));
+            modal.hide();
+            
+            if (data.status === 'error' && data.alreadyRated) {
+                // User has already rated this site
+                Swal.fire({
+                    title: "Already Rated",
+                    text: "You have already rated this site.",
+                    icon: "info",
+                    confirmButtonColor: "#EC6350"
+                });
+                
+                // Disable the rate button for this site
+                disableRateButtonBySiteId(siteId);
+            } else if (data.status === 'success') {
+                // Show success message
+                Swal.fire({
+                    title: "Thank you for your rating!",
+                    text: `You rated ${rating} star(s).`,
                     icon: "success",
                     confirmButtonColor: "#EC6350"
                 });
-
-                // Reset stars after submission
-                selectedRating = 0;
-                document.querySelectorAll('.stars .bi').forEach(star => {
-                    star.classList.remove('active');
-                });
+                
+                // Disable the rate button for this site
+                disableRateButtonBySiteId(siteId);
             } else {
-                // Display error if no rating is selected
+                // Show error
                 Swal.fire({
                     title: "Error",
-                    text: "Please select a rating before submitting.",
+                    text: data.message || "There was a problem submitting your rating.",
                     icon: "error",
                     confirmButtonColor: "#EC6350"
                 });
             }
+            
+            // Reset the stars after submission attempt
+            selectedRating = 0;
+            document.querySelectorAll('.stars .bi').forEach(star => {
+                star.classList.remove('active');
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: "Error",
+                text: "There was a problem submitting your rating. Please try again.",
+                icon: "error",
+                confirmButtonColor: "#EC6350"
+            });
         });
     }
-	function openReviewModal() {
-    Swal.fire({
-        title: "Leave a Review",
-        input: "textarea",
-        inputAttributes: {
-            autocapitalize: "off",
-            placeholder: "Type here..."
-        },
-        showCancelButton: true,
-        confirmButtonText: "Submit",
-        confirmButtonColor: "#EC6350",
-        showLoaderOnConfirm: true,
-        preConfirm: async (review) => {
-            if (!review) {
-                Swal.showValidationMessage("Please enter a review");
-                return false;
-            } 
-            // Simulate async operation (like saving to a database)
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            return review;
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: "Thank you!",
-                text: "Your review has been submitted.",
-                icon: "success"
-            });
-        }
-    });
-}
 
-function showTourDetails(tour) {
-    document.getElementById('destination-name').innerText = tour.destinations;
-    document.getElementById('tour-status').innerText = 'Status: ' + tour.status;
-    document.getElementById('tour-created').innerText = tour.created_at;
-    document.getElementById('tour-people').innerText = tour.companions;
-    document.getElementById('tour-fees').innerText = tour.destinations + ' x2';
-    document.getElementById('tour-destination').innerText = tour.destinations;
-    document.getElementById('tour-total').innerText = '₱ 0.00';
+    // Find and disable a rate button by site ID
+    function disableRateButtonBySiteId(siteId) {
+        document.querySelectorAll('.destination-card').forEach(card => {
+            if (card.dataset.siteId === siteId) {
+                const rateBtn = card.querySelector('.rate-btn');
+                if (rateBtn) {
+                    disableRateButton(rateBtn);
+                }
+            }
+        });
+    }
 
-    var modal = new bootstrap.Modal(document.getElementById('tourModal'));
-    modal.show();
-}
-
+    // Add the disableRateButton helper function
+    function disableRateButton(button) {
+        button.disabled = true;
+        button.classList.add('disabled');
+        button.style.backgroundColor = '#cccccc';
+        button.style.color = '#666666';
+        button.style.cursor = 'not-allowed';
+        button.innerText = 'Rated';
+    }
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>
