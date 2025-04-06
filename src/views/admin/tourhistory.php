@@ -115,6 +115,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                 </div>
             </div>
         </div>
+        
 
         <div class="row mt-3 d-flex justify-content-center">
             <div class="col-lg-12 col-md-12 col-12 mb-3" id="completed-tours">
@@ -502,6 +503,65 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 });
+
+function showModal(tourData) {
+    document.getElementById('destination-container').innerHTML = "";
+    document.getElementById('stepper-container').innerHTML = "";
+    document.getElementById('estimated-fees').innerHTML = "";
+
+    let totalPrice = 0;
+    let companions = tourData[0].companions;
+    let userName = tourData[0].name;
+
+    let dateObj = new Date(tourData[0].submitted_on);
+    let dateFormatted = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    let timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    let dateCreated = `${dateFormatted} | ${timeFormatted}`;
+
+    document.getElementById('tourHistoryModalLabel').textContent = `Tour History of ${userName}`;
+    document.getElementById('date-created').textContent = dateCreated;
+    document.getElementById('num-people').textContent = companions;
+    document.getElementById('tour-status').textContent = "Tour has been " + tourData[0].status;
+
+    tourData.forEach((tour, index) => {
+        let stepperItem = `
+            <div class="step">
+                <div class="circle">${index + 1}</div>
+                ${index < tourData.length - 1 ? '<div class="dashed-line"></div>' : ''}
+            </div>
+        `;
+        document.getElementById('stepper-container').innerHTML += stepperItem;
+
+        let destinationCard = `
+            <div class="destination-card d-flex align-items-center" style="margin-bottom: 15px;">
+                <div class="image-placeholder">
+                    <img src="/T-VIBES/public/uploads/${tour.siteimage}" alt="${tour.sitename}" 
+                        style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                </div>
+                <div class="destination-info ms-3">
+                    <h6>${tour.sitename}</h6>
+                    <p style="color: #757575; font-size: 16px;">
+                        <i class="bi bi-calendar"></i> ${new Date(tour.travel_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </p>
+                    <p style="color: #555; font-size: 16px;">
+                        <i class="bi bi-cash"></i> ₱${parseFloat(tour.price).toFixed(2)} per pax
+                    </p>
+                </div>
+            </div>
+        `;
+        document.getElementById('destination-container').innerHTML += destinationCard;
+
+        let feeItem = `<p>${tour.sitename} <span>x${companions}</span></p>`;
+        document.getElementById('estimated-fees').innerHTML += feeItem;
+
+        totalPrice += tour.price * companions;
+    });
+
+    document.getElementById('total-price').textContent = totalPrice.toFixed(2);
+
+    let modal = new bootstrap.Modal(document.getElementById('tourHistoryModal'));
+    modal.show();
+}
 </script>
 </body>
 </html>
