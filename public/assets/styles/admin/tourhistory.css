@@ -470,6 +470,169 @@ tbody tr td:last-child {
     color: #FFFFFF !important;
 }
 
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -5px;
+    user-select: none;
+    padding: 10px 0;
+}
+
+.pagination-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev-btn, .next-btn {
+    background-color: transparent !important;
+    color: #EC6350 !important;
+    border: 1px solid #EC6350 !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    margin: 0 10px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    transition: all 0.2s ease !important;
+    padding: 0 !important;
+    outline: none !important;
+}
+
+.prev-btn:hover:not(:disabled), 
+.next-btn:hover:not(:disabled) {
+    background-color: #EC6350 !important;
+    color: white !important;
+}
+
+.prev-btn:disabled, 
+.next-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    border-color: #ccc !important;
+    color: #ccc !important;
+}
+
+.page-indicator {
+    margin: 0 15px;
+    font-family: 'Nunito', sans-serif;
+    color: #434343;
+    font-weight: 600;
+    min-width: 45px;
+    text-align: center;
+}
+
+.filter-search-container {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 10px;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+    font-family: 'Nunito', sans-serif !important;
+}
+
+.search-wrapper i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #102E47;
+    font-size: 1.2rem;
+}
+
+.search-wrapper input {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    border: 2px solid #102E47;
+    border-radius: 25px;
+    outline: none;
+    font-size: 1rem;
+}
+
+.search-wrapper input::placeholder {
+    color: #102E47;
+    opacity: 0.7;
+}
+
+.btn-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+#advanced-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 38px;
+}
+
+.filter-search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.active-filter-indicator {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: #007bff;
+    border-radius: 50%;
+}
+
+#advanced-filter-btn.has-filters {
+    position: relative;
+    color: #007bff;
+    border-color: #007bff;
+}
+
+#advanced-filter-btn.has-filters::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    background-color: #007bff;
+    border-radius: 50%;
+}
+
+.btn-filter {
+    width: 45px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid #102E47;
+    color: #434343;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-filter:hover {
+    background-color: #102E47;
+    color: white;
+}
+
 @media (max-width: 1280px) {
     .search-wrapper {
         position: relative;
@@ -635,6 +798,9 @@ tbody tr td:last-child {
         width: 100%;
         margin-top: 10px;
         justify-content: center;
+    }
+    .btn-filter {
+        margin-top: 0px;
     }
     .search-wrapper {
         position: relative;
@@ -923,104 +1089,3 @@ tbody tr td:last-child {
         margin: 10px auto; 
     }
 }
-
-    .pagination-controls {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: -5px;
-        user-select: none;
-        padding: 10px 0;
-    }
-
-    .pagination-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .prev-btn, .next-btn {
-        background-color: transparent !important;
-        color: #EC6350 !important;
-        border: 1px solid #EC6350 !important;
-        border-radius: 50% !important;
-        width: 32px !important;
-        height: 32px !important;
-        margin: 0 10px !important;
-        cursor: pointer !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        font-size: 16px !important;
-        font-weight: bold !important;
-        transition: all 0.2s ease !important;
-        padding: 0 !important;
-        outline: none !important;
-    }
-
-    .prev-btn:hover:not(:disabled), 
-    .next-btn:hover:not(:disabled) {
-        background-color: #EC6350 !important;
-        color: white !important;
-    }
-
-    .prev-btn:disabled, 
-    .next-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed !important;
-        border-color: #ccc !important;
-        color: #ccc !important;
-    }
-
-    .page-indicator {
-        margin: 0 15px;
-        font-family: 'Nunito', sans-serif;
-        color: #434343;
-        font-weight: 600;
-        min-width: 45px;
-        text-align: center;
-    }
-
-    .filter-search-container {
-        display: flex;
-        align-items: center;
-        margin-left: auto;
-        gap: 10px;
-    }
-
-    .search-wrapper {
-        position: relative;
-        width: 100%;
-        margin-top: 10px;
-        font-family: 'Nunito', sans-serif !important;
-    }
-    
-    .search-wrapper i {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #102E47;
-        font-size: 1.2rem;
-    }
-    
-    .search-wrapper input {
-        width: 100%;
-        padding: 10px 10px 10px 40px;
-        border: 2px solid #102E47;
-        border-radius: 25px;
-        outline: none;
-        font-size: 1rem;
-    }
-    
-    .search-wrapper input::placeholder {
-        color: #102E47;
-        opacity: 0.7;
-    }
-
-    .btn-group {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-    }

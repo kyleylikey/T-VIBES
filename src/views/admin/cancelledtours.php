@@ -18,7 +18,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Completed Tours</title>
+    <title>Admin Dashboard - Cancelled Tours</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
@@ -94,7 +94,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
 <div class="main-content">
     <div class="content-container">
         <div class="header">
-            <h2>Completed Tours</h2>
+            <h2>Cancelled Tours</h2>
             <span class="date">
                 <h2>
                     <?php 
@@ -106,8 +106,8 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
         </div>
 
         <div class="btn-group" role="group">
-            <a href="tourhistory.php" class="btn-custom active" style="text-decoration: none;">Completed Tours</a>
-            <a href="cancelledtours.php" class="btn-custom" style="text-decoration: none;">Cancelled Tours</a>
+            <a href="tourhistory.php" class="btn-custom" style="text-decoration: none;">Completed Tours</a>
+            <a href="cancelledtours.php" class="btn-custom active" style="text-decoration: none;">Cancelled Tours</a>
             <div class="filter-search-container">
                 <button type="button" class="btn-filter" id="sortButton">
                         <i class="fas fa-filter"></i>
@@ -118,11 +118,9 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                 </div>
             </div>
         </div>
-
-
         <div class="row mt-3 d-flex justify-content-center">
             <div class="col-lg-12 col-md-12 col-12 mb-3">
-                <?php if (count($completed_tours) > 0): ?>
+                <?php if (count($cancelled_tours) > 0): ?>
                 <div class="info-box">
                     <div class="table-responsive">
                         <table class="table">
@@ -136,13 +134,12 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($completed_tours as $tourid => $tourGroup): 
+                                <?php foreach ($cancelled_tours as $tourid => $tourGroup): 
                                     $firstTour = $tourGroup[0];
                                     $destinationCount = count($tourGroup);
-                                    $totalPrice = array_sum(array_column($tourGroup, 'price')) * $firstTour['companions'];
                                     $tourData = htmlspecialchars(json_encode($tourGroup)); 
                                 ?>
-                                    <tr onclick="showModal(<?php echo $tourData; ?>)" style="cursor: pointer;">
+                                    <tr onclick="showModal(<?php echo $tourData; ?>)" style="cursor: pointer; background-color: #E7EBEE;">
                                         <td><?php echo htmlspecialchars($firstTour['name']); ?></td>
                                         <td><?php echo date('d M Y | g:i A', strtotime($firstTour['submitted_on'])); ?></td>
                                         <td><?php echo $destinationCount; ?></td>
@@ -156,7 +153,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                     <div id="pagination-controls" class="pagination-controls d-flex justify-content-start mt-3"></div>
                 </div>
                 <?php else: ?>
-                    <div class="no-completed-tours text-center">No completed tours found.</div>
+                    <div class="no-cancelled-tours text-center">No cancelled tours found.</div>
                 <?php endif; ?>
             </div>
         </div>
