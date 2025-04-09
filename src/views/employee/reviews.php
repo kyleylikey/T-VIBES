@@ -133,7 +133,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             font-weight: bold;
             border: 2px solid #102E47;
             border-radius: 25px;
-            background-color: white;
+            background-color: #FFFFFF;
             color: #434343;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -157,31 +157,223 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
         }
 
         .info-box {
-            height: 290px;
-            width: 375px;
-            background-color: #FFFFFF;
+            position: relative;
+            min-height: 150px;
+            min-width: 200px; 
+            background-color: rgba(114, 154, 184, 0.2); 
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             padding: 15px;
-            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            text-align: left;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin: auto;
+            text-align: center;
+            overflow-x: auto;
+            min-width: 500px;
+            font-family: 'Nunito', sans-serif;
+            table-layout: fixed;
+        }
+
+        thead th {
+            color: #434343;
+            font-weight: bold;
+            padding-bottom: 10px;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            background: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        tbody tr td {
+            padding: 10px;
+            border: none;
+            color: #434343;
+            vertical-align: middle;
+        }
+
+        tbody tr td:first-child {
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+        }
+
+        tbody tr td:last-child {
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .table th,
+        .table td {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+
+        .table th:nth-child(1), 
+        .table td:nth-child(1) {
+            width: 5%; 
+        }
+
+        .table th:nth-child(2), 
+        .table td:nth-child(2) {
+            width: 30%; 
+        }
+
+        .table th:nth-child(3), 
+        .table td:nth-child(3) {
+            width: 20%; 
+        }
+
+        .table th:nth-child(4), 
+        .table td:nth-child(4) {
+            width: 15%; 
+        }
+
+        .table th:nth-child(5), 
+        .table td:nth-child(5) {
+            width: 35%; 
+        }
+
+        .table th:nth-child(6), 
+        .table td:nth-child(6) {
+            width: 10%; 
+        }
+
+        .table th:nth-child(7), 
+        .table td:nth-child(7) {
+            width: 15%; 
+        }
+
+        .btn-action {
+            display: block;
+            width: 100px; 
+            margin: 5px auto;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            background-color: #FFFFFF;
+            font-weight: bold;
             font-family: 'Nunito', sans-serif !important;
         }
 
-        .info-box span {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 4px;
+        .btn-view {
+            border: 2px solid #102E47;
             color: #102E47;
         }
 
-        .info-box p {
-            text-align: justify;
-            color: #757575;
+        .btn-view:hover {
+            background-color: #102E47;
+            color: #FFFFFF;
         }
 
-        .info-box:hover {
-            transform: scale(1.03);
-            transition: all 0.3s;
+        .btn-display {
+            border: 2px solid #28a745;
+            color: #28a745;
+        }
+
+        .btn-display:hover {
+            background-color: #28a745;
+            color: #FFFFFF;
+        }
+
+        .btn-archive {
+            border: 2px solid #EC6350;
+            color: #EC6350;
+        }
+
+        .btn-archive:hover {
+            background-color: #EC6350;
+            color: #FFFFFF;
+        }
+
+        .btn-group {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-search-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            gap: 10px;
+        }
+
+        .btn-filter {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid #102E47;
+            color: #434343;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-filter:hover {
+            background-color: #102E47;
+            color: white;
+        }
+
+        .search-container {
+            position: relative;
+            width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #102E47;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            color: #434343;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #434343;
+            pointer-events: none;
+        }
+
+        .modal-icon {
+            z-index: 1;
+        }
+
+        .review-truncate {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .modal-dialog {
@@ -296,6 +488,18 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             font-family: 'Nunito', sans-serif !important;
         }
 
+        .no-filter-search {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #434343;
+            padding: 10px;
+            border-radius: 8px;
+            width: fit-content;
+            margin: 20px auto;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
         @media (max-width: 1280px) {
             .btn-custom {
                 padding: 8px 16px;
@@ -309,6 +513,10 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             .info-box {
                 height: 100%;
                 width: 100%;
+            }
+
+            .table {
+                table-layout: auto;
             }
         }
 
@@ -365,6 +573,16 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
 
             .modal-dialog {
                 max-width: 65%;
+            }
+
+            .filter-search-container {
+                width: 100%;
+                margin-top: 10px;
+                justify-content: center;
+            }
+            
+            .search-container {
+                width: 100%;
             }
         }
 
@@ -426,9 +644,37 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                 width: 100%; 
             }
 
+            .row {
+                justify-content: center !important;
+            }
+
             .btn-custom {
                 padding: 6px 12px;
                 font-size: 14px;
+            }
+
+            .info-box {
+                width: 100% !important; 
+                text-align: center;
+                align-items: center;
+                margin: 0 auto; 
+            }
+
+            .info-box i {
+                align-self: center;
+            }
+
+            .table-responsive {
+                overflow-x: auto; 
+            }
+
+            table {
+                font-size: 14px; 
+            }
+
+            thead th, tbody td {
+                white-space: nowrap; 
+                padding: 5px; 
             }
 
             .modal-dialog {
@@ -491,12 +737,27 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                 font-size: 14px;
             }
 
-            .modal-dialog {
-                max-width: 100%;
+            .info-box {
+                min-height: 120px;
+                min-width: auto;
+                padding: 10px;
             }
 
-            .info-box {
-                padding: 10px;
+            .info-box i {
+                font-size: 30px;
+            }
+
+            table {
+                font-size: 12px;
+                overflow-x: auto;
+            }
+
+            tbody tr td {
+                padding: 5px; 
+            }
+
+            .modal-dialog {
+                max-width: 100%;
             }
         }
 
@@ -585,23 +846,79 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                 <button type="button" class="btn-custom <?= $statusFilter == 'submitted' ? 'active' : '' ?>" onclick="filterReviews('submitted')">Pending</button>
                 <button type="button" class="btn-custom <?= $statusFilter == 'displayed' ? 'active' : '' ?>" onclick="filterReviews('displayed')">Displayed</button>
                 <button type="button" class="btn-custom <?= $statusFilter == 'archived' ? 'active' : '' ?>" onclick="filterReviews('archived')">Archived</button>
+                
+                <div class="filter-search-container">
+                    <button type="button" class="btn-filter" id="sortButton">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
             </div>
 
-            <div class="mt-3 row justify-content-start">
-                <?php if (empty($reviews)): ?>
-                    <div class="no-reviews">No reviews available.</div>
-                <?php else: ?>
-                    <?php foreach ($reviews as $review): ?>
-                        <div class="d-flex justify-content-center col-12 col-md-6 col-lg-3 mb-3">
-                            <div class="info-box" onclick='showModal(<?php echo json_encode($review); ?>)' style="cursor: pointer;">
-                                <span><?php echo htmlspecialchars($review['sitename']); ?></span>
-                                <br><br>
-                                <span><?php echo htmlspecialchars($review['username']); ?></span>
-                                <p><?php echo htmlspecialchars($review['review']); ?></p>
+            <div class="row mt-3 d-flex justify-content-center">
+                <div class="col-lg-12 col-md-12 col-12 mb-3">
+                    <?php if (empty($reviews)): ?>
+                        <div class="no-reviews">No reviews available.</div>
+                    <?php else: ?>
+                        <div class="info-box">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tour Site/s</th>
+                                            <th>Author</th>
+                                            <th>Submitted On</th>
+                                            <th>Review</th>
+                                            <th>Rate</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+                                        $rowNumber = 1;
+                                        foreach ($reviews as $review): 
+                                        ?>
+                                        <tr>
+                                            <td><?= $rowNumber ?></td>
+                                            <td><?= htmlspecialchars($review['sitename']) ?></td>
+                                            <td><?= htmlspecialchars($review['username']) ?></td>
+                                            <td><?= date('d M Y', strtotime($review['date'])) ?></td>
+                                            <td class="review-truncate"><?= htmlspecialchars($review['review']) ?></td>
+                                            <td>
+                                                <?php if (isset($review['rating'])): ?>
+                                                    <?= htmlspecialchars($review['rating']) ?>
+                                                <?php else: ?>
+                                                    N/A
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <button class="btn-action btn-view" onclick='showModal(<?php echo json_encode($review); ?>)'>
+                                                    <i class="fas fa-eye"></i> View
+                                                </button>
+                                                <?php if ($review['status'] == 'submitted'): ?>
+                                                <button class="btn-action btn-display" onclick="updateReviewStatus('displayed', <?= $review['revid'] ?>)">
+                                                    <i class="fas fa-check"></i> Display
+                                                </button>
+                                                <button class="btn-action btn-archive" onclick="updateReviewStatus('archived', <?= $review['revid'] ?>)">
+                                                    <i class="fas fa-archive"></i> Archive
+                                                </button>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <?php 
+                                            $rowNumber++;
+                                            endforeach; 
+                                        ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
@@ -627,11 +944,6 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                         </div>
                     </div>
                 </div>
-
-                <div class="modal-footer" id="modalFooter">
-                    <button class="btn-custom" id="displayBtn" onclick="updateReviewStatus('displayed')">Display</button>
-                    <button class="btn-custom" id="archiveBtn" onclick="updateReviewStatus('archived')">Archive</button>
-                </div>
             </div>
         </div>
     </div>
@@ -639,6 +951,29 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="../../../public/assets/scripts/main.js"></script>
 <script src="../../../public/assets/scripts/empreviews.js"></script>
+<script>
+    function showModal(review) {
+        currentReviewId = review.revid;
+        document.querySelector(".modal-title").innerText = review.sitename;
+        document.querySelector(".modal-body p").innerText = review.review;
+        document.querySelector(".user-text h5").innerText = review.username;
+        
+        let dateObj = new Date(review.date);
+        let day = String(dateObj.getDate()).padStart(2, '0');
+        let month = dateObj.toLocaleString('en-US', { month: 'short' });
+        let year = dateObj.getFullYear();
+        let hours = dateObj.getHours();
+        let minutes = String(dateObj.getMinutes()).padStart(2, '0');
+        let ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        
+        let formattedDate = `${day} ${month} ${year} | ${hours}:${minutes} ${ampm}`;
+        document.querySelector(".user-text p").innerText = formattedDate;
 
+        var modal = new bootstrap.Modal(document.getElementById('reviewsModal'));
+        modal.show();
+    }
+</script>
 </body>
 </html>

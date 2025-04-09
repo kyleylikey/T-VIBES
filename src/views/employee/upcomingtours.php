@@ -920,7 +920,15 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                                     foreach ($toursToDisplay as $tour) {
                                         $sites = explode('||', $tour['sites']);
                                         $numSites = count($sites);
-                                        $sitesHtml = nl2br(htmlspecialchars(str_replace('||', "\n", $tour['sites'])));
+                                        
+                                        $sitesDisplay = '';
+                                        if ($numSites <= 3) {
+                                            $sitesDisplay = nl2br(htmlspecialchars(str_replace('||', "\n", $tour['sites'])));
+                                        } else {
+                                            $firstThreeSites = array_slice($sites, 0, 3);
+                                            $sitesDisplay = nl2br(htmlspecialchars(implode("\n", $firstThreeSites))) . "\n<span class='more-sites'>...</span>";
+                                        }
+                                        
                                         echo "<tr data-userid='" . htmlspecialchars($tour['userid']) . "' 
                                                 data-tourid='" . htmlspecialchars($tour['tourid']) . "' 
                                                 data-sites='" . htmlspecialchars($tour['sites']) . "' 
@@ -930,7 +938,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                                         echo "<td>" . htmlspecialchars($tour['name']) . "</td>";
                                         echo "<td>" . date('d M Y', strtotime($tour['created_at'])) . "</td>";
                                         echo "<td>" . $numSites . "</td>";
-                                        echo "<td>" . $sitesHtml . "</td>";
+                                        echo "<td>" . $sitesDisplay . "</td>";
                                         echo "<td>" . date('d M Y', strtotime($tour['date'])) . "</td>";
                                         echo "<td>" . htmlspecialchars($tour['companions']) . "</td>";
                                         echo "<td class='action-column'>
@@ -1363,25 +1371,40 @@ document.addEventListener('DOMContentLoaded', function() {
     filterModal.style.padding = '30px';
     filterModal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
     filterModal.style.zIndex = '10000';
-    filterModal.style.width = '320px';
+    filterModal.style.width = '350px';
+    filterModal.style.maxWidth = '90%';
     filterModal.style.top = '50%';
     filterModal.style.left = '50%';
     filterModal.style.transform = 'translate(-50%, -50%)';
+    filterModal.style.maxHeight = '100vh';
     filterModal.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h4 style="margin: 0; color: #102E47; font-family: 'Raleway', sans-serif !important; font-weight: bold;">Filter Tours</h4>
             <button id="closeModal" style="background: none; border: none; cursor: pointer; font-size: 18px; color: #102E47;">&times;</button>
         </div>
         <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #434343; font-family: 'Nunito', sans-serif !important;">Date Range:</label>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #434343; font-family: 'Nunito', sans-serif !important;">Submission Date Range:</label>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 130px;">
+                <div style="flex: 1; min-width: 120px;">
                     <label for="startDate" style="display: block; margin-bottom: 3px; font-weight: bold; color: #757575; font-family: 'Nunito', sans-serif !important;">From:</label>
                     <input type="date" id="startDate" class="filter-input" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%;">
                 </div>
-                <div style="flex: 1; min-width: 130px;">
+                <div style="flex: 1; min-width: 120px;">
                     <label for="endDate" style="display: block; margin-bottom: 3px; font-weight: bold; color: #757575; font-family: 'Nunito', sans-serif !important;">To:</label>
                     <input type="date" id="endDate" class="filter-input" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%;">
+                </div>
+            </div>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #434343; font-family: 'Nunito', sans-serif !important;">Travel Date Range:</label>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 120px;">
+                    <label for="travelStartDate" style="display: block; margin-bottom: 3px; font-weight: bold; color: #757575; font-family: 'Nunito', sans-serif !important;">From:</label>
+                    <input type="date" id="travelStartDate" class="filter-input" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%;">
+                </div>
+                <div style="flex: 1; min-width: 120px;">
+                    <label for="travelEndDate" style="display: block; margin-bottom: 3px; font-weight: bold; color: #757575; font-family: 'Nunito', sans-serif !important;">To:</label>
+                    <input type="date" id="travelEndDate" class="filter-input" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%;">
                 </div>
             </div>
         </div>
@@ -1413,7 +1436,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div style="margin-bottom: 15px;">
             <label for="siteFilter" style="display: block; margin-bottom: 5px; font-weight: bold; color: #434343; font-family: 'Nunito', sans-serif !important;">Tour Site:</label>
-            <input type="text" id="siteFilter" placeholder="Enter site name" class="filter-input" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%;">
+            <input type="text" id="siteFilter" placeholder="Enter Site Name" class="filter-input" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%;">
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 20px;">
             <button id="clearFilters" class="filter-btn" style="font-weight: bold;">Clear All</button>
@@ -1540,27 +1563,55 @@ document.addEventListener('DOMContentLoaded', function() {
     function checkIfFiltersActive() {
         const startDate = document.getElementById('startDate').value;
         const endDate = document.getElementById('endDate').value;
+        const travelStartDate = document.getElementById('travelStartDate').value;
+        const travelEndDate = document.getElementById('travelEndDate').value;
         const minDestinations = document.getElementById('minDestinations').value;
         const maxDestinations = document.getElementById('maxDestinations').value;
         const minPax = document.getElementById('minPax').value;
         const maxPax = document.getElementById('maxPax').value;
         const siteFilter = document.getElementById('siteFilter').value.trim();
-        return startDate || endDate || minDestinations || maxDestinations || minPax || maxPax || siteFilter;
+        
+        return startDate || endDate || travelStartDate || travelEndDate || 
+            minDestinations || maxDestinations || minPax || maxPax || siteFilter;
     }
-    
+
     function clearFilters() {
         document.getElementById('startDate').value = '';
         document.getElementById('endDate').value = '';
+        document.getElementById('travelStartDate').value = '';
+        document.getElementById('travelEndDate').value = '';
         document.getElementById('minDestinations').value = '';
         document.getElementById('maxDestinations').value = '';
         document.getElementById('minPax').value = '';
         document.getElementById('maxPax').value = '';
         document.getElementById('siteFilter').value = '';
     }
-    
+
+    function parseCustomDate(dateStr) {
+        if (!dateStr) return null;
+        
+        const months = {
+            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+            'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+        };
+        
+        const parts = dateStr.trim().split(' ');
+        if (parts.length !== 3) return null;
+        
+        const day = parseInt(parts[0], 10);
+        const month = months[parts[1]];
+        const year = parseInt(parts[2], 10);
+        
+        if (isNaN(day) || month === undefined || isNaN(year)) return null;
+        
+        return new Date(year, month, day);
+    }
+
     function applyFilters() {
         const startDate = document.getElementById('startDate').value ? new Date(document.getElementById('startDate').value) : null;
         const endDate = document.getElementById('endDate').value ? new Date(document.getElementById('endDate').value) : null;
+        const travelStartDate = document.getElementById('travelStartDate').value ? new Date(document.getElementById('travelStartDate').value) : null;
+        const travelEndDate = document.getElementById('travelEndDate').value ? new Date(document.getElementById('travelEndDate').value) : null;
         const minDestinations = document.getElementById('minDestinations').value ? parseInt(document.getElementById('minDestinations').value) : null;
         const maxDestinations = document.getElementById('maxDestinations').value ? parseInt(document.getElementById('maxDestinations').value) : null;
         const minPax = document.getElementById('minPax').value ? parseInt(document.getElementById('minPax').value) : null;
@@ -1574,34 +1625,60 @@ document.addEventListener('DOMContentLoaded', function() {
         tableRows.forEach(row => {
             let shouldShow = true;
             
-            if (startDate || endDate) {
-                const travelDateCell = row.cells[5].textContent.trim();
-                const travelDate = new Date(travelDateCell);
-                if (startDate && travelDate < startDate) {
-                    shouldShow = false;
+            if (row.cells.length < 7) {
+                row.style.display = '';
+                return;
+            }
+            
+            if (shouldShow && (startDate || endDate)) {
+                const submittedDateCell = row.cells[2].textContent.trim();
+                const submittedDate = parseCustomDate(submittedDateCell);
+                
+                if (submittedDate) {
+                    if (startDate && submittedDate < startDate) {
+                        shouldShow = false;
+                    }
+                    if (endDate && submittedDate > endDate) {
+                        shouldShow = false;
+                    }
                 }
-                if (endDate && travelDate > endDate) {
-                    shouldShow = false;
+            }
+            
+            if (shouldShow && (travelStartDate || travelEndDate)) {
+                const travelDateCell = row.cells[5].textContent.trim(); 
+                const travelDate = parseCustomDate(travelDateCell);
+                
+                if (travelDate) {
+                    if (travelStartDate && travelDate < travelStartDate) {
+                        shouldShow = false;
+                    }
+                    if (travelEndDate && travelDate > travelEndDate) {
+                        shouldShow = false;
+                    }
                 }
             }
             
             if (shouldShow && (minDestinations || maxDestinations)) {
                 const numDestinations = parseInt(row.cells[3].textContent.trim());
-                if (minDestinations && numDestinations < minDestinations) {
-                    shouldShow = false;
-                }
-                if (maxDestinations && numDestinations > maxDestinations) {
-                    shouldShow = false;
+                if (!isNaN(numDestinations)) {
+                    if (minDestinations && numDestinations < minDestinations) {
+                        shouldShow = false;
+                    }
+                    if (maxDestinations && numDestinations > maxDestinations) {
+                        shouldShow = false;
+                    }
                 }
             }
             
             if (shouldShow && (minPax || maxPax)) {
                 const pax = parseInt(row.cells[6].textContent.trim());
-                if (minPax && pax < minPax) {
-                    shouldShow = false;
-                }
-                if (maxPax && pax > maxPax) {
-                    shouldShow = false;
+                if (!isNaN(pax)) {
+                    if (minPax && pax < minPax) {
+                        shouldShow = false;
+                    }
+                    if (maxPax && pax > maxPax) {
+                        shouldShow = false;
+                    }
                 }
             }
             
@@ -1635,6 +1712,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const noResults = document.createElement('div');
                     noResults.className = 'no-filter-search';
                     noResults.textContent = 'No tours match your filter criteria.';
+                    noResults.style.textAlign = 'center';
+                    noResults.style.padding = '20px';
                     tableContainer.parentNode.appendChild(noResults);
                 }
             }
