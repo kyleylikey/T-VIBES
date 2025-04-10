@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_id'], $_POST['
 }
 
 $statusFilter = $_GET['status'] ?? 'submitted';
-$stmt = $conn->prepare("SELECT rev.revid, rev.review, rev.date, rev.status, users.username, sites.sitename FROM rev JOIN users ON rev.userid = users.userid JOIN sites ON rev.siteid = sites.siteid WHERE rev.status = ?");
+$stmt = $conn->prepare("SELECT rev.revid, rev.review, rev.date, rev.status, users.name, sites.sitename FROM rev JOIN users ON rev.userid = users.userid JOIN sites ON rev.siteid = sites.siteid WHERE rev.status = ?");
 $stmt->execute([$statusFilter]);
 $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>

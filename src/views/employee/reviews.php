@@ -393,6 +393,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             font-size: 24px;
             font-weight: bold;
             color: #102E47;
+            font-family: 'Raleway', sans-serif !important; 
         }
 
         .modal-icon i {
@@ -879,7 +880,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                                         <tr>
                                             <td><?= $rowNumber ?></td>
                                             <td><?= htmlspecialchars($review['sitename']) ?></td>
-                                            <td><?= htmlspecialchars($review['username']) ?></td>
+                                            <td><?= htmlspecialchars($review['name']) ?></td>
                                             <td><?= date('d M Y', strtotime($review['date'])) ?></td>
                                             <td class="review-truncate"><?= htmlspecialchars($review['review']) ?></td>
                                             <td>
@@ -938,7 +939,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="../../../public/assets/scripts/main.js"></script>
 <script>
-    function filterReviews(status) {
+function filterReviews(status) {
     window.location.href = '?status=' + status;
 }
 
@@ -946,7 +947,7 @@ function showModal(review) {
     currentReviewId = review.revid;
     document.querySelector(".modal-title").innerText = review.sitename;
     document.querySelector(".modal-body p").innerText = review.review;
-    document.querySelector(".user-text h5").innerText = review.username;
+    document.querySelector(".user-text h5").innerText = review.name;
     
     let dateObj = new Date(review.date);
     let day = String(dateObj.getDate()).padStart(2, '0');

@@ -244,7 +244,8 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
         .modal-title {
             font-size: 24px;
             font-weight: bold;
-            color: #434343;
+            color: #102E47;
+            font-family: 'Raleway', sans-serif !important; 
         }
 
         .image-upload-container {

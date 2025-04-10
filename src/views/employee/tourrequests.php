@@ -1510,7 +1510,7 @@ function showModal(button) {
             estimatedFeesContainer.appendChild(totalFeesTitle);
 
             const totalCalcItem = document.createElement('p');
-            totalCalcItem.innerHTML = `₱${totalPrice.toFixed(2)} x ${pax} <span style="float: right;"><strong>₱${(totalPrice * pax).toFixed(2)}</strong></span>`;
+            totalCalcItem.innerHTML = `₱${totalPrice.toFixed(2)} x ${pax} <span style="float: right; color: #EC6350;"><strong>₱${(totalPrice * pax).toFixed(2)}</strong></span>`;
             estimatedFeesContainer.appendChild(totalCalcItem);
 
         } else {
