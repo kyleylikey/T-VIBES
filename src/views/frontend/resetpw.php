@@ -59,7 +59,7 @@ unset($_SESSION['valid_reset']);
         }
 
         .taalbgpic {
-            background-image: url('../../../public/assets/images/taalvolcano.jpg');
+            background-image: url('../../../public/assets/images/taal_welcome.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

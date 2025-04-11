@@ -51,8 +51,14 @@ recordVisit();
         .hero-content h1 {
             font-family: 'Raleway', sans-serif !important;
             font-weight: bold;
+            color: #102E47;
+            text-shadow: 0 0 3px #FFFFFF, 0 0 5px #FFFFFF, 0 0 8px #FFFFFF;
         }
 
+        .hero-content p {
+            text-shadow: 0 0 3px  #102E47, 0 0 5px  #102E47, 0 0 8px  #102E47;
+        }
+        
         h5 {
             font-family: 'Raleway', sans-serif !important;
             font-weight: bold !important;
@@ -160,7 +166,7 @@ else {
         <div class="hero-content">
             <h1>Step Into Our<br><br>World of Wonders</h1>
             <p>Take a visit and embrace the charm of Taal.</p>
-            <a href="#" class="btn cta-button">Plan Your Next Trip</a>
+            <a href="../src/views/frontend/explore.php" class="btn cta-button">Plan Your Next Trip</a>
         </div>
     </section>
 
@@ -169,15 +175,15 @@ else {
             <div class="row">
                 <div class="col-lg-6">
                     <h2 style="text-align: justify;">Experience the Rich Heritage and Stunning Views of Taal.</h2>
-                    <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded">
+                    <img src="assets/images/whitehouse.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded">
                 </div>
                 <div class="col-lg-6">
                     <div class="row">
                         <div class="col-lg-6">
-                            <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid rounded">
+                            <img src="assets/images/marcela.jpg" alt="" class="img-fluid rounded">
                         </div>
                         <div class="col-lg-6">
-                            <img src="assets/images/thumb-ferris-wheel.jpg" alt="" class="img-fluid rounded">
+                            <img src="assets/images/tampuhan.jpg" alt="" class="img-fluid rounded">
                         </div>
                     </div>
                     <div class="row mt-5">
@@ -307,11 +313,11 @@ else {
             </div>
             <div class="col-md-6">
                 <div class="position-relative">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 250px; height: 250px; margin: auto;">
-                        <i class="bi bi-image" style="font-size: 3rem; color: gray;"></i>
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
+                        <img src="assets/images/taalbasilica.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                    <div class="position-absolute top-0 start 5 bg-secondary rounded-circle" style="width: 70px; height: 70px;"></div>
-                    <div class="position-absolute bottom-0 end-0 bg-secondary rounded-circle" style="width: 50px; height: 50px;"></div>
+                    <div class="position-absolute top-0 start 5 rounded-circle" style="width: 70px; height: 70px;  background-color: #FF6B6B;"></div>
+                    <div class="position-absolute bottom-0 end-0 rounded-circle" style="width: 50px; height: 50px;  background-color: #FF6B6B;"></div>
                 </div>
             </div>
         </div>
