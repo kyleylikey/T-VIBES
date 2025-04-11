@@ -38,11 +38,11 @@ session_start();
         }
 
         .trivia-carousel-btn.left {
-            left: 5%;  
+            left: -50px;  
         }
 
         .trivia-carousel-btn.right {
-            right: 5%;
+            right: -50px;
         }
 
         .trivia-carousel-btn i {
@@ -80,21 +80,37 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
         </div>
     </div>
     <div class="row mt-4">
-        <div class="col-3"><div class="bg-light p-5 rounded" style="height: 150px;"></div></div>
-        <div class="col-3"><div class="bg-light p-5 rounded" style="height: 150px;"></div></div>
-        <div class="col-3"><div class="bg-light p-5 rounded" style="height: 150px;"></div></div>
-        <div class="col-3"><div class="bg-light p-5 rounded" style="height: 150px;"></div></div>
+        <div class="col-3">
+            <div class="bg-light rounded overflow-hidden" style="height: 150px;">
+                <img src="/T-VIBES/public/assets/images/burda.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="bg-light rounded overflow-hidden" style="height: 150px;">
+                <img src="/T-VIBES/public/assets/images/empanada.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="bg-light rounded overflow-hidden" style="height: 150px;">
+                <img src="/T-VIBES/public/assets/images/munisipyo.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="bg-light rounded overflow-hidden" style="height: 150px;">
+                <img src="/T-VIBES/public/assets/images/suman.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
     </div>
 </section>
 
 <section class="container my-5 text-center position-relative trivia-section">
     <h2 class="fw-bold">Trivia</h2>
-    <p class="text-center" style="color: #757575;">Get to know a little bit more</p>
+    <p class="text-center" style="color: #757575;">Get to know Taal a little bit more</p>
 
     <div class="carousel-container position-relative">
         <div id="triviaCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                <!-- Slide 1 -->
+               
                 <div class="carousel-item active">
                     <div class="row align-items-center">
                         <div class="col-md-6 text-start">
@@ -102,44 +118,57 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                             <p style="text-align: justify; color: #434343;">This stunning landmark stands as a testament to Spanish-era architecture and has been a beacon of faith for centuries. Take a tour and witness its grandeur.</p>
                         </div>
                         <div class="col-md-6 position-relative">
-                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" 
-                                 style="width: 250px; height: 250px; margin: auto;">
-                                <i class="bi bi-image" style="font-size: 3rem; color: gray;"></i>
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
+                                 <img src="/T-VIBES/public/assets/images/taalbasilica.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <div class="position-absolute" style="top: 20px; left: 10px; width: 50px; height: 50px; background-color: #FF6B6B; border-radius: 50%;"></div>
-                            <div class="position-absolute" style="bottom: -10px; right: 50px; width: 20px; height: 20px; background-color: #FF6B6B; border-radius: 50%;"></div>
+                            <div class="position-absolute" style="top: 20px; left: 20px; width: 50px; height: 50px; background-color: #FF6B6B; border-radius: 50%;"></div>
+                            <div class="position-absolute" style="bottom: 0px; right: 50px; width: 20px; height: 20px; background-color: #FF6B6B; border-radius: 50%;"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Slide 2 -->
+                
                 <div class="carousel-item">
                     <div class="row align-items-center">
                         <div class="col-md-6 text-start">
-                            <h4 class="fw-bold">Another Trivia Fact</h4>
-                            <p>More interesting information about the topic goes here.</p>
+                            <h4 class="fw-bold">Marcela Agoncillo: Taal’s Heroine</h4>
+                            <p>Taal is the birthplace of Marcela Agoncillo, the woman who sewed the first Philippine flag by hand. Her home is now a museum honoring her role in the country’s independence.</p>
                         </div>
                         <div class="col-md-6 position-relative">
-                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" 
-                                 style="width: 250px; height: 250px; margin: auto;">
-                                <i class="bi bi-image rounded-circle h1 bg-light p-2 m-2 shadow"></i>
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
+                                 <img src="/T-VIBES/public/assets/images/marcela.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <div class="position-absolute" style="top: 20px; left: 10px; width: 50px; height: 50px; background-color: #FF6B6B; border-radius: 50%;"></div>
-                            <div class="position-absolute" style="bottom: -10px; right: 50px; width: 20px; height: 20px; background-color: #FF6B6B; border-radius: 50%;"></div>
+                            <div class="position-absolute" style="top: 20px; left: 20px; width: 50px; height: 50px; background-color: #FF6B6B; border-radius: 50%;"></div>
+                            <div class="position-absolute" style="bottom: 0px; right: 50px; width: 20px; height: 20px; background-color: #FF6B6B; border-radius: 50%;"></div>
                         </div>
                     </div>
                 </div>
+
+                <div class="carousel-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 text-start">
+                            <h4 class="fw-bold">Birthplace of the Barong and Balisong</h4>
+                            <p>Taal is the hometown of the Barong Tagalog, the Philippines' national male attire. It's also the original maker of the balisong (butterfly knife) — a traditional blade crafted by skilled local artisans.</p>
+                        </div>
+                        <div class="col-md-6 position-relative">
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
+                                 <img src="/T-VIBES/public/assets/images/barong.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div class="position-absolute" style="top: 20px; left: 20px; width: 50px; height: 50px; background-color: #FF6B6B; border-radius: 50%;"></div>
+                            <div class="position-absolute" style="bottom: 0px; right: 50px; width: 20px; height: 20px; background-color: #FF6B6B; border-radius: 50%;"></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <!-- Left Button (Outside) -->
         <button class="trivia-carousel-btn left" data-bs-target="#triviaCarousel" data-bs-slide="prev">
-            <i class="fas fa-angle-left"></i>
+            <i class="bi bi-arrow-left-short"></i>
         </button>
 
-        <!-- Right Button (Outside) -->
         <button class="trivia-carousel-btn right" data-bs-target="#triviaCarousel" data-bs-slide="next">
-            <i class="fas fa-angle-right"></i>
+            <i class="bi bi-arrow-right-short"></i>
         </button>
     </div>
 </section>
