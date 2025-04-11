@@ -32,7 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             echo json_encode(['success' => false, 'message' => 'Failed to add account.']);
         }
     } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+            if (strpos($e->getMessage(), 'username') !== false) {
+                echo json_encode(['success' => false, 'message' => 'Username already exists']);
+            } elseif (strpos($e->getMessage(), 'email') !== false) {
+                echo json_encode(['success' => false, 'message' => 'Email already exists']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Duplicate entry detected']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
     exit;
 }
@@ -73,7 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             echo json_encode(['success' => false, 'message' => 'Failed to update account.']);
         }
     } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+            if (strpos($e->getMessage(), 'username') !== false) {
+                echo json_encode(['success' => false, 'message' => 'Username already exists']);
+            } elseif (strpos($e->getMessage(), 'email') !== false) {
+                echo json_encode(['success' => false, 'message' => 'Email already exists']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Duplicate entry detected']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
     exit;
 }
@@ -95,7 +115,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 echo json_encode(['success' => false, 'message' => 'Failed to update account status.']);
             }
         } catch (PDOException $e) {
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                if (strpos($e->getMessage(), 'username') !== false) {
+                    echo json_encode(['success' => false, 'message' => 'Username already exists']);
+                } elseif (strpos($e->getMessage(), 'email') !== false) {
+                    echo json_encode(['success' => false, 'message' => 'Email already exists']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Duplicate entry detected']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            }
         }
         exit;
     }
@@ -474,10 +504,20 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
         modal.show();
     }
 
-    function showEditAccountModal() {
-        var myModal = new bootstrap.Modal(document.getElementById('editAccountModal'));
-        myModal.show();
+    function showEditAccountModal(userid, name, username, contactnum, email) {
+    if (userid) {
+        document.getElementById('userid').value = userid;
+        document.getElementById('fullName').value = name;
+        document.getElementById('username').value = username;
+        document.getElementById('email').value = email;
+        document.getElementById('contactNumber').value = contactnum;
+        document.getElementById('password').value = '';
     }
+    
+    var myModal = new bootstrap.Modal(document.getElementById('editAccountModal'));
+    myModal.show();
+}
+
 
     function confirmDisable(userid) {
         Swal.fire({
@@ -546,7 +586,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                     location.reload();
                 });
             } else {
-                Swal.fire("Error", data.message, "error");
+                Swal.fire("Error", "Failed to Enable/Disable Account", "error");
             }
         })
         .catch(error => {
@@ -671,7 +711,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                 Swal.fire({
                                     iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                                     title: "Error",
-                                    text: data.message || "Failed to add account.",
+                                    text: data.message,
                                     timer: 3000,
                                     showConfirmButton: false,
                                     customClass: {
@@ -799,7 +839,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                         Swal.fire({
                             iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                             title: "Error",
-                            text: data.message || "Failed to update account.",
+                            text: data.message,
                             timer: 3000,
                             showConfirmButton: false,
                             customClass: {
