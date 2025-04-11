@@ -65,13 +65,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
             $logs->logEditSite($_SESSION['userid'], $siteName);
         }
 
-        if ($siteId && $siteName && $sitePrice && $siteDescription) {
-            header("Location: touristsites.php?update=success");
-            exit();
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Missing required fields or invalid site ID.']);
-            exit();
-        }
     }
 }
 

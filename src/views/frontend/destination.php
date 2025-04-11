@@ -203,10 +203,10 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
             </ul>
 
             <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
-                    <h3>Description</h3>
-                    <p style="text-align: justify; width: 97%;"><?php echo $siteDetails['description']; ?></p>
-                </div>
+            <div class="tab-pane fade show active" id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
+                <h3>Description</h3>
+                <p style="text-align: justify; width: 97%;"><?php echo nl2br(htmlspecialchars($siteDetails['description'])); ?></p>
+            </div>
                 <div class="tab-pane fade" id="pills-fees" role="tabpanel" aria-labelledby="pills-fees-tab">
                     <h3>P<?php echo $siteDetails['price']; ?></h3>
                     <p>per person</p>
@@ -301,6 +301,36 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var triggerTabList = [].slice.call(document.querySelectorAll('#pills-tab a'));
+    var tabList = triggerTabList.map(function(triggerEl) {
+        var tabTrigger = new bootstrap.Tab(triggerEl);
+
+        triggerEl.addEventListener('click', function(event) {
+            event.preventDefault();
+            tabTrigger.show();
+        });
+
+        return tabTrigger;
+    });
+
+    triggerTabList.forEach(function(triggerEl) {
+        triggerEl.addEventListener('shown.bs.tab', function(event) {
+            // This event fires after tab content is shown
+            // Scroll to the tab content with smooth animation
+            const tabContentId = triggerEl.getAttribute('href');
+            const tabContent = document.querySelector(tabContentId);
+            
+            // Add a small delay to ensure content is rendered before scrolling
+            setTimeout(() => {
+                tabContent.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        });
+    });
+});
 document.addEventListener("DOMContentLoaded", function() {
     var triggerTabList = [].slice.call(document.querySelectorAll('#pills-tab a'));
     var tabList = triggerTabList.map(function(triggerEl) {
