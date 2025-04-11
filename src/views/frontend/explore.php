@@ -26,6 +26,42 @@ require_once '../../controllers/tourist/explorecontroller.php';
             font-family: 'Raleway', sans-serif !important;
             font-weight: bold;
         }
+
+        .carousel-item img {
+            border-radius: 25px !important;
+        }
+        
+        .destination-card {
+            border-radius: 25px !important;
+        }
+        
+        .destination-card:hover {
+            transition: all 0.3s;
+            transform: scale(1.03);
+        }
+        
+        .destination-card img {
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+        }
+        
+        .card-description {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            height: 3em; 
+        }
+
+        .card-title-fixed {
+            height: 3em; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
     </style>
 </head>
 <body>
@@ -47,7 +83,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
             foreach ($topSites as $site): 
             ?>
                 <div class="carousel-item <?php echo $isFirst ? 'active' : ''; ?> h-100">
-                    <img src="../../../public/uploads/<?php echo $site['siteimage']; ?>" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded" style="object-fit: cover;" alt="<?php echo $site['sitename']; ?>">
+                    <img src="../../../public/uploads/<?php echo $site['siteimage']; ?>" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded" style="object-fit: cover; border-radius: 25px;" alt="<?php echo $site['sitename']; ?>">
                     <h2 class="my-3 fw-bold"><?php echo $site['sitename']; ?></h2>
                 </div>
                 <?php $isFirst = false; ?>
@@ -67,21 +103,13 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
         <?php foreach ($displaySites as $site): ?>
         <div class="col-md-6 col-lg-3">
             <a href="destination.php?siteid=<?php echo $site['siteid'];?>" class="text-decoration-none">
-                <div class="card border-0 shadow rounded-3 overflow-hidden position-relative">
+                <div class="card border-0 shadow overflow-hidden position-relative destination-card">
                     <img src="../../../public/uploads/<?php echo $site['siteimage'];?>" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="<?php echo $site['sitename'];?>">
-                    <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 5px;">★ <?php echo ($site['rating_cnt'] == 0) ? '0.00' : number_format($site['rating'] / $site['rating_cnt'], 2); ?></div>
+                    <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 25px;">★ <?php echo ($site['rating_cnt'] == 0) ? '0.0' : number_format($site['rating'] / $site['rating_cnt'], 1); ?></div>
                     <div class="card-body text-center">
-                        <h5 class="fw-bold" style="color: #102E47;"><?php echo $site['sitename'];?></h5>
-                        <p class="text-muted">
-                            <?php 
-                            $description = $site['description'];
-                            $words = explode(' ', $description);
-                            $limitedWords = array_slice($words, 0, 10); 
-                            echo implode(' ', $limitedWords);
-                            if (count($words) > 10) {
-                                echo '...';
-                            }
-                            ?>
+                        <h5 class="fw-bold card-title-fixed" style="color: #102E47; font-family: Raleway, sans-serif !important;"><?php echo $site['sitename'];?></h5>
+                        <p class="text-muted card-description">
+                            <?php echo $site['description']; ?>
                         </p>                
                     </div>
                 </div>

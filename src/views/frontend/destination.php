@@ -79,6 +79,29 @@ if (isset($_GET['siteid'])) {
             font-family: 'Raleway', sans-serif !important;
             font-weight: bold !important;
         }
+
+        .add-to-tour-btn:hover {
+            transition: all 0.3s;
+            transform: scale(1.03);
+        }
+
+        .back-btn {
+            border: 2px solid #EC6350 !important;
+            background-color: transparent !important;
+            color: #EC6350 !important;
+            border-radius: 50px !important;
+            width: 40px !important;
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .back-btn:hover {
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
+        }
     </style>
 </head>
 <body>
@@ -91,36 +114,98 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
 ?>
 <main class="container py-4">
     <div class="d-flex flex-column mb-3">
-        <button class="btn align-self-start" style="background-color: #EC6350; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" onclick="window.location.href='explore.php'">
-            <i class="fas fa-arrow-left text-white"></i>
+        <button class="btn align-self-start back-btn" onclick="window.location.href='explore.php'">
+            <i class="fas fa-arrow-left"></i>
         </button>
         <h1 class="fw-bold mt-2" style="color: #102E47;"><?php echo $siteDetails['sitename']; ?></h1>
     </div>
-    <div style="height:600px;">
-        <img class="img-fluid h-100 w-100 object-fit-cover rounded" src="../../../public/uploads/<?php echo $siteDetails['siteimage']; ?>" style="object-fit: cover;"></img>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div style="height: 600px; width: 600px;">
+                <img class="img-fluid h-100 w-100 object-fit-cover" src="../../../public/uploads/<?php echo $siteDetails['siteimage']; ?>" style="object-fit: cover; border-radius: 25px;">
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div style="width: 600px;">
+                <div style="height: 300px;">
+                    <button class="btn text-white position-relative w-100 h-100 fw-bold add-to-tour-btn"  
+                            style="background-color: #EC6350; font-size: 1.8rem; text-align: left; padding: 20px; 
+                            border-radius: 25px; font-family: 'Raleway', sans-serif !important;" 
+                            <?php if (isset($_SESSION['userid']) && $_SESSION['usertype'] == 'trst') { ?> 
+                                <?php if (isset($_SESSION['tour_ui_state']) && $_SESSION['tour_ui_state'] !== 'edit') { ?>
+                                    onclick="editModeError()"
+                                <?php } else { ?>
+                                    onclick="addToTour(<?php echo $siteid; ?>)"
+                                <?php } ?>
+                            <?php } else {  
+                                echo " onclick='loginFirst()'"; 
+                            }?> 
+                        >
+                        <span class="fw-bold" style="font-family: 'Raleway', sans-serif !important;">Add To Your <br>Tour</span>
+                            <span class="position-absolute" style="bottom: 15px; right: 15px;">
+                                <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
+                            </span>
+                    </button>
+                </div>
+
+                <div class="mt-4">
+                    <div class="p-3 mb-3" style="background-color: #E7EBEE; border-radius: 25px; height: 120px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <?php 
+                                $avgRating = ($siteDetails['rating_cnt'] == 0) ? 0 : round(($siteDetails['rating']/$siteDetails['rating_cnt']), 1);
+                                $ratingDescription = getRatingDescription($avgRating);
+                                ?>
+                                <div class="fw-bold" style="font-family: 'Raleway', sans-serif !important; color: #102E47; font-size: 1.8rem;"><?php echo $ratingDescription; ?></div>
+                                <small class="fs-5" style="color: #757575"><?php echo $reviewCount; ?> review/s</small>
+                            </div>
+                            <div class="bg-white p-2 rounded-pill">
+                                <span class="text-danger me-1">★</span>
+                                <span class="fw-bold"><?php echo ($siteDetails['rating_cnt'] == 0) ? "0.0" : number_format($avgRating, 1); ?></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row gx-3">
+                        <div class="col-6">
+                            <div class="p-3" style="background-color: #E7EBEE; border-radius: 25px; height: 140px;">
+                                <div class="fw-bold" style="font-family: 'Raleway', sans-serif !important; color: #102E47; font-size: 1.8rem;">Price</div>
+                                <div class="fs-5" style="color: #757575">P<?php echo $siteDetails['price']; ?></div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6">
+                            <div class="p-3" style="background-color: #E7EBEE; border-radius: 25px; height: 140px;">
+                                <div class="fw-bold" style="font-family: 'Raleway', sans-serif !important; color: #102E47; font-size: 1.8rem;">Available on</div>
+                                <div style="text-align: justify; color: #757575;"><?php $opdays = Site::binaryToDays($siteDetails['opdays']); echo $opdays;?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
     </div>
 
     <div class="row mt-4 gx-4">
-        <div class="col-lg-9">
-            <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+        <div class="col-lg-12">
+            <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist" style="background-color: #E7EBEE; width: 97%;">
                 <li class="nav-item">
-                    <a class="nav-link active" id="pills-overview-tab" data-bs-toggle="pill" href="#pills-overview" role="tab" aria-controls="pills-overview" aria-selected="true">Overview</a>
+                    <a class="nav-link active" id="pills-overview-tab" data-bs-toggle="pill" href="#pills-overview" role="tab" aria-controls="pills-overview" aria-selected="true" style="font-family: 'Raleway', sans-serif !important;">Overview</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-fees-tab" data-bs-toggle="pill" href="#pills-fees" role="tab" aria-controls="pills-fees" aria-selected="false">Estimated Fees</a>
+                    <a class="nav-link" id="pills-fees-tab" data-bs-toggle="pill" href="#pills-fees" role="tab" aria-controls="pills-fees" aria-selected="false" style="font-family: 'Raleway', sans-serif !important;">Estimated Fees</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-reviews-tab" data-bs-toggle="pill" href="#pills-reviews" role="tab" aria-controls="pills-reviews" aria-selected="false">Ratings & Reviews</a>
+                    <a class="nav-link" id="pills-reviews-tab" data-bs-toggle="pill" href="#pills-reviews" role="tab" aria-controls="pills-reviews" aria-selected="false" style="font-family: 'Raleway', sans-serif !important;">Ratings & Reviews</a>
                 </li>
             </ul>
 
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-overview" role="tabpanel" aria-labelledby="pills-overview-tab">
-                    <h3>Operating Days</h3>
-                    <p><?php $opdays = Site::binaryToDays($siteDetails['opdays']); 
-                    echo $opdays;?></p>
-                    <h3 class="mt-5">Description</h3>
-                    <p><?php echo $siteDetails['description']; ?></p>
+                    <h3>Description</h3>
+                    <p style="text-align: justify; width: 97%;"><?php echo $siteDetails['description']; ?></p>
                 </div>
                 <div class="tab-pane fade" id="pills-fees" role="tabpanel" aria-labelledby="pills-fees-tab">
                     <h3>P<?php echo $siteDetails['price']; ?></h3>
@@ -128,20 +213,38 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                 </div>
                 <div class="tab-pane fade" id="pills-reviews" role="tabpanel" aria-labelledby="pills-reviews-tab">
                     <div class="row align-items-center mb-5">
-                        <div>
+                        <div class="col-md-4">
                             <div class="rating-display">
-                                <h2 class="display-4 fw-bold"><?php echo ($siteDetails['rating_cnt'] == 0) ? 0 : number_format($siteDetails['rating']/$siteDetails['rating_cnt'], 2); ?></h2>
-                                <div class="stars text-warning">
-                                    <?php echo ($siteDetails['rating_cnt'] == 0) ? 0 : generateStarRating($siteDetails['rating']/$siteDetails['rating_cnt']); ?>
+                                <h2 class="display-4 fw-bold"><?php echo ($siteDetails['rating_cnt'] == 0) ? "0.0" : number_format($avgRating, 1); ?></h2>
+                                <div class="stars" style="color: #EC6350;">
+                                    <?php echo generateStarRating(($siteDetails['rating_cnt'] == 0) ? 0 : $siteDetails['rating']/$siteDetails['rating_cnt']); ?>
                                 </div>                                    
                                 <span class="rating-count">All Ratings (<?php echo $siteDetails['rating_cnt']; ?>)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-7">
+                            <div class="rating-bars">
+                                <?php
+                                for ($i = 5; $i >= 1; $i--) {
+                                    $percentage = isset($ratingDistribution[$i]) ? $ratingDistribution[$i] : 0;
+                                ?>
+                                <div class="rating-bar-row d-flex align-items-center mb-2">
+                                    <div class="rating-value me-2" style="width: 30px;"><?php echo $i; ?>.0</div>
+                                    <div class="progress flex-grow-1" style="height: 15px;">
+                                        <div class="progress-bar" role="progressbar" 
+                                            style="width: <?php echo $percentage; ?>%; background-color: #102E47;" 
+                                            aria-valuenow="<?php echo $percentage; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-4">
                         <?php foreach ($siteReviews as $review): ?>
-                            <div class="review-list-card" role="button" data-bs-toggle="modal" data-bs-target="#reviewModal" style="cursor: pointer;">
+                            <div class="review-list-card" role="button" data-bs-toggle="modal" data-bs-target="#reviewModal" style="cursor: pointer; border-radius: 25px; width: 97%;">
                                 <p class="fst-italic"><?php echo htmlspecialchars($review['review']); ?></p>
                                 <strong><?php echo htmlspecialchars($review['author']); ?></strong>
                                 <span class="text-muted"><?php echo htmlspecialchars(date('F j, Y', strtotime($review['date']))); ?></span>
@@ -149,30 +252,6 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                         <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-3 position-relative">
-            <div class="sticky-top" style="top: 2rem;">
-                <button class="btn text-white position-relative w-100 py-5 fw-bold"  
-                    style="background-color: #EC6350; font-size: 1.5rem; text-align: left; padding-top: 10px; 
-                    padding-left: 15px;" 
-                    <?php if (isset($_SESSION['userid']) && $_SESSION['usertype'] == 'trst') { ?> 
-                        <?php if (isset($_SESSION['tour_ui_state']) && $_SESSION['tour_ui_state'] !== 'edit') { ?>
-                            onclick="editModeError()"
-                        <?php } else { ?>
-                            onclick="addToTour(<?php echo $siteid; ?>)"
-                        <?php } ?>
-                    <?php } else {  
-                        echo " onclick='loginFirst()'"; 
-                    }?> 
-                >
-                <span class="position-absolute" style="top: 10px; left: 15px;">Add To Your <br>Tour</span>
-                <br>
-                <br>
-                <span class="position-absolute" style="bottom: 15px; right: 15px;">
-                    <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
-                </span>
-            </button>
             </div>
         </div>
     </div>

@@ -268,6 +268,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             font-size: 14px;
             border-radius: 20px;
             cursor: pointer;
+            transition: all 0.3s ease;
             background-color: #FFFFFF;
             font-weight: bold;
             font-family: 'Nunito', sans-serif !important;

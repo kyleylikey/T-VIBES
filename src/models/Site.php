@@ -146,6 +146,8 @@ class Site {
     }
 
     public function rateSite($siteId, $rating) {
+        $rating = min(5, max(0, $rating));
+        
         $query = "UPDATE sites SET rating = rating + :rating, rating_cnt = rating_cnt + 1 WHERE siteid = :siteid";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
@@ -155,5 +157,3 @@ class Site {
     }
 }
 ?>
-
-

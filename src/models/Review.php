@@ -36,5 +36,48 @@ class Review {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public function countSiteReviews($siteid) {
+        $query = "SELECT COUNT(*) AS review_count FROM rev 
+                  WHERE status = 'displayed' AND siteid = :siteid";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['review_count'];
+    }
+
+    public function getRatingDistribution($siteid) {
+        $query = "SELECT rating, COUNT(*) as count FROM user_ratings 
+                  WHERE site_id = :siteid 
+                  GROUP BY rating 
+                  ORDER BY rating DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $distribution = [
+            5 => 0,
+            4 => 0,
+            3 => 0,
+            2 => 0,
+            1 => 0
+        ];
+        
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $total = 0;
+        
+        foreach ($results as $row) {
+            $distribution[$row['rating']] = $row['count'];
+            $total += $row['count'];
+        }
+        
+        if ($total > 0) {
+            foreach ($distribution as $rating => $count) {
+                $distribution[$rating] = round(($count / $total) * 100);
+            }
+        }
+        
+        return $distribution;
+    }
 }
 ?>
