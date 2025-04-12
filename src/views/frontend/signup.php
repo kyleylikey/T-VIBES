@@ -14,7 +14,9 @@ error_reporting(E_ALL);
     <link rel="stylesheet" href="../../../public/assets/styles/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <style>
         * {
             font-family: 'Nunito', sans-serif;
@@ -111,6 +113,82 @@ error_reporting(E_ALL);
         <h1>Getaway Awaits!</h1>
     </div>
 
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4>Terms and Conditions for Account Creation</h4>
+                <p><strong>Effective Date: [Date of deployment of website]</strong></p>
+                
+                <p>Welcome to T-vibes (the "T-vibes"), operated by the LGU of Taal, Tourism Department. These Terms and Conditions ("Terms") govern your use of our website and services. By creating an account or using the Website, you agree to be bound by these Terms.</p>
+                
+                <h5>1. Eligibility</h5>
+                <ul>
+                <li><strong>Age Requirement</strong>: To create an account, you must be at least 18 years old. Minors under 18 are not permitted to use our services.</li>
+                <li><strong>Visitor Requirement</strong>: Only individuals visiting Taal, whether from the Philippines or abroad, are eligible to create an account on the Website.</li>
+                </ul>
+                
+                <h5>2. Account Creation</h5>
+                <ul>
+                <li>You will be required to provide the following personal information to create an account:
+                    <ul>
+                    <li>Full Name</li>
+                    <li>Email Address</li>
+                    <li>Contact Number</li>
+                    <li>Username and Password (created by you)</li>
+                    </ul>
+                </li>
+                <li>You are responsible for ensuring the accuracy of the information provided during account creation.</li>
+                </ul>
+                
+                <h5>3. Use of Information</h5>
+                <ul>
+                <li><strong>Analytics:</strong> Information collected may be used by the Taal LGU for analytical purposes such as monitoring visitor trends and improving tourism services.</li>
+                <li><strong>Data Privacy:</strong> Your data will not be shared with third parties outside the LGU. All data is securely stored and used solely for operational and analytical purposes in accordance with the <strong>Data Privacy Act of 2012 (RA 10173)</strong>.</li>
+                </ul>
+                
+                <h5>4. Account Deletion and Data Retention</h5>
+                <ul>
+                <li>If you wish to delete your account and all associated data, you may request deletion by contacting the Taal Tourism Office. Upon verification, your account will be removed from our system.</li>
+                <li>Data gathered during your account's activity may still be used for analytics purposes by the Taal LGU.</li>
+                </ul>
+                
+                <h5>5. Changes to Terms</h5>
+                <ul>
+                <li>We may update or modify these Terms from time to time. Continued use of the Website after such changes indicates your acceptance of the updated Terms.</li>
+                </ul>
+                
+                <h5>6. Limitation of Liability</h5>
+                <ul>
+                <li>The website and its services are provided "as is" without warranties or representations of any kind. We are not liable for any indirect, incidental, or consequential damages arising from the use of the website.</li>
+                </ul>
+                
+                <h5>7. Governing Law</h5>
+                <ul>
+                <li>These Terms shall be governed by and construed in accordance with the laws of the Philippines.</li>
+                </ul>
+                
+                <h5>8. Contact Us</h5>
+                <ul>
+                <li>For inquiries or concerns, you may contact the Taal Tourism Office at: <strong>Email:</strong> [Insert LGU tourism email] <strong>Phone:</strong> [Insert contact number]</li>
+                </ul>
+                
+                <h5>Acceptance of Terms</h5>
+                <ul>
+                <li>By creating an account on the website, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
     <script>
     document.getElementById('signupForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -161,6 +239,19 @@ error_reporting(E_ALL);
                 submitButton.disabled = false;
                 submitButton.textContent = "Create Account";
             });
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxContainer = document.querySelector('.checkbox-container');
+        checkboxContainer.innerHTML = `
+            <input type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
+            <label for="privacyPolicy">I agree to the <a href="#" id="openTerms" class="font-link">Privacy Policy & Terms of Service</a></label>
+        `;
+        
+        document.getElementById('openTerms').addEventListener('click', function(e) {
+            e.preventDefault();
+            const termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
+            termsModal.show();
         });
     });
 </script>
