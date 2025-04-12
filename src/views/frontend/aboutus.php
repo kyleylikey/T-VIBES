@@ -82,22 +82,22 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
     <div class="row mt-4">
         <div class="col-3">
             <div class="bg-light rounded overflow-hidden" style="height: 150px;">
-                <img src="/T-VIBES/public/assets/images/burda.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="/T-VIBES/public/assets/images/burda.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
             </div>
         </div>
         <div class="col-3">
             <div class="bg-light rounded overflow-hidden" style="height: 150px;">
-                <img src="/T-VIBES/public/assets/images/empanada.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="/T-VIBES/public/assets/images/empanada.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
             </div>
         </div>
         <div class="col-3">
             <div class="bg-light rounded overflow-hidden" style="height: 150px;">
-                <img src="/T-VIBES/public/assets/images/munisipyo.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="/T-VIBES/public/assets/images/munisipyo.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
             </div>
         </div>
         <div class="col-3">
             <div class="bg-light rounded overflow-hidden" style="height: 150px;">
-                <img src="/T-VIBES/public/assets/images/suman.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="/T-VIBES/public/assets/images/suman.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
             </div>
         </div>
     </div>

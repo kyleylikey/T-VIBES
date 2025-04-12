@@ -175,15 +175,15 @@ else {
             <div class="row">
                 <div class="col-lg-6">
                     <h2 style="text-align: justify;">Experience the Rich Heritage and Stunning Views of Taal.</h2>
-                    <img src="assets/images/whitehouse.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded">
+                    <img src="assets/images/whitehouse.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover" style="border-radius: 25px;">
                 </div>
                 <div class="col-lg-6">
                     <div class="row">
                         <div class="col-lg-6">
-                            <img src="assets/images/marcela.jpg" alt="" class="img-fluid rounded">
+                            <img src="assets/images/marcela.jpg" alt="" class="img-fluid" style="border-radius: 25px;">
                         </div>
                         <div class="col-lg-6">
-                            <img src="assets/images/tampuhan.jpg" alt="" class="img-fluid rounded">
+                            <img src="assets/images/tampuhan.jpg" alt="" class="img-fluid" style="border-radius: 25px;">
                         </div>
                     </div>
                     <div class="row mt-5">
@@ -254,10 +254,10 @@ else {
         <div class="row justify-content-center g-4">
             <?php foreach ($topSites as $site): ?>
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-lg p-3 text-center">
+                    <div class="card border-0 shadow-lg p-3 text-center" style="border-radius: 25px;">
                         <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                             <?php if (!empty($site['siteimage'])): ?>
-                                <img class="card border-0" src="/T-VIBES/public/uploads/<?php echo $site['siteimage']; ?>" alt="<?php echo $site['sitename']; ?>" style="height: 100%; width: 100%; object-fit: cover;">
+                                <img class="card border-0" src="/T-VIBES/public/uploads/<?php echo $site['siteimage']; ?>" alt="<?php echo $site['sitename']; ?>" style="height: 100%; width: 100%; object-fit: cover; border-radius: 25px;">
                             <?php else: ?>
                                 <i class="bi bi-image" style="font-size: 3rem; color: gray;"></i>
                             <?php endif; ?>
