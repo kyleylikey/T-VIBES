@@ -211,7 +211,7 @@ require_once '../../../controllers/tourist/tourapprovedcontroller.php';
                     </div>
                     <div class="modal-footer">
                         <div class="fw-bold mt-2 text-success">Status: <span class="text-success">Approved</span></div>
-                        <div class="summary-value fw-light fst-italic text-center">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
+                        <div class="summary-value fw-light text-center">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
                     </div>
                 </div>
             </div>

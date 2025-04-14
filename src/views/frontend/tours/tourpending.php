@@ -222,7 +222,7 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
                     </div>
                     <div class="modal-footer">
                         <div class="status-completed fw-bold mt-2 text-info">Status: <span class="text-info">Pending</span></div>
-                        <div class="summary-value fw-light fst-italic text-center">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
+                        <div class="summary-value fw-light text-center">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
                     </div>
                 </div>
             </div>
