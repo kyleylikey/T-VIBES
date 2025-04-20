@@ -68,6 +68,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-bottom: 20px !important; 
         }
 
+        .nav-link {
+            font-size: 20px; 
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        header a.nav-link {
+            color: #434343 !important;
+            font-weight: normal !important;
+            transition: color 0.3s ease, font-weight 0.3s ease;
+        }
+
+        header a.nav-link:hover {
+            color: #729AB8 !important;
+        }
+
+        header a.nav-link.active {
+            color: #729AB8 !important;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger {
+            background-color: transparent !important;
+            border: 2px solid #EC6350 !important;
+            color: #EC6350 !important;
+            transition: all 0.3s ease;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger:hover {
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
         .card {
             border-radius: 25px !important;
             background-color: #E7EBEE !important;

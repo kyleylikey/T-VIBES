@@ -433,6 +433,40 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
             padding: 20px;
         }
 
+        .nav-link {
+            font-size: 20px; 
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        header a.nav-link {
+            color: #434343 !important;
+            font-weight: normal !important;
+            transition: color 0.3s ease, font-weight 0.3s ease;
+        }
+
+        header a.nav-link:hover {
+            color: #729AB8 !important;
+        }
+
+        header a.nav-link.active {
+            color: #729AB8 !important;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger {
+            background-color: transparent !important;
+            border: 2px solid #EC6350 !important;
+            color: #EC6350 !important;
+            transition: all 0.3s ease;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger:hover {
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
         .main-container {
             display: flex;
             justify-content: center;
@@ -1374,12 +1408,10 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
     </style>
 </head>
 <body>
-<div class="header-container">
-    <?php include '../../templates/headertours.php'; ?>
-    <?php include '../../templates/toursnav.php'; ?>
-</div>
 
-<body>
+<?php include '../../templates/headertours.php'; ?>
+<?php include '../../templates/toursnav.php'; ?>
+
 <div class="main-container">
     <div class="tour-container">
         <?php if (!empty($_SESSION['tour_destinations'])): ?>
@@ -1483,6 +1515,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
         </div>
     </div>
 </div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>

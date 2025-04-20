@@ -48,6 +48,40 @@ recordVisit();
             font-family: 'Nunito', sans-serif !important;
         }
 
+        .nav-link {
+            font-size: 20px; 
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        header a.nav-link {
+            color: #434343 !important;
+            font-weight: normal !important;
+            transition: color 0.3s ease, font-weight 0.3s ease;
+        }
+
+        header a.nav-link:hover {
+            color: #729AB8 !important;
+        }
+
+        header a.nav-link.active {
+            color: #729AB8 !important;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger {
+            background-color: transparent !important;
+            border: 2px solid #EC6350 !important;
+            color: #EC6350 !important;
+            transition: all 0.3s ease;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger:hover {
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
         .hero-content h1 {
             font-family: 'Raleway', sans-serif !important;
             font-weight: bold;
@@ -117,45 +151,7 @@ recordVisit();
 <body>
 <?php
 if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
-    echo "<header>
-        <nav class='navbar navbar-expand-lg navbar-light bg-white'>
-            <div class='container-fluid'>
-            <img src='assets/images/headerlogo.jpg' alt='' class='img-fluid' width='250' height='82'> 
-            <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarText' aria-controls='navbarText' aria-expanded='false' aria-label='Toggle navigation'>
-                <span class='navbar-toggler-icon'></span>
-            </button>
-            <div class='collapse navbar-collapse' id='navbarText'>
-                <ul class='navbar-nav me-auto mb-2 mb-lg-0'>
-                <li class='nav-item'>
-                    <a class='nav-link active' aria-current='page' href='#'>Home</a>
-                </li>
-                <li class='nav-item'>
-                    <a class='nav-link' href='../src/views/frontend/explore.php'>Explore</a>
-                </li>
-                <li class='nav-item'>
-                    <a class='nav-link' href='../src/views/frontend/aboutus.php'>About Us</a>
-                </li>
-                <li class='nav-item'>
-                    <a class='nav-link' href='../src/views/frontend/contactus.php'>Contact</a>
-                </li>
-                </ul>
-                <ul class='navbar-nav d-flex -flex-row gap-3 align-items-center'>
-                <li class='nav-item'>
-                        <a href='../src/views/frontend/signup.php' class='nav-link'>Sign Up</a>
-                    </li>
-                    <li class='nav-item'>
-                    <a href='../src/views/frontend/login.php' 
-                    class='btn btn-danger rounded-pill px-3 py-1' 
-                    style='font-size: 1.3rem;'>
-                        Login
-                    </a>
-                </li>
-                </ul>
-
-            </div>
-            </div>
-        </nav>
-    </header>";
+    include __DIR__ . '/../src/views/templates/header.php';
 }
 else {
     include __DIR__ . '/../src/views/templates/headertours.php';

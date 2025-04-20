@@ -116,7 +116,7 @@ function sendTourConfirmation($email, $username, $date) {
         $mail->Port       = 587;
 
         // Recipients
-        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourist Site');
+        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism Office');
         $mail->addAddress($email);
 
         // Content
@@ -128,7 +128,7 @@ function sendTourConfirmation($email, $username, $date) {
             <head>
                 <meta charset='UTF-8'>
                 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                <title>Accepted Tour Request - Taal Tourism</title>
+                <title>Accepted Tour Request - Taal Tourism Office</title>
                 <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
                 <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
                 <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
@@ -194,7 +194,7 @@ function sendTourConfirmation($email, $username, $date) {
                         <p>Should there be cancellations or special accommodations needed, please let us know by contacting us through our Facebook Page or (number).</p>
                     </div>
                     <div class='footer'>
-                        <p>&copy; " . date("Y") . " Taal Tourism. All rights reserved.</p>
+                        <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -225,7 +225,7 @@ function sendTourDecline($email, $username, $date, $message) {
         $mail->Port       = 587;
 
         // Recipients
-        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourist Site');
+        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism Office');
         $mail->addAddress($email);
 
         // Content
@@ -237,7 +237,7 @@ function sendTourDecline($email, $username, $date, $message) {
             <head>
                 <meta charset='UTF-8'>
                 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                <title>Declined Tour Request - Taal Tourism</title>
+                <title>Declined Tour Request - Taal Tourism Office</title>
                 <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
                 <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
                 <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
@@ -305,7 +305,7 @@ function sendTourDecline($email, $username, $date, $message) {
                         <p>If there are any concerns, please let us know by contacting us through our Facebook Page or (number).</p>
                     </div>
                     <div class='footer'>
-                        <p>&copy; " . date("Y") . " Taal Tourism. All rights reserved.</p>
+                        <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
                     </div>
                 </div>
             </body>
