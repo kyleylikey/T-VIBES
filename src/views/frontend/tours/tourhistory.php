@@ -108,7 +108,7 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 <head>
 <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tour History</title>
+    <title>Tour History - Taal Heritage Town</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -156,26 +156,115 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
             font-weight: bold !important;
         }
 
+        /* Table Container Styling */
         .table-container {
-            margin-top: 20px;
+            margin-top: 30px;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 15px;
         }
 
+        /* Table Header Styling */
         .table-header {
-            font-weight: bold;
-            color: #102E47;
+            background-color: #102E47;
+            color: #FFFFFF;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 10px 10px 0 0;
+            padding: 15px 20px;
+            margin-bottom: 0;
+            letter-spacing: 0.5px;
         }
 
+        /* Table Content Container */
+        .table-content {
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        /* Tour Row Styling - History Style */
         .tour-row {
-            background-color: #EDF1F5;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            background-color: #E7EBEE;
+            padding: 18px 20px;
+            margin-bottom: 0;
+            border-left: 4px solid #F1C40F; /* Yellow border for history tours */
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.15);
         }
 
         .tour-row:hover {
-            background-color: #D9E2EC;
+            background-color: #f2f0e8; /* Slight yellow tint on hover */
+            transform: translateX(3px);
+            cursor: pointer;
+        }
+
+        .tour-row:last-child {
+            border-bottom: none;
+            border-radius: 0 0 10px 10px;
+        }
+
+        /* Tour Row Column Styling */
+        .tour-row .col-3, 
+        .tour-row .col-2, 
+        .tour-row .col-4 {
+            padding: 8px 15px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            color: #434343;
+        }
+
+        /* Date Styling */
+        .tour-date {
+            font-weight: 600;
+            color: #102E47;
+        }
+
+        /* Number of People Styling */
+        .people-count {
+            display: inline-block;
+            background-color: #F1C40F; /* Yellow for completed */
+            color: #102E47;
+            border-radius: 50px;
+            padding: 3px 15px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 45px;
+        }
+
+        /* Destinations List Styling */
+        .destinations-list {
+            padding-left: 0;
+            list-style-type: none;
+            margin-bottom: 0;
+        }
+
+        .destinations-list li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #757575;
+            text-decoration: line-through; /* Strikethrough to show completed */
+            opacity: 0.9;
+        }
+
+        .destinations-list li:before {
+            content: "★"; /* Star for history tours */
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #F1C40F;
+            font-weight: bold;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .destinations-list li:last-child {
+            margin-bottom: 0;
         }
 
         .modal-title {
@@ -352,6 +441,46 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
             background-color: #cccccc !important;
             color: #666666 !important;
         }
+
+        .swal2-icon {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .swal2-icon-custom {
+            font-size: 10px; 
+            color: #EC6350; 
+        }
+
+        .swal2-title-custom {
+            font-size: 24px !important;
+            font-weight: bold;
+            color: #434343 !important;
+        }
+
+        .swal-custom-popup {
+            padding: 20px;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .swal-custom-btn {
+            padding: 10px 20px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border: 2px solid #102E47 !important;
+            border-radius: 25px !important;
+            background-color: #FFFFFF !important;
+            color: #434343 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .swal-custom-btn:hover {
+            background-color: #102E47 !important;
+            color: #FFFFFF !important;
+        }
     </style>
 </head>
 <body>
@@ -359,11 +488,48 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 <?php include '../../templates/toursnav.php'; ?>
 
 <div class="container table-container">
-    <div class="row table-header py-2">
-        <div class="col-3">Date Created</div>
-        <div class="col-3">Planned Date/s</div>
-        <div class="col-2">Number of People</div>
-        <div class="col-4">Destinations</div>
+    <div class="table-content">
+        <div class="row table-header">
+            <div class="col-3">Date Created</div>
+            <div class="col-3">Planned Date/s</div>
+            <div class="col-3">Number of People</div>
+            <div class="col-3">Destinations</div>
+        </div>
+
+        <?php if (!empty($tours)) : ?>
+            <?php foreach ($tours as $index => $tour) : 
+                $destinations = explode(',', $tour['destinations']); 
+                $prices = explode(',', $tour['prices']); 
+                $images = explode(',', $tour['images']); 
+                $siteIds = explode(',', $tour['siteids']);
+                $num_people = $tour['companions']; 
+            ?>
+                <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $index ?>">
+                    <div class="col-3">
+                        <span class="tour-date"><?= date('d M Y', strtotime($tour['created_at'])) ?></span>
+                    </div>
+                    <div class="col-3">
+                        <span class="tour-date"><?= date('d M Y', strtotime($tour['date'])) ?></span>
+                    </div>
+                    <div class="col-3">
+                        <span class="people-count"><?= $num_people ?></span>
+                    </div>
+                    <div class="col-3">
+                        <ul class="destinations-list">
+                            <?php foreach ($destinations as $destination) : ?>
+                                <li><?= trim($destination) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <div class="empty-state">
+                <i class="bi bi-journal-check"></i>
+                <h4>No Tour History Yet</h4>
+                <p>You haven't completed any tours yet. Once your tours are completed, they will appear here.</p>
+            </div>
+        <?php endif; ?>
     </div>
 
     <?php foreach ($tours as $index => $tour) : 
@@ -373,17 +539,6 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
         $siteIds = explode(',', $tour['siteids']);
         $num_people = $tour['companions']; 
     ?>
-    <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $index ?>">
-        <div class="col-3"><?= date('d M Y', strtotime($tour['created_at'])) ?></div>
-        <div class="col-3"><?= date('d M Y', strtotime($tour['date'])) ?></div>
-        <div class="col-2"><?= $num_people ?></div>
-        <div class="col-4">
-            <?php foreach ($destinations as $destination) : ?>
-                <div><?= trim($destination) ?></div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-
     <div class="modal fade" id="tourModal<?= $index ?>" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -473,7 +628,7 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 </div>
 
 <div class="modal fade" id="rateExperienceModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content p-4 text-center">
             <h5 class="mb-3">Rate Your Experience</h5>
             <div class="stars mb-3">
@@ -487,7 +642,7 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 </div>
 
 <div class="modal fade" id="reviewModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content p-4 text-center">
             <h5 class="modal-title mb-3">Leave a Review</h5>
             <div class="form-group mb-3">
@@ -526,10 +681,16 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
         
         // Show success message (replace this with actual API call)
         Swal.fire({
+            iconHtml: '<i class="fas fa-circle-check"></i>',
             title: "Thank you!",
             text: "Your review has been submitted successfully.",
-            icon: "success",
-            confirmButtonColor: "#EC6350"
+            timer: 3000,
+            showConfirmButton: false,
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup"
+            }
         });
         
         // In a real implementation, you would add an AJAX call here
@@ -608,10 +769,15 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
             
             if (reviewText === '') {
                 Swal.fire({
-                    title: "Error",
-                    text: "Please write a review before submitting.",
-                    icon: "error",
-                    confirmButtonColor: "#EC6350"
+                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                    title: "Please write a review before submitting.",
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
                 });
                 return;
             }
@@ -646,10 +812,15 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
         } else {
             // Display error if no rating is selected
             Swal.fire({
-                title: "Error",
-                text: "Please select a rating before submitting.",
-                icon: "error",
-                confirmButtonColor: "#EC6350"
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "Please select a rating before submitting.",
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
             });
         }
     });
@@ -674,10 +845,15 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
             if (data.status === 'error' && data.alreadyRated) {
                 // User has already rated this site
                 Swal.fire({
-                    title: "Already Rated",
-                    text: "You have already rated this site.",
-                    icon: "info",
-                    confirmButtonColor: "#EC6350"
+                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                    title: "You have already rated this site.",
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
                 });
                 
                 // Disable the rate button for this site
@@ -685,10 +861,16 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
             } else if (data.status === 'success') {
                 // Show success message
                 Swal.fire({
+                    iconHtml: '<i class="fas fa-circle-check"></i>',
                     title: "Thank you for your rating!",
                     text: `You rated ${rating} star(s).`,
-                    icon: "success",
-                    confirmButtonColor: "#EC6350"
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
                 });
                 
                 // Disable the rate button for this site
@@ -696,10 +878,16 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
             } else {
                 // Show error
                 Swal.fire({
+                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                     title: "Error",
                     text: data.message || "There was a problem submitting your rating.",
-                    icon: "error",
-                    confirmButtonColor: "#EC6350"
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
                 });
             }
             
@@ -712,10 +900,16 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
         .catch(error => {
             console.error('Error:', error);
             Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                 title: "Error",
                 text: "There was a problem submitting your rating. Please try again.",
-                icon: "error",
-                confirmButtonColor: "#EC6350"
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
             });
         });
     }
@@ -743,7 +937,7 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
     }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 </body>
 </html>

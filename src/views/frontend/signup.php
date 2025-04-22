@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up Page</title>
+    <title>Sign Up - Taal Heritage Town</title>
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
     <link rel="stylesheet" href="../../../public/assets/styles/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
