@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
 <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Account Details</title>
+    <title>Account Details - Taal Heritage Town</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
@@ -66,6 +66,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #102E47;
             font-family: 'Raleway', sans-serif !important;
             margin-bottom: 20px !important; 
+        }
+
+        .nav-link {
+            font-size: 20px; 
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        header a.nav-link {
+            color: #434343 !important;
+            font-weight: normal !important;
+            transition: color 0.3s ease, font-weight 0.3s ease;
+        }
+
+        header a.nav-link:hover {
+            color: #729AB8 !important;
+        }
+
+        header a.nav-link.active {
+            color: #729AB8 !important;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger {
+            background-color: transparent !important;
+            border: 2px solid #EC6350 !important;
+            color: #EC6350 !important;
+            transition: all 0.3s ease;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger:hover {
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
         }
 
         .card {

@@ -7,7 +7,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
+    <title>Contact - Taal Heritage Town</title>
     <link rel="stylesheet" href="assets/styles/index.css">
     <link rel="stylesheet" href="assets/styles/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
@@ -21,6 +21,40 @@ session_start();
             font-family: 'Nunito', sans-serif !important;
         }
         
+        .nav-link {
+            font-size: 20px; 
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        header a.nav-link {
+            color: #434343 !important;
+            font-weight: normal !important;
+            transition: color 0.3s ease, font-weight 0.3s ease;
+        }
+
+        header a.nav-link:hover {
+            color: #729AB8 !important;
+        }
+
+        header a.nav-link.active {
+            color: #729AB8 !important;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger {
+            background-color: transparent !important;
+            border: 2px solid #EC6350 !important;
+            color: #EC6350 !important;
+            transition: all 0.3s ease;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger:hover {
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
         .icon-circle {
             width: 40px;
             height: 40px;

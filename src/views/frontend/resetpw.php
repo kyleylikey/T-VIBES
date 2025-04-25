@@ -12,7 +12,7 @@ unset($_SESSION['valid_reset']);
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Reset Password</title>
+    <title>Reset Password - Taal Heritage Town</title>
     <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css' rel='stylesheet'>
     <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css' rel='stylesheet'>
     <link rel='stylesheet' href='../../public/assets/styles/resetpw.css'>

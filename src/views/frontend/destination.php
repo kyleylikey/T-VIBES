@@ -16,7 +16,7 @@ if (isset($_GET['siteid'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Destination Page</title>
+    <title>Destination - Taal Heritage Town</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -101,6 +101,560 @@ if (isset($_GET['siteid'])) {
         .back-btn:hover {
             background-color: #EC6350 !important;
             color: #FFFFFF !important;
+        }
+
+        @media only screen and (min-width: 993px) and (max-width: 1280px) {
+            .container {
+                padding: 15px;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+                margin-bottom: 1.8rem;
+            }
+            
+            .row {
+                display: flex;
+                flex-flow: row wrap;
+                margin: 0 -10px;
+            }
+            
+            .col-md-6 {
+                width: 50%;
+                padding: 0 10px;
+                margin-bottom: 15px;
+            }
+            
+            .col-md-6:first-child div {
+                height: 500px !important;
+                width: 100% !important;
+            }
+            
+            .col-md-6 img {
+                height: 100% !important;
+                width: 100% !important;
+                object-fit: cover !important;
+                border-radius: 25px !important;
+            }
+            
+            .col-md-6:nth-child(2) > div {
+                width: 100% !important;
+            }
+            
+            .add-to-tour-btn {
+                height: 250px !important;
+                font-size: 1.7rem !important;
+                padding: 20px !important;
+                border-radius: 25px !important;
+            }
+            
+            .add-to-tour-btn i {
+                font-size: 1.8rem !important;
+            }
+            
+            .p-3.mb-3 {
+                height: auto !important;
+                min-height: 100px !important;
+                margin-bottom: 15px !important;
+                border-radius: 25px !important;
+            }
+            
+            .p-3.mb-3 .fw-bold {
+                font-size: 1.6rem !important;
+            }
+            
+            .col-6 {
+                width: 50%;
+                padding: 0 5px;
+            }
+            
+            .col-6 .p-3 {
+                height: auto !important;
+                min-height: 120px !important;
+                padding: 15px !important;
+                border-radius: 25px !important;
+            }
+            
+            .col-6 .p-3 .fw-bold {
+                font-size: 1.6rem !important;
+            }
+            
+            .col-6 .p-3 div:last-child {
+                font-size: 1.1rem;
+                line-height: 1.5;
+            }
+            
+            .nav-pills {
+                width: 97% !important;
+                border-radius: 15px;
+            }
+            
+            .nav-pills .nav-link {
+                padding: 10px 20px;
+                font-size: 1.1rem;
+            }
+            
+            #pills-overview p {
+                width: 97% !important;
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+            
+            .col-md-4, .col-md-7 {
+                padding: 0 10px;
+            }
+            
+            .back-btn {
+                width: 40px !important;
+                height: 40px !important;
+                margin-bottom: 15px;
+            }
+            
+            .mt-4 {
+                margin-top: 1.5rem !important;
+            }
+            
+            .review-list-card {
+                width: 97% !important;
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .row.gx-3 {
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            .tab-content {
+                width: 100%;
+            }
+        }
+
+        @media only screen and (min-width: 769px) and (max-width: 992px) {
+            .container {
+                padding: 15px;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .row {
+                display: flex;
+                flex-flow: row wrap;
+                margin: 0 -10px;
+            }
+            
+            .col-md-6 {
+                width: 100%;
+                padding: 0 10px;
+                margin-bottom: 20px;
+            }
+            
+            .col-md-6:first-child div {
+                height: auto !important;
+                width: 100% !important;
+            }
+            
+            .col-md-6 img {
+                height: 100% !important;
+                width: 100% !important;
+                object-fit: cover !important;
+                border-radius: 20px !important;
+            }
+            
+            .col-md-6:nth-child(2) > div {
+                width: 100% !important;
+            }
+            
+            .add-to-tour-btn {
+                height: 180px !important;
+                font-size: 1.5rem !important;
+                padding: 20px !important;
+                border-radius: 20px !important;
+            }
+            
+            .add-to-tour-btn i {
+                font-size: 1.8rem !important;
+            }
+            
+            .p-3.mb-3 {
+                height: auto !important;
+                min-height: 100px !important;
+                margin-bottom: 15px !important;
+                border-radius: 20px !important;
+            }
+            
+            .p-3.mb-3 .fw-bold {
+                font-size: 1.5rem !important;
+            }
+            
+            .col-6 {
+                width: 50%;
+                padding: 0 5px;
+            }
+            
+            .col-6 .p-3 {
+                height: auto !important;
+                min-height: 140px !important;
+                padding: 15px !important;
+                border-radius: 20px !important;
+            }
+            
+            .col-6 .p-3 .fw-bold {
+                font-size: 1.5rem !important;
+            }
+            
+            .col-6 .p-3 div:last-child {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+            
+            .nav-pills {
+                width: 100% !important;
+                border-radius: 15px;
+                display: flex;
+                justify-content: space-between;
+            }
+            
+            .nav-pills .nav-link {
+                padding: 10px 20px;
+                font-size: 1.1rem;
+                text-align: center;
+            }
+            
+            #pills-overview p {
+                width: 100% !important;
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+            
+            .col-md-4, .col-md-7 {
+                width: 50%;
+                padding: 0 10px;
+            }
+            
+            .back-btn {
+                width: 45px !important;
+                height: 45px !important;
+                margin-bottom: 15px;
+            }
+            
+            .mt-4 {
+                margin-top: 1.5rem !important;
+            }
+            
+            .review-list-card {
+                width: 100% !important;
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .row.gx-3 {
+                width: 100%;
+            }
+            
+            .tab-content {
+                width: 100%;
+            }
+            
+            .rating-display {
+                text-align: center;
+            }
+            
+            .rating-bars {
+                margin-left: 15px;
+            }
+            
+            .row.gx-3 .col-6 .p-3 {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+        }
+
+        @media only screen and (max-width: 768px) and (min-width: 601px) {
+            .container {
+                padding: 15px;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+                margin-bottom: 1rem;
+            }
+            
+            .row {
+                display: flex;
+                flex-flow: row wrap;
+                margin: 0 -10px;
+            }
+            
+            .col-md-6 {
+                width: 50%;
+                padding: 0 10px;
+                margin-bottom: 15px;
+            }
+            
+            .col-md-6:first-child div {
+                height: 350px !important;
+                width: 100% !important;
+            }
+            
+            .col-md-6 img {
+                height: 100% !important;
+                width: 100% !important;
+                object-fit: cover !important;
+                border-radius: 20px !important;
+            }
+            
+            .col-md-6:nth-child(2) > div {
+                width: 100% !important;
+            }
+            
+            .add-to-tour-btn {
+                height: 120px !important;
+                font-size: 1.3rem !important;
+                padding: 15px !important;
+                border-radius: 20px !important;
+            }
+            
+            .add-to-tour-btn i {
+                font-size: 1.5rem !important;
+            }
+            
+            .p-3.mb-3 {
+                height: auto !important;
+                min-height: 80px !important;
+                margin-bottom: 15px !important;
+                border-radius: 20px !important;
+            }
+            
+            .p-3.mb-3 .fw-bold {
+                font-size: 1.3rem !important;
+            }
+            
+            .col-6 {
+                padding: 0 5px;
+            }
+            
+            .col-6 .p-3 {
+                height: auto !important;
+                min-height: 100px !important;
+                padding: 12px !important;
+                border-radius: 20px !important;
+            }
+            
+            .col-6 .p-3 .fw-bold {
+                font-size: 1.3rem !important;
+            }
+            
+            .col-6 .p-3 div:last-child {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+            
+            .nav-pills {
+                width: 100% !important;
+                border-radius: 15px;
+                display: flex;
+                justify-content: space-between;
+            }
+            
+            .nav-pills .nav-link {
+                padding: 8px 15px;
+                font-size: 1rem;
+                text-align: center;
+            }
+            
+            #pills-overview p {
+                width: 100% !important;
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+            
+            .col-md-4, .col-md-7 {
+                width: 50%;
+                padding: 0 10px;
+            }
+            
+            .back-btn {
+                width: 40px !important;
+                height: 40px !important;
+                margin-bottom: 10px;
+            }
+            
+            .mt-4 {
+                margin-top: 1.25rem !important;
+            }
+            
+            .review-list-card {
+                width: 100% !important;
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h3 {
+                font-size: 1.2rem;
+            }
+            
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            .col-md-6 div {
+                height: auto !important;
+                width: 100% !important;
+            }
+            
+            .col-md-6 img {
+                height: auto !important;
+                max-height: 300px;
+                border-radius: 15px !important;
+            }
+            
+            .add-to-tour-btn {
+                height: auto !important;
+                padding: 15px !important;
+                font-size: 1.3rem !important;
+            }
+            
+            .add-to-tour-btn i {
+                font-size: 1.5rem !important;
+            }
+            
+            .p-3.mb-3, .col-6 .p-3 {
+                height: auto !important;
+                padding: 10px !important;
+            }
+            
+            .p-3.mb-3 .fw-bold, .col-6 .p-3 .fw-bold {
+                font-size: 1.2rem !important;
+            }
+            
+            .col-md-6, .col-6 {
+                width: 100%;
+                padding-left: 5px;
+                padding-right: 5px;
+                margin-bottom: 10px;
+            }
+            
+            .row {
+                margin-left: -5px;
+                margin-right: -5px;
+            }
+            
+            .nav-pills {
+                width: 100% !important;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            
+            .nav-pills .nav-item {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-pills .nav-link {
+                padding: 5px;
+                font-size: 0.9rem;
+            }
+            
+            .rating-display {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .col-md-4, .col-md-7 {
+                width: 100%;
+            }
+            
+            .rating-bar-row .rating-value {
+                width: 25px !important;
+                font-size: 0.9rem;
+            }
+            
+            .modal-dialog.modal-xl {
+                margin: 10px;
+            }
+            
+            .review-text {
+                font-size: 0.9rem;
+            }
+            
+            .tab-content {
+                width: 100%;
+            }
+            
+            .tab-pane p {
+                width: 100% !important;
+                font-size: 0.9rem;
+            }
+            
+            .back-btn {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 0.8rem;
+            }
+            
+            #reviewCarousel .carousel-item {
+                padding: 10px;
+            }
+            
+            .review-list-card {
+                width: 100% !important;
+                padding: 10px;
+            }
+
+            .col-6 {
+                width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .row.gx-3 {
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+            }
+            
+            .col-6 .p-3 {
+                width: 100%;
+                height: auto !important;
+                padding: 10px !important;
+                margin-left: 0;
+                margin-right: 0;
+                box-sizing: border-box;
+            }
+            
+            .col-md-6 > div {
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            .col-md-6:nth-child(2) > div {
+                width: 100% !important;
+            }
+            
+            .p-3.mb-3, .col-6 .p-3 {
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>

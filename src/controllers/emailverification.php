@@ -30,7 +30,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         $mail->Port       = 587;
 
         // Recipients
-        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourist Site');
+        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism Office');
         $mail->addAddress($email);
 
         // Content
@@ -42,7 +42,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
             <head>
                 <meta charset='UTF-8'>
                 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                <title>Verify Your Email - Taal Tourism</title>
+                <title>Verify Your Email - Taal Tourism Office</title>
                 <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
                 <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
                 <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
@@ -125,7 +125,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
             <body>
                 <div class='email-container'>
                     <div class='header'>
-                        <h1>Welcome to Taal Tourism</h1>
+                        <h1>Welcome to Taal Tourism Office</h1>
                     </div>
                     <div class='content'>
                         <h2>Hi $username,</h2>
@@ -134,7 +134,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                         <a href='$verificationLink' class='button'>Verify Email Address</a>
                     </div>
                     <div class='footer'>
-                        <p>&copy; " . date("Y") . " Taal Tourism. All rights reserved.</p>
+                        <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
                     </div>
                 </div>
             <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz' crossorigin='anonymous'></script>

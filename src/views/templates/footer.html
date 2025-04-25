@@ -1,48 +1,80 @@
 <!-- Footer Section -->
-<footer class="bg-light py-4 mt-5">
+<footer class="py-5 mt-5" style="background-color: #E7EBEE;">
 	<div id="contact" class="container">
-		<div class="row">
+		<div class="row align-items-center mb-4">
 			<!-- Google Map -->
-			<div class="col-md-4">
-				<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.8042315632833!2d120.92426707405195!3d13.87813958653986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d9000f3c83e3%3A0xaccfa8e3e1d5d687!2sTaal%2C%20Batangas!5e0!3m2!1sen!2sph!4v1700000000000"
-						width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy">
-				</iframe>
+			<div class="col-md-4 mb-4 mb-md-0">
+				<div class="map-container" style="border-radius: 25px; overflow: hidden; box-shadow: 0 4px 8px rgba(16, 46, 71, 0.1);">
+					<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.8042315632833!2d120.92426707405195!3d13.87813958653986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d9000f3c83e3%3A0xaccfa8e3e1d5d687!2sTaal%2C%20Batangas!5e0!3m2!1sen!2sph!4v1700000000000"
+						width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy">
+					</iframe>
+				</div>
 			</div>
 
 			<!-- Navigation Links -->
-			<div class="col-md-4">
+			<div class="col-md-4 mb-4 mb-md-0">
+				<h5 class="mb-4 fw-bold" style="font-family: 'Raleway', sans-serif !important; color: #102E47;">Quick Links</h5>
 				<div class="row">
-					<div class="col">
-						<ul class="list-unstyled">
-							<li><a href="/T-VIBES/src/views/frontend/aboutus.php" class="text-dark text-decoration-none">About Us</a></li>
-							<li><a href="/T-VIBES/src/views/frontend/contactus.php" class="text-dark text-decoration-none">Contact Us</a></li>
+					<div class="col-6">
+						<ul class="list-unstyled footer-links">
+							<li class="mb-2"><a href="/T-VIBES/src/views/frontend/aboutus.php" class="text-decoration-none" style="color: #434343; transition: color 0.3s ease;"><i class="bi bi-chevron-right me-1" style="color: #729AB8;"></i>About Us</a></li>
+							<li class="mb-2"><a href="/T-VIBES/src/views/frontend/contactus.php" class="text-decoration-none" style="color: #434343; transition: color 0.3s ease;"><i class="bi bi-chevron-right me-1" style="color: #729AB8;"></i>Contact Us</a></li>
 						</ul>
 					</div>
-					<div class="col">
-						<ul class="list-unstyled">
-							<li><a href="/T-VIBES/src/views/frontend/explore.php" class="text-dark text-decoration-none">Tour Sites</a></li>
-						</ul>
-					</div>
-					<div class="col">
-						<ul class="list-unstyled">
-							<li><a href="/T-VIBES/src/views/frontend/tours/tourrequest.php" class="text-dark text-decoration-none">Make a Reservation</a></li>
+					<div class="col-6">
+						<ul class="list-unstyled footer-links">
+							<li class="mb-2"><a href="/T-VIBES/src/views/frontend/explore.php" class="text-decoration-none" style="color: #434343; transition: color 0.3s ease;"><i class="bi bi-chevron-right me-1" style="color: #729AB8;"></i>Tour Sites</a></li>
+							<li class="mb-2"><a href="/T-VIBES/src/views/frontend/tours/tourrequest.php" class="text-decoration-none" style="color: #434343; transition: color 0.3s ease;"><i class="bi bi-chevron-right me-1" style="color: #729AB8;"></i>Make a Reservation</a></li>
 						</ul>
 					</div>
 				</div>
 			</div>
 
 			<!-- Social Media Icons -->
-			<div class="col-md-4">
-				<h5>Follow Us</h5>
-				<h3>
-					<a href="https://www.facebook.com/taalturismo/" class="text-dark me-3">
-						<i class="bi bi-facebook"></i>
+			<div class="col-md-4 text-center text-md-start">
+				<h5 class="mb-4 fw-bold" style="font-family: 'Raleway', sans-serif !important; color: #102E47;">Follow Us</h5>
+				<div class="social-icons">
+					<a href="https://www.facebook.com/taalturismo/" class="me-3 social-icon-link" style="display: inline-block; background-color: #102E47; color: #FFFFFF; width: 40px; height: 40px; border-radius: 50%; text-align: center; line-height: 40px; transition: all 0.3s ease;">
+						<i class="bi bi-facebook" style="color: #FFFFFF;"></i>
 					</a>
-				</h3>
+				</div>
+				<div class="mt-4">
+					<p style="color: #434343; font-size: 14px;"><i class="bi bi-geo-alt me-2" style="color: #A9221C;"></i>Taal, Batangas, Philippines</p>
+					<p style="color: #434343; font-size: 14px;"><i class="bi bi-envelope me-2" style="color: #A9221C;"></i>sample@email.com</p>
+				</div>
 			</div>
 		</div>
 
-		<hr>
-		<p class="text-center text-muted">© 2025 Taal Tourism Office. All Rights Reserved.</p>
+		<hr style="border-color: #729AB8; opacity: 0.3;">
+		
+		<div class="row align-items-center">
+			<div class="col-md-6 mb-3 mb-md-0">
+				<img src="/T-VIBES/public/assets/images/headerlogo.jpg" alt="Taal Tourism Logo" style="height: 40px; margin-right: 10px;">
+				<span style="color: #102E47; font-weight: 500; font-family: 'Raleway', sans-serif !important;">Taal Heritage Town</span>
+			</div>
+			<div class="col-md-6 text-md-end">
+				<p class="mb-0" style="color: #757575; font-size: 14px;">© 2025 Taal Heritage Town. All Rights Reserved.</p>
+			</div>
+		</div>
 	</div>
 </footer>
+
+<style>
+	.footer-links a:hover {
+		color: #729AB8 !important;
+		padding-left: 5px;
+	}
+	
+	.social-icon-link:hover {
+		background-color: #EC6350 !important;
+		transform: translateY(-3px);
+	}
+	
+	.map-container {
+		transition: transform 0.3s ease;
+	}
+	
+	.map-container:hover {
+		transform: translateY(-5px);
+	}
+</style>

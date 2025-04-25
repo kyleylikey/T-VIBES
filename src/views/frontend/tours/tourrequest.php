@@ -421,7 +421,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
 <head>
 <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tour Requests</title>
+    <title>Tour Request - Taal Heritage Town</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
@@ -431,6 +431,40 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
             font-family: Arial, sans-serif;
             background-color: #f1f1f1;
             padding: 20px;
+        }
+
+        .nav-link {
+            font-size: 20px; 
+            font-family: 'Raleway', sans-serif !important;
+        }
+
+        header a.nav-link {
+            color: #434343 !important;
+            font-weight: normal !important;
+            transition: color 0.3s ease, font-weight 0.3s ease;
+        }
+
+        header a.nav-link:hover {
+            color: #729AB8 !important;
+        }
+
+        header a.nav-link.active {
+            color: #729AB8 !important;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger {
+            background-color: transparent !important;
+            border: 2px solid #EC6350 !important;
+            color: #EC6350 !important;
+            transition: all 0.3s ease;
+            font-weight: bold !important;
+        }
+
+        .navbar-nav .btn-danger:hover {
+            background-color: #EC6350 !important;
+            color: #FFFFFF !important;
+            font-weight: bold !important;
         }
 
         .main-container {
@@ -903,15 +937,481 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
             background-color: #EC6350; 
             color: #FFFFFF; 
         }
+
+        @media (min-width: 769px) and (max-width: 1280px) {
+            .main-container {
+                flex-direction: column;
+                gap: 20px;
+                margin-top: 20px;
+            }
+            
+            .tour-container {
+                width: 100%;
+                padding: 24px;
+            }
+            
+            .estimated-fees-container {
+                width: 100%;
+                padding: 24px;
+                margin-top: 10px;
+            }
+            
+            .destination-item {
+                padding: 16px;
+                gap: 12px;
+            }
+            
+            .destination-image {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .destination-details span {
+                font-size: 18px;
+            }
+            
+            .destination-wrapper {
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .destination-number {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            
+            .delete-btn {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .people-counter {
+                margin-top: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            
+            .counter-btn {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .actions {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .btn-action {
+                padding: 10px 20px !important;
+                min-width: 200px;
+            }
+            
+            .modal-content {
+                width: 70%;
+                margin: 10% auto;
+            }
+            
+            .month {
+                font-size: 20px;
+            }
+            
+            .weekdays span, .days span {
+                padding: 10px;
+                font-size: 16px;
+            }
+            
+            .prev, .next {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .estimated-fees h5 {
+                font-size: 20px;
+            }
+            
+            .total-price {
+                font-size: 18px;
+            }
+            
+            .submit-btn, .edit-btn {
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            #calendar-days {
+                gap: 3px;
+            }
+            
+            .legend {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 20px;
+            }
+        }
+
+        @media (min-width: 601px) and (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                gap: 20px;
+                margin-top: 20px;
+            }
+            
+            .tour-container, .estimated-fees-container {
+                width: 100%;
+                padding: 22px;
+            }
+            
+            .destination-item {
+                padding: 15px;
+                gap: 10px;
+            }
+            
+            .destination-image {
+                width: 75px;
+                height: 75px;
+            }
+            
+            .destination-details span {
+                font-size: 17px;
+            }
+            
+            .destination-wrapper {
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .destination-number {
+                width: 34px;
+                height: 34px;
+                font-size: 17px;
+            }
+            
+            .delete-btn {
+                width: 38px;
+                height: 38px;
+            }
+            
+            .people-counter {
+                margin-top: 18px;
+            }
+            
+            .counter-btn {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .btn-action {
+                padding: 10px 18px !important;
+                font-size: 16px !important;
+            }
+            
+            .modal-content {
+                width: 80%;
+                margin: 12% auto;
+            }
+            
+            .month {
+                font-size: 19px;
+            }
+            
+            .weekdays span, .days span {
+                padding: 9px;
+                font-size: 15px;
+            }
+            
+            .estimated-fees h5 {
+                font-size: 19px;
+            }
+            
+            .total-price {
+                font-size: 17px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-container {
+                flex-direction: column;
+                gap: 15px;
+                margin-top: 15px;
+            }
+            
+            .tour-container, .estimated-fees-container {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .destination-item {
+                padding: 14px;
+                gap: 10px;
+            }
+            
+            .destination-image {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .destination-details span {
+                font-size: 16px;
+            }
+            
+            .destination-wrapper {
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .destination-number {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+            
+            .delete-btn {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .people-counter {
+                margin-top: 15px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .counter-btn {
+                width: 30px;
+                height: 30px;
+            }
+            
+            #counter-input {
+                width: 60px;
+            }
+            
+            .btn-action {
+                width: 100%;
+                margin-bottom: 10px !important;
+                padding: 10px 15px !important;
+            }
+            
+            .actions {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .submit-btn, .edit-btn {
+                width: 100%;
+                padding: 12px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+                margin: 15% auto;
+            }
+            
+            .month {
+                font-size: 18px;
+            }
+            
+            .weekdays span, .days span {
+                padding: 8px;
+                font-size: 14px;
+            }
+            
+            .prev, .next {
+                width: 30px;
+                height: 30px;
+                font-size: 18px;
+            }
+            
+            #month-select, #year-select {
+                font-size: 16px;
+                padding: 4px;
+                max-width: 100px;
+            }
+            
+            .modal-header h2 {
+                font-size: 20px;
+            }
+            
+            .close-btn {
+                top: 20px;
+                right: 20px;
+                font-size: 26px;
+            }
+            
+            .legend {
+                margin-top: 25px;
+                flex-wrap: wrap;
+            }
+            
+            .estimated-fees h5 {
+                font-size: 18px;
+            }
+            
+            .total-price {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .main-container {
+                flex-direction: column;
+                gap: 15px;
+                margin-top: 10px;
+            }
+            
+            .tour-container, .estimated-fees-container {
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .destination-item {
+                flex-direction: column;
+                padding: 12px;
+                gap: 8px;
+                align-items: flex-start;
+            }
+            
+            .destination-image {
+                width: 60px;
+                height: 60px;
+                margin: 0 auto;
+            }
+            
+            .destination-details {
+                text-align: center;
+                width: 100%;
+            }
+            
+            .destination-details span {
+                font-size: 16px;
+            }
+            
+            .destination-actions {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 5px;
+            }
+            
+            .destination-wrapper {
+                gap: 8px;
+            }
+            
+            .destination-number {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+            
+            .delete-btn {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .people-counter {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .counter-btn {
+                width: 28px;
+                height: 28px;
+            }
+            
+            #counter-input {
+                width: 50px;
+            }
+            
+            .btn-action {
+                width: 100%;
+                margin-bottom: 10px !important;
+                padding: 8px 15px !important;
+                font-size: 14px !important;
+            }
+            
+            .actions {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .submit-btn, .edit-btn {
+                width: 100%;
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .modal-content {
+                width: 90%;
+                padding: 15px;
+                margin: 15% auto;
+            }
+            
+            .month {
+                font-size: 16px;
+            }
+            
+            .weekdays span, .days span {
+                padding: 5px;
+                font-size: 12px;
+            }
+            
+            .prev, .next {
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+            }
+            
+            #month-select, #year-select {
+                font-size: 14px;
+                padding: 2px;
+                max-width: 80px;
+            }
+            
+            .modal-header h2 {
+                font-size: 18px;
+            }
+            
+            .close-btn {
+                top: 15px;
+                right: 15px;
+                font-size: 24px;
+            }
+            
+            .legend {
+                margin-top: 20px;
+                font-size: 12px;
+            }
+            
+            .estimated-fees h5 {
+                font-size: 16px;
+            }
+            
+            .total-price {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
-<div class="header-container">
-    <?php include '../../templates/headertours.php'; ?>
-    <?php include '../../templates/toursnav.php'; ?>
-</div>
 
-<body>
+<?php include '../../templates/headertours.php'; ?>
+<?php include '../../templates/toursnav.php'; ?>
+
 <div class="main-container">
     <div class="tour-container">
         <?php if (!empty($_SESSION['tour_destinations'])): ?>
@@ -1015,6 +1515,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
         </div>
     </div>
 </div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>

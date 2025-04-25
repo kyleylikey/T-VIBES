@@ -88,7 +88,7 @@ function sendEmailNotification($email, $username, $date, $companions) {
         $mail->Password = 'ikkt npxt cghd dhbj';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
-        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourist Site');
+        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism Office');
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = 'Your Tour Has Been Updated!';
@@ -148,7 +148,7 @@ function sendEmailNotification($email, $username, $date, $companions) {
                 <p>If there are any concerns, please let us know by contacting us through our Facebook Page or (number).</p>
             </div>
             <div class='footer'>
-                <p>&copy; " . date("Y") . " Taal Tourism. All rights reserved.</p>
+                <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
             </div>
         </div></body></html>";
         $mail->send();
@@ -167,7 +167,7 @@ function sendCancellationEmail($email, $username, $cancelReason) {
         $mail->Password = 'ikkt npxt cghd dhbj';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
-        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism');
+        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism Office');
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = 'Your Tour Has Been Cancelled!';
@@ -226,7 +226,7 @@ function sendCancellationEmail($email, $username, $cancelReason) {
                 <p>We apologize for the inconvenience. If you have any concerns, please contact us through our Facebook Page or (number).</p>
             </div>
             <div class='footer'>
-                <p>&copy; " . date("Y") . " Taal Tourism. All rights reserved.</p>
+                <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
             </div>
         </div></body></html>";
         $mail->send();

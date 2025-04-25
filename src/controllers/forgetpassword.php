@@ -74,7 +74,7 @@ class ForgotPasswordController {
             $mail->SMTPSecure = 'tls';
             $mail->Port       = 587;
 
-            $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourist Site');
+            $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism Office');
             $mail->addAddress($email);
 
             $mail->isHTML(true);
@@ -85,7 +85,7 @@ class ForgotPasswordController {
                 <head>
                     <meta charset='UTF-8'>
                     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                    <title>Reset Your Password - Taal Tourism</title>
+                    <title>Reset Your Password - Taal Tourism Office</title>
                     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
                     <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
                     <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
@@ -177,7 +177,7 @@ class ForgotPasswordController {
                             <p>If you did not request this, please ignore this email.</p>
                         </div>
                         <div class='footer'>
-                            <p>&copy; " . date("Y") . " Taal Tourism. All rights reserved.</p>
+                            <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
                         </div>
                     </div>
                 </body>
