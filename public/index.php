@@ -46,6 +46,12 @@ recordVisit();
     <style>
         * {
             font-family: 'Nunito', sans-serif !important;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow-x: hidden;
         }
 
         .nav-link {
@@ -86,11 +92,6 @@ recordVisit();
             font-family: 'Raleway', sans-serif !important;
             font-weight: bold;
             color: #102E47;
-            text-shadow: 0 0 3px #FFFFFF, 0 0 5px #FFFFFF, 0 0 8px #FFFFFF;
-        }
-
-        .hero-content p {
-            text-shadow: 0 0 3px  #102E47, 0 0 5px  #102E47, 0 0 8px  #102E47;
         }
         
         h5 {
@@ -160,8 +161,8 @@ else {
 <main>
     <section class="hero">
         <div class="hero-content">
-            <h1>Step Into Our<br><br>World of Wonders</h1>
-            <p>Take a visit and embrace the charm of Taal.</p>
+            <h1 class="text-bg-light p-3 rounded bg-opacity-75">Step Into Our</h1><h1 class="text-bg-light p-3 rounded bg-opacity-75">World of Wonders</h1>
+            <p class="text-bg-light p-3 rounded bg-opacity-75">Take a visit and embrace the charm of Taal.</p>
             <a href="../src/views/frontend/explore.php" class="btn cta-button">Plan Your Next Trip</a>
         </div>
     </section>
@@ -312,7 +313,7 @@ else {
                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
                         <img src="assets/images/taalbasilica.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                    <div class="position-absolute top-0 start 5 rounded-circle" style="width: 70px; height: 70px;  background-color: #FF6B6B;"></div>
+                    <div class="position-absolute top-0 start-5 rounded-circle" style="width: 70px; height: 70px;  background-color: #FF6B6B;"></div>
                     <div class="position-absolute bottom-0 end-0 rounded-circle" style="width: 50px; height: 50px;  background-color: #FF6B6B;"></div>
                 </div>
             </div>
