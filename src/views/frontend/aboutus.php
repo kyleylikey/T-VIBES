@@ -106,11 +106,11 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
 <section class="container my-5">
     <h2 class="fw-bold">Get To Know Us</h2>
     <div class="row">
-        <div class="col-md-6">
+        <div class="row">
             <h5>Taal Tourism is your ultimate guide to exploring the rich history, vibrant culture, and breathtaking attractions of Taal. Our mission is to provide visitors with seamless access to information about must-visit heritage sites, local festivities, and exciting experiences that Taal has to offer.</h5>
         </div>
-        <div class="col-md-6">
-            <p class="text-muted">From its well-preserved Spanish-era houses to the world-renowned Taal Basilica, our platform brings you closer to Taal’s heritage and adventures. Plan your visit with ease, book guided tours, and immerse yourself in the timeless charm of Taal. Let us be your travel companion in discovering the beauty of this historic town!</p>
+        <div class="row">
+            <h5>From its well-preserved Spanish-era houses to the world-renowned Taal Basilica, our platform brings you closer to Taal’s heritage and adventures. Plan your visit with ease, book guided tours, and immerse yourself in the timeless charm of Taal. Let us be your travel companion in discovering the beauty of this historic town!</h5>
         </div>
     </div>
     <div class="row mt-4">

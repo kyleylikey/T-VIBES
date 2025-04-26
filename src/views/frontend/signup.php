@@ -98,9 +98,7 @@ error_reporting(E_ALL);
             <input type="email" id="email" name="email" placeholder="Email" required class="full-width-input">
             <input type="password" id="password" name="password" placeholder="Password" required class="full-width-input" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" title="Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.">
 
-            <div class="checkbox-container">
-                <input type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
-                <label for="privacyPolicy">Privacy Policy & Terms of Service</label>
+            <div class="checkbox-container form-check">
             </div>
 
             <button type="submit" id="submitBtn" class="btn-custom">Create Account</button>
@@ -190,62 +188,133 @@ error_reporting(E_ALL);
         </div>
 
     <script>
-    document.getElementById('signupForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+    // document.getElementById('signupForm').addEventListener('submit', function(event) {
+    //     event.preventDefault();
         
-        const formData = new FormData(this);
-        const submitButton = document.getElementById('submitBtn');
-        submitButton.disabled = true;
-        submitButton.textContent = "Loading...";
+    //     const formData = new FormData(this);
+    //     const submitButton = document.getElementById('submitBtn');
+    //     submitButton.disabled = true;
+    //     submitButton.textContent = "Loading...";
 
-        fetch('../../controllers/signupcontroller.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            Swal.fire({
-                iconHtml: data.status === 'success' ? '<i class="fas fa-envelope" style="color: #EC6350 !important;"></i>' : '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>',
-                title: data.message,
-                showConfirmButton: false,
-                timer: 3000,
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup"
-                }
-            });
+    //     fetch('../../controllers/signupcontroller.php', {
+    //         method: 'POST',
+    //         body: formData
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         Swal.fire({
+    //             iconHtml: data.status === 'success' ? '<i class="fas fa-envelope" style="color: #EC6350 !important;"></i>' : '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>',
+    //             title: data.message,
+    //             showConfirmButton: false,
+    //             timer: 3000,
+    //             customClass: {
+    //                 title: "swal2-title-custom",
+    //                 icon: "swal2-icon-custom",
+    //                 popup: "swal-custom-popup"
+    //             }
+    //         });
 
-            if (data.status === 'success') {
-                submitButton.textContent = "Email Sent!";
-            } else {
-                submitButton.disabled = false;
-                submitButton.textContent = "Create Account";
+    //         if (data.status === 'success') {
+    //             submitButton.textContent = "Email Sent!";
+    //         } else {
+    //             submitButton.disabled = false;
+    //             submitButton.textContent = "Create Account";
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //         Swal.fire({
+    //             iconHtml: '<i class="fas fa-exclamation-circle" style: "color: #EC6350 !important;"></i>',
+    //             title: 'Something went wrong. Please try again later.',
+    //             showConfirmButton: false,
+    //             timer: 3000,
+    //             customClass: {
+    //                 title: "swal2-title-custom",
+    //                 icon: "swal2-icon-custom",
+    //                 popup: "swal-custom-popup"
+    //             }
+    //         }).then(() => {
+    //             submitButton.disabled = false;
+    //             submitButton.textContent = "Create Account";
+    //         });
+    //     });
+    // });
+
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(this);
+    const submitButton = document.getElementById('submitBtn');
+    submitButton.disabled = true;
+    submitButton.textContent = "Loading...";
+
+    fetch('../../controllers/signupcontroller.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        // Clone the response so we can read it twice
+        const responseClone = response.clone();
+        
+        // Read the raw response as text and log it
+        responseClone.text().then(rawData => {
+            console.log('Raw API Response:', rawData);
+            try {
+                // Try to parse it as JSON to verify format
+                const jsonData = JSON.parse(rawData);
+                console.log('Parsed JSON Response:', jsonData);
+            } catch (e) {
+                console.error('Error parsing JSON response:', e);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                iconHtml: '<i class="fas fa-exclamation-circle" style: "color: #EC6350 !important;"></i>',
-                title: 'Something went wrong. Please try again later.',
-                showConfirmButton: false,
-                timer: 3000,
-                customClass: {
-                    title: "swal2-title-custom",
-                    icon: "swal2-icon-custom",
-                    popup: "swal-custom-popup"
-                }
-            }).then(() => {
-                submitButton.disabled = false;
-                submitButton.textContent = "Create Account";
-            });
+        });
+        
+        // Continue with normal response handling
+        return response.json();
+    })
+    .then(data => {
+        console.log('Processed API Response:', data);
+        Swal.fire({
+            iconHtml: data.status === 'success' ? '<i class="fas fa-envelope" style="color: #EC6350 !important;"></i>' : '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>',
+            title: data.message,
+            showConfirmButton: false,
+            timer: 3000,
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup"
+            }
+        });
+
+        if (data.status === 'success') {
+            submitButton.textContent = "Email Sent!";
+        } else {
+            submitButton.disabled = false;
+            submitButton.textContent = "Create Account";
+        }
+    })
+    .catch(error => {
+        console.error('Fetch Error:', error);
+        Swal.fire({
+            iconHtml: '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>',
+            title: 'Something went wrong. Please try again later.',
+            showConfirmButton: false,
+            timer: 3000,
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup"
+            }
+        }).then(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = "Create Account";
         });
     });
+});
     document.addEventListener('DOMContentLoaded', function() {
         const checkboxContainer = document.querySelector('.checkbox-container');
         checkboxContainer.innerHTML = `
-            <input type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
-            <label for="privacyPolicy">I agree to the <a href="#" id="openTerms" class="font-link">Privacy Policy & Terms of Service</a></label>
+            <input class="form-check-input float-none" type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
+            <label class="form-check-label" for="privacyPolicy">I agree to the <a href="#" id="openTerms" class="font-link">Privacy Policy & Terms of Service</a></label>
         `;
         
         document.getElementById('openTerms').addEventListener('click', function(e) {

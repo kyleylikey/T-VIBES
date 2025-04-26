@@ -179,7 +179,7 @@ table {
     border-collapse: separate;
     border-spacing: 0 10px; 
     margin: auto;
-    text-align: center;
+    text-align: left;
     overflow-x: auto;
     min-width: 500px;
     font-family: 'Nunito', sans-serif;
