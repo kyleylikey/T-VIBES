@@ -8,11 +8,11 @@ require_once '../config/dbconnect.php';
 
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
-ini_set('error_log', '/T-VIBES/temp/error.txt');
+ini_set('error_log', 'https://tourtaal.azurewebsites.net/temp/error.txt');
 error_reporting(E_ALL);
 
 function sendconfirmationEmail($username, $email, $verificationToken) {
-    $verificationLink = "localhost/T-VIBES/src/controllers/verify.php?token=" . urlencode($verificationToken);
+    $verificationLink = "localhosthttps://tourtaal.azurewebsites.net/src/controllers/verify.php?token=" . urlencode($verificationToken);
 
     $mail = new PHPMailer(true);
 

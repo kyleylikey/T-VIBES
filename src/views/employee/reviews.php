@@ -985,7 +985,7 @@ function updateReviewStatus(status, reviewId) {
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch("/T-VIBES/src/controllers/reviewscontroller.php", {
+            fetch("https://tourtaal.azurewebsites.net/src/controllers/reviewscontroller.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: "review_id=" + reviewId + "&status=" + status

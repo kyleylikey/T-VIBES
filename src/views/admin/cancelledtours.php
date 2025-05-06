@@ -729,7 +729,7 @@ function showModal(tourData) {
         let destinationCard = `
             <div class="destination-card d-flex align-items-center" style="margin-bottom: 15px;">
                 <div class="image-placeholder">
-                    <img src="/T-VIBES/public/uploads/${tour.siteimage}" alt="${tour.sitename}" 
+                    <img src="https://tourtaal.azurewebsites.net/ourtaal.azurewebsites.net/public/uploads/${tour.siteimage}" alt="${tour.sitename}" 
                         style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
                 </div>
                 <div class="destination-info ms-3">

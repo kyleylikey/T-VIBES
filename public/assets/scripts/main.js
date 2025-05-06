@@ -14,7 +14,7 @@ function logoutConfirm() {
             }
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "/T-VIBES/src/controllers/logout.php";
+            window.location.href = "https://tourtaal.azurewebsites.net/src/controllers/logout.php";
         }
     });
 }

@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (siteImage) {
-                document.getElementById("editPreviewImage").src = "/T-VIBES/public/uploads/" + siteImage;
+                document.getElementById("editPreviewImage").src = "https://tourtaal.azurewebsites.net/public/uploads/" + siteImage;
                 document.getElementById("editPreviewImage").style.display = "block";
                 document.getElementById("editPreviewIcon").style.display = "none";
             } else {

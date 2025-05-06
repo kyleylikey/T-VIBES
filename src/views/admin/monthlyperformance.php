@@ -289,7 +289,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                 <?php foreach ($topSites as $site): ?>
                                     <div class="tour-card">
                                         <div class="inner-box">
-                                            <img src="/T-VIBES/public/uploads/<?php echo htmlspecialchars($site['siteimage']); ?>" alt="<?php echo htmlspecialchars($site['sitename']); ?>" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
+                                            <img src="https://tourtaal.azurewebsites.net/public/uploads/<?php echo htmlspecialchars($site['siteimage']); ?>" alt="<?php echo htmlspecialchars($site['sitename']); ?>" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
                                         </div>
                                         <span class="destination-name"><?php echo htmlspecialchars($site['sitename']); ?></span>
                                         <div class="rating">

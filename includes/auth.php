@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['userid'])) {
-    header('Location: /T-VIBES/src/views/frontend/login.php');
+    header('Location: https://tourtaal.azurewebsites.net/src/views/frontend/login.php');
     exit();
 }
 
@@ -94,7 +94,7 @@ if (!$allowed) {
                 showConfirmButton: false,
                 timer: 3000
             }).then(() => {
-                window.location.href = '/T-VIBES/src/views/frontend/login.php';
+                window.location.href = 'https://tourtaal.azurewebsites.net/src/views/frontend/login.php';
             });
         }, 100);
     </script>

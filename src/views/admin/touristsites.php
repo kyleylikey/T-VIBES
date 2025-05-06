@@ -118,7 +118,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                                 '<?= htmlspecialchars($site['description']) ?>',
                                                 '<?= htmlspecialchars($site['siteid']) ?>')"
                             style="cursor: pointer;">
-                            <img src="/T-VIBES/public/uploads/<?= htmlspecialchars($site['siteimage']) ?>" 
+                            <img src="https://tourtaal.azurewebsites.net/public/uploads/<?= htmlspecialchars($site['siteimage']) ?>" 
                                 alt="<?= htmlspecialchars($site['sitename']) ?>" 
                                 class="destination-image">
                             <p><?= htmlspecialchars($site['sitename']) ?></p>

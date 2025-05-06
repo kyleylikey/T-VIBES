@@ -1622,7 +1622,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("addMoreDestinations").addEventListener("click", function () {
-        window.location.href = "http://localhost/T-VIBES/src/views/frontend/explore.php";
+        window.location.href = "http://localhosthttps://tourtaal.azurewebsites.net/src/views/frontend/explore.php";
     });
 
     const style = document.createElement('style');

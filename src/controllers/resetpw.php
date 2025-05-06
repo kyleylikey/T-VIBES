@@ -35,6 +35,6 @@ if ($stmt->rowCount() > 0) {
     $_SESSION['valid_reset'] = true;
     include '../views/frontend/resetpw.php';
 } else {
-    echo "<script>alert('Invalid or expired token. Please request a new password reset.'); window.location.href = '/T-Vibes/src/views/frontend/login.php';</script>";
+    echo "<script>alert('Invalid or expired token. Please request a new password reset.'); window.location.href = 'https://tourtaal.azurewebsites.net/src/views/frontend/login.php';</script>";
 }
 ?>

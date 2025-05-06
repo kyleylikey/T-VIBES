@@ -5,7 +5,7 @@ include 'emailverification.php';
 
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
-ini_set('error_log', '/T-VIBES/temp/error.txt');
+ini_set('error_log', 'https://tourtaal.azurewebsites.net/temp/error.txt');
 error_reporting(E_ALL);
 
 class SignupController {

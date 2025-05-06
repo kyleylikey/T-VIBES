@@ -1102,7 +1102,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('tourDate', tourDate);
                 formData.append('tourPax', tourPax);
                 
-                fetch('/T-VIBES/src/controllers/upcomingtourscontroller.php', {
+                fetch('https://tourtaal.azurewebsites.net/src/controllers/upcomingtourscontroller.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -1209,7 +1209,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('tourId', tourId);
         formData.append('cancelReason', reason);
         
-        fetch('/T-VIBES/src/controllers/upcomingtourscontroller.php', {
+        fetch('https://tourtaal.azurewebsites.net/src/controllers/upcomingtourscontroller.php', {
             method: 'POST',
             body: formData
         })

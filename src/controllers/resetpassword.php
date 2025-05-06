@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
 
     if ($stmt->rowCount() === 0) {
-        echo "<script>alert('Invalid or expired token. Please request a new password reset.'); window.location.href = '/T-VIBES/src/views/frontend/login.php';</script>";
+        echo "<script>alert('Invalid or expired token. Please request a new password reset.'); window.location.href = 'https://tourtaal.azurewebsites.net/src/views/frontend/login.php';</script>";
         exit();
     }
 
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updateStmt->bindParam(':email', $email, PDO::PARAM_STR);
 
     if ($updateStmt->execute()) {
-        echo "<script>alert('Password successfully reset. You can now log in.'); window.location.href = '/T-VIBES/src/views/frontend/login.php';</script>";
+        echo "<script>alert('Password successfully reset. You can now log in.'); window.location.href = 'https://tourtaal.azurewebsites.net/src/views/frontend/login.php';</script>";
     } else {
         echo "<script>alert('Password update failed. Please try again.'); window.location.href = 'resetpassword.php?email=" . urlencode($email) . "&token=" . urlencode($token) . "';</script>";
     }

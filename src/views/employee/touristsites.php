@@ -687,7 +687,7 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
                             data-opdays="<?= htmlspecialchars($site['opdays'] ?? '0000000') ?>"
                             data-price="<?= htmlspecialchars($site['price'] ?? '0') ?>">
                             
-                            <img src="/T-VIBES/public/uploads/<?= htmlspecialchars($site['siteimage']) ?>" 
+                            <img src="https://tourtaal.azurewebsites.net/public/uploads/<?= htmlspecialchars($site['siteimage']) ?>" 
                                 alt="<?= htmlspecialchars($site['sitename']) ?>" 
                                 class="destination-image">
                                 

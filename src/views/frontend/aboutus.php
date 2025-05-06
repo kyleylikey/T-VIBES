@@ -116,22 +116,22 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
     <div class="row mt-4">
         <div class="col-3">
             <div class="bg-light rounded overflow-hidden" style="height: 150px;">
-                <img src="/T-VIBES/public/assets/images/burda.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
+                <img src="https://tourtaal.azurewebsites.net/public/assets/images/burda.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
             </div>
         </div>
         <div class="col-3">
             <div class="bg-light rounded overflow-hidden" style="height: 150px;">
-                <img src="/T-VIBES/public/assets/images/empanada.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
+                <img src="https://tourtaal.azurewebsites.net/public/assets/images/empanada.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
             </div>
         </div>
         <div class="col-3">
             <div class="bg-light rounded overflow-hidden" style="height: 150px;">
-                <img src="/T-VIBES/public/assets/images/munisipyo.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
+                <img src="https://tourtaal.azurewebsites.net/public/assets/images/munisipyo.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
             </div>
         </div>
         <div class="col-3">
             <div class="bg-light rounded overflow-hidden" style="height: 150px;">
-                <img src="/T-VIBES/public/assets/images/suman.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
+                <img src="https://tourtaal.azurewebsites.net/public/assets/images/suman.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 25px;">
             </div>
         </div>
     </div>
@@ -153,7 +153,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                         </div>
                         <div class="col-md-6 position-relative">
                             <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
-                                 <img src="/T-VIBES/public/assets/images/taalbasilica.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                 <img src="https://tourtaal.azurewebsites.net/public/assets/images/taalbasilica.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="position-absolute" style="top: 20px; left: 20px; width: 50px; height: 50px; background-color: #FF6B6B; border-radius: 50%;"></div>
                             <div class="position-absolute" style="bottom: 0px; right: 50px; width: 20px; height: 20px; background-color: #FF6B6B; border-radius: 50%;"></div>
@@ -170,7 +170,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                         </div>
                         <div class="col-md-6 position-relative">
                             <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
-                                 <img src="/T-VIBES/public/assets/images/marcela.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                 <img src="https://tourtaal.azurewebsites.net/public/assets/images/marcela.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="position-absolute" style="top: 20px; left: 20px; width: 50px; height: 50px; background-color: #FF6B6B; border-radius: 50%;"></div>
                             <div class="position-absolute" style="bottom: 0px; right: 50px; width: 20px; height: 20px; background-color: #FF6B6B; border-radius: 50%;"></div>
@@ -186,7 +186,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                         </div>
                         <div class="col-md-6 position-relative">
                             <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
-                                 <img src="/T-VIBES/public/assets/images/barong.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                 <img src="https://tourtaal.azurewebsites.net/public/assets/images/barong.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="position-absolute" style="top: 20px; left: 20px; width: 50px; height: 50px; background-color: #FF6B6B; border-radius: 50%;"></div>
                             <div class="position-absolute" style="bottom: 0px; right: 50px; width: 20px; height: 20px; background-color: #FF6B6B; border-radius: 50%;"></div>

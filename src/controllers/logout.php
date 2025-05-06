@@ -20,6 +20,6 @@ header("Pragma: no-cache");
 header("Expires: 0");
 
 
-header("Location: /T-VIBES/public/index.php");
+header("Location: https://tourtaal.azurewebsites.net/public/index.php");
 exit();
 ?>

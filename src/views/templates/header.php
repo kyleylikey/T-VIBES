@@ -77,31 +77,31 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-white">
 				<div class="container-fluid">
-				<img src="/T-VIBES/public/assets/images/headerlogo.jpg" alt="" class="img-fluid" width="250" height="82"> 
+				<img src="https://tourtaal.azurewebsites.net/public/assets/images/headerlogo.jpg" alt="" class="img-fluid" width="250" height="82"> 
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="navbarText">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>" aria-current="page" href="/T-VIBES/public/index.php">Home</a>
+                            <a class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>" aria-current="page" href="https://tourtaal.azurewebsites.net/public/index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo ($current_page == 'explore.php') ? 'active' : ''; ?>" href="/T-VIBES/src/views/frontend/explore.php">Explore</a>
+                            <a class="nav-link <?php echo ($current_page == 'explore.php') ? 'active' : ''; ?>" href="https://tourtaal.azurewebsites.net/src/views/frontend/explore.php">Explore</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo ($current_page == 'aboutus.php') ? 'active' : ''; ?>" href="/T-VIBES/src/views/frontend/aboutus.php">About Us</a>
+                            <a class="nav-link <?php echo ($current_page == 'aboutus.php') ? 'active' : ''; ?>" href="https://tourtaal.azurewebsites.net/src/views/frontend/aboutus.php">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo ($current_page == 'contactus.php') ? 'active' : ''; ?>" href="/T-VIBES/src/views/frontend/contactus.php">Contact</a>
+                            <a class="nav-link <?php echo ($current_page == 'contactus.php') ? 'active' : ''; ?>" href="https://tourtaal.azurewebsites.net/src/views/frontend/contactus.php">Contact</a>
                         </li>
 					</ul>
 					<ul class="navbar-nav d-flex -flex-row gap-3 align-items-center">
 					<li class="nav-item">
-							<a href="/T-VIBES/src/views/frontend/signup.php" class="nav-link">Sign Up</a>
+							<a href="https://tourtaal.azurewebsites.net/src/views/frontend/signup.php" class="nav-link">Sign Up</a>
 						</li>
 						<li class="nav-item">
-						<a href="/T-VIBES/src/views/frontend/login.php" 
+						<a href="https://tourtaal.azurewebsites.net/src/views/frontend/login.php" 
 						class="btn btn-danger rounded-pill px-3 py-1" 
 						style="font-size: 1.3rem;">
 							Login

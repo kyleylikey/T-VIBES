@@ -1,6 +1,6 @@
 function showModal(siteName, image, price, schedule, description, siteId) {
     document.getElementById('touristSitesModalLabel').innerText = siteName;
-    document.getElementById('modalImage').src = '/T-VIBES/public/uploads/' + image;
+    document.getElementById('modalImage').src = 'https://tourtaal.azurewebsites.net/public/uploads/' + image;
     document.getElementById('modalPrice').innerText = '₱' + price;
     document.getElementById('modalSchedule').innerText = schedule;
     document.getElementById('modalDescription').innerText = description;

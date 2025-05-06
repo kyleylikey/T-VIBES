@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
 
         $imageName = null;
         if (!empty($_FILES["imageUpload"]["name"])) {
-            $targetDir = "/T-VIBES/public/uploads/";
+            $targetDir = "https://tourtaal.azurewebsites.net/public/uploads/";
             $imageName = basename($_FILES["imageUpload"]["name"]);
             $targetFilePath = $_SERVER['DOCUMENT_ROOT'] . $targetDir . $imageName;
 

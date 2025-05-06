@@ -1269,7 +1269,7 @@ function acceptRequest(button) {
                     Swal.showLoading();
                 }
             });
-            fetch("/T-VIBES/src/controllers/employee/tourrequestscontroller.php", {
+            fetch("https://tourtaal.azurewebsites.net/src/controllers/employee/tourrequestscontroller.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -1375,7 +1375,7 @@ function declineRequest(button) {
                 Swal.showLoading();
             }
         });
-        fetch("/T-VIBES/src/controllers/employee/tourrequestscontroller.php", {
+        fetch("https://tourtaal.azurewebsites.net/src/controllers/employee/tourrequestscontroller.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1433,7 +1433,7 @@ function showModal(button) {
     var tourid = button.getAttribute('data-tourid');
     var userid = button.getAttribute('data-userid');
 
-    fetch('/T-VIBES/src/controllers/employee/tourrequestscontroller.php', {
+    fetch('https://tourtaal.azurewebsites.net/src/controllers/employee/tourrequestscontroller.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -1482,7 +1482,7 @@ function showModal(button) {
                 card.classList.add('destination-card');
                 card.innerHTML = `
                     <div class="image-placeholder">
-                        <img src="/T-VIBES/public/uploads/${site.siteimage}"></img>
+                        <img src="https://tourtaal.azurewebsites.net/public/uploads/${site.siteimage}"></img>
                     </div>
                     <div class="destination-info">
                         <h6>${site.sitename}</h6>
