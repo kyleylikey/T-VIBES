@@ -90,14 +90,21 @@ recordVisit();
 
         .hero-content h1 {
             font-family: 'Raleway', sans-serif !important;
-            font-weight: bold;
-            color: #102E47;
+            font-weight: bold !important;
+            color: #102E47 !important;
         }
-        
+
+        @media (max-width: 640px) {
+            .hero-content h1, .hero-content p {
+            margin-top: -10px !important;
+            margin-bottom: -10px !important;
+            padding: 8px !important;
+            }
+        }
         h5 {
             font-family: 'Raleway', sans-serif !important;
             font-weight: bold !important;
-            color: #102E47;
+            color: #102E47  !important;
         }
 
         .cta-button {
@@ -170,17 +177,17 @@ else {
 
     <section class="features">
         <div id="explore" class="container">
-            <div class="row">
+            <div class="row mx-auto">
                 <div class="col-lg-6">
                     <h2 style="text-align: justify;">Experience the Rich Heritage and Stunning Views of Taal.</h2>
-                    <img src="assets/images/whitehouse.jpg" alt="" class="img-fluid mt-3 h-75 w-100 object-fit-cover" style="border-radius: 25px;">
+                    <img src="assets/images/whitehouse.jpg" alt="" class="img-fluid mt-3" style="border-radius: 25px;">
                 </div>
                 <div class="col-lg-6">
-                    <div class="row">
-                        <div class="col-lg-6">
+                    <div class="row mt-4 mt-lg-0 p-0 mx-auto">
+                        <div class="col-6 ps-0">
                             <img src="assets/images/marcela.jpg" alt="" class="img-fluid" style="border-radius: 25px;">
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-6 pe-0">
                             <img src="assets/images/tampuhan.jpg" alt="" class="img-fluid" style="border-radius: 25px;">
                         </div>
                     </div>
@@ -201,11 +208,11 @@ else {
     <div id="about" class="max-w-6xl mx-auto px-6 text-center">
     <a href="../src/views/frontend/aboutus.php" class="btn btn-custom mt-4 mb-4 px-4 py-2 btn-lg">About Us</a>
 
-    <div class="mt-10 grid grid-cols-1 md:grid-cols-5 gap-8 bg-gray-200 p-6 rounded-lg">
-        <div class="row bg-light">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 bg-gray-200 p-6 rounded-lg">
+        <div class="row bg-light mx-auto">
         <div class="col text-center">
                 <div class="p-6 top-60 inline-block">
-                    <i class="bi bi-geo-alt rounded-circle h1 bg-light p-2 m-2 shadow"></i>
+                    <i class="bi bi-geo-alt rounded-circle h1 bg-light px-2 py-1 shadow"></i>
                 </div>
                 <h5 class="text-xl font-bold text-gray-800 mt-4">Discover Stunning Attractions</h5>
                 <p class="text-gray-600 mt-3 p-3" style="color: #434343;">Explore Taal's breathtaking landmarks, historical sites, and natural wonders. From colonial-era churches to scenic landscapes, there's something for every traveler.</p>
@@ -213,7 +220,7 @@ else {
 
             <div class="col text-center">
                 <div class="p-6 top-50 inline-block">
-                <i class="bi bi-bell rounded-circle h1 bg-light p-2 m-2 shadow"></i>
+                <i class="bi bi-bell rounded-circle h1 bg-light px-2 py-1 shadow"></i>
                 </div>
                 <h5 class="text-xl font-bold text-gray-800 mt-4">Stay Updated on Exciting Events</h5>
                 <p class="text-gray-600 mt-3 p-3" style="color: #434343;">Never miss a festival, cultural event, or local celebration. Stay informed and be part of Taal's vibrant community gatherings.</p>
@@ -221,7 +228,7 @@ else {
 
             <div class="col text-center">
                 <div class="p-6 top-50 inline-block">
-                <i class="bi bi-calendar4 rounded-circle h1 bg-light p-2 m-2 shadow"></i>
+                <i class="bi bi-calendar4 rounded-circle h1 bg-light px-2 py-1 shadow"></i>
                 </div>
                 <h5 class="text-xl font-bold text-gray-800 mt-4">Plan Your Trip with Ease</h5>
                 <p class="text-gray-600 mt-3 p-3" style="color: #434343;">Get all the information you need to create the perfect itinerary. From travel tips to must-visit spots, we've got you covered.</p>
@@ -229,7 +236,7 @@ else {
 
             <div class="col text-center">
                 <div class="p-6 top-50 inline-block">
-                <i class="bi bi-display rounded-circle h1 bg-light p-2 m-2 shadow"></i>
+                <i class="bi bi-display rounded-circle h1 bg-light px-2 py-1 shadow"></i>
                 </div>
                 <h5 class="text-xl font-bold text-gray-800 mt-4">Book Reservations Hassle-Free</h5>
                 <p class="text-gray-600 mt-3 p-3" style="color: #434343;">Easily reserve accommodations, tours, and activities with just a few clicks. Experience a seamless travel experience in Taal.</p>
@@ -237,7 +244,7 @@ else {
 
             <div class="col text-center">
                 <div class="p-6 top-50 inline-block">
-                <i class="bi bi-info-circle rounded-circle h1 bg-light p-2 m-2 shadow"></i>
+                <i class="bi bi-info-circle rounded-circle h1 bg-light px-2 py-1 shadow"></i>
                 </div>
                 <h5 class="text-xl font-bold text-gray-800 mt-4">Get Support from Your LGU</h5>
                 <p class="text-gray-600 mt-3 p-3" style="color: #434343;">Need assistance? Connect with the local government for travel guidelines, safety information, and other essential resources.</p>
@@ -249,7 +256,7 @@ else {
 
 <section class="container my-5 text-center">
         <h2 class="mb-4 fw-bold">Top Destinations</h2>
-        <div class="row justify-content-center g-4">
+        <div class="row justify-content-center g-4 mx-auto">
             <?php foreach ($topSites as $site): ?>
                 <div class="col-md-4">
                     <div class="card border-0 shadow-lg p-3 text-center" style="border-radius: 25px;">
@@ -303,13 +310,13 @@ else {
     <section class="container my-5 text-center">
         <h2 class="fw-bold">Trivia</h2>
         <p class="text-muted">Get to know a little bit more</p>
-        <div class="row align-items-center">
+        <div class="row align-items-center mx-auto">
             <div class="col-md-6 text-start">
                 <h4 class="fw-bold" style="text-align: justify; color: #102E47;">Did You Know? Taal is home to the largest Catholic church in Asia, the Basilica of St. Martin de Tours!</h4>
                 <p style="text-align: justify; color: #434343;">This stunning landmark stands as a testament to Spanish-era architecture and has been a beacon of faith for centuries. Take a tour and witness its grandeur.</p>
                 <a href="../src/views/frontend/aboutus.php" class="btn btn-custom px-4 py-2">Learn More</a>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 px-1 px-lg-5 mt-4 mt-lg-0">
                 <div class="position-relative">
                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; margin: auto;">
                         <img src="assets/images/taalbasilica.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;">
