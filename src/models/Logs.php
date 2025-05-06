@@ -11,11 +11,11 @@ class Logs {
     public function getAllLogs($limit, $offset, $searchTerm = '') {
         if (!empty($searchTerm)) {
             $query = "SELECT logs.action, logs.datetime, users.name 
-                     FROM logs 
-                     INNER JOIN users ON logs.userid = users.userid 
-                     WHERE logs.action LIKE :searchTerm OR users.name LIKE :searchTerm 
-                     ORDER BY logs.datetime DESC 
-                     LIMIT :limit OFFSET :offset";
+            FROM logs 
+            INNER JOIN users ON logs.userid = users.userid 
+            WHERE logs.action LIKE :searchTerm OR users.name LIKE :searchTerm 
+            ORDER BY logs.datetime DESC 
+            OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY";
             
             $searchParam = "%{$searchTerm}%";
             $stmt = $this->conn->prepare($query);

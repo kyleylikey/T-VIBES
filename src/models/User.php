@@ -1,7 +1,7 @@
 <?php
 class User {
     private $conn;
-    private $table = 'Users';
+    private $table = '[taaltourismdb].[users]';
 
     private $id;
     private $username;
@@ -75,23 +75,29 @@ class User {
     }
 
     public function login($plainPassword) {
-        $query = "SELECT userid, hashedpassword, usertype, status FROM " . $this->table . " WHERE username = ? LIMIT 1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $this->username);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$user || !password_verify($plainPassword, $user['hashedpassword'])) {
-            return 'Invalid username or password.';
-        }
-
-        $this->id = $user['userid'];
-        $this->usertype = $user['usertype'];
-        $this->status = $user['status'];
-
-        return true;
+    $query = "SELECT TOP 1 userid, hashedpassword, usertype, status FROM " . $this->table . " WHERE username = ?";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindValue(1, $this->username, PDO::PARAM_STR);
+    $stmt->execute();
+    
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$user) {
+        return 'Invalid username or password.';
     }
-
+    
+    $passwordVerified = password_verify($plainPassword, $user['hashedpassword']);
+    
+    if (!$passwordVerified) {
+        return 'Invalid username or password.';
+    }
+    
+    $this->id = $user['userid'];
+    $this->usertype = $user['usertype'];
+    $this->status = $user['status'];
+    
+    return true;
+}
     public function isActive() {
         return strtolower($this->status) === 'active';
     }
@@ -131,7 +137,7 @@ class User {
         $usertypes = ['mngr' => 'Manager', 'emp' => 'Employee', 'trst' => 'Tourist'];
         $accounts = ['mngr' => [], 'emp' => [], 'trst' => []];
     
-        $query = "SELECT userid, name, username, email, contactnum, usertype, status FROM users ORDER BY (status = 'active') DESC";
+        $query = "SELECT userid, name, username, email, contactnum, usertype, status FROM [taaltourismdb].[users] ORDER BY (status = 'active') DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -148,7 +154,7 @@ class User {
     }
 
     public function getActiveEmpList() {
-        $query = "SELECT userid, name, username, email, contactnum FROM users WHERE usertype = 'emp' AND status = 'active'";
+        $query = "SELECT userid, name, username, email, contactnum FROM [taaltourismdb].[users] WHERE usertype = 'emp' AND status = 'active'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;

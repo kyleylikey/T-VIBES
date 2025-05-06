@@ -79,7 +79,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empt
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['userid']) && !isset($_SESSION['tour_destinations'])) {
     $userid = $_SESSION['userid'];
     
-    $stmt = $db->prepare("SELECT tourid FROM tour WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC LIMIT 1");
+    $stmt = $db->prepare("SELECT tourid FROM tour WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC SELECT TOP 1");
     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $userid = $_SESSION['userid'];
         
-        $stmt = $db->prepare("SELECT DISTINCT tourid FROM tour WHERE userid = :userid ORDER BY created_at DESC LIMIT 1");
+        $stmt = $db->prepare("SELECT DISTINCT tourid FROM tour WHERE userid = :userid ORDER BY created_at DESC SELECT TOP 1");
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -386,7 +386,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
 
     $userid = $_SESSION['userid'];
 
-    $stmt = $db->prepare("SELECT tourid FROM tour WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC LIMIT 1");
+    $stmt = $db->prepare("SELECT tourid FROM tour WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC SELECT TOP 1");
     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);

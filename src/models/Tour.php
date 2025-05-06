@@ -29,7 +29,7 @@ class Tour {
     public function getExistingTourRequestId($userid) {
         $query = "SELECT tourid FROM " . $this->table . " 
                   WHERE userid = :userid AND status = 'request'
-                  LIMIT 1";
+                  SELECT TOP 1";
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
@@ -328,7 +328,7 @@ class Tour {
                   WHERE tour.status = 'submitted'  
                   GROUP BY tour.tourid 
                   ORDER BY tour.created_at DESC 
-                  LIMIT 6";
+                  SELECT TOP 6";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

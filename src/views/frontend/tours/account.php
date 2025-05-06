@@ -6,7 +6,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name, username, contactnum, email FROM users WHERE userid = :userid LIMIT 1";
+$query = "SELECT name, username, contactnum, email FROM users WHERE userid = :userid SELECT TOP 1";
 $stmt = $db->prepare($query);
 $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
 $stmt->execute();

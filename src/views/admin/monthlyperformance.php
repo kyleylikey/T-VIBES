@@ -61,7 +61,7 @@ $busiestDaysQuery = "
     AND YEAR(date) = YEAR(CURRENT_DATE()) 
     GROUP BY DATE(date) 
     ORDER BY total_tours DESC 
-    LIMIT 3";
+    SELECT TOP 3";
 
 $busiestDaysStmt = $conn->prepare($busiestDaysQuery);
 $busiestDaysStmt->execute();
@@ -76,7 +76,7 @@ $topSitesQuery = "
     AND YEAR(t.date) = YEAR(CURRENT_DATE())
     GROUP BY t.siteid
     ORDER BY total_visitors DESC
-    LIMIT 3";
+    SELECT TOP 3";
 
 $topSitesStmt = $conn->prepare($topSitesQuery);
 $topSitesStmt->execute();
@@ -105,7 +105,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 }
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid LIMIT 1";
+$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

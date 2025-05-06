@@ -14,21 +14,20 @@ class Review {
     }
 
     public function getRecentReviews() {
-        $query = "SELECT users.name AS author, sites.rating, rev.date, rev.review, sites.sitename FROM rev 
-                  JOIN users ON rev.userid = users.userid 
-                  JOIN sites ON rev.siteid = sites.siteid 
+        $query = "SELECT TOP 6 users.name AS author, sites.rating, rev.date, rev.review, sites.sitename FROM [taaltourismdb].[rev] 
+                  JOIN [taaltourismdb].[users] ON rev.userid = users.userid 
+                  JOIN [taaltourismdb].[sites] ON rev.siteid = sites.siteid 
                   WHERE rev.status = 'displayed' 
-                  ORDER BY rev.date DESC 
-                  LIMIT 6";
+                  ORDER BY rev.date DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getSiteReviews($siteid) {
-        $query = "SELECT users.name AS author, rev.date, rev.review, sites.sitename FROM rev 
-                  JOIN users ON rev.userid = users.userid 
-                  JOIN sites ON rev.siteid = sites.siteid 
+        $query = "SELECT users.name AS author, rev.date, rev.review, sites.sitename FROM [taaltourismdb].[rev] 
+                  JOIN [taaltourismdb].[users] ON rev.userid = users.userid 
+                  JOIN [taaltourismdb].[sites] ON rev.siteid = sites.siteid 
                   WHERE rev.status = 'displayed' AND rev.siteid = :siteid
                   ORDER BY rev.date DESC";
         $stmt = $this->conn->prepare($query);
@@ -38,7 +37,7 @@ class Review {
     }
     
     public function countSiteReviews($siteid) {
-        $query = "SELECT COUNT(*) AS review_count FROM rev 
+        $query = "SELECT COUNT(*) AS review_count FROM [taaltourismdb].[rev] 
                   WHERE status = 'displayed' AND siteid = :siteid";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
@@ -47,7 +46,7 @@ class Review {
     }
 
     public function getRatingDistribution($siteid) {
-        $query = "SELECT rating, COUNT(*) as count FROM user_ratings 
+        $query = "SELECT rating, COUNT(*) as count FROM [taaltourismdb].[user_ratings] 
                   WHERE site_id = :siteid 
                   GROUP BY rating 
                   ORDER BY rating DESC";

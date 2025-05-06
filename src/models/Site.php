@@ -1,7 +1,7 @@
 <?php
 class Site {
     private $conn;
-    private $table = 'sites';
+    private $table = '[taaltourismdb].[sites]';
 
     private $id;
     private $sitename;
@@ -17,45 +17,55 @@ class Site {
     }
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
-        $query = "INSERT INTO sites (sitename, siteimage, description, opdays, price, status, rating, rating_cnt) 
-                    VALUES (:sitename, :siteimage, :description, :opdays, :price, 'displayed', 0, 0)";
+        $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt) 
+                    VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
-            ":sitename" => $siteName,
-            ":siteimage" => $siteImage,
-            ":description" => $siteDescription,
-            ":opdays" => $opdays,
-            ":price" => $sitePrice
+            $siteName,
+            $siteImage,
+            $siteDescription,
+            $opdays,
+            $sitePrice
         ]);
     }
 
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
         if ($imageName) {
-            $query = "UPDATE sites SET sitename = :sitename, siteimage = :siteimage, description = :description, opdays = :opdays, price = :price WHERE siteid = :siteid";
+            $query = "UPDATE [taaltourismdb].[sites] SET 
+                      sitename = ?, 
+                      siteimage = ?, 
+                      description = ?, 
+                      opdays = ?, 
+                      price = ? 
+                      WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([
-                ":sitename" => $siteName,
-                ":siteimage" => $imageName,
-                ":description" => $siteDescription,
-                ":opdays" => $opdays,
-                ":price" => $sitePrice,
-                ":siteid" => $siteId
+                $siteName,
+                $imageName,
+                $siteDescription,
+                $opdays,
+                $sitePrice,
+                $siteId
             ]);
         } else {
-            $query = "UPDATE sites SET sitename = :sitename, description = :description, opdays = :opdays, price = :price WHERE siteid = :siteid";
+            $query = "UPDATE [taaltourismdb].[sites] SET 
+                      sitename = ?, 
+                      description = ?, 
+                      opdays = ?, 
+                      price = ? 
+                      WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([
-                ":sitename" => $siteName,
-                ":description" => $siteDescription,
-                ":opdays" => $opdays,
-                ":price" => $sitePrice,
-                ":siteid" => $siteId
+                $siteName,
+                $siteDescription,
+                $opdays,
+                $sitePrice,
+                $siteId
             ]);
         }
     }
-
     public function getSites() {
-        $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM sites WHERE status = 'displayed'";
+        $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM [taaltourismdb].[sites] WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -71,7 +81,7 @@ class Site {
         $db = new Database();
         $conn = $db->getConnection();
     
-        $query = "SELECT * FROM sites WHERE siteid = :siteid";
+        $query = "SELECT * FROM [taaltourismdb].[sites] WHERE siteid = :siteid";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
         $stmt->execute();
@@ -115,13 +125,12 @@ class Site {
     }
 
     public function getTopSites($currentYear) {
-        $query = "SELECT s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.price, s.status, SUM(t.companions) as visitor_count 
-                  FROM sites s 
-                  LEFT JOIN tour t ON s.siteid = t.siteid AND t.status = 'accepted'
+        $query = "SELECT TOP 3 s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.price, s.status, SUM(t.companions) as visitor_count 
+                  FROM [taaltourismdb].[sites] s 
+                  LEFT JOIN [taaltourismdb].[tour] t ON s.siteid = t.siteid AND t.status = 'accepted'
                   WHERE YEAR(t.date) = :currentYear 
-                  GROUP BY s.siteid
-                  ORDER BY visitor_count DESC
-                  LIMIT 3";
+                  GROUP BY s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating, s.price, s.status 
+                  ORDER BY visitor_count DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
         $stmt->execute();
@@ -129,7 +138,7 @@ class Site {
     }
 
     public function deleteSite($siteId) {
-        $deleteQuery = "DELETE FROM sites WHERE siteid = ?";
+        $deleteQuery = "DELETE FROM [taaltourismdb].[sites] WHERE siteid = ?";
         $stmt = $this->conn->prepare($deleteQuery);
         return $stmt->execute([$siteId]);
     }
@@ -148,7 +157,7 @@ class Site {
     public function rateSite($siteId, $rating) {
         $rating = min(5, max(0, $rating));
         
-        $query = "UPDATE sites SET rating = rating + :rating, rating_cnt = rating_cnt + 1 WHERE siteid = :siteid";
+        $query = "UPDATE [taaltourismdb].[sites] SET rating = rating + :rating, rating_cnt = rating_cnt + 1 WHERE siteid = :siteid";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             ":rating" => $rating,

@@ -7,7 +7,7 @@ $database = new Database();
 $conn = $database->getConnection();
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid LIMIT 1";
+$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();
