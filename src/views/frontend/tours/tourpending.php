@@ -337,6 +337,87 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
                     </ul>
                 </div>
             </div>
+            
+            <!-- Create a separate modal for each tour -->
+            <div class="modal fade" id="tourModal<?= $pending['tourid'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $pending['tourid'] ?>" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel<?= $pending['tourid'] ?>">Tour Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?php 
+                                    $tourSites = $tourModel->getPendingTourSitesByUser($pending['tourid'], $_SESSION['userid']);
+                                    foreach ($tourSites as $site) : 
+                                    ?>
+                                        <div class="destination-card">
+                                            <div class="destination-image">
+                                                <?php if (!empty($site['siteimage'])): ?>
+                                                    <img src="../../../../public/uploads/<?= $site['siteimage'] ?>" alt="<?= $site['sitename'] ?>" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover;">
+                                                <?php else: ?>
+                                                    <i class="bi bi-image"></i>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="destination-name"><?= $site['sitename'] ?></div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="summary-title">Date Created:</div>
+                                        <div class="summary-value"><?= date('M d, Y', strtotime($pending['created_at'])) ?></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="summary-title">Planned Date:</div>
+                                        <div class="summary-value"><?= date('M d, Y', strtotime($pending['date'])) ?></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="summary-title">Number of People:</div>
+                                        <div class="summary-value"><?= $pending['companions'] ?></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="summary-title">Estimated Fees:</div>
+                                        <?php 
+                                        $tourSitesAndFees = $tourModel->getPendingTourSitesByUser($pending['tourid'], $_SESSION['userid']);
+                                        $totalFees = 0;
+                                        foreach ($tourSitesAndFees as $site) : 
+                                            ?>
+                                        <div class="summary-value">
+                                            <div class="row">
+                                                <div class="col-8 summary-value"><?= $site['sitename'] ?></div>
+                                                <div class="col-4 summary-value">₱<?= $site['price'] ?></div>
+                                            </div>
+                                        </div>
+                                        <?php $totalFees += $site['price']; endforeach; ?>
+                                        <div class="summary-value">
+                                            <div class="row">
+                                                <div class="col-8"></div>
+                                                <div class="col-4 fw-bold">₱<?= $totalFees ?></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="summary-title">Total Fees:</div>
+                                        <div class="row">
+                                            <div class="col-8 summary-value">₱<?= $totalFees ?> x <?= $pending['companions'] ?></div>
+                                            <div class="col-4 fw-bolder" style="color: #EC6350;">₱<?= $pending['companions'] * $totalFees ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="status-completed fw-bold mt-2 text-info">Status: <span class="text-info">Pending</span></div>
+                            <div class="summary-value fw-light text-center">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <?php endforeach; ?>
         
         <?php if (empty($userPendingTour)) : ?>
@@ -346,89 +427,6 @@ require_once '../../../controllers/tourist/tourpendingcontroller.php';
                 <p>You don't have any pending tours at the moment. Create a new tour plan to get started!</p>
             </div>
         <?php endif; ?>
-    </div>
-
-    <div class="modal fade" id="tourModal<?= $pending['tourid'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $pending['tourid'] ?>" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel<?= $pending['tourid'] ?>">Tour Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <?php 
-                            $tourSites = $tourModel->getPendingTourSitesByUser($pending['tourid'], $_SESSION['userid']);
-                            foreach ($tourSites as $site) : 
-                            ?>
-                                <div class="destination-card">
-                                    <div class="destination-image">
-                                        <?php if (!empty($site['siteimage'])): ?>
-                                            <img src="../../../../public/uploads/<?= $site['siteimage'] ?>" alt="<?= $site['sitename'] ?>" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover;">
-                                        <?php else: ?>
-                                            <i class="bi bi-image"></i>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="destination-name"><?= $site['sitename'] ?></div>
-                                </div>
-                            <?php endforeach; ?>
-
-                            
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <div class="summary-title">Date Created:</div>
-                                <div class="summary-value"><?= date('M d, Y', strtotime($pending['created_at'])) ?></div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="summary-title">Planned Date:</div>
-                                <div class="summary-value"><?= date('M d, Y', strtotime($pending['date'])) ?></div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="summary-title">Number of People:</div>
-                                <div class="summary-value"><?= $pending['companions'] ?></div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="summary-title">Estimated Fees:</div>
-                                <?php 
-                                $tourSitesAndFees = $tourModel->getPendingTourSitesByUser($pending['tourid'], $_SESSION['userid']);
-                                $totalFees = 0;
-                                foreach ($tourSitesAndFees as $site) : 
-                                    ?>
-                                <div class="summary-value">
-                                    <div class="row">
-                                        <div class="col-8 summary-value"><?= $site['sitename'] ?></div>
-                                        <div class="col-4 summary-value">₱<?= $site['price'] ?></div>
-                                    </div>
-                                </div>
-                                <?php $totalFees += $site['price']; endforeach; ?>
-                                <div class="summary-value">
-                                    <div class="row">
-                                        <div class="col-8"></div>
-                                        <div class="col-4 fw-bold">₱<?= $totalFees ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="summary-title">Total Fees:</div>
-                                <div class="row">
-                                    <div class="col-8 summary-value">₱<?= $totalFees ?> x <?= $pending['companions'] ?></div>
-                                    <div class="col-4 fw-bolder" style="color: #EC6350;">₱<?= $pending['companions'] * $totalFees ?></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="status-completed fw-bold mt-2 text-info">Status: <span class="text-info">Pending</span></div>
-                    <div class="summary-value fw-light text-center">*Fee is only an estimate and subject to change if the destination can accommodate special discounts.</div>
-                </div>
-            </div>
-        </div>
     </div>
     
     <div class="contact-us-section">

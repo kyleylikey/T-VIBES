@@ -78,14 +78,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 $database = new Database();
 $conn = $database->getConnection();
 
-// Modified query to include siteids
-$query = "SELECT t.tourid, t.date, t.status, t.created_at, t.companions, 
-                 GROUP_CONCAT(s.siteid ORDER BY s.sitename SEPARATOR ',') AS siteids,
-                 GROUP_CONCAT(s.sitename ORDER BY s.sitename SEPARATOR ',') AS destinations, 
-                 GROUP_CONCAT(s.price ORDER BY s.sitename SEPARATOR ',') AS prices,
-                 GROUP_CONCAT(s.siteimage ORDER BY s.sitename SEPARATOR ',') AS images
+// Fetch all sites the user has already rated
+$ratedSitesQuery = "SELECT site_id FROM user_ratings WHERE user_id = :user_id";
+$ratedSitesStmt = $conn->prepare($ratedSitesQuery);
+$ratedSitesStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
+$ratedSitesStmt->execute();
+$ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
+
+// Query to get completed tours (accepted status with past dates)
+// MODIFIED: Group by tourid to get unique tours
+$query = "SELECT t.tourid, t.date, t.status, t.created_at, t.companions 
           FROM tour t
-          JOIN sites s ON t.siteid = s.siteid
           WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CURDATE()
           GROUP BY t.tourid
           ORDER BY t.created_at DESC";
@@ -93,14 +96,7 @@ $query = "SELECT t.tourid, t.date, t.status, t.created_at, t.companions,
 $stmt = $conn->prepare($query);
 $stmt->bindParam(1, $userid);
 $stmt->execute();
-$tours = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Fetch all sites the user has already rated
-$ratedSitesQuery = "SELECT site_id FROM user_ratings WHERE user_id = :user_id";
-$ratedSitesStmt = $conn->prepare($ratedSitesQuery);
-$ratedSitesStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
-$ratedSitesStmt->execute();
-$ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
+$completedTours = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -490,21 +486,15 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 <div class="container table-container">
     <div class="table-content">
         <div class="row table-header">
-            <div class="col-3">Date Created</div>
-            <div class="col-3">Planned Date/s</div>
-            <div class="col-3">Number of People</div>
-            <div class="col-3">Destinations</div>
+            <div class="col-3" style="font-family: 'Raleway', sans-serif !important;">Date Created</div>
+            <div class="col-3" style="font-family: 'Raleway', sans-serif !important;">Planned Date/s</div>
+            <div class="col-3" style="font-family: 'Raleway', sans-serif !important;">Number of People</div>
+            <div class="col-3" style="font-family: 'Raleway', sans-serif !important;">Destinations</div>
         </div>
 
-        <?php if (!empty($tours)) : ?>
-            <?php foreach ($tours as $index => $tour) : 
-                $destinations = explode(',', $tour['destinations']); 
-                $prices = explode(',', $tour['prices']); 
-                $images = explode(',', $tour['images']); 
-                $siteIds = explode(',', $tour['siteids']);
-                $num_people = $tour['companions']; 
-            ?>
-                <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $index ?>">
+        <?php if (!empty($completedTours)) : ?>
+            <?php foreach ($completedTours as $tour) : ?>
+                <div class="row align-items-center tour-row" data-bs-toggle="modal" data-bs-target="#tourModal<?= $tour['tourid'] ?>">
                     <div class="col-3">
                         <span class="tour-date"><?= date('d M Y', strtotime($tour['created_at'])) ?></span>
                     </div>
@@ -512,12 +502,24 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
                         <span class="tour-date"><?= date('d M Y', strtotime($tour['date'])) ?></span>
                     </div>
                     <div class="col-3">
-                        <span class="people-count"><?= $num_people ?></span>
+                        <span class="people-count"><?= $tour['companions'] ?></span>
                     </div>
                     <div class="col-3">
                         <ul class="destinations-list">
-                            <?php foreach ($destinations as $destination) : ?>
-                                <li><?= trim($destination) ?></li>
+                            <?php  
+                            // Fetch sites for this tour
+                            $siteQuery = "SELECT s.siteid, s.sitename FROM sites s 
+                                         JOIN tour t ON s.siteid = t.siteid 
+                                         WHERE t.tourid = ? AND t.userid = ?";
+                            $siteStmt = $conn->prepare($siteQuery);
+                            $siteStmt->bindParam(1, $tour['tourid']);
+                            $siteStmt->bindParam(2, $userid);
+                            $siteStmt->execute();
+                            $tourSites = $siteStmt->fetchAll(PDO::FETCH_ASSOC);
+                            
+                            foreach ($tourSites as $site) :  
+                            ?>
+                                <li><?= $site['sitename'] ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
@@ -532,89 +534,101 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
         <?php endif; ?>
     </div>
 
-    <?php foreach ($tours as $index => $tour) : 
-        $destinations = explode(',', $tour['destinations']); 
-        $prices = explode(',', $tour['prices']); 
-        $images = explode(',', $tour['images']); 
-        $siteIds = explode(',', $tour['siteids']);
-        $num_people = $tour['companions']; 
-    ?>
-    <div class="modal fade" id="tourModal<?= $index ?>" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tour Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <?php foreach ($destinations as $key => $destination) : 
-                                $siteId = trim($siteIds[$key]);
-                                $isRated = in_array($siteId, $ratedSites);
-                            ?>
-                                <div class="destination-card d-flex align-items-center p-2 mb-2" style="background: #f8f9fa; border-radius: 8px;" data-site-id="<?= $siteId ?>">
-                                    <div class="destination-image me-2">
-                                        <img src="../../../../public/uploads/<?= trim($images[$key]) ?>" alt="<?= trim($destination) ?>" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+    <?php foreach ($completedTours as $tour) : ?>
+        <div class="modal fade" id="tourModal<?= $tour['tourid'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $tour['tourid'] ?>" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel<?= $tour['tourid'] ?>">Tour Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <?php 
+                                // Fetch sites for this tour with more details
+                                $siteDetailsQuery = "SELECT s.siteid, s.sitename, s.siteimage, s.price 
+                                                   FROM sites s 
+                                                   JOIN tour t ON s.siteid = t.siteid 
+                                                   WHERE t.tourid = ? AND t.userid = ?";
+                                $siteDetailsStmt = $conn->prepare($siteDetailsQuery);
+                                $siteDetailsStmt->bindParam(1, $tour['tourid']);
+                                $siteDetailsStmt->bindParam(2, $userid);
+                                $siteDetailsStmt->execute();
+                                $tourSiteDetails = $siteDetailsStmt->fetchAll(PDO::FETCH_ASSOC);
+                                
+                                foreach ($tourSiteDetails as $site) : 
+                                    $isRated = in_array($site['siteid'], $ratedSites);
+                                ?>
+                                    <div class="destination-card d-flex align-items-center p-2 mb-2" style="background: #f8f9fa; border-radius: 8px;" data-site-id="<?= $site['siteid'] ?>">
+                                        <div class="destination-image me-2">
+                                            <?php if (!empty($site['siteimage'])): ?>
+                                                <img src="../../../../public/uploads/<?= $site['siteimage'] ?>" alt="<?= $site['sitename'] ?>" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                                            <?php else: ?>
+                                                <i class="bi bi-image"></i>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="destination-details flex-grow-1">
+                                            <div class="destination-name fw-bold"><?= $site['sitename'] ?></div>
+                                            <div class="rate-review-container mt-1">
+                                                <button class="btn btn-custom btn-sm rate-btn <?= $isRated ? 'disabled' : '' ?>" 
+                                                        <?= $isRated ? 'disabled' : '' ?> 
+                                                        style="<?= $isRated ? 'background-color: #cccccc !important; color: #666666 !important; cursor: not-allowed;' : '' ?>">
+                                                    <?= $isRated ? 'Rated' : 'Rate' ?>
+                                                </button>
+                                                <button class="btn btn-custom btn-sm review-btn">Review</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="destination-details flex-grow-1">
-                                        <div class="destination-name fw-bold"><?= trim($destination) ?></div>
-                                        <div class="rate-review-container mt-1">
-                                            <button class="btn btn-custom btn-sm rate-btn <?= $isRated ? 'disabled' : '' ?>" 
-                                                    <?= $isRated ? 'disabled' : '' ?> 
-                                                    style="<?= $isRated ? 'background-color: #cccccc !important; color: #666666 !important; cursor: not-allowed;' : '' ?>">
-                                                <?= $isRated ? 'Rated' : 'Rate' ?>
-                                            </button>
-                                            <button class="btn btn-custom btn-sm review-btn">Review</button>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <span class="label-bold">Date Created:</span><br>
+                                    <span class="value-grey"><?= date('M j, Y', strtotime($tour['created_at'])) ?></span>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="label-bold">Planned Date:</span><br>
+                                    <span class="value-grey"><?= date('M j, Y', strtotime($tour['date'])) ?></span>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="label-bold">Number of People:</span><br>
+                                    <span class="value-grey"><?= $tour['companions'] ?></span>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="label-bold">Estimated Fees:</span><br>
+                                    <div class="value-grey">
+                                        <?php 
+                                        $total_per_person = 0;
+                                        foreach ($tourSiteDetails as $site) : 
+                                            $fee_per_destination = (int) $site['price'];
+                                            $total_per_person += $fee_per_destination;
+                                        ?>
+                                            <div class="d-flex justify-content-between">
+                                                <span><?= $site['sitename'] ?></span>
+                                                <span>₱<?= number_format($fee_per_destination, 2) ?></span>                                       
+                                            </div>
+                                        <?php endforeach; ?>
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-8"></div>
+                                                <div class="fw-bold" style="text-align: right;">₱<?= number_format($total_per_person, 2) ?></div>                 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
+
+                                <div class="mb-3">
+                                    <span class="label-bold">Total Fees:</span><br>
+                                    <div class="value-grey d-flex justify-content-between fw-bold">
+                                        <span>₱<?= number_format($total_per_person, 2) ?> x <?= $tour['companions'] ?></span>
+                                        <span style="color: #EC6350;">₱<?= number_format($total_per_person * $tour['companions'], 2) ?></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <span class="label-bold">Date Created:</span><br>
-                                <span class="value-grey"><?= date('M j, Y', strtotime($tour['created_at'])) ?></span>
-                            </div>
-                            <div class="mb-3">
-                                <span class="label-bold">Planned Date:</span><br>
-                                <span class="value-grey"><?= date('M j, Y', strtotime($tour['date'])) ?></span>
-                            </div>
-                            <div class="mb-3">
-                                <span class="label-bold">Number of People:</span><br>
-                                <span class="value-grey"><?= $num_people ?></span>
-                            </div>
-                            <div class="mb-3">
-                                <span class="label-bold">Estimated Fees:</span><br>
-                                <div class="value-grey">
-                                    <?php 
-                                    $total_per_person = 0;
-                                    foreach ($destinations as $key => $destination) : 
-                                        $fee_per_destination = (int) $prices[$key];
-                                        $total_per_person += $fee_per_destination;
-                                    ?>
-                                        <div class="d-flex justify-content-between">
-                                            <span><?= trim($destination) ?></span>
-                                            <span>₱<?= number_format($fee_per_destination, 2) ?></span>                                       
-                                        </div>
-                                    <?php endforeach; ?>
-                                    <div>
-                                        <div class="row">
-                                            <div class="col-8"></div>
-                                            <div class="fw-bold" style="text-align: right;">₱<?= number_format($total_per_person, 2) ?></div>                 
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <span class="label-bold">Total Fees:</span><br>
-                                <div class="value-grey d-flex justify-content-between fw-bold">
-                                    <span>₱<?= number_format($total_per_person, 2) ?> x <?= $num_people ?></span>
-                                    <span style="color: #EC6350;">₱<?= number_format($total_per_person * $num_people, 2) ?></span>
-                                </div>
-                            </div>
-                        </div> 
                     </div>
                     <div class="modal-footer">
                         <div class="status-completed fw-bold mt-2 text-warning">Status: <span class="text-warning">Completed</span></div>
@@ -623,14 +637,14 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
                 </div>
             </div>
         </div>
-    </div>
     <?php endforeach; ?>
 </div>
 
+<!-- Rating Modal -->
 <div class="modal fade" id="rateExperienceModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content p-4 text-center">
-            <h5 class="mb-3">Rate Your Experience</h5>
+            <h5 class="mb-3 fw-bold" style="font-family: 'Raleway', sans-serif !important; color: #102E47;">Rate Your Experience</h5>
             <div class="stars mb-3">
                 <?php for ($i = 1; $i <= 5; $i++) : ?>
                     <i class="bi bi-star" data-value="<?= $i ?>"></i>
@@ -641,10 +655,11 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
     </div>
 </div>
 
+<!-- Review Modal -->
 <div class="modal fade" id="reviewModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content p-4 text-center">
-            <h5 class="modal-title mb-3">Leave a Review</h5>
+            <h5 class="modal-title mb-3 fw-bold" style="font-family: 'Raleway', sans-serif !important; color: #102E47;">Leave a Review</h5>
             <div class="form-group mb-3">
                 <textarea id="reviewText" class="form-control" rows="4" placeholder="Share your experience..."></textarea>
             </div>
