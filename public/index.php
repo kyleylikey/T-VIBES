@@ -167,6 +167,7 @@ else {
         </div>
     </section>
 
+
     <section class="features">
         <div id="explore" class="container">
             <div class="row">

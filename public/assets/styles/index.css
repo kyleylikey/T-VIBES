@@ -35,6 +35,7 @@ body {
 
 /* Adding the white gradient at the bottom */
 .hero:after {
+	z-index: 1;
 	content: '';
 	position: absolute;
 	bottom: 0;
@@ -46,6 +47,7 @@ body {
 
 /* Hero Content */
 .hero-content {
+	z-index: 2;
 	padding: 20px 30px;
 	border-radius: 10px;
 	max-width: 800px;
@@ -72,18 +74,7 @@ body {
 	color: #fff;
 }
 
-/* Call to Action Button */
-.cta-button {
-	display: inline-block;
-	padding: 12px 20px;
-	background-color: #000;
-	color: #fff;
-	border-radius: 50px;
-	font-size: 1rem;
-	text-decoration: none;
-	transition: background 0.3s ease;
-	align-self: flex-end;
-}
+
 
 .cta-button:hover {
 	background-color: #333;
