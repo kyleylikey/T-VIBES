@@ -6,8 +6,8 @@ $database = new Database();
 $conn = $database->getConnection();
 
 $query = "SELECT s.sitename, SUM(t.companions) AS total_visitors 
-          FROM tour t
-          JOIN sites s ON t.siteid = s.siteid
+          FROM [taaltourismdb].[tour] t
+          JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
           WHERE t.status = 'accepted'
           GROUP BY t.siteid";
 
@@ -29,7 +29,7 @@ try {
     $query = "SELECT SUM(companions) AS total_visitors 
         FROM (
             SELECT userid, tourid, MAX(companions) AS companions 
-            FROM tour 
+            FROM [taaltourismdb].[tour] 
             WHERE status = 'accepted' AND YEAR(date) = :currentYear
             GROUP BY tourid, userid
         ) AS distinct_tours;";
@@ -47,7 +47,7 @@ echo "Error: " . $e->getMessage();
 }
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
+$query = "SELECT TOP 1 name FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

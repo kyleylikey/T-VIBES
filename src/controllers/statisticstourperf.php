@@ -19,7 +19,7 @@ $currentYear = date('Y');
 $currentYear = date('Y');
 
 // Total Approved Tours This Year: using 'submitted' status
-$query = "SELECT COUNT(*) as total FROM tour 
+$query = "SELECT COUNT(*) as total FROM [taaltourismdb].[tour] 
           WHERE status = 'accepted' 
           AND YEAR(date) = :currentYear";
 $stmt = $conn->prepare($query);
@@ -29,7 +29,7 @@ $totalApprovedYear = $stmt->fetchColumn();
 $stmt->closeCursor();
 
 // Total Completed Tours This Year: using 'accepted' and tour date in the past
-$query = "SELECT COUNT(*) as total FROM tour 
+$query = "SELECT COUNT(*) as total FROM [taaltourismdb].[tour] 
           WHERE status = 'accepted' AND date < CURDATE()
           AND YEAR(date) = :currentYear";
 $stmt = $conn->prepare($query);
@@ -39,7 +39,7 @@ $totalCompletedYear = $stmt->fetchColumn();
 $stmt->closeCursor();
 
 // Total Cancelled Tours This Year
-$query = "SELECT COUNT(*) as total FROM tour 
+$query = "SELECT COUNT(*) as total FROM [taaltourismdb].[tour] 
           WHERE status = 'cancelled'
           AND YEAR(date) = :currentYear";
 $stmt = $conn->prepare($query);
@@ -56,8 +56,8 @@ $cancelledChartData = array_fill(1, 12, 0);
 
 // Approved Tours per month
 $query = "SELECT MONTH(t.date) AS month, COUNT(DISTINCT t.tourid) AS total 
-          FROM tour t
-          JOIN Users u ON t.userid = u.userid
+          FROM [taaltourismdb].[tour] t
+          JOIN [taaltourismdb].[users] u ON t.userid = u.userid
           WHERE t.status = 'accepted' 
           AND YEAR(t.date) = :currentYear 
           GROUP BY MONTH(t.date)
@@ -76,8 +76,8 @@ foreach ($results as $row) {
 
 // Completed Tours per month
 $query = "SELECT MONTH(t.date) AS month, COUNT(DISTINCT t.tourid) AS total 
-          FROM tour t
-          JOIN Users u ON t.userid = u.userid
+          FROM [taaltourismdb].[tour] t
+          JOIN [taaltourismdb].[users] u ON t.userid = u.userid
           WHERE t.status = 'accepted' 
           AND t.date < CURDATE() 
           AND YEAR(t.date) = :currentYear 
@@ -96,7 +96,7 @@ foreach ($results as $row) {
 
 // Cancelled Tours per month
 $query = "SELECT MONTH(date) as month, COUNT(*) as total 
-          FROM tour 
+          FROM [taaltourismdb].[tour] 
           WHERE status = 'cancelled' AND YEAR(date) = :currentYear 
           GROUP BY MONTH(date)";
 $stmt = $conn->prepare($query);

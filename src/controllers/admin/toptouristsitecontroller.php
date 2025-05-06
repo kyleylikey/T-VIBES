@@ -12,8 +12,8 @@ $currentYear = date('Y');
 
 // Query to get top tourist sites
 $query = "SELECT s.siteid, s.sitename, s.status, SUM(t.companions) as visitor_count 
-          FROM sites s 
-          LEFT JOIN tour t ON s.siteid = t.siteid AND t.status = 'accepted'
+          FROM [taaltourismdb].[sites] s 
+          LEFT JOIN [taaltourismdb].[tour] t ON s.siteid = t.siteid AND t.status = 'accepted'
           WHERE YEAR(t.date) = :currentYear 
           GROUP BY s.siteid
           ORDER BY visitor_count DESC";
@@ -25,7 +25,7 @@ $stmt->closeCursor();
 
 // Query to calculate total visitors for the year
 $totalVisitorsQuery = "SELECT SUM(companions) as total_visitors 
-                       FROM tour 
+                       FROM [taaltourismdb].[tour] 
                        WHERE YEAR(date) = :currentYear AND status = 'accepted'";
 $totalVisitorsStmt = $conn->prepare($totalVisitorsQuery);
 $totalVisitorsStmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);

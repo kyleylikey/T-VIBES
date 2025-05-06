@@ -24,7 +24,7 @@ if (!$conn) {
 }
 
 // Validate token
-$query = "SELECT * FROM users WHERE email = :email AND emailveriftoken = :token AND token_expiry > NOW()";
+$query = "SELECT * FROM [taaltourismdb].[users] WHERE email = :email AND emailveriftoken = :token AND token_expiry > NOW()";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':email', $email);
 $stmt->bindParam(':token', $token);

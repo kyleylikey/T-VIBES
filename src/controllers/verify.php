@@ -11,7 +11,7 @@ if (isset($_GET['token'])) {
     $conn = $database->getConnection();
 
     try {
-        $query = "SELECT * FROM users WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > NOW()";
+        $query = "SELECT * FROM [taaltourismdb].[users] WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > NOW()";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->execute();
@@ -22,7 +22,7 @@ if (isset($_GET['token'])) {
         $debugInfo = '';
 
         if ($stmt->rowCount() > 0) {
-            $updateQuery = "UPDATE users SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = :token";
+            $updateQuery = "UPDATE [taaltourismdb].[users] SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = :token";
             $updateStmt = $conn->prepare($updateQuery);
             $updateStmt->bindParam(':token', $token);
 

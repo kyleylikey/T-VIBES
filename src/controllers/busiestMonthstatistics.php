@@ -17,7 +17,7 @@ $busiestMonthsLabels = [];
 
 // Query the number of accepted tours per month for the current year
 $query = "SELECT MONTH(date) as month, COUNT(*) as total 
-          FROM tour 
+          FROM [taaltourismdb].[tour]  
           WHERE YEAR(date) = :currentYear AND status = 'accepted'
           GROUP BY MONTH(date)
           ORDER BY month ASC";

@@ -28,7 +28,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn = $database->getConnection();
         
         // Check if user has already rated this site
-        $checkQuery = "SELECT id FROM user_ratings WHERE user_id = :user_id AND site_id = :site_id";
+        $checkQuery = "SELECT id FROM [taaltourismdb].[user_ratings] WHERE user_id = :user_id AND site_id = :site_id";
         $checkStmt = $conn->prepare($checkQuery);
         $checkStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
         $checkStmt->bindParam(':site_id', $siteId, PDO::PARAM_INT);
@@ -44,7 +44,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->beginTransaction();
         
         // Insert new rating into user_ratings table
-        $insertQuery = "INSERT INTO user_ratings (user_id, site_id, rating) VALUES (:user_id, :site_id, :rating)";
+        $insertQuery = "INSERT INTO [taaltourismdb].[user_ratings] (user_id, site_id, rating) VALUES (:user_id, :site_id, :rating)";
         $insertStmt = $conn->prepare($insertQuery);
         $insertStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
         $insertStmt->bindParam(':site_id', $siteId, PDO::PARAM_INT);
@@ -52,7 +52,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $insertResult = $insertStmt->execute();
         
         // Update site rating
-        $updateQuery = "UPDATE sites SET rating = rating + :rating, rating_cnt = rating_cnt + 1 WHERE siteid = :siteid";
+        $updateQuery = "UPDATE [taaltourismdb].[sites] SET rating = rating + :rating, rating_cnt = rating_cnt + 1 WHERE siteid = :siteid";
         $updateStmt = $conn->prepare($updateQuery);
         $updateStmt->bindParam(':rating', $rating, PDO::PARAM_INT);
         $updateStmt->bindParam(':siteid', $siteId, PDO::PARAM_INT);
@@ -79,7 +79,7 @@ $database = new Database();
 $conn = $database->getConnection();
 
 // Fetch all sites the user has already rated
-$ratedSitesQuery = "SELECT site_id FROM user_ratings WHERE user_id = :user_id";
+$ratedSitesQuery = "SELECT site_id FROM [taaltourismdb].[users_ratings] WHERE user_id = :user_id";
 $ratedSitesStmt = $conn->prepare($ratedSitesQuery);
 $ratedSitesStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
 $ratedSitesStmt->execute();
@@ -88,7 +88,7 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 // Query to get completed tours (accepted status with past dates)
 // MODIFIED: Group by tourid to get unique tours
 $query = "SELECT t.tourid, t.date, t.status, t.created_at, t.companions 
-          FROM tour t
+          FROM [taaltourismdb].[tour] t
           WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CURDATE()
           GROUP BY t.tourid
           ORDER BY t.created_at DESC";
@@ -508,8 +508,8 @@ $completedTours = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <ul class="destinations-list">
                             <?php  
                             // Fetch sites for this tour
-                            $siteQuery = "SELECT s.siteid, s.sitename FROM sites s 
-                                         JOIN tour t ON s.siteid = t.siteid 
+                            $siteQuery = "SELECT s.siteid, s.sitename FROM [taaltourismdb].[sites] s 
+                                         JOIN [taaltourismdb].[tour] t ON s.siteid = t.siteid 
                                          WHERE t.tourid = ? AND t.userid = ?";
                             $siteStmt = $conn->prepare($siteQuery);
                             $siteStmt->bindParam(1, $tour['tourid']);
@@ -549,8 +549,8 @@ $completedTours = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php 
                                 // Fetch sites for this tour with more details
                                 $siteDetailsQuery = "SELECT s.siteid, s.sitename, s.siteimage, s.price 
-                                                   FROM sites s 
-                                                   JOIN tour t ON s.siteid = t.siteid 
+                                                   FROM [taaltourismdb].[sites] s 
+                                                   JOIN [taaltourismdb].[tour] t ON s.siteid = t.siteid 
                                                    WHERE t.tourid = ? AND t.userid = ?";
                                 $siteDetailsStmt = $conn->prepare($siteDetailsQuery);
                                 $siteDetailsStmt->bindParam(1, $tour['tourid']);

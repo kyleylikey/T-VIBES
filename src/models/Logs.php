@@ -11,8 +11,8 @@ class Logs {
     public function getAllLogs($limit, $offset, $searchTerm = '') {
         if (!empty($searchTerm)) {
             $query = "SELECT logs.action, logs.datetime, users.name 
-            FROM logs 
-            INNER JOIN users ON logs.userid = users.userid 
+            FROM [taaltourismdb].[logs] 
+            INNER JOIN [taaltourismdb].[users] ON logs.userid = users.userid 
             WHERE logs.action LIKE :searchTerm OR users.name LIKE :searchTerm 
             ORDER BY logs.datetime DESC 
             OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY";
@@ -23,7 +23,7 @@ class Logs {
         } else {
             $query = "SELECT logs.action, logs.datetime, users.name 
                      FROM logs 
-                     INNER JOIN users ON logs.userid = users.userid 
+                     INNER JOIN [taaltourismdb].[users] ON logs.userid = users.userid 
                      ORDER BY logs.datetime DESC 
                      LIMIT :limit OFFSET :offset";
             
@@ -39,8 +39,8 @@ class Logs {
     public function getTotalLogsCount($searchTerm = '') {
         if (!empty($searchTerm)) {
             $query = "SELECT COUNT(*) as total 
-                     FROM logs 
-                     INNER JOIN users ON logs.userid = users.userid 
+                     FROM [taaltourismdb].[logs] 
+                     INNER JOIN [taaltourismdb].[users] ON logs.userid = users.userid 
                      WHERE logs.action LIKE :searchTerm OR users.name LIKE :searchTerm";
             
             $searchParam = "%{$searchTerm}%";
@@ -56,7 +56,7 @@ class Logs {
     }
 
     public function logAction($userid, $action) {
-        $query = "INSERT INTO logs (userid, action, datetime) VALUES (:userid, :action, NOW())";
+        $query = "INSERT INTO [taaltourismdb].[logs] (userid, action, datetime) VALUES (:userid, :action, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
         $stmt->bindParam(':action', $action, PDO::PARAM_STR);

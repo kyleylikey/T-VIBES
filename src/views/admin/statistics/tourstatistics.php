@@ -13,7 +13,7 @@ $query = "
         COUNT(DISTINCT CASE WHEN status = 'accepted' THEN tourid END) AS accepted_count,
         COUNT(DISTINCT CASE WHEN status = 'cancelled' THEN tourid END) AS cancelled_count,
         COUNT(DISTINCT CASE WHEN status = 'accepted' AND date < CURDATE() THEN tourid END) AS completed_count
-    FROM tour
+    FROM [taaltourismdb].[tour]
     WHERE YEAR(date) = :year
     GROUP BY MONTH(date)
     ORDER BY MONTH(date)
@@ -39,7 +39,7 @@ $totalQuery = "
         COUNT(DISTINCT CASE WHEN status = 'accepted' THEN tourid END) AS total_accepted,
         COUNT(DISTINCT CASE WHEN status = 'cancelled' THEN tourid END) AS total_cancelled,
         COUNT(DISTINCT CASE WHEN status = 'accepted' AND date < CURDATE() THEN tourid END) AS total_completed
-    FROM tour
+    FROM [taaltourismdb].[tour]
     WHERE YEAR(date) = :year
 ";
 $stmt = $conn->prepare($totalQuery);
@@ -52,7 +52,7 @@ $totalCancelled = $totalStats['total_cancelled'];
 $totalCompleted = $totalStats['total_completed'];
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
+$query = "SELECT TOP 1 name FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

@@ -6,7 +6,7 @@ $database = new Database();
 $conn = $database->getConnection();
 
 $tourQuery = "SELECT COUNT(DISTINCT tourid) AS tour_requests 
-              FROM tour 
+              FROM [taaltourismdb].[tour] 
               WHERE status = 'submitted' 
               AND MONTH(date) = MONTH(CURRENT_DATE()) 
               AND YEAR(date) = YEAR(CURRENT_DATE())";
@@ -23,55 +23,55 @@ $monthlyCountFile = $counterDir . date('Y_m') . '_visits.txt';
 $totalVisits = (file_exists($totalCountFile)) ? (int)file_get_contents($totalCountFile) : 0;
 $monthlyVisits = (file_exists($monthlyCountFile)) ? (int)file_get_contents($monthlyCountFile) : 0;
 
-$employeeQuery = "SELECT COUNT(*) AS active_employees FROM users WHERE usertype = 'emp' AND status = 'active'";
+$employeeQuery = "SELECT COUNT(*) AS active_employees FROM [taaltourismdb].[users] WHERE usertype = 'emp' AND status = 'active'";
 $employeeStmt = $conn->prepare($employeeQuery);
 $employeeStmt->execute();
 $employeeResult = $employeeStmt->fetch(PDO::FETCH_ASSOC);
 $activeEmployees = $employeeResult['active_employees'] ?? 0;
 
 $busiestDaysQuery = "
-    SELECT DATE(date) AS tour_date, COUNT(DISTINCT tourid) AS total_tours 
-    FROM tour 
+    SELECT TOP 3 DATE(date) AS tour_date, COUNT(DISTINCT tourid) AS total_tours 
+    FROM [taaltourismdb].[tour] 
     WHERE status = 'accepted' 
     AND MONTH(date) = MONTH(CURRENT_DATE()) 
     AND YEAR(date) = YEAR(CURRENT_DATE()) 
     GROUP BY DATE(date) 
     ORDER BY total_tours DESC 
-    SELECT TOP 3";
+    ";
 
 $busiestDaysStmt = $conn->prepare($busiestDaysQuery);
 $busiestDaysStmt->execute();
 $busiestDays = $busiestDaysStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $topSitesQuery = "
-    SELECT s.siteid, s.sitename, s.siteimage, SUM(t.companions) AS total_visitors
-    FROM tour t
-    JOIN sites s ON t.siteid = s.siteid
+    SELECT TOP 3 s.siteid, s.sitename, s.siteimage, SUM(t.companions) AS total_visitors
+    FROM [taaltourismdb].[tour] t
+    JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
     WHERE t.status = 'accepted'
     AND MONTH(t.date) = MONTH(CURRENT_DATE()) 
     AND YEAR(t.date) = YEAR(CURRENT_DATE())
     GROUP BY t.siteid
     ORDER BY total_visitors DESC
-    SELECT TOP 3";
+    ";
 
 $topSitesStmt = $conn->prepare($topSitesQuery);
 $topSitesStmt->execute();
 $topSites = $topSitesStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $recentLogsQuery = "
-    SELECT u.name, l.action 
-    FROM logs l
-    JOIN users u ON l.userid = u.userid
+    SELECT TOP 6 u.name, l.action 
+    FROM [taaltourismdb].[logs] l
+    JOIN [taaltourismdb].[users] u ON l.userid = u.userid
     WHERE u.usertype = 'emp'
     ORDER BY l.datetime DESC
-    SELECT TOP 6";
+    ";
 
 $recentLogsStmt = $conn->prepare($recentLogsQuery);
 $recentLogsStmt->execute();
 $recentLogs = $recentLogsStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
+$query = "SELECT TOP 1 name FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

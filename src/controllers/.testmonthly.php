@@ -19,7 +19,7 @@ $currentMonth = date('n');  // Numeric month (1-12)
 $currentYear  = date('Y');   // Full year (e.g., 2025)
 
 // Query to count tours with status 'submitted' or 'accepted' in the current month
-$query = "SELECT COUNT(*) as total FROM tour 
+$query = "SELECT COUNT(*) as total FROM [taaltourismdb].[tour] 
           WHERE (status = 'submitted' OR status = 'accepted')
           AND MONTH(date) = :currentMonth AND YEAR(date) = :currentYear";
 

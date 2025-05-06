@@ -6,7 +6,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name, username, contactnum, email FROM users WHERE userid = :userid SELECT TOP 1";
+$query = "SELECT TOP 1 name, username, contactnum, email FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $db->prepare($query);
 $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
 $stmt->execute();
@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    $updateQuery = "UPDATE users SET name = :name, username = :username, email = :email, contactnum = :contactnum WHERE userid = :userid";
+    $updateQuery = "UPDATE [taaltourismdb].[users] SET name = :name, username = :username, email = :email, contactnum = :contactnum WHERE userid = :userid";
     $stmt = $db->prepare($updateQuery);
     $stmt->bindParam(':name', $name);
     $stmt->bindParam(':username', $username);

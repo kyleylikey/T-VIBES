@@ -7,7 +7,7 @@ class Review {
     }
 
     public function getPendingReviewsCount() {
-        $query = "SELECT COUNT(*) AS pending_reviews FROM rev WHERE status = 'submitted'";
+        $query = "SELECT COUNT(*) AS pending_reviews FROM [taaltourismdb].[rev] WHERE status = 'submitted'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['pending_reviews'];

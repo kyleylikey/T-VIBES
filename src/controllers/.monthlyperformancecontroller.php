@@ -19,15 +19,12 @@ if ($currentMonth == 1) {
 }
 
 // 1. Tours This Month: Count tours with status 'accepted'
-$query = "SELECT COUNT(*) AS total_tours
-            FROM (
-                SELECT 1
-                FROM tour t
-                JOIN Users u ON t.userid = u.userid
-                WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
-                AND t.status = 'accepted'
-                GROUP BY t.tourid, t.userid
-            ) AS subquery";
+$query = "SELECT COUNT(DISTINCT t.tourid) AS total_tours
+            FROM [taaltourismdb].[tour] t
+            JOIN [taaltourismdb].[users] u ON t.userid = u.userid
+            WHERE MONTH(t.date) = :currentMonth AND YEAR(t.date) = :currentYear
+            AND t.status = 'accepted';
+";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
@@ -37,15 +34,11 @@ $toursThisMonth = $row['total_tours'];
 $stmt->closeCursor();
 
 // 2. Approved Tours (Current Month): Count tours with status 'accepted'
-$query = "SELECT COUNT(*) AS total_tours
-            FROM (
-                SELECT 1
-                FROM tour t
-                JOIN Users u ON t.userid = u.userid
-                WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
-                AND t.status = 'accepted'
-                GROUP BY t.tourid, t.userid
-            ) AS subquery";
+$query = "SELECT COUNT(DISTINCT t.tourid) AS total_tours
+            FROM [taaltourismdb].[tour] t
+            JOIN [taaltourismdb].[users] u ON t.userid = u.userid
+            WHERE MONTH(t.date) = :currentMonth AND YEAR(t.date) = :currentYear
+            AND t.status = 'accepted';";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
@@ -63,8 +56,8 @@ if ($lastMonth === 0) {
 }
 
 $query = "SELECT COUNT(DISTINCT t.tourid) AS total_tours
-          FROM tour t
-          JOIN Users u ON t.userid = u.userid
+          FROM [taaltourismdb].[tour] t
+          JOIN [taaltourismdb].[users] u ON t.userid = u.userid
           WHERE t.status = 'accepted' 
           AND MONTH(t.date) = :lastMonth 
           AND YEAR(t.date) = :currentYear";
@@ -82,8 +75,8 @@ $stmt->closeCursor();
 $query = "SELECT COUNT(*) AS total_tours
             FROM (
                 SELECT 1
-                FROM tour t
-                JOIN Users u ON t.userid = u.userid
+                FROM [taaltourismdb].[tour] t
+                JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                 WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
                 AND t.status = 'cancelled'
                 GROUP BY t.tourid, t.userid
@@ -100,8 +93,8 @@ $stmt->closeCursor();
 $query = "SELECT COUNT(*) AS total_tours
             FROM (
                 SELECT 1
-                FROM tour t
-                JOIN Users u ON t.userid = u.userid
+                FROM [taaltourismdb].[tour] t
+                JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                 WHERE MONTH(date) = :lastMonth AND YEAR(date) = :lastYear
                 AND t.status = 'cancelled'
                 GROUP BY t.tourid, t.userid
@@ -118,8 +111,8 @@ $stmt->closeCursor();
 $query = "SELECT COUNT(*) AS total_tours
             FROM (
                 SELECT 1
-                FROM tour t
-                JOIN Users u ON t.userid = u.userid
+                FROM [taaltourismdb].[tour] t
+                JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                 WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
                 AND t.status = 'accepted' AND date < CURDATE()
                 GROUP BY t.tourid, t.userid
@@ -136,8 +129,8 @@ $stmt->closeCursor();
 $query = "SELECT COUNT(*) AS total_tours
             FROM (
                 SELECT 1
-                FROM tour t
-                JOIN Users u ON t.userid = u.userid
+                FROM [taaltourismdb].[tour] t
+                JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                 WHERE MONTH(date) = :lastMonth AND YEAR(date) = :lastYear
                 AND t.status = 'accepted' AND date < CURDATE()
                 GROUP BY t.tourid, t.userid
@@ -166,7 +159,7 @@ $cancelledDiff = calculatePercentageDiff($cancelledToursCurrent, $cancelledTours
 $completedDiff = calculatePercentageDiff($completedToursCurrent, $completedToursLast);
 
 // 6. Busiest Days: Get top 3 days in current month with most accepted tours
-$query = "SELECT TOP 3 DAY(date) as day, COUNT(*) as count FROM tour 
+$query = "SELECT TOP 3 DAY(date) as day, COUNT(*) as count FROM [taaltourismdb].[tour] 
           WHERE status = 'accepted' 
           AND MONTH(date) = :currentMonth AND YEAR(date) = :currentYear 
           GROUP BY DAY(date) ORDER BY count DESC";
@@ -179,8 +172,8 @@ $stmt->closeCursor();
 
 // 7. Top Tourist Sites this Month: Get details and count accepted tours per site
 $query = "SELECT TOP 3 s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.price, s.status, SUM(t.companions) as visitor_count 
-          FROM sites s 
-          LEFT JOIN tour t ON s.siteid = t.siteid AND t.status = 'accepted'
+          FROM [taaltourismdb].[sites] s 
+          LEFT JOIN [taaltourismdb].[tour] t ON s.siteid = t.siteid AND t.status = 'accepted'
           WHERE MONTH(t.date) = :currentMonth AND YEAR(t.date) = :currentYear 
           GROUP BY s.siteid
           ORDER BY visitor_count DESC";
@@ -193,7 +186,7 @@ $stmt->closeCursor();
 
 // 8. Visitor Chart Data: Get the total number of companions per day for the current month
 $query = "SELECT DAY(date) as day, SUM(companions) as total 
-          FROM tour 
+          FROM [taaltourismdb].[tour] 
           WHERE MONTH(date) = :currentMonth 
           GROUP BY DAY(date) 
           ORDER BY day ASC";

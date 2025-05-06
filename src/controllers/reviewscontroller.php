@@ -10,7 +10,7 @@ $conn = (new Database())->getConnection();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_id'], $_POST['status'])) {
     $review_id = $_POST['review_id'];
     $status = $_POST['status'];
-    $stmt = $conn->prepare("UPDATE rev SET status = ? WHERE revid = ?");
+    $stmt = $conn->prepare("UPDATE [taaltourismdb].[rev] SET status = ? WHERE revid = ?");
     if ($status === 'archived') {
         $logs = new Logs();
         $logs->logArchiveReview($_SESSION['userid'], $review_id);
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_id'], $_POST['
 }
 
 $statusFilter = $_GET['status'] ?? 'submitted';
-$stmt = $conn->prepare("SELECT rev.revid, rev.review, rev.date, rev.status, users.name, sites.sitename FROM rev JOIN users ON rev.userid = users.userid JOIN sites ON rev.siteid = sites.siteid WHERE rev.status = ?");
+$stmt = $conn->prepare("SELECT rev.revid, rev.review, rev.date, rev.status, users.name, sites.sitename FROM [taaltourismdb].[rev] JOIN [taaltourismdb].[users] ON rev.userid = users.userid JOIN [taaltourismdb].[sites] ON rev.siteid = sites.siteid WHERE rev.status = ?");
 $stmt->execute([$statusFilter]);
 $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>

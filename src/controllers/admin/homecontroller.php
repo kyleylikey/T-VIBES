@@ -35,7 +35,7 @@ $employees = $userModel->getActiveEmpList();
 $activeempcount = $employees->rowCount();
 
 // Busiest Days: Get top 3 days in current month with most accepted tours
-$query = "SELECT TOP 3 DAY(date) as day, COUNT(*) as count FROM tour 
+$query = "SELECT TOP 3 DAY(date) as day, COUNT(*) as count FROM [taaltourismdb].[tour] 
           WHERE status = 'accepted' 
           AND MONTH(date) = :currentMonth AND YEAR(date) = :currentYear 
           GROUP BY DAY(date) ORDER BY count DESC";
@@ -48,8 +48,8 @@ $stmt->closeCursor();
 
 // Top Tourist Sites: Get details and count accepted tours per site
 $query = "SELECT TOP 3 s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.price, s.status, SUM(t.companions) as visitor_count 
-          FROM sites s 
-          LEFT JOIN tour t ON s.siteid = t.siteid AND t.status = 'accepted'
+          FROM [taaltourismdb].[sites] s 
+          LEFT JOIN [taaltourismdb].[tour] t ON s.siteid = t.siteid AND t.status = 'accepted'
           WHERE MONTH(t.date) = :currentMonth AND YEAR(t.date) = :currentYear 
           GROUP BY s.siteid
           ORDER BY visitor_count DESC";

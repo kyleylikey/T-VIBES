@@ -7,7 +7,7 @@ $conn = $database->getConnection();
 
 $toursThisMonthQuery = "
     SELECT COUNT(DISTINCT tourid) AS total_tours 
-    FROM tour 
+    FROM [taaltourismdb].[tour] 
     WHERE status = 'accepted' 
     AND MONTH(date) = MONTH(CURRENT_DATE()) 
     AND YEAR(date) = YEAR(CURRENT_DATE())";
@@ -20,7 +20,7 @@ $totalTours = $toursThisMonth['total_tours'];
 function getTourCount($conn, $status, $dateCondition) {
     $query = "
         SELECT COUNT(DISTINCT tourid) AS total_tours 
-        FROM tour 
+        FROM [taaltourismdb].[tour] 
         WHERE status = :status AND $dateCondition";
         
     $stmt = $conn->prepare($query);
@@ -54,29 +54,29 @@ $cancelledChange = calculatePercentageChange($cancelledThisMonth, $cancelledLast
 $completedChange = calculatePercentageChange($completedThisMonth, $completedLastMonth);
 
 $busiestDaysQuery = "
-    SELECT DATE(date) AS tour_date, COUNT(DISTINCT tourid) AS total_tours 
-    FROM tour 
+    SELECT TOP 3 DATE(date) AS tour_date, COUNT(DISTINCT tourid) AS total_tours 
+    FROM [taaltourismdb].[tour] 
     WHERE status = 'accepted' 
     AND MONTH(date) = MONTH(CURRENT_DATE()) 
     AND YEAR(date) = YEAR(CURRENT_DATE()) 
     GROUP BY DATE(date) 
     ORDER BY total_tours DESC 
-    SELECT TOP 3";
+    ";
 
 $busiestDaysStmt = $conn->prepare($busiestDaysQuery);
 $busiestDaysStmt->execute();
 $busiestDays = $busiestDaysStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $topSitesQuery = "
-    SELECT s.siteid, s.sitename, s.siteimage, SUM(t.companions) AS total_visitors
-    FROM tour t
-    JOIN sites s ON t.siteid = s.siteid
+    SELECT TOP 3 s.siteid, s.sitename, s.siteimage, SUM(t.companions) AS total_visitors
+    FROM [taaltourismdb].[tour] t
+    JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
     WHERE t.status = 'accepted'
     AND MONTH(t.date) = MONTH(CURRENT_DATE()) 
     AND YEAR(t.date) = YEAR(CURRENT_DATE())
     GROUP BY t.siteid
     ORDER BY total_visitors DESC
-    SELECT TOP 3";
+    ";
 
 $topSitesStmt = $conn->prepare($topSitesQuery);
 $topSitesStmt->execute();
@@ -90,7 +90,7 @@ $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
 $visitorData = array_fill(1, $daysInMonth, 0);
 
 $query = "SELECT DAY(date) AS day, SUM(companions) AS total_visitors 
-          FROM (SELECT userid, date, companions FROM tour 
+          FROM (SELECT userid, date, companions FROM [taaltourismdb].[tour] 
                 WHERE YEAR(date) = :year AND MONTH(date) = :month AND status = 'accepted' GROUP BY tourid, userid
             ) AS distinct_tours
           GROUP BY DAY(date)";
@@ -105,7 +105,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 }
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
+$query = "SELECT TOP 1 name FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

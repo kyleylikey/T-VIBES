@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date = $_POST['tourDate'];
         $companions = (int) $_POST['tourPax'];
 
-        $query = "SELECT u.email, u.username FROM users u JOIN tour t ON u.userid = t.userid WHERE t.tourid = :tourid";
+        $query = "SELECT u.email, u.username FROM [taaltourismdb].[users] u JOIN [taaltourismdb].[tour] t ON u.userid = t.userid WHERE t.tourid = :tourid";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
         $stmt->execute();
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tourId = (int) $_POST['tourId'];
         $cancelReason = trim($_POST['cancelReason']);
         
-        $query = "SELECT u.email, u.username FROM users u JOIN tour t ON u.userid = t.userid WHERE t.tourid = :tourid";
+        $query = "SELECT u.email, u.username FROM [taaltourismdb].[users] u JOIN [taaltourismdb].[tour] t ON u.userid = t.userid WHERE t.tourid = :tourid";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
         $stmt->execute();

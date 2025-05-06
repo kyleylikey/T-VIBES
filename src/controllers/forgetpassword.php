@@ -31,7 +31,7 @@ class ForgotPasswordController {
             exit();
         }
 
-        $query = "SELECT * FROM users WHERE email = :email AND emailveriftoken IS NULL";
+        $query = "SELECT * FROM [taaltourismdb].[users]  WHERE email = :email AND emailveriftoken IS NULL";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
@@ -47,7 +47,7 @@ class ForgotPasswordController {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         $token = bin2hex(random_bytes(32)); 
 
-        $query = "UPDATE users SET emailveriftoken = :token, token_expiry = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = :email";
+        $query = "UPDATE [taaltourismdb].[users] SET emailveriftoken = :token, token_expiry = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->bindParam(':email', $email);

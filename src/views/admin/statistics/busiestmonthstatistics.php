@@ -8,7 +8,7 @@ $conn = $database->getConnection();
 $currentYear = date('Y');
 
 $query = "SELECT MONTH(date) AS month, COUNT(DISTINCT tourid) AS total 
-          FROM tour 
+          FROM [taaltourismdb].[tour] 
           WHERE status = 'accepted' AND YEAR(date) = :currentYear 
           GROUP BY MONTH(date)";
 $stmt = $conn->prepare($query);
@@ -32,7 +32,7 @@ usort($results, function ($a, $b) {
 });
 $leastBusyMonths = array_slice($results, 0, 3);
 
-$totalAcceptedToursQuery = "SELECT COUNT(DISTINCT tourid) AS total FROM tour WHERE status = 'accepted' AND YEAR(date) = :currentYear";
+$totalAcceptedToursQuery = "SELECT COUNT(DISTINCT tourid) AS total FROM [taaltourismdb].[tour] WHERE status = 'accepted' AND YEAR(date) = :currentYear";
 $totalStmt = $conn->prepare($totalAcceptedToursQuery);
 $totalStmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
 $totalStmt->execute();
@@ -43,7 +43,7 @@ function formatMonthYear($month, $year) {
 }
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
+$query = "SELECT TOP 1 name FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

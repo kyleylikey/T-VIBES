@@ -20,7 +20,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empt
         $placeholders = implode(',', array_fill(0, count($siteIds), '?'));
         
         // Prepare the query to get individual site opdays
-        $sitesQuery = "SELECT siteid, opdays FROM sites WHERE siteid IN ($placeholders)";
+        $sitesQuery = "SELECT siteid, opdays FROM [taaltourismdb].[sites] WHERE siteid IN ($placeholders)";
         $sitesStmt = $db->prepare($sitesQuery);
         
         // Bind all site IDs as parameters
@@ -50,7 +50,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empt
         $availabilityQuery = "SELECT 
             BIN(BIT_AND(s.opdays) & 127) AS all_opdays_and_binary
         FROM 
-            sites s
+            [taaltourismdb].[sites] s
         WHERE 
             s.siteid IN ($placeholders)";
         
@@ -79,7 +79,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empt
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['userid']) && !isset($_SESSION['tour_destinations'])) {
     $userid = $_SESSION['userid'];
     
-    $stmt = $db->prepare("SELECT tourid FROM tour WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC SELECT TOP 1");
+    $stmt = $db->prepare("SELECT TOP 1 tourid FROM [taaltourismdb].[tour] WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC");
     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -88,8 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['userid']) && !isset
         $tourid = $result['tourid'];
         
         $stmt = $db->prepare("SELECT t.siteid, t.date, t.companions, s.sitename, s.siteimage, s.price 
-                             FROM tour t 
-                             JOIN sites s ON t.siteid = s.siteid 
+                             FROM [taaltourismdb].[tour] t 
+                             JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid 
                              WHERE t.tourid = :tourid AND t.userid = :userid");
         $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['siteid'])) {
         $siteid = $_POST['siteid'];
 
-        $stmt = $db->prepare("SELECT siteid, sitename, siteimage, price FROM sites WHERE siteid = :siteid");
+        $stmt = $db->prepare("SELECT siteid, sitename, siteimage, price FROM [taaltourismdb].[sites] WHERE siteid = :siteid");
         $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
         $stmt->execute();
         $site = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -187,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db->beginTransaction();
  
             try {
-                $stmt = $db->query("SELECT MAX(tourid) as max_id FROM tour");
+                $stmt = $db->query("SELECT MAX(tourid) as max_id FROM [taaltourismdb].[tour]");
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 $newTourId = ($result['max_id'] ? $result['max_id'] + 1 : 1);
  
@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $userid = $_SESSION['userid'];
         
-        $stmt = $db->prepare("SELECT DISTINCT tourid FROM tour WHERE userid = :userid ORDER BY created_at DESC SELECT TOP 1");
+        $stmt = $db->prepare("SELECT TOP 1 DISTINCT tourid FROM [taaltourismdb].[tour] WHERE userid = :userid ORDER BY created_at DESC");
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -259,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db->beginTransaction();
         
         try {
-            $updateStmt = $db->prepare("UPDATE tour SET date = :date, companions = :companions 
+            $updateStmt = $db->prepare("UPDATE [taaltourismdb].[tour] SET date = :date, companions = :companions 
                                         WHERE tourid = :tourid AND userid = :userid");
             $updateStmt->bindParam(':date', $selectedDate);
             $updateStmt->bindParam(':companions', $companions, PDO::PARAM_INT);
@@ -267,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $updateStmt->bindParam(':userid', $userid, PDO::PARAM_INT);
             $updateStmt->execute();
             
-            $currentStmt = $db->prepare("SELECT siteid FROM tour WHERE tourid = :tourid AND userid = :userid");
+            $currentStmt = $db->prepare("SELECT siteid FROM [taaltourismdb].[tour] WHERE tourid = :tourid AND userid = :userid");
             $currentStmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
             $currentStmt->bindParam(':userid', $userid, PDO::PARAM_INT);
             $currentStmt->execute();
@@ -276,7 +276,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $destinationsToRemove = array_diff($currentDestinations, $destinations);
             if (!empty($destinationsToRemove)) {
                 $placeholders = implode(',', array_fill(0, count($destinationsToRemove), '?'));
-                $deleteStmt = $db->prepare("DELETE FROM tour WHERE tourid = ? AND userid = ? AND siteid IN ($placeholders)");
+                $deleteStmt = $db->prepare("DELETE FROM [taaltourismdb].[tour] WHERE tourid = ? AND userid = ? AND siteid IN ($placeholders)");
                 $deleteParams = array_merge([$tourid, $userid], $destinationsToRemove);
                 $deleteStmt->execute($deleteParams);
             }
@@ -284,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $destinationsToAdd = array_diff($destinations, $currentDestinations);
             if (!empty($destinationsToAdd)) {
                 foreach ($destinationsToAdd as $siteid) {
-                    $insertStmt = $db->prepare("INSERT INTO tour (tourid, siteid, userid, status, date, companions, created_at) 
+                    $insertStmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] (tourid, siteid, userid, status, date, companions, created_at) 
                                                 VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, NOW())");
                     $insertStmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
                     $insertStmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
@@ -301,7 +301,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
             if (!empty($destinations)) {
                 $placeholders = implode(',', array_fill(0, count($destinations), '?'));
-                $siteStmt = $db->prepare("SELECT siteid, sitename, siteimage, price FROM sites WHERE siteid IN ($placeholders)");
+                $siteStmt = $db->prepare("SELECT siteid, sitename, siteimage, price FROM [taaltourismdb].[sites] WHERE siteid IN ($placeholders)");
                 $siteStmt->execute($destinations);
                 $sites = $siteStmt->fetchAll(PDO::FETCH_ASSOC);
                 $_SESSION['tour_destinations'] = $sites;
@@ -335,7 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $siteIdPlaceholders = implode(',', array_fill(0, count($siteIds), '?'));
 
-            $stmt = $db->prepare("SELECT date, COUNT(*) as bookings FROM tour WHERE siteid IN ($siteIdPlaceholders) AND YEAR(date) = ? AND MONTH(date) = ? GROUP BY date");
+            $stmt = $db->prepare("SELECT date, COUNT(*) as bookings FROM [taaltourismdb].[tour] WHERE siteid IN ($siteIdPlaceholders) AND YEAR(date) = ? AND MONTH(date) = ? GROUP BY date");
             $params = array_merge($siteIds, [$currentYear, $currentMonth]);
             $stmt->execute($params);
             $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -386,7 +386,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
 
     $userid = $_SESSION['userid'];
 
-    $stmt = $db->prepare("SELECT tourid FROM tour WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC SELECT TOP 1");
+    $stmt = $db->prepare("SELECT TOP 1 tourid FROM [taaltourismdb].[tour] WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC");
     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -398,7 +398,7 @@ if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
 
     $tourid = $result['tourid'];
 
-    $stmt = $db->prepare("UPDATE tour SET status = 'submitted' WHERE tourid = :tourid AND userid = :userid");
+    $stmt = $db->prepare("UPDATE [taaltourismdb].[tour] SET status = 'submitted' WHERE tourid = :tourid AND userid = :userid");
     $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
 

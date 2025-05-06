@@ -1,7 +1,7 @@
 <?php
 class Tour {
     private $conn;
-    private $table = 'tour';
+    private $table = '[taaltourismdb].[tour]';
 
     public function __construct($db) {
         $this->conn = $db;
@@ -27,9 +27,8 @@ class Tour {
     }
 
     public function getExistingTourRequestId($userid) {
-        $query = "SELECT tourid FROM " . $this->table . " 
-                  WHERE userid = :userid AND status = 'request'
-                  SELECT TOP 1";
+        $query = "SELECT TOP 1 tourid FROM " . $this->table . " 
+                  WHERE userid = :userid AND status = 'request'";
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
@@ -40,7 +39,7 @@ class Tour {
     }
 
     public function addToExistingTour($tourid, $siteid, $userid) {
-        $query = "INSERT INTO tour (tourid, siteid, userid, status) VALUES (:tourid, :siteid, :userid, 'request')";
+        $query = "INSERT INTO [taaltourismdb].[tour] (tourid, siteid, userid, status) VALUES (:tourid, :siteid, :userid, 'request')";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
         $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
@@ -49,7 +48,7 @@ class Tour {
     }
 
     public function addToNewTour($siteid, $userid) {
-        $query = "INSERT INTO tour (siteid, userid, status) VALUES (:siteid, :userid, 'request')";
+        $query = "INSERT INTO [taaltourismdb].[tour] (siteid, userid, status) VALUES (:siteid, :userid, 'request')";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
@@ -59,7 +58,7 @@ class Tour {
     public function getTourRequestList() {
         $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
                   FROM " . $this->table . " t 
-                  JOIN Users u ON t.userid = u.userid 
+                  JOIN [taaltourismdb].[users] u ON t.userid = u.userid 
                   WHERE t.status = 'submitted' 
                   GROUP BY tourid, userid 
                   ORDER BY t.created_at DESC";  
@@ -72,7 +71,7 @@ class Tour {
     public function getTourRequest($tourid, $userid) {
         $query = "SELECT t.*, u.name, u.email 
                   FROM " . $this->table . " t 
-                  JOIN Users u ON t.userid = u.userid
+                  JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                   WHERE t.tourid = ? AND t.userid = ? AND t.status = 'submitted'";
     
         $stmt = $this->conn->prepare($query);
@@ -86,8 +85,8 @@ class Tour {
     public function getTourRequestByUser($userid) {
         $query = "SELECT t.*, u.name, u.email, s.sitename, s.price, s.siteimage, s.opdays 
                 FROM " . $this->table . " t 
-                JOIN Users u ON t.userid = u.userid
-                JOIN sites s ON t.siteid = s.siteid
+                JOIN [taaltourismdb].[users] u ON t.userid = u.userid
+                JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
                 WHERE t.userid = ? AND t.status = 'request'";
                 
         $stmt = $this->conn->prepare($query);
@@ -108,11 +107,11 @@ class Tour {
             s.opdays,
             BIN(BIT_AND(s.opdays) & 127) AS all_opdays_and_binary
         FROM 
-            tour t 
+            [taaltourismdb].[tour] t 
         JOIN 
-            Users u ON t.userid = u.userid
+            [taaltourismdb].[users] u ON t.userid = u.userid
         JOIN 
-            sites s ON t.siteid = s.siteid
+            [taaltourismdb].[sites] s ON t.siteid = s.siteid
         WHERE 
             t.userid = ?
             AND t.status = 'request'
@@ -129,7 +128,7 @@ class Tour {
     public function getUpcomingTour($tourid, $userid) {
         $query = "SELECT t.*, u.name, u.email, u.username 
                   FROM " . $this->table . " t 
-                  JOIN Users u ON t.userid = u.userid
+                  JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                   WHERE t.tourid = ? AND t.userid = ? AND t.status = 'accepted'";
     
         $stmt = $this->conn->prepare($query);
@@ -143,7 +142,7 @@ class Tour {
     public function getPendingTourByUser($userid) {
         $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
                   FROM " . $this->table . " t 
-                  JOIN Users u ON t.userid = u.userid 
+                  JOIN [taaltourismdb].[users] u ON t.userid = u.userid 
                   WHERE t.userid = ? AND t.status = 'submitted' 
                   GROUP BY tourid, userid 
                   ORDER BY t.created_at DESC";
@@ -156,7 +155,7 @@ class Tour {
     }
 
     public function getPendingTourSitesByUser($tourid, $userid) {
-        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.tourid = ? and t.userid = ? and t.status = 'submitted'";
+        $query = "SELECT s.* FROM [taaltourismdb].[tour] t JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid WHERE t.tourid = ? and t.userid = ? and t.status = 'submitted'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $tourid);
         $stmt->bindParam(2, $userid);
@@ -167,7 +166,7 @@ class Tour {
     public function getApprovedTourByUser($userid) {
         $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
                   FROM " . $this->table . " t 
-                  JOIN Users u ON t.userid = u.userid 
+                  JOIN [taaltourismdb].[users] u ON t.userid = u.userid 
                   WHERE t.userid = ? AND t.status = 'accepted' AND t.date >= CURDATE() 
                   GROUP BY tourid, userid 
                   ORDER BY t.created_at DESC";
@@ -180,7 +179,7 @@ class Tour {
     }
 
     public function getApprovedTourSitesByUser($tourid, $userid) {
-        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.date >= CURDATE() and t.tourid = ? and t.userid = ? and t.status = 'accepted'";
+        $query = "SELECT s.* FROM [taaltourismdb].[tour] t JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid WHERE t.date >= CURDATE() and t.tourid = ? and t.userid = ? and t.status = 'accepted'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $tourid);
         $stmt->bindParam(2, $userid);
@@ -191,7 +190,7 @@ class Tour {
     public function getTourHistoryByUser($userid) {
         $query = "SELECT t.*, u.name, COUNT(*) AS total_sites 
                   FROM " . $this->table . " t 
-                  JOIN Users u ON t.userid = u.userid 
+                  JOIN [taaltourismdb].[users] u ON t.userid = u.userid 
                   WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CURDATE() 
                   GROUP BY tourid, userid 
                   ORDER BY t.created_at DESC";
@@ -204,7 +203,7 @@ class Tour {
     }
 
     public function getTourHistorySitesByUser($tourid, $userid) {
-        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.date < CURDATE() and t.tourid = ? and t.userid = ? and t.status = 'accepted'";
+        $query = "SELECT s.* FROM [taaltourismdb].[tour] t JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid WHERE t.date < CURDATE() and t.tourid = ? and t.userid = ? and t.status = 'accepted'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $tourid);
         $stmt->bindParam(2, $userid);
@@ -214,7 +213,7 @@ class Tour {
 
 
     public function getTourRequestSites($tourid) {
-        $query = "SELECT s.* FROM tour t JOIN sites s ON t.siteid = s.siteid WHERE t.tourid = ?";
+        $query = "SELECT s.* FROM [taaltourismdb].[tour] t JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid WHERE t.tourid = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $tourid);
         $stmt->execute();
@@ -253,11 +252,17 @@ class Tour {
 
     public function getToursForToday() {
         $today = date('Y-m-d');
-        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, t.created_at,
-                GROUP_CONCAT(s.sitename ORDER BY s.siteid SEPARATOR '||') as sites
-                FROM tour t
-                JOIN users u ON t.userid = u.userid
-                JOIN sites s ON t.siteid = s.siteid
+        $query = "SELECT 
+                    t.tourid, 
+                    u.userid, 
+                    u.name, 
+                    t.date, 
+                    t.companions, 
+                    t.created_at,
+                    STRING_AGG(s.sitename, '||') WITHIN GROUP (ORDER BY s.siteid) AS sites
+                FROM [taaltourismdb].[tour] t
+                JOIN [taaltourismdb].[users] u ON t.userid = u.userid
+                JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
                 WHERE DATE(t.date) = :today AND t.status = 'accepted'
                 GROUP BY t.tourid, u.name, t.date, t.companions, t.created_at";
         $stmt = $this->conn->prepare($query);
@@ -267,11 +272,17 @@ class Tour {
     }
 
     public function getAllUpcomingTours() {
-        $query = "SELECT t.tourid, u.userid, u.name, t.date, t.companions, t.created_at,
-                GROUP_CONCAT(s.sitename ORDER BY s.siteid SEPARATOR '||') as sites
-                FROM tour t
-                JOIN users u ON t.userid = u.userid
-                JOIN sites s ON t.siteid = s.siteid
+        $query = "SELECT 
+                    t.tourid, 
+                    u.userid, 
+                    u.name, 
+                    t.date, 
+                    t.companions, 
+                    t.created_at,
+                    STRING_AGG(s.sitename, '||') WITHIN GROUP (ORDER BY s.siteid) AS sites
+                FROM [taaltourismdb].[tour] t
+                JOIN [taaltourismdb].[users] u ON t.userid = u.userid
+                JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
                 WHERE t.status = 'accepted' AND DATE(t.date) >= CURDATE()
                 GROUP BY t.tourid, u.name, t.date, t.companions, t.created_at
                 ORDER BY t.date ASC";
@@ -281,7 +292,7 @@ class Tour {
     }
 
     public function updateTour($tourId, $date, $companions, $userId) {
-        $query = "UPDATE tour SET date = :date, companions = :companions WHERE tourid = :tourid";
+        $query = "UPDATE [taaltourismdb].[tour] SET date = :date, companions = :companions WHERE tourid = :tourid";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':date', $date);
         $stmt->bindParam(':companions', $companions, PDO::PARAM_INT);
@@ -298,14 +309,14 @@ class Tour {
     }    
 
     public function cancelTour($tourId) {
-        $query = "UPDATE tour SET status = 'cancelled' WHERE tourid = :tourid";
+        $query = "UPDATE [taaltourismdb].[tour] SET status = 'cancelled' WHERE tourid = :tourid";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':tourid', $tourId, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     public function getPendingToursCount() {
-        $query = "SELECT COUNT(DISTINCT tourid) AS pending_count FROM tour WHERE status = 'submitted'";
+        $query = "SELECT COUNT(DISTINCT tourid) AS pending_count FROM [taaltourismdb].[tour] WHERE status = 'submitted'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['pending_count'];
@@ -313,7 +324,7 @@ class Tour {
 
     public function getUpcomingToursCount() {
         $query = "SELECT COUNT(DISTINCT CONCAT(userid, '_', date)) AS upcoming_count 
-                  FROM tour 
+                  FROM [taaltourismdb].[tour] 
                   WHERE status = 'accepted' AND date >= CURDATE()";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -321,14 +332,18 @@ class Tour {
     }            
 
     public function getLatestTourRequests() {
-        $query = "SELECT users.name, tour.date AS travel_date, COUNT(tour.siteid) AS destinations, 
-                         tour.companions, tour.created_at 
-                  FROM tour 
-                  JOIN users ON tour.userid = users.userid 
-                  WHERE tour.status = 'submitted'  
-                  GROUP BY tour.tourid 
-                  ORDER BY tour.created_at DESC 
-                  SELECT TOP 6";
+        $query = "SELECT TOP 6 
+                    users.name, 
+                    tour.date AS travel_date, 
+                    COUNT(tour.siteid) AS destinations, 
+                    tour.companions, 
+                    tour.created_at
+                FROM [taaltourismdb].[tour]
+                JOIN [taaltourismdb].[users] ON tour.userid = users.userid
+                WHERE tour.status = 'submitted'
+                GROUP BY users.name, tour.date, tour.companions, tour.created_at
+                ORDER BY tour.created_at DESC;
+                ";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -337,9 +352,9 @@ class Tour {
     public function getTourHistory() {
         $query = "SELECT users.name, tour.tourid, tour.date AS travel_date, tour.companions, tour.status, 
                          tour.created_at AS submitted_on, sites.sitename, sites.price, sites.siteimage 
-                  FROM tour
-                  JOIN users ON tour.userid = users.userid
-                  JOIN sites ON tour.siteid = sites.siteid
+                  FROM [taaltourismdb].[tour]
+                  JOIN [taaltourismdb].[users] ON tour.userid = users.userid
+                  JOIN [taaltourismdb].[sites] ON tour.siteid = sites.siteid
                   ORDER BY tour.date DESC";
 
         $stmt = $this->conn->prepare($query);

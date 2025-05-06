@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $status = 'active'; 
 
     try {
-        $query = "INSERT INTO users (name, username, email, contactnum, hashedpassword, usertype, status) 
+        $query = "INSERT INTO [taaltourismdb].[users] (name, username, email, contactnum, hashedpassword, usertype, status) 
                   VALUES (:name, :username, :email, :contactnum, :hashedpassword, :usertype, :status)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':name', $name);
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 
     try {
-        $query = "UPDATE users SET name = :name, username = :username, email = :email, contactnum = :contactnum";
+        $query = "UPDATE [taaltourismdb].[users] SET name = :name, username = :username, email = :email, contactnum = :contactnum";
         if ($password) {
             $query .= ", hashedpassword = :password";
         }
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $newStatus = $_POST['action'] === 'disableAccount' ? 'inactive' : 'active';
         
         try {
-            $query = "UPDATE users SET status = :status WHERE userid = :userid";
+            $query = "UPDATE [taaltourismdb].[users] SET status = :status WHERE userid = :userid";
             $stmt = $conn->prepare($query);
             $stmt->bindParam(':status', $newStatus);
             $stmt->bindParam(':userid', $userid);
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_userid'])) {
     $deleteUserId = $_POST['delete_userid'];
     
-    $deleteQuery = "DELETE FROM users WHERE userid = :userid AND usertype = 'trst'";
+    $deleteQuery = "DELETE FROM [taaltourismdb].[users] WHERE userid = :userid AND usertype = 'trst'";
     $deleteStmt = $conn->prepare($deleteQuery);
     $deleteStmt->bindParam(':userid', $deleteUserId);
     
@@ -148,14 +148,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_userid'])) {
 
 $defaultType = 'mngr';
 $userType = isset($_GET['usertype']) ? $_GET['usertype'] : $defaultType;
-$query = "SELECT userid, name, username, contactnum, email, usertype, status FROM users WHERE usertype = :usertype";
+$query = "SELECT userid, name, username, contactnum, email, usertype, status FROM [taaltourismdb].[users] WHERE usertype = :usertype";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':usertype', $userType);
 $stmt->execute();
 $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
+$query = " SELECT TOP 1 name FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

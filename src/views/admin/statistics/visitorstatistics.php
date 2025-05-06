@@ -12,7 +12,7 @@ try {
         $query = "SELECT SUM(companions) AS total_visitors 
             FROM (
                 SELECT userid, tourid, MAX(companions) AS companions 
-                FROM tour 
+                FROM [taaltourismdb].[tour] 
                 WHERE status = 'accepted' AND YEAR(date) = :currentYear
                 GROUP BY tourid, userid
             ) AS distinct_tours;";
@@ -34,7 +34,7 @@ $monthlyVisitors = array_fill(0, 12, 0);
 try {
     $query = "SELECT MONTH(date) AS month, SUM(companions) AS monthly_visitors FROM (
                 SELECT userid, MONTH(date) AS month, companions, date
-                FROM tour
+                FROM [taaltourismdb].[tour]
                 WHERE status = 'accepted' AND YEAR(date) = :currentYear
                 GROUP BY tourid, userid
             ) AS distinct_tours
@@ -52,7 +52,7 @@ try {
 }
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM Users WHERE userid = :userid SELECT TOP 1";
+$query = "SELECT TOP 1 name FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

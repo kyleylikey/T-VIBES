@@ -5,7 +5,7 @@ require_once '../../config/dbconnect.php';
 require_once '../../controllers/homecontroller.php';
 
 $userid = $_SESSION['userid'];
-$query = "SELECT name FROM users WHERE userid = :userid SELECT TOP 1";
+$query = "SELECT TOP 1 name FROM [taaltourismdb].[users] WHERE userid = :userid";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':userid', $userid);
 $stmt->execute();

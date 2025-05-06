@@ -19,7 +19,7 @@ $companionsPerMonth = array_fill(1, 12, 0);
 
 // Query to sum the total number of companions for each month in the current year
 $query = "SELECT MONTH(date) AS month, SUM(companions) AS total 
-          FROM tour 
+          FROM [taaltourismdb].[tour] 
           WHERE YEAR(date) = :currentYear
           GROUP BY MONTH(date)
           ORDER BY month ASC";

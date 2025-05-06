@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Verify token and expiry
-    $query = "SELECT * FROM users WHERE email = :email AND emailveriftoken = :token AND token_expiry > NOW()";
+    $query = "SELECT * FROM [taaltourismdb].[users] WHERE email = :email AND emailveriftoken = :token AND token_expiry > NOW()";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->bindParam(':token', $token, PDO::PARAM_STR);
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
 
     // Update password and invalidate token
-    $updateQuery = "UPDATE users SET hashedpassword = :password, emailveriftoken = NULL, token_expiry = NULL WHERE email = :email";
+    $updateQuery = "UPDATE [taaltourismdb].[users] SET hashedpassword = :password, emailveriftoken = NULL, token_expiry = NULL WHERE email = :email";
     $updateStmt = $conn->prepare($updateQuery);
     $updateStmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
     $updateStmt->bindParam(':email', $email, PDO::PARAM_STR);
