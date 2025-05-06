@@ -1,8 +1,8 @@
 <?php
 class Database {
-    private $host = "localhost";
-    private $username = "root";
-    private $pass = "";
+    private $host = "taaltourism.database.windows.net";
+    private $username = "adminoftaal";
+    private $pass = "4D8b3>BB@)";
     private $dbname = "TaalTourismDB";
     public $conn;
 
