@@ -196,7 +196,7 @@ error_reporting(E_ALL);
     //     submitButton.disabled = true;
     //     submitButton.textContent = "Loading...";
 
-    //     fetch('../../controllers/signupcontroller.php', {
+    //     fetch('/src/controllers/signupcontroller.php', {
     //         method: 'POST',
     //         body: formData
     //     })
@@ -248,7 +248,7 @@ error_reporting(E_ALL);
     submitButton.disabled = true;
     submitButton.textContent = "Loading...";
 
-    fetch('../../controllers/signupcontroller.php', {
+    fetch('https://tourtaal.azurewebsites.net/src/controllers/signupcontroller.php', {
         method: 'POST',
         body: formData
     })
