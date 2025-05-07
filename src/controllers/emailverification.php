@@ -1,9 +1,4 @@
 <?php
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require '..\..\vendor\autoload.php';
 require_once '../config/dbconnect.php';
 
 ini_set('display_errors', 0);
@@ -12,40 +7,23 @@ ini_set('error_log', 'https://tourtaal.azurewebsites.net/temp/error.txt');
 error_reporting(E_ALL);
 
 function sendconfirmationEmail($username, $email, $verificationToken) {
-    $verificationLink = "localhosthttps://tourtaal.azurewebsites.net/src/controllers/verify.php?token=" . urlencode($verificationToken);
-
-    $mail = new PHPMailer(true);
+    $verificationLink = "https://tourtaal.azurewebsites.net/src/controllers/verify.php?token=" . urlencode($verificationToken);
 
     try {
-        // Server settings
-        //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
-        $mail->isSMTP();
-        $mail->SMTPAuth   = true;
+        // Azure Email Communication Services credentials
+        $endpoint = getenv('AZURE_EMAIL_ENDPOINT');
+        $apiKey = getenv('AZURE_EMAIL_API_KEY');   
+        $senderEmail = getenv('AZURE_EMAIL_SENDER');
+        $senderName = 'Taal Tourism Office';
         
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->Username   = 'kyleashleighbaldoza.tomcat@gmail.com';
-        $mail->Password   = 'ikkt npxt cghd dhbj';
-        
-        $mail->SMTPSecure = 'tls';
-        $mail->Port       = 587;
-
-        // Recipients
-        $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism Office');
-        $mail->addAddress($email);
-
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = 'Verify Email Address';
-        $mail->Body = "
+        // Create HTML email content
+        $htmlContent = "
             <!DOCTYPE html>
             <html lang='en'>
             <head>
                 <meta charset='UTF-8'>
                 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
                 <title>Verify Your Email - Taal Tourism Office</title>
-                <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
-                <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
-                <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
                 <style>
                     body {
                         background-color: #FFFFFF;
@@ -137,17 +115,68 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                         <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
                     </div>
                 </div>
-            <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz' crossorigin='anonymous'></script>
-            <script src='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js'></script>
             </body>
             </html>";
-
-        $mail->send();
-
-        return true;
+        
+        // Create plain text alternative
+        $plainText = "Hi $username,\n\nThank you for signing up at Taal Tourism! Your account has been successfully created.\n\nPlease verify your email address by clicking the link below:\n$verificationLink\n\n© " . date("Y") . " Taal Tourism Office. All rights reserved.";
+        
+        // Prepare email data for Azure Email API
+        $emailData = [
+            'senderAddress' => $senderEmail,
+            'senderName' => $senderName,
+            'content' => [
+                'subject' => 'Verify Email Address',
+                'plainText' => $plainText,
+                'html' => $htmlContent
+            ],
+            'recipients' => [
+                'to' => [
+                    [
+                        'address' => $email,
+                        'displayName' => $username
+                    ]
+                ]
+            ]
+        ];
+        
+        // API endpoint for sending emails
+        $apiUrl = $endpoint . '/emails:send?api-version=2023-03-31';
+        
+        // Set up cURL request
+        $ch = curl_init($apiUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiKey
+        ]);
+        
+        // Execute the request
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        // Check for errors
+        if (curl_errno($ch)) {
+            error_log('cURL error: ' . curl_error($ch));
+            curl_close($ch);
+            return "Email could not be sent. cURL Error: " . curl_error($ch);
+        }
+        
+        curl_close($ch);
+        
+        // Process the response
+        if ($httpCode >= 200 && $httpCode < 300) {
+            return true;
+        } else {
+            error_log('Azure Email API error: ' . $response);
+            return "Email could not be sent. API Error: " . $response;
+        }
+        
     } catch (Exception $e) {
-        return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        error_log("Email sending failed: " . $e->getMessage());
+        return "Message could not be sent. Error: " . $e->getMessage();
     }
 }
-
 ?>
