@@ -10,6 +10,53 @@ if(!isset($_SESSION['userid'])) {
 
 $userid = $_SESSION['userid']; 
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $siteId = $_POST['siteId'] ?? null;
+    $review = $_POST['review'] ?? null;
+
+    if ($siteId && $review) {
+        // Validate input
+        if (!is_numeric($siteId) || trim($review) === '') {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            exit;
+        }
+
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+
+            // Check if user already submitted a review for this site
+            $checkQuery = "SELECT revid FROM rev WHERE userid = :user_id AND siteid = :siteid";
+            $checkStmt = $conn->prepare($checkQuery);
+            $checkStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
+            $checkStmt->bindParam(':siteid', $siteId, PDO::PARAM_INT);
+            $checkStmt->execute();
+
+            if ($checkStmt->rowCount() > 0) {
+                echo json_encode(['status' => 'error', 'message' => 'Already reviewed', 'alreadyReviewed' => true]);
+                exit;
+            }
+
+            // Insert new review
+            $insertQuery = "INSERT INTO rev (review, userid, siteid) VALUES (:review, :user_id, :siteid)";
+            $insertStmt = $conn->prepare($insertQuery);
+            $insertStmt->bindParam(':review', $review, PDO::PARAM_STR);
+            $insertStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
+            $insertStmt->bindParam(':siteid', $siteId, PDO::PARAM_INT);
+
+            if ($insertStmt->execute()) {
+                echo json_encode(['status' => 'success', 'message' => 'Review submitted']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to submit review']);
+            }
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+        }
+
+        exit;
+    }
+}
+
 // Handle POST request for ratings separately
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the site ID and rating from the form data
@@ -685,54 +732,56 @@ $completedTours = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     function submitReview(siteId, reviewText) {
-        // Create form data
-        const formData = new FormData();
-        formData.append('siteId', siteId);
-        formData.append('review', reviewText);
-        
-        // Close the modal first
+    const formData = new FormData();
+    formData.append('siteId', siteId);
+    formData.append('review', reviewText);
+
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
         const modal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
         modal.hide();
-        
-        // Show success message (replace this with actual API call)
+
+        if (data.status === 'error' && data.alreadyReviewed) {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "You've already reviewed this site.",
+                timer: 3000,
+                showConfirmButton: false
+            });
+        } else if (data.status === 'success') {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-circle-check"></i>',
+                title: "Thank you for your review!",
+                text: "Your review has been submitted.",
+                timer: 3000,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "Error",
+                text: data.message || "There was a problem submitting your review.",
+                timer: 3000,
+                showConfirmButton: false
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
         Swal.fire({
-            iconHtml: '<i class="fas fa-circle-check"></i>',
-            title: "Thank you!",
-            text: "Your review has been submitted successfully.",
+            iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+            title: "Error",
+            text: "There was a problem submitting your review. Please try again.",
             timer: 3000,
-            showConfirmButton: false,
-            customClass: {
-                title: "swal2-title-custom",
-                icon: "swal2-icon-custom",
-                popup: "swal-custom-popup"
-            }
+            showConfirmButton: false
         });
-        
-        // In a real implementation, you would add an AJAX call here
-        // fetch('submit_review.php', {
-        //     method: 'POST',
-        //     body: formData
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //     // Show success message
-        //     Swal.fire({
-        //         title: "Thank you!",
-        //         text: "Your review has been submitted successfully.",
-        //         icon: "success",
-        //         confirmButtonColor: "#EC6350"
-        //     });
-        // })
-        // .catch(error => {
-        //     console.error('Error:', error);
-        //     Swal.fire({
-        //         title: "Error",
-        //         text: "There was a problem submitting your review. Please try again.",
-        //         icon: "error",
-        //         confirmButtonColor: "#EC6350"
-        //     });
-        // });
-    }
+    });
+}
+
 
     document.addEventListener('DOMContentLoaded', function() {
         // Add event listeners to all Rate buttons
