@@ -87,15 +87,6 @@ require_once '../../controllers/tourist/explorecontroller.php';
             -webkit-box-orient: vertical;
             height: 3em; 
         }
-
-        .card-title-fixed {
-            height: 3em; 
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
     </style>
 </head>
 <body>
@@ -141,7 +132,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                     <img src="../../../public/uploads/<?php echo $site['siteimage'];?>" class="img-fluid w-100 object-fit-cover" style="height: 200px;" alt="<?php echo $site['sitename'];?>">
                     <div class="position-absolute top-0 end-0 m-2" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 25px;">★ <?php echo ($site['rating_cnt'] == 0) ? '0.0' : number_format($site['rating'] / $site['rating_cnt'], 1); ?></div>
                     <div class="card-body text-center">
-                        <h5 class="fw-bold card-title-fixed" style="color: #102E47; font-family: Raleway, sans-serif !important;"><?php echo $site['sitename'];?></h5>
+                        <h5 class="fw-bold card-title" style="color: #102E47; font-family: Raleway, sans-serif !important;"><?php echo $site['sitename'];?></h5>
                         <p class="text-muted card-description">
                             <?php echo $site['description']; ?>
                         </p>                
