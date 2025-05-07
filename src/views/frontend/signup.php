@@ -248,7 +248,7 @@ error_reporting(E_ALL);
     submitButton.disabled = true;
     submitButton.textContent = "Loading...";
 
-    fetch('https://tourtaal.azurewebsites.net/src/controllers/signupcontroller.php', {
+    fetch('/api/signup.php', {
         method: 'POST',
         body: formData
     })
