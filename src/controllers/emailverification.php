@@ -12,6 +12,13 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     $apiKey = getenv('AZURE_EMAIL_API_KEY');
     $senderEmail = getenv('AZURE_EMAIL_SENDER');
 
+    if (empty($endpoint) || empty($apiKey) || empty($senderEmail)) {
+        error_log("Email configuration missing - ENDPOINT: " . (empty($endpoint) ? "MISSING" : "SET") .
+                  ", API_KEY: " . (empty($apiKey) ? "MISSING" : "SET") .
+                  ", SENDER: " . (empty($senderEmail) ? "MISSING" : "SET"));
+        return false;
+    }
+
     $url = "{$endpoint}/emails:send?api-version=2023-03-31";
     
     $payload = [
@@ -135,6 +142,13 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     
     $response = curl_exec($ch);
     $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    error_log("Email API response - Status: $statusCode, Response: " . $response);
+    
+    if (curl_errno($ch)) {
+        error_log("cURL error: " . curl_error($ch));
+    }
+
     curl_close($ch);
     
     return $statusCode >= 200 && $statusCode < 300;
