@@ -136,7 +136,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
+        'Authorization: ' . $apiKey
     ]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     
