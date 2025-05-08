@@ -11,6 +11,12 @@ if (isset($_GET['token'])) {
     $conn = $database->getConnection();
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Initialize variables to avoid undefined variable warnings
+    $success = false;
+    $message = '';
+    $iconHtml = '<i class=\"fas fa-exclamation-circle\"></i>';
+    $debugInfo = '';
+
     try {
         $cleanedToken = trim($token);
         echo "Cleaned token: '$cleanedToken'\n"; // Log cleaned token for debugging
@@ -26,7 +32,11 @@ if (isset($_GET['token'])) {
 
         // First, check if the token exists without any conditions
         echo "Checking if token exists in database...\n";
-        $checkTokenQuery = "SELECT id, status, token_expiry FROM users WHERE emailveriftoken = ?";
+        
+        // Use the fully qualified table name with schema
+        $fullTableName = "[taaltourismdb].[taaltourismdb].[users]";
+        
+        $checkTokenQuery = "SELECT userid, status, token_expiry FROM $fullTableName WHERE emailveriftoken = ?";
         $checkStmt = $conn->prepare($checkTokenQuery);
         $checkStmt->execute([$cleanedToken]);
         
@@ -35,6 +45,7 @@ if (isset($_GET['token'])) {
         if ($checkStmt && $checkStmt->rowCount() > 0) {
             $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
             echo "Token found in database!\n";
+            echo "User ID: " . $userData['id'] . "\n";
             echo "User status: " . $userData['status'] . "\n";
             echo "Token expiry: " . $userData['token_expiry'] . "\n";
             echo "Current date: " . date('Y-m-d H:i:s') . "\n";
@@ -49,21 +60,33 @@ if (isset($_GET['token'])) {
             }
         } else {
             echo "Token not found in database or error occurred!\n";
-            echo "PDO Error Info: " . print_r($checkStmt->errorInfo(), true) . "\n";
+            if ($checkStmt) {
+                echo "PDO Error Info: " . print_r($checkStmt->errorInfo(), true) . "\n";
+            }
             
-            // Try another version of the query
-            echo "Trying alternative query...\n";
-            $altQuery = "SELECT TOP 1 id, status, token_expiry, emailveriftoken FROM users";
+            // Try another version of the query to get a sample row
+            echo "Trying to get a sample row...\n";
+            $altQuery = "SELECT TOP 1 userid, status, token_expiry, emailveriftoken FROM $fullTableName";
             $altStmt = $conn->query($altQuery);
-            $sampleRow = $altStmt->fetch(PDO::FETCH_ASSOC);
-            echo "Sample row from users table: " . print_r($sampleRow, true) . "\n";
-            echo "Token format in database vs provided token:\n";
-            echo "Database token format: " . gettype($sampleRow['emailveriftoken']) . " Length: " . strlen($sampleRow['emailveriftoken']) . "\n";
-            echo "Provided token format: " . gettype($cleanedToken) . " Length: " . strlen($cleanedToken) . "\n";
+            
+            if ($altStmt && $altStmt->rowCount() > 0) {
+                $sampleRow = $altStmt->fetch(PDO::FETCH_ASSOC);
+                echo "Sample row from users table: " . print_r($sampleRow, true) . "\n";
+                
+                if (isset($sampleRow['emailveriftoken'])) {
+                    echo "Token format in database vs provided token:\n";
+                    echo "Database token format: " . gettype($sampleRow['emailveriftoken']) . " Length: " . strlen($sampleRow['emailveriftoken']) . "\n";
+                    echo "Provided token format: " . gettype($cleanedToken) . " Length: " . strlen($cleanedToken) . "\n";
+                } else {
+                    echo "emailveriftoken column not found in sample row\n";
+                }
+            } else {
+                echo "Could not get a sample row from the users table\n";
+            }
         }
 
-        // Simplified query without schema references
-        $query = "SELECT * FROM users 
+        // Main verification query with proper schema reference
+        $query = "SELECT * FROM $fullTableName 
                   WHERE emailveriftoken = ? 
                   AND status = 'inactive' 
                   AND token_expiry > GETDATE()";
@@ -73,43 +96,47 @@ if (isset($_GET['token'])) {
         
         if (!$stmt) {
             echo "Statement preparation failed: " . print_r($conn->errorInfo(), true) . "\n";
+            $debugInfo = "Statement preparation failed";
         } else {
             $stmt->execute([$cleanedToken]);
             echo "Statement executed. Row count: " . $stmt->rowCount() . "\n";
-            echo "PDO Error Info: " . print_r($stmt->errorInfo(), true) . "\n";
-        }
-
-        $success = false; 
-        $message = '';
-        $iconHtml = '<i class=\"fas fa-exclamation-circle\"></i>';
-        $debugInfo = '';
-
-        if ($stmt && $stmt->rowCount() > 0) {
-            $updateQuery = "UPDATE users 
-                SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
-                WHERE emailveriftoken = ?";
-                
-            $updateStmt = $conn->prepare($updateQuery);
-
-            if ($updateStmt->execute([$cleanedToken])) {
-                $success = true;
-                $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
-                $message = 'Your email has been successfully verified!';
-                $debugInfo = 'User account activated successfully';
-            } else {
-                $message = 'Failed to verify your email. Please try again later.';
-                $debugInfo = 'Database update failed: ' . print_r($updateStmt->errorInfo(), true);
+            
+            // Debug the error info
+            $errorInfo = $stmt->errorInfo();
+            echo "PDO Error Info: " . print_r($errorInfo, true) . "\n";
+            
+            if ($errorInfo[0] !== '00000') {
+                $debugInfo = "SQL Error: " . implode(' - ', $errorInfo);
             }
-        } else {
-            $message = 'Your email is already verified, the link is invalid, or it has expired.';
-            $debugInfo = 'No matching token found or token expired. Row count: ' . ($stmt ? $stmt->rowCount() : 'NULL');
+
+            if ($stmt->rowCount() > 0) {
+                $updateQuery = "UPDATE $fullTableName 
+                    SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
+                    WHERE emailveriftoken = ?";
+                    
+                $updateStmt = $conn->prepare($updateQuery);
+
+                if ($updateStmt && $updateStmt->execute([$cleanedToken])) {
+                    $success = true;
+                    $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
+                    $message = 'Your email has been successfully verified!';
+                    $debugInfo = 'User account activated successfully';
+                } else {
+                    $message = 'Failed to verify your email. Please try again later.';
+                    $debugInfo = 'Database update failed: ' . ($updateStmt ? implode(', ', $updateStmt->errorInfo()) : 'Unknown error');
+                }
+            } else {
+                $message = 'Your email is already verified, the link is invalid, or it has expired.';
+                $debugInfo = 'No matching token found or token expired. Row count: ' . $stmt->rowCount();
+            }
         }
     } catch (PDOException $e) {
         $message = 'An error occurred during verification. Please contact support.';
-        $debugInfo = 'Database error: ' . $e->getMessage() . ' | Trace: ' . $e->getTraceAsString();
+        $debugInfo = 'Database error: ' . $e->getMessage();
         
         echo "PDO Exception caught: " . $e->getMessage() . "\n";
         echo "Error code: " . $e->getCode() . "\n";
+        echo "Stack trace: " . $e->getTraceAsString() . "\n";
     }
 
     // Escape quotes for JavaScript
@@ -206,13 +233,13 @@ if (isset($_GET['token'])) {
             <h2>Debug Information</h2>
             <p>This section is for debugging purposes and should be removed in production.</p>
             <pre id='debug-output'>
-            Token: <?php echo htmlspecialchars($token); ?>
-            
-            Success: <?php echo $success ? 'true' : 'false'; ?>
-            
-            Message: <?php echo htmlspecialchars($message); ?>
-            
-            Debug Info: <?php echo htmlspecialchars($debugInfo); ?>
+Token: <?php echo htmlspecialchars($token); ?>
+
+Success: <?php echo $success ? 'true' : 'false'; ?>
+
+Message: <?php echo htmlspecialchars($message); ?>
+
+Debug Info: <?php echo htmlspecialchars($debugInfo); ?>
             </pre>
         </div>
     </body>
