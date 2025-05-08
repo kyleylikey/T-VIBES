@@ -1,6 +1,12 @@
 <?php
 require_once '../config/dbconnect.php';
 
+// Initialize variables
+$success = false;
+$message = 'Your email is already verified, the link is invalid, or it has expired.';
+$iconHtml = '<i class="fas fa-exclamation-circle"></i>';
+$debugInfo = 'No matching token found or token expired';
+
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
     $decodedToken = urldecode($token);
@@ -12,51 +18,79 @@ if (isset($_GET['token'])) {
     $database = new Database();
     $conn = $database->getConnection();
 
-   
-try {
-    // First check without the conditions to diagnose the issue
-    $baseQuery = "SELECT email, status, 
-                 CONVERT(VARCHAR, token_expiry, 120) as expiry_time,
-                 CONVERT(VARCHAR, GETDATE(), 120) as current_datetime
-                 FROM [taaltourismdb].[users] 
-                 WHERE emailveriftoken = ?";
-    
-    $baseStmt = $conn->prepare($baseQuery);
-    $baseStmt->bindParam(1, $token, PDO::PARAM_STR);
-    $baseStmt->execute();
-    
-    // Log whether we found anything with just the token
-    if ($baseStmt->rowCount() > 0) {
-        $foundData = $baseStmt->fetch(PDO::FETCH_ASSOC);
-        error_log("Token EXISTS in database! Status: " . $foundData['status'] . 
-                  ", Expiry: " . $foundData['expiry_time'] . ", Current: " . $foundData['current_datetime']);
+    try {
+        // First check without the conditions to diagnose the issue
+        $baseQuery = "SELECT email, status, 
+                     CONVERT(VARCHAR, token_expiry, 120) as expiry_time,
+                     CONVERT(VARCHAR, GETDATE(), 120) as current_datetime
+                     FROM [taaltourismdb].[users] 
+                     WHERE emailveriftoken = ?";
         
-        // If the token exists but didn't match our full criteria, let's see why
-        if ($foundData['status'] !== 'inactive') {
-            error_log("Token found but status is not inactive: " . $foundData['status']);
-        }
+        $baseStmt = $conn->prepare($baseQuery);
+        $baseStmt->bindParam(1, $token, PDO::PARAM_STR);
+        $baseStmt->execute();
         
-        // Try to parse the dates to see if expiration is the issue
-        $expiryTime = strtotime($foundData['expiry_time']);
-        $currentTime = strtotime($foundData['current_datetime']);
-        
-        if ($expiryTime && $currentTime) {
-            error_log("Expiry timestamp: " . $expiryTime . ", Current timestamp: " . $currentTime);
-            if ($expiryTime <= $currentTime) {
-                error_log("Token found but is expired: " . $foundData['expiry_time']);
+        // Log whether we found anything with just the token
+        if ($baseStmt->rowCount() > 0) {
+            $foundData = $baseStmt->fetch(PDO::FETCH_ASSOC);
+            error_log("Token EXISTS in database! Status: " . $foundData['status'] . 
+                      ", Expiry: " . $foundData['expiry_time'] . ", Current: " . $foundData['current_datetime']);
+            
+            $debugInfo = "Token found. Status: " . $foundData['status'] . 
+                      ", Expiry: " . $foundData['expiry_time'] . ", Current: " . $foundData['current_datetime'];
+            
+            // If the token exists but didn't match our full criteria, let's see why
+            if ($foundData['status'] !== 'inactive') {
+                error_log("Token found but status is not inactive: " . $foundData['status']);
+                $message = 'Your email has already been verified.';
+                $debugInfo = "Token found but account status is already: " . $foundData['status'];
             } else {
-                error_log("Token should be valid! Expiry > Current time");
+                // Try to parse the dates to see if expiration is the issue
+                $expiryTime = strtotime($foundData['expiry_time']);
+                $currentTime = strtotime($foundData['current_datetime']);
+                
+                if ($expiryTime && $currentTime) {
+                    error_log("Expiry timestamp: " . $expiryTime . ", Current timestamp: " . $currentTime);
+                    if ($expiryTime <= $currentTime) {
+                        error_log("Token found but is expired: " . $foundData['expiry_time']);
+                        $message = 'Your verification link has expired. Please request a new one.';
+                        $debugInfo = "Token expired: " . $foundData['expiry_time'] . " < " . $foundData['current_datetime'];
+                    } else {
+                        error_log("Token should be valid! Expiry > Current time");
+                        
+                        // Token is valid, perform verification
+                        $updateQuery = "UPDATE [taaltourismdb].[users] SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = ?";
+                        $updateStmt = $conn->prepare($updateQuery);
+                        $updateStmt->bindParam(1, $token);
+                        
+                        if ($updateStmt->execute() && $updateStmt->rowCount() > 0) {
+                            $success = true;
+                            $message = 'Your email has been successfully verified!';
+                            $iconHtml = '<i class="fas fa-check-circle"></i>';
+                            $debugInfo = "Email verification successful for: " . $foundData['email'];
+                            error_log("Email verification successful for: " . $foundData['email']);
+                        } else {
+                            $message = 'Error updating account status. Please try again.';
+                            $debugInfo = "Database update failed: " . implode(', ', $updateStmt->errorInfo());
+                            error_log("Failed to update user status: " . implode(', ', $updateStmt->errorInfo()));
+                        }
+                    }
+                }
             }
+        } else {
+            error_log("Token NOT found in database: " . substr($token, 0, 10) . "...");
+            $debugInfo = "No matching token found in database";
         }
+    } catch (PDOException $e) {
+        error_log("Diagnostic query error: " . $e->getMessage());
+        $message = 'An error occurred during verification.';
+        $debugInfo = "Database error: " . $e->getMessage();
     }
 }
-catch (PDOException $e) {
-    error_log("Diagnostic query error: " . $e->getMessage());
-}
 
-    // Escape quotes for JavaScript
-    $message = str_replace("'", "\\'", $message);
-    $debugInfo = str_replace("'", "\\'", $debugInfo);
+// Escape quotes for JavaScript
+$message = str_replace("'", "\\'", $message);
+$debugInfo = str_replace("'", "\\'", $debugInfo);
 
     echo "<!DOCTYPE html>
     <html>
@@ -162,5 +196,4 @@ catch (PDOException $e) {
         </script>
     </body>
     </html>";
-}
 ?>
