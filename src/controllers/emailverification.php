@@ -3,7 +3,6 @@ require_once '../config/dbconnect.php';
 
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
-ini_set('error_log', 'https://tourtaal.azurewebsites.net/temp/error.txt');
 error_reporting(E_ALL);
 
 function sendconfirmationEmail($username, $email, $verificationToken) {
@@ -121,58 +120,66 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         // Create plain text alternative
         $plainText = "Hi $username,\n\nThank you for signing up at Taal Tourism! Your account has been successfully created.\n\nPlease verify your email address by clicking the link below:\n$verificationLink\n\n© " . date("Y") . " Taal Tourism Office. All rights reserved.";
         
-        // Prepare email data for Azure Email API
-        $emailData = [
-            'senderAddress' => $senderEmail,
-            'senderName' => $senderName,
-            'content' => [
-                'subject' => 'Verify Email Address',
-                'plainText' => $plainText,
-                'html' => $htmlContent
-            ],
-            'recipients' => [
-                'to' => [
-                    [
-                        'address' => $email,
-                        'displayName' => $username
-                    ]
-                ]
-            ]
-        ];
+        // PHP script that executes JavaScript using Node.js
+        $jsScript = <<<EOT
+        const { EmailClient } = require("@azure/communication-email");
         
-        // API endpoint for sending emails
-        $apiUrl = $endpoint . '/emails:send?api-version=2023-03-31';
-        
-        // Set up cURL request
-        $ch = curl_init($apiUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Authorization: Bearer ' . $apiKey
-        ]);
-        
-        // Execute the request
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
-        // Check for errors
-        if (curl_errno($ch)) {
-            error_log('cURL error: ' . curl_error($ch));
-            curl_close($ch);
-            return "Email could not be sent. cURL Error: " . curl_error($ch);
+        async function sendEmail() {
+            try {
+                const connectionString = process.env.COMMUNICATION_SERVICES_CONNECTION_STRING;
+                const client = new EmailClient(connectionString);
+                
+                const emailMessage = {
+                    senderAddress: "$senderEmail",
+                    senderName: "$senderName",
+                    content: {
+                        subject: "Verify Email Address",
+                        plainText: `$plainText`,
+                        html: `$htmlContent`,
+                    },
+                    recipients: {
+                        to: [
+                            { 
+                                address: "$email",
+                                displayName: "$username"
+                            }
+                        ],
+                    },
+                };
+                
+                const poller = await client.beginSend(emailMessage);
+                const result = await poller.pollUntilDone();
+                console.log("Email sent successfully:", result);
+                return result;
+            } catch (error) {
+                console.error("Error sending email:", error);
+                throw error;
+            }
         }
         
-        curl_close($ch);
+        sendEmail();
+        EOT;
         
-        // Process the response
-        if ($httpCode >= 200 && $httpCode < 300) {
-            return true;
-        } else {
-            error_log('Azure Email API error: ' . $response);
-            return "Email could not be sent. API Error: " . $response;
+        // Save the JavaScript to a temporary file
+        $tempFile = tempnam(sys_get_temp_dir(), 'email_script_');
+        file_put_contents($tempFile, $jsScript);
+        
+        // Execute the Node.js script
+        $command = "node " . escapeshellarg($tempFile);
+        $output = [];
+        $returnVar = 0;
+        exec($command, $output, $returnVar);
+        
+        // Clean up the temporary file
+        unlink($tempFile);
+        
+        if ($returnVar !== 0) {
+            error_log("Node.js execution failed with code: " . $returnVar);
+            error_log("Output: " . implode("\n", $output));
+            return "Email could not be sent. Node.js Error: " . implode("\n", $output);
         }
+        
+        return true;
         
     } catch (Exception $e) {
         error_log("Email sending failed: " . $e->getMessage());
