@@ -10,6 +10,16 @@ if (isset($_GET['token'])) {
     $database = new Database();
     $conn = $database->getConnection();
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Get database connection details
+    $debugOutput = "Database settings check:\n";
+    try {
+        $debugOutput .= "PHP Version: " . phpversion() . "\n";
+        $debugOutput .= "PDO Drivers: " . implode(", ", PDO::getAvailableDrivers()) . "\n";
+        $debugOutput .= "Error Mode: " . $conn->getAttribute(PDO::ATTR_ERRMODE) . "\n";
+    } catch (Exception $e) {
+        $debugOutput .= "Error getting database details: " . $e->getMessage() . "\n";
+    }
 
     // Initialize variables to avoid undefined variable warnings
     $success = false;
@@ -35,12 +45,89 @@ if (isset($_GET['token'])) {
         // First, check if the token exists without any conditions
         $debugOutput .= "Checking if token exists in database...\n";
         
-        // Simplified table name - check if this is correct for your environment
-        $tableName = "[taaltourismdb].[users]";
+        // Get database schema information
+        $debugOutput .= "Checking database schema...\n";
+        try {
+            // List all tables to verify the correct table name
+            $tablesQuery = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES";
+            $tablesStmt = $conn->query($tablesQuery);
+            if ($tablesStmt) {
+                $debugOutput .= "Available tables in database:\n";
+                while ($tableRow = $tablesStmt->fetch(PDO::FETCH_ASSOC)) {
+                    $debugOutput .= "- " . $tableRow['TABLE_SCHEMA'] . "." . $tableRow['TABLE_NAME'] . "\n";
+                }
+            } else {
+                $debugOutput .= "Could not retrieve table list\n";
+            }
+        } catch (PDOException $e) {
+            $debugOutput .= "Error checking schema: " . $e->getMessage() . "\n";
+        }
         
-        $checkTokenQuery = "SELECT * FROM $tableName WHERE emailveriftoken = ?";
-        $checkStmt = $conn->prepare($checkTokenQuery);
-        $checkStmt->execute([$cleanedToken]);
+        // Try with different table name formats
+        $possibleTableNames = [
+            "users", 
+            "dbo.users", 
+            "[users]", 
+            "[dbo].[users]",
+            "taaltourismdb.users",
+            "[taaltourismdb].[users]", 
+            "taaltourismdb.dbo.users",
+            "[taaltourismdb].[dbo].[users]"
+        ];
+        
+        // Find the first table name that works
+        $tableName = null;
+        foreach ($possibleTableNames as $testTableName) {
+            try {
+                $testQuery = "SELECT TOP 1 1 FROM $testTableName";
+                $testStmt = $conn->query($testQuery);
+                if ($testStmt && $testStmt->rowCount() >= 0) {
+                    $tableName = $testTableName;
+                    $debugOutput .= "Successfully connected to table: $tableName\n";
+                    break;
+                }
+            } catch (PDOException $e) {
+                $debugOutput .= "Table '$testTableName' test failed: " . $e->getMessage() . "\n";
+            }
+        }
+        
+        if (!$tableName) {
+            $debugOutput .= "Could not find a valid users table. Using 'users' as fallback.\n";
+            $tableName = "users";
+        }
+        
+        // Get connection info for debugging
+        $debugOutput .= "Database driver: " . $conn->getAttribute(PDO::ATTR_DRIVER_NAME) . "\n";
+        $debugOutput .= "Server version: " . $conn->getAttribute(PDO::ATTR_SERVER_VERSION) . "\n";
+        $debugOutput .= "Client version: " . $conn->getAttribute(PDO::ATTR_CLIENT_VERSION) . "\n";
+        
+        // Try to locate token using different approaches
+        $tokenFound = false;
+        $possibleTokenColumns = ['emailveriftoken', 'email_verification_token', 'token', 'verify_token', 'verification_token'];
+        
+        foreach ($possibleTokenColumns as $tokenColumn) {
+            $debugOutput .= "Trying to find token in column: $tokenColumn\n";
+            $checkTokenQuery = "SELECT * FROM $tableName WHERE $tokenColumn = ?";
+            try {
+                $checkStmt = $conn->prepare($checkTokenQuery);
+                $checkStmt->execute([$cleanedToken]);
+                
+                if ($checkStmt && $checkStmt->rowCount() > 0) {
+                    $tokenFound = true;
+                    $debugOutput .= "Token found in column: $tokenColumn\n";
+                    break;
+                }
+            } catch (PDOException $e) {
+                $debugOutput .= "Error checking $tokenColumn: " . $e->getMessage() . "\n";
+            }
+        }
+        
+        if (!$tokenFound) {
+            $debugOutput .= "Could not find token in any standard column. Using emailveriftoken as default.\n";
+            $checkTokenQuery = "SELECT * FROM $tableName WHERE emailveriftoken = ?";
+            $checkStmt = $conn->prepare($checkTokenQuery);
+            $checkStmt->execute([$cleanedToken]);
+        }
         
         $debugOutput .= "Check token query executed\n";
         
@@ -100,12 +187,55 @@ if (isset($_GET['token'])) {
                         $debugOutput .= "Token column exists in database\n";
                     } else {
                         $debugOutput .= "WARNING: emailveriftoken column not found in sample row\n";
+                        
+                        // Check all column names to find similar ones
+                        $debugOutput .= "Available columns in users table:\n";
+                        foreach ($sampleRow as $column => $value) {
+                            $debugOutput .= "- $column\n";
+                            
+                            // Look for columns that might contain token in their name
+                            if (stripos($column, 'token') !== false || 
+                                stripos($column, 'verification') !== false || 
+                                stripos($column, 'verify') !== false || 
+                                stripos($column, 'email') !== false) {
+                                $debugOutput .= "  Possible token column: $column\n";
+                            }
+                        }
                     }
                 } else {
                     $debugOutput .= "Could not get a sample row from the users table\n";
+                    
+                    // Try to get table structure if we can't get a row
+                    try {
+                        $columnQuery = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tableName'";
+                        $columnStmt = $conn->query($columnQuery);
+                        
+                        if ($columnStmt && $columnStmt->rowCount() > 0) {
+                            $debugOutput .= "Columns in '$tableName' table:\n";
+                            while ($columnRow = $columnStmt->fetch(PDO::FETCH_ASSOC)) {
+                                $debugOutput .= "- " . $columnRow['COLUMN_NAME'] . "\n";
+                            }
+                        } else {
+                            $debugOutput .= "No columns found for table '$tableName'\n";
+                        }
+                    } catch (PDOException $colEx) {
+                        $debugOutput .= "Error getting column information: " . $colEx->getMessage() . "\n";
+                    }
                 }
             } catch (PDOException $e) {
                 $debugOutput .= "Error getting sample row: " . $e->getMessage() . "\n";
+                
+                // Try an alternative approach with COUNT
+                try {
+                    $countQuery = "SELECT COUNT(*) as row_count FROM $tableName";
+                    $countStmt = $conn->query($countQuery);
+                    if ($countStmt) {
+                        $countRow = $countStmt->fetch(PDO::FETCH_ASSOC);
+                        $debugOutput .= "Total rows in table: " . $countRow['row_count'] . "\n";
+                    }
+                } catch (PDOException $countEx) {
+                    $debugOutput .= "Error counting rows: " . $countEx->getMessage() . "\n";
+                }
             }
             
             $message = 'Invalid verification link. Please request a new one.';
