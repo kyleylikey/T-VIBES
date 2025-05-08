@@ -19,15 +19,17 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         return false;
     }
 
-    // First, get an access token using the API key
-    $tokenEndpoint = "https://taaltourismemailsender.asiapacific.communication.azure.com/tokens";
+    // The correct way to get an access token using client credentials
+    $tokenEndpoint = "https://communication.azure.com/tokens";
     
     $tokenHeaders = [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
+        'Content-Type: application/json'
     ];
     
+    // Setup for OAuth2 client credentials flow
     $tokenPayload = [
+        "grant_type" => "client_credentials",
+        "client_id" => $apiKey,
         "scope" => "https://communication.azure.com/.default"
     ];
     
