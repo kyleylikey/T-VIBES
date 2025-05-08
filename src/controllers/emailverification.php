@@ -6,7 +6,7 @@ ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
 function sendconfirmationEmail($username, $email, $verificationToken) {
-    $verificationLink = "https://tourtaal.azurewebsites.net/verify.php?token=" . urlencode($verificationToken);
+    $verificationLink = "https://tourtaal.azurewebsites.net/src/controllers/verify.php?token=" . urlencode($verificationToken);
     
     $connectionString = getenv('AZURE_EMAIL_SENDER_CONNECTION_STRING');
     $senderEmail = getenv('AZURE_EMAIL_SENDER');
