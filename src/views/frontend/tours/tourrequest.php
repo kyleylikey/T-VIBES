@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $siteid = $destination['siteid'];
  
                     $stmt = $db->prepare("INSERT INTO tour (tourid, siteid, userid, status, date, companions, created_at) 
-                                    VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, NOW())");
+                                    VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, GETDATE())");
                     $stmt->bindParam(':tourid', $newTourId, PDO::PARAM_INT);
                     $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
                     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
@@ -285,7 +285,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($destinationsToAdd)) {
                 foreach ($destinationsToAdd as $siteid) {
                     $insertStmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] (tourid, siteid, userid, status, date, companions, created_at) 
-                                                VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, NOW())");
+                                                VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, GETDATE())");
                     $insertStmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
                     $insertStmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
                     $insertStmt->bindParam(':userid', $userid, PDO::PARAM_INT);

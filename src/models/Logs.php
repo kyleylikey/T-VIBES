@@ -56,7 +56,7 @@ class Logs {
     }
 
     public function logAction($userid, $action) {
-        $query = "INSERT INTO [taaltourismdb].[logs] (userid, action, datetime) VALUES (:userid, :action, NOW())";
+        $query = "INSERT INTO [taaltourismdb].[logs] (userid, action, datetime) VALUES (:userid, :action, GETDATE())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
         $stmt->bindParam(':action', $action, PDO::PARAM_STR);

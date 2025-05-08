@@ -47,7 +47,7 @@ class ForgotPasswordController {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         $token = bin2hex(random_bytes(32)); 
 
-        $query = "UPDATE [taaltourismdb].[users] SET emailveriftoken = :token, token_expiry = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = :email";
+        $query = "UPDATE [taaltourismdb].[users] SET emailveriftoken = :token, token_expiry = DATE_ADD(GETDATE(), INTERVAL 1 HOUR) WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->bindParam(':email', $email);
