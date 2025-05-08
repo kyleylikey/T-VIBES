@@ -6,6 +6,80 @@ if (!isset($_GET['email']) || !isset($_GET['token'])) {
     exit;
 }
 
+
+$success = false;
+$message = '';
+$validRequest = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Handle password reset submission
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $token = isset($_POST['token']) ? trim($_POST['token']) : '';
+    $newPassword = isset($_POST['newPassword']) ? $_POST['newPassword'] : '';
+    $retypeNewPassword = isset($_POST['retypeNewPassword']) ? $_POST['retypeNewPassword'] : '';
+
+    // Validate passwords
+    if ($newPassword !== $retypeNewPassword) {
+        $message = 'Passwords do not match.';
+    } elseif (strlen($newPassword) < 8 || !preg_match('/[A-Z]/', $newPassword) || !preg_match('/\d/', $newPassword)) {
+        $message = 'Password does not meet requirements.';
+    } else {
+        // Check token/email validity and expiry
+        $database = new Database();
+        $conn = $database->getConnection();
+        $query = "SELECT userid, token_expiry FROM [taaltourismdb].[users] 
+                  WHERE LOWER(email) = LOWER(:email) AND LOWER(emailveriftoken) = LOWER(:token)";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->execute();
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($userData && isset($userData['token_expiry']) && strtotime($userData['token_expiry']) > time()) {
+            // Hash the new password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+            // Update password and clear token
+            $updateQuery = "UPDATE [taaltourismdb].[users] 
+                            SET hashedpassword = :password, emailveriftoken = NULL, token_expiry = NULL 
+                            WHERE userid = :userid";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+            $updateStmt->bindParam(':userid', $userData['userid'], PDO::PARAM_INT);
+            if ($updateStmt->execute()) {
+                $success = true;
+                $message = 'Your password has been reset successfully. You can now <a href="https://tourtaal.azurewebsites.net/src/views/frontend/login.php">login</a>.';
+            } else {
+                $message = 'Failed to reset password. Please try again.';
+            }
+        } else {
+            $message = 'Invalid or expired reset link.';
+        }
+    }
+} else {
+    // GET: Validate token/email for form display
+    if (!isset($_GET['email']) || !isset($_GET['token'])) {
+        $message = 'Invalid reset link.';
+    } else {
+        $email = urldecode($_GET['email']);
+        $token = $_GET['token'];
+        $database = new Database();
+        $conn = $database->getConnection();
+        $query = "SELECT userid, token_expiry, emailveriftoken FROM [taaltourismdb].[users] 
+                  WHERE LOWER(email) = LOWER(:email) AND LOWER(emailveriftoken) = LOWER(:token)";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->execute();
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($userData && isset($userData['token_expiry']) && strtotime($userData['token_expiry']) > time()) {
+            $validRequest = true;
+        } else {
+            $message = 'This password reset link is invalid or has expired. Please request a new password reset from the login page.';
+        }
+    }
+}
+
 $email = urldecode($_GET['email']);
 $token = $_GET['token'];
 
@@ -127,14 +201,14 @@ try {
     </style>
 </head>
 <body>
-    <?php if ($validRequest): ?>
+    <?php if ($validRequest && !$success): ?>
     <div class="form-container">
         <h2 class="form-title">Reset Your Password</h2>
         <div class="info-text">
             Please enter a new password for your account.
         </div>
         
-        <form id="resetPasswordForm" method="POST" action="../reset_process.php">
+        <form id="resetPasswordForm" method="POST">
             <!-- Hidden fields to pass email & token -->
             <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
             <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
