@@ -102,32 +102,44 @@ if (isset($_GET['token'])) {
         $debugOutput .= "Server version: " . $conn->getAttribute(PDO::ATTR_SERVER_VERSION) . "\n";
         $debugOutput .= "Client version: " . $conn->getAttribute(PDO::ATTR_CLIENT_VERSION) . "\n";
         
-        // Try to locate token using different approaches
-        $tokenFound = false;
-        $possibleTokenColumns = ['emailveriftoken', 'email_verification_token', 'token', 'verify_token', 'verification_token'];
-        
-        foreach ($possibleTokenColumns as $tokenColumn) {
-            $debugOutput .= "Trying to find token in column: $tokenColumn\n";
-            $checkTokenQuery = "SELECT * FROM $tableName WHERE $tokenColumn = ?";
-            try {
-                $checkStmt = $conn->prepare($checkTokenQuery);
-                $checkStmt->execute([$cleanedToken]);
+        // Check that the table actually has data
+        try {
+            $countQuery = "SELECT COUNT(*) as total FROM $tableName";
+            $countStmt = $conn->query($countQuery);
+            if ($countStmt) {
+                $countResult = $countStmt->fetch(PDO::FETCH_ASSOC);
+                $debugOutput .= "Total rows in $tableName: " . $countResult['total'] . "\n";
                 
-                if ($checkStmt && $checkStmt->rowCount() > 0) {
-                    $tokenFound = true;
-                    $debugOutput .= "Token found in column: $tokenColumn\n";
-                    break;
+                if ($countResult['total'] == 0) {
+                    $debugOutput .= "WARNING: Table is empty!\n";
                 }
-            } catch (PDOException $e) {
-                $debugOutput .= "Error checking $tokenColumn: " . $e->getMessage() . "\n";
             }
+        } catch (PDOException $ce) {
+            $debugOutput .= "Error counting rows: " . $ce->getMessage() . "\n";
         }
         
-        if (!$tokenFound) {
-            $debugOutput .= "Could not find token in any standard column. Using emailveriftoken as default.\n";
-            $checkTokenQuery = "SELECT * FROM $tableName WHERE emailveriftoken = ?";
-            $checkStmt = $conn->prepare($checkTokenQuery);
-            $checkStmt->execute([$cleanedToken]);
+        // Examine table structure
+        try {
+            $columnQuery = "SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH 
+                          FROM INFORMATION_SCHEMA.COLUMNS 
+                          WHERE TABLE_SCHEMA = 'taaltourismdb' 
+                          AND TABLE_NAME = 'users'";
+            $columnStmt = $conn->query($columnQuery);
+            
+            if ($columnStmt && $columnStmt->rowCount() > 0) {
+                $debugOutput .= "Columns in taaltourismdb.users table:\n";
+                while ($col = $columnStmt->fetch(PDO::FETCH_ASSOC)) {
+                    $debugOutput .= "- " . $col['COLUMN_NAME'] . " (" . $col['DATA_TYPE'];
+                    if (!empty($col['CHARACTER_MAXIMUM_LENGTH'])) {
+                        $debugOutput .= "(" . $col['CHARACTER_MAXIMUM_LENGTH'] . ")";
+                    }
+                    $debugOutput .= ")\n";
+                }
+            } else {
+                $debugOutput .= "Could not get column information\n";
+            }
+        } catch (PDOException $ce) {
+            $debugOutput .= "Error getting column information: " . $ce->getMessage() . "\n";
         }
         
         $debugOutput .= "Check token query executed\n";
