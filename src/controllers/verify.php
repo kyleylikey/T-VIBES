@@ -13,8 +13,7 @@ if (isset($_GET['token'])) {
 
 
     try {
-        $query = "SELECT * FROM [taaltourismdb].[users] WHERE emailveriftoken = :token";
-        //removed AND status = 'inactive' AND token_expiry > GETDATE() . return if it works
+        $query = "SELECT * FROM [users] WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > GETDATE()";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->execute();
