@@ -3,6 +3,8 @@ require_once '../config/dbconnect.php';
 require_once '../models/User.php';
 include 'emailverification.php';
 
+echo "Access Denied!";
+
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
@@ -14,6 +16,7 @@ class SignupController {
     $database = new Database();
     $this->conn = $database->getConnection();
     }
+
 
 
     public function createAccount($name, $username, $password, $contactnum, $email) {
