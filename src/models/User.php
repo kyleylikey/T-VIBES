@@ -42,14 +42,15 @@ class User {
 
     public function doesUserExist($email, $username) {
         try {
-            $query = "SELECT COUNT(*) as count FROM " . $this->table . " 
-                      WHERE email = :email OR username = :username";
+            $query = "SELECT TOP 1 [userid] FROM " . $this->table . " 
+                    WHERE [email] = :email OR [username] = :username";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':username', $username);
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result['count'] > 0;
+            
+            // Just check if any row was returned
+            return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Error checking user existence: " . $e->getMessage());
             return false;
