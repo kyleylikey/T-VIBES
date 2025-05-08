@@ -11,18 +11,45 @@ if (isset($_GET['token'])) {
     $conn = $database->getConnection();
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
     try {
-        $cleanedToken = LTRIM(RTRIM($token));
+        $cleanedToken = trim($token);
         echo "Cleaned token: '$cleanedToken'\n"; // Log cleaned token for debugging
 
-        $query = "SELECT * FROM [taaltourismdb].[taaltourismdb].[users] WHERE LTRIM(RTRIM(emailveriftoken)) = CAST(:token AS NVARCHAR(MAX)) AND status = 'inactive' AND token_expiry > GETDATE()";
+        // First, check if the token exists at all (without additional conditions)
+        $checkTokenQuery = "SELECT id, status, token_expiry FROM [taaltourismdb].[taaltourismdb].[users] WHERE emailveriftoken = :token";
+        $checkStmt = $conn->prepare($checkTokenQuery);
+        $checkStmt->execute([':token' => $cleanedToken]);
+        
+        if ($checkStmt->rowCount() > 0) {
+            $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
+            echo "Token found in database!\n";
+            echo "User status: " . $userData['status'] . "\n";
+            echo "Token expiry: " . $userData['token_expiry'] . "\n";
+            echo "Current date: " . date('Y-m-d H:i:s') . "\n";
+            
+            // Check specific conditions
+            if ($userData['status'] !== 'inactive') {
+                echo "User is already active!\n";
+            }
+            
+            if (strtotime($userData['token_expiry']) < time()) {
+                echo "Token has expired!\n";
+            }
+        } else {
+            echo "Token not found in database!\n";
+        }
+
+        // Original query with simpler token comparison
+        $query = "SELECT * FROM [taaltourismdb].[taaltourismdb].[users] 
+                  WHERE emailveriftoken = :token 
+                  AND status = 'inactive' 
+                  AND token_expiry > GETDATE()";
+        
         echo "Executing query: $query\n";
-        echo "With token: $cleanedToken\n"; // Log token to make sure it's passed correctly
+        echo "With token: $cleanedToken\n"; 
+        
         $stmt = $conn->prepare($query);
-        $stmt->execute([':token' => (string)$cleanedToken]);
-
-
+        $stmt->execute([':token' => $cleanedToken]);
 
         $success = false; 
         $message = '';
@@ -32,13 +59,11 @@ if (isset($_GET['token'])) {
         if ($stmt->rowCount() > 0) {
             $updateQuery = "UPDATE [taaltourismdb].[taaltourismdb].[users] 
                 SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
-                WHERE LTRIM(RTRIM(emailveriftoken)) = CAST(:token AS NVARCHAR(MAX))
-            ";
+                WHERE emailveriftoken = :token";
+                
             $updateStmt = $conn->prepare($updateQuery);
-    
 
-
-            if ($updateStmt->execute([':token' => (string)$cleanedToken])) {
+            if ($updateStmt->execute([':token' => $cleanedToken])) {
                 $success = true;
                 $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
                 $message = 'Your email has been successfully verified!';
@@ -49,7 +74,7 @@ if (isset($_GET['token'])) {
             }
         } else {
             $message = 'Your email is already verified, the link is invalid, or it has expired.';
-            $debugInfo = 'No matching token found or token expired';
+            $debugInfo = 'No matching token found or token expired. Row count: ' . $stmt->rowCount();
         }
     } catch (PDOException $e) {
         $message = 'An error occurred during verification. Please contact support.';
