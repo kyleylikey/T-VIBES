@@ -16,16 +16,11 @@ if (isset($_GET['token'])) {
         $cleanedToken = LTRIM(RTRIM($token));
         echo "Cleaned token: '$cleanedToken'\n"; // Log cleaned token for debugging
 
-        $query = "SELECT *
-FROM [taaltourismdb].[taaltourismdb].[users]
-WHERE LTRIM(RTRIM(emailveriftoken)) = '2125ff806925c21305da82348a49ba1cded6c980d3b7f160cc8205bbb68d0309'
-AND status = 'inactive'
-AND token_expiry > GETDATE();
-";
+        $query = "SELECT * FROM [taaltourismdb].[taaltourismdb].[users] WHERE LTRIM(RTRIM(emailveriftoken)) = CAST(:token AS NVARCHAR(MAX)) AND status = 'inactive' AND token_expiry > GETDATE()";
         echo "Executing query: $query\n";
         echo "With token: $cleanedToken\n"; // Log token to make sure it's passed correctly
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':token', $cleanedToken, PDO::PARAM_STR);
+        $stmt->execute([':token' => $cleanedToken]);
         $stmt->execute();
 
 
@@ -40,7 +35,7 @@ AND token_expiry > GETDATE();
                 WHERE LTRIM(RTRIM(emailveriftoken)) = CAST(:token AS NVARCHAR(MAX))
             ";
             $updateStmt = $conn->prepare($updateQuery);
-            $stmt->bindParam(':token', $cleanedToken, PDO::PARAM_STR);
+            $stmt->execute([':token' => $cleanedToken]);
 
 
             if ($updateStmt->execute()) {
