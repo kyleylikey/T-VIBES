@@ -19,11 +19,13 @@ if (isset($_GET['token'])) {
         // Clean token
         $cleanedToken = trim($token);
         $debugOutput .= "Verification attempt with token: " . $cleanedToken . "\n";
+        $debugOutput .= "Token (hex): " . bin2hex($cleanedToken) . "\n";
+
         
         // Verify the token directly using the correct table name
-        $checkQuery = "SELECT userid, username, email, status, token_expiry 
-                      FROM taaltourismdb.users 
-                      WHERE emailveriftoken = ?";
+        $checkQuery = "SELECT userid, username, email, status, token_expiry, emailveriftoken 
+               FROM taaltourismdb.users 
+               WHERE LOWER(emailveriftoken) = LOWER(?)";
         $checkStmt = $conn->prepare($checkQuery);
         $checkStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
         $checkStmt->execute();
@@ -33,6 +35,8 @@ if (isset($_GET['token'])) {
         
         if ($userData) {
             $debugOutput .= "Token found! User: " . $userData['username'] . "\n";
+            $debugOutput .= "DB Token (hex): " . bin2hex($userData['emailveriftoken']) . "\n";
+
             
             // Check if already verified
             if ($userData['status'] !== 'inactive') {
