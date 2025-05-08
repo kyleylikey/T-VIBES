@@ -8,8 +8,8 @@ error_reporting(E_ALL);
 function sendconfirmationEmail($username, $email, $verificationToken) {
     $verificationLink = "https://tourtaal.azurewebsites.net/verify.php?token=" . urlencode($verificationToken);
     
-    $endpoint = getenv('COMMUNICATION_SERVICES_ENDPOINT');
-    $apiKey = getenv('COMMUNICATION_SERVICES_KEY');
+    $endpoint = getenv('AZURE_EMAIL_ENDPOINT');
+    $apiKey = getenv('AZURE_EMAIL_API_KEY');
     $senderEmail = getenv('AZURE_EMAIL_SENDER');
 
     $url = "{$endpoint}/emails:send?api-version=2023-03-31";
