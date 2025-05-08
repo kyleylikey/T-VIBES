@@ -4,337 +4,98 @@ require_once '../config/dbconnect.php';
 if (isset($_GET['token'])) {
     $token = trim($_GET['token']);
     
-    // Log to PHP error log
-    error_log("Verification attempt with token: " . $token);
-    
-    $database = new Database();
-    $conn = $database->getConnection();
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Get database connection details
-    $debugOutput = "Database settings check:\n";
-    try {
-        $debugOutput .= "PHP Version: " . phpversion() . "\n";
-        $debugOutput .= "PDO Drivers: " . implode(", ", PDO::getAvailableDrivers()) . "\n";
-        $debugOutput .= "Error Mode: " . $conn->getAttribute(PDO::ATTR_ERRMODE) . "\n";
-    } catch (Exception $e) {
-        $debugOutput .= "Error getting database details: " . $e->getMessage() . "\n";
-    }
-
-    // Initialize variables to avoid undefined variable warnings
+    // Initialize variables
     $success = false;
     $message = '';
     $iconHtml = '<i class="fas fa-exclamation-circle"></i>';
     $debugInfo = '';
-
+    $debugOutput = '';
+    
     try {
+        $database = new Database();
+        $conn = $database->getConnection();
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Clean token
         $cleanedToken = trim($token);
+        $debugOutput .= "Verification attempt with token: " . $cleanedToken . "\n";
         
-        // Output for debugging
-        $debugOutput = "Cleaned token: '$cleanedToken'\n";
-
-        // Check for database connectivity first
-        try {
-            $testQuery = "SELECT 1";
-            $testStmt = $conn->query($testQuery);
-            $debugOutput .= "Database connection successful\n";
-        } catch (PDOException $e) {
-            $debugOutput .= "Database connection test failed: " . $e->getMessage() . "\n";
-        }
-
-        // First, check if the token exists without any conditions
-        $debugOutput .= "Checking if token exists in database...\n";
+        // Verify the token directly using the correct table name
+        $checkQuery = "SELECT userid, username, email, status, token_expiry 
+                      FROM taaltourismdb.users 
+                      WHERE emailveriftoken = ?";
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
+        $checkStmt->execute();
         
-        // Get database schema information
-        $debugOutput .= "Checking database schema...\n";
-        try {
-            // List all tables to verify the correct table name
-            $tablesQuery = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES";
-            $tablesStmt = $conn->query($tablesQuery);
-            if ($tablesStmt) {
-                $debugOutput .= "Available tables in database:\n";
-                while ($tableRow = $tablesStmt->fetch(PDO::FETCH_ASSOC)) {
-                    $debugOutput .= "- " . $tableRow['TABLE_SCHEMA'] . "." . $tableRow['TABLE_NAME'] . "\n";
-                }
-            } else {
-                $debugOutput .= "Could not retrieve table list\n";
-            }
-        } catch (PDOException $e) {
-            $debugOutput .= "Error checking schema: " . $e->getMessage() . "\n";
-        }
+        // Fetch the user data
+        $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
         
-        // Try with different table name formats
-        $possibleTableNames = [
-            "taaltourismdb.users", // This is the most likely one based on the schema output
-            "[taaltourismdb].[users]",
-            "users", 
-            "dbo.users", 
-            "[users]", 
-            "[dbo].[users]",
-            "taaltourismdb.dbo.users",
-            "[taaltourismdb].[dbo].[users]"
-        ];
-        
-        // Find the first table name that works
-        $tableName = null;
-        foreach ($possibleTableNames as $testTableName) {
-            try {
-                $testQuery = "SELECT TOP 1 1 FROM $testTableName";
-                $testStmt = $conn->query($testQuery);
-                if ($testStmt && $testStmt->rowCount() >= 0) {
-                    $tableName = $testTableName;
-                    $debugOutput .= "Successfully connected to table: $tableName\n";
-                    break;
-                }
-            } catch (PDOException $e) {
-                $debugOutput .= "Table '$testTableName' test failed: " . $e->getMessage() . "\n";
-            }
-        }
-        
-        // Based on the schema listing, we know the table is taaltourismdb.users
-        if (!$tableName) {
-            $tableName = "taaltourismdb.users";
-            $debugOutput .= "Using 'taaltourismdb.users' based on schema listing.\n";
-        }
-
-        // Replace the missing check statements after finding the table name
-
-        // Now check for the token in the table we found
-        try {
-            // Use a direct fully-qualified query without any special collation clauses
-            $checkQuery = "SELECT userid, username, email, status, token_expiry FROM taaltourismdb.users WHERE emailveriftoken = ?";
-            $checkStmt = $conn->prepare($checkQuery);
-            $checkStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
-            $checkStmt->execute();
+        if ($userData) {
+            $debugOutput .= "Token found! User: " . $userData['username'] . "\n";
             
-            // Don't rely on rowCount() - fetch the actual data
-            $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($userData) {
-                $debugOutput .= "Token found! User: " . $userData['username'] . "\n";
-                
-                // Check if user is already verified
-                if ($userData['status'] !== 'inactive') {
-                    $message = 'Your email is already verified.';
-                    $debugInfo = 'User account is already active';
-                    $debugOutput .= "User already verified\n";
-                }
-                // Check if token is expired
-                else if (strtotime($userData['token_expiry']) < time()) {
-                    $message = 'Your verification link has expired.';
-                    $debugInfo = 'Token expired on ' . $userData['token_expiry'];
-                    $debugOutput .= "Token expired\n";
-                }
-                // Everything is good, verify the email
-                else {
-                    $updateQuery = "UPDATE taaltourismdb.users 
-                                   SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
-                                   WHERE emailveriftoken = ?";
-                    $updateStmt = $conn->prepare($updateQuery);
-                    $updateStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
-                    
-                    if ($updateStmt->execute()) {
-                        $success = true;
-                        $message = 'Your email has been successfully verified!';
-                        $iconHtml = '<i class="fas fa-check-circle"></i>';
-                        $debugInfo = 'Email verification successful for: ' . $userData['email'];
-                    } else {
-                        $message = 'Error updating your account.';
-                        $debugInfo = 'Failed to update user status';
-                    }
-                }
-            } else {
-                $message = 'Invalid verification link. Please request a new one.';
-                $debugInfo = 'No matching token found in database';
-                
-                // IMPORTANT: Add a direct token search for debugging
-                $directQuery = "SELECT TOP 5 username, email, 
-                                SUBSTRING(emailveriftoken, 1, 10) AS token_start,
-                                SUBSTRING(emailveriftoken, LEN(emailveriftoken)-9, 10) AS token_end, 
-                                LEN(emailveriftoken) AS token_length
-                                FROM taaltourismdb.users 
-                                WHERE emailveriftoken IS NOT NULL";
-                $directResult = $conn->query($directQuery);
-                
-                if ($directResult) {
-                    $debugOutput .= "\nActive tokens in database:\n";
-                    while ($row = $directResult->fetch(PDO::FETCH_ASSOC)) {
-                        $debugOutput .= "- User: " . $row['username'] . 
-                                       ", Token start: " . $row['token_start'] . 
-                                       ", Token end: " . $row['token_end'] . 
-                                       ", Length: " . $row['token_length'] . "\n";
-                    }
-                }
-            }
-        } catch (Exception $e) {
-            $message = 'An error occurred during verification.';
-            $debugInfo = 'Error: ' . $e->getMessage();
-        }
-        
-        // Get connection info for debugging
-        $debugOutput .= "Database driver: " . $conn->getAttribute(PDO::ATTR_DRIVER_NAME) . "\n";
-        $debugOutput .= "Server version: " . $conn->getAttribute(PDO::ATTR_SERVER_VERSION) . "\n";
-        $debugOutput .= "Client version: " . $conn->getAttribute(PDO::ATTR_CLIENT_VERSION) . "\n";
-        
-        // Check that the table actually has data
-        try {
-            $countQuery = "SELECT COUNT(*) as total FROM $tableName";
-            $countStmt = $conn->query($countQuery);
-            if ($countStmt) {
-                $countResult = $countStmt->fetch(PDO::FETCH_ASSOC);
-                $debugOutput .= "Total rows in $tableName: " . $countResult['total'] . "\n";
-                
-                if ($countResult['total'] == 0) {
-                    $debugOutput .= "WARNING: Table is empty!\n";
-                }
-            }
-        } catch (PDOException $ce) {
-            $debugOutput .= "Error counting rows: " . $ce->getMessage() . "\n";
-        }
-        
-        // Examine table structure
-        try {
-            $columnQuery = "SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH 
-                          FROM INFORMATION_SCHEMA.COLUMNS 
-                          WHERE TABLE_SCHEMA = 'taaltourismdb' 
-                          AND TABLE_NAME = 'users'";
-            $columnStmt = $conn->query($columnQuery);
-            
-            if ($columnStmt && $columnStmt->rowCount() > 0) {
-                $debugOutput .= "Columns in taaltourismdb.users table:\n";
-                while ($col = $columnStmt->fetch(PDO::FETCH_ASSOC)) {
-                    $debugOutput .= "- " . $col['COLUMN_NAME'] . " (" . $col['DATA_TYPE'];
-                    if (!empty($col['CHARACTER_MAXIMUM_LENGTH'])) {
-                        $debugOutput .= "(" . $col['CHARACTER_MAXIMUM_LENGTH'] . ")";
-                    }
-                    $debugOutput .= ")\n";
-                }
-            } else {
-                $debugOutput .= "Could not get column information\n";
-            }
-        } catch (PDOException $ce) {
-            $debugOutput .= "Error getting column information: " . $ce->getMessage() . "\n";
-        }
-        
-        $debugOutput .= "Check token query executed\n";
-        
-        if ($checkStmt && $checkStmt->rowCount() > 0) {
-            $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
-            $debugOutput .= "Token found in database!\n";
-            $debugOutput .= "User ID: " . (isset($userData['userid']) ? $userData['userid'] : 'N/A') . "\n";
-            $debugOutput .= "User status: " . (isset($userData['status']) ? $userData['status'] : 'N/A') . "\n";
-            $debugOutput .= "Token expiry: " . (isset($userData['token_expiry']) ? $userData['token_expiry'] : 'N/A') . "\n";
-            $debugOutput .= "Current date: " . date('Y-m-d H:i:s') . "\n";
-            
-            // Check specific conditions
-            if (isset($userData['status']) && $userData['status'] !== 'inactive') {
-                $debugOutput .= "User is already active!\n";
+            // Check if already verified
+            if ($userData['status'] !== 'inactive') {
                 $message = 'Your email is already verified.';
-                $success = false;
-            } else if (isset($userData['token_expiry']) && strtotime($userData['token_expiry']) < time()) {
-                $debugOutput .= "Token has expired!\n";
+                $debugInfo = 'User account is already active';
+                $debugOutput .= "User already verified\n";
+            }
+            // Check if token is expired
+            else if (isset($userData['token_expiry']) && strtotime($userData['token_expiry']) < time()) {
                 $message = 'Your verification link has expired. Please request a new one.';
-                $success = false;
-            } else {
-                // Update the user status to active
-                $updateQuery = "UPDATE $tableName 
-                    SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
-                    WHERE emailveriftoken = ?";
-                    
+                $debugInfo = 'Token expired on ' . $userData['token_expiry'];
+                $debugOutput .= "Token expired\n";
+            }
+            // Everything is good, verify the email
+            else {
+                $updateQuery = "UPDATE taaltourismdb.users 
+                               SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
+                               WHERE emailveriftoken = ?";
                 $updateStmt = $conn->prepare($updateQuery);
-
-                if ($updateStmt && $updateStmt->execute([$cleanedToken])) {
+                $updateStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
+                
+                if ($updateStmt->execute()) {
                     $success = true;
-                    $iconHtml = '<i class="fas fa-check-circle"></i>';
                     $message = 'Your email has been successfully verified!';
-                    $debugInfo = 'User account activated successfully';
+                    $iconHtml = '<i class="fas fa-check-circle"></i>';
+                    $debugInfo = 'Email verification successful for: ' . $userData['email'];
+                    $debugOutput .= "User account activated successfully\n";
                 } else {
-                    $message = 'Failed to verify your email. Please try again later.';
-                    $debugInfo = 'Database update failed: ' . ($updateStmt ? implode(', ', $updateStmt->errorInfo()) : 'Unknown error');
+                    $message = 'Error updating your account.';
+                    $debugInfo = 'Failed to update user status';
+                    $debugOutput .= "Failed to update user status\n";
                 }
             }
         } else {
-            $debugOutput .= "Token not found in database or error occurred!\n";
-            if ($checkStmt) {
-                $debugOutput .= "PDO Error Info: " . print_r($checkStmt->errorInfo(), true) . "\n";
-            }
-            
-            // Try to get sample data from the users table to verify structure
-            $debugOutput .= "Trying to get a sample row...\n";
-            try {
-                $altQuery = "SELECT TOP 1 * FROM $tableName";
-                $altStmt = $conn->query($altQuery);
-                
-                if ($altStmt && $altStmt->rowCount() > 0) {
-                    $sampleRow = $altStmt->fetch(PDO::FETCH_ASSOC);
-                    $debugOutput .= "Sample row from users table: " . print_r($sampleRow, true) . "\n";
-                    
-                    // Check if token column exists
-                    if (isset($sampleRow['emailveriftoken'])) {
-                        $debugOutput .= "Token column exists in database\n";
-                    } else {
-                        $debugOutput .= "WARNING: emailveriftoken column not found in sample row\n";
-                        
-                        // Check all column names to find similar ones
-                        $debugOutput .= "Available columns in users table:\n";
-                        foreach ($sampleRow as $column => $value) {
-                            $debugOutput .= "- $column\n";
-                            
-                            // Look for columns that might contain token in their name
-                            if (stripos($column, 'token') !== false || 
-                                stripos($column, 'verification') !== false || 
-                                stripos($column, 'verify') !== false || 
-                                stripos($column, 'email') !== false) {
-                                $debugOutput .= "  Possible token column: $column\n";
-                            }
-                        }
-                    }
-                } else {
-                    $debugOutput .= "Could not get a sample row from the users table\n";
-                    
-                    // Try to get table structure if we can't get a row
-                    try {
-                        $columnQuery = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$tableName'";
-                        $columnStmt = $conn->query($columnQuery);
-                        
-                        if ($columnStmt && $columnStmt->rowCount() > 0) {
-                            $debugOutput .= "Columns in '$tableName' table:\n";
-                            while ($columnRow = $columnStmt->fetch(PDO::FETCH_ASSOC)) {
-                                $debugOutput .= "- " . $columnRow['COLUMN_NAME'] . "\n";
-                            }
-                        } else {
-                            $debugOutput .= "No columns found for table '$tableName'\n";
-                        }
-                    } catch (PDOException $colEx) {
-                        $debugOutput .= "Error getting column information: " . $colEx->getMessage() . "\n";
-                    }
-                }
-            } catch (PDOException $e) {
-                $debugOutput .= "Error getting sample row: " . $e->getMessage() . "\n";
-                
-                // Try an alternative approach with COUNT
-                try {
-                    $countQuery = "SELECT COUNT(*) as row_count FROM $tableName";
-                    $countStmt = $conn->query($countQuery);
-                    if ($countStmt) {
-                        $countRow = $countStmt->fetch(PDO::FETCH_ASSOC);
-                        $debugOutput .= "Total rows in table: " . $countRow['row_count'] . "\n";
-                    }
-                } catch (PDOException $countEx) {
-                    $debugOutput .= "Error counting rows: " . $countEx->getMessage() . "\n";
-                }
-            }
-            
             $message = 'Invalid verification link. Please request a new one.';
             $debugInfo = 'No matching token found in database';
+            $debugOutput .= "Token not found in database\n";
+            
+            // Additional debugging info for token matching issues
+            $directQuery = "SELECT TOP 5 username, 
+                           SUBSTRING(emailveriftoken, 1, 10) AS token_start,
+                           SUBSTRING(emailveriftoken, LEN(emailveriftoken)-9, 10) AS token_end, 
+                           LEN(emailveriftoken) AS token_length
+                           FROM taaltourismdb.users 
+                           WHERE emailveriftoken IS NOT NULL";
+            $directResult = $conn->query($directQuery);
+            
+            if ($directResult && $directResult->rowCount() > 0) {
+                $debugOutput .= "Active tokens in database:\n";
+                while ($row = $directResult->fetch(PDO::FETCH_ASSOC)) {
+                    $debugOutput .= "- User: " . $row['username'] . 
+                                   ", Token start: " . $row['token_start'] . 
+                                   ", Token end: " . $row['token_end'] . 
+                                   ", Length: " . $row['token_length'] . "\n";
+                }
+            } else {
+                $debugOutput .= "No active tokens found in database\n";
+            }
         }
     } catch (PDOException $e) {
         $message = 'An error occurred during verification. Please contact support.';
         $debugInfo = 'Database error: ' . $e->getMessage();
-        
         $debugOutput .= "PDO Exception caught: " . $e->getMessage() . "\n";
-        $debugOutput .= "Error code: " . $e->getCode() . "\n";
-        $debugOutput .= "Stack trace: " . $e->getTraceAsString() . "\n";
     }
 
     // Escape quotes for JavaScript
@@ -426,10 +187,11 @@ if (isset($_GET['token'])) {
         });
     </script>
     
-    <!-- Debug information section - will be visible on the page -->
+    <?php if ($_SERVER['SERVER_NAME'] === 'localhost' || strpos($_SERVER['SERVER_NAME'], 'dev') !== false): ?>
+    <!-- Debug information section - only visible in development -->
     <div class='debug-container'>
         <h2>Debug Information</h2>
-        <p>This section is for debugging purposes and should be removed in production.</p>
+        <p>This section is for debugging purposes and is only visible in development environments.</p>
         <pre id='debug-output'>
 Token: <?php echo htmlspecialchars($token); ?>
 
@@ -443,6 +205,7 @@ Detailed Debug Output:
 <?php echo htmlspecialchars($debugOutput); ?>
         </pre>
     </div>
+    <?php endif; ?>
 </body>
 </html>
 <?php
