@@ -20,7 +20,8 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     }
 
     // First, get an access token using the API key
-    $tokenEndpoint = "https://communication.azure.com/tokens";
+    $tokenEndpoint = "https://taaltourismemailsender.communication.azure.com/tokens";
+    
     $tokenHeaders = [
         'Content-Type: application/json',
         'Authorization: Bearer ' . $apiKey
@@ -36,6 +37,11 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, $tokenHeaders);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
     $tokenResponse = curl_exec($ch);
     $tokenStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
@@ -173,7 +179,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     
     $response = curl_exec($ch);
     $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
+
     error_log("Email API response - Status: $statusCode, Response: " . $response);
     
     if (curl_errno($ch)) {
