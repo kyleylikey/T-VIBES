@@ -66,7 +66,13 @@ class User {
             $query = "INSERT INTO [taaltourismdb].[users] ([name], [username], [hashedpassword], [contactnum], [email], [usertype], [status], [emailveriftoken], [token_expiry])
                     VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive', :emailveriftoken, :token_expiry)";
             $stmt = $this->conn->prepare($query);
-            // bind parameters...
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':hashedpassword', $hashedPassword);
+            $stmt->bindParam(':contactnum', $contactnum);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':emailveriftoken', $verificationToken);
+            $stmt->bindParam(':token_expiry', $tokenExpiry);
             return $stmt->execute();
         } catch (PDOException $e) {
             error_log("User creation error: " . $e->getMessage());
