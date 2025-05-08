@@ -70,7 +70,7 @@ if (isset($_GET['token']) && isset($_GET['email'])) {
 
     // If reset is valid, show the password reset form
     if ($validReset) {
-        include '../views/frontend/resetpassword.php';
+        include 'resetpassword.php';
         exit;
     }
     
