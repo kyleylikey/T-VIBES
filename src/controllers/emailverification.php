@@ -19,8 +19,39 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         return false;
     }
 
-    $url = "{$endpoint}/emails:send?api-version=2023-03-31";
+    // First, get an access token using the API key
+    $tokenEndpoint = "https://communication.azure.com/tokens";
+    $tokenHeaders = [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ];
     
+    $tokenPayload = [
+        "scope" => "https://communication.azure.com/.default"
+    ];
+    
+    $ch = curl_init($tokenEndpoint);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($tokenPayload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $tokenHeaders);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    $tokenResponse = curl_exec($ch);
+    $tokenStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    
+    error_log("Token API response - Status: $tokenStatusCode, Response: " . $tokenResponse);
+    
+    if ($tokenStatusCode != 200) {
+        error_log("Failed to get access token");
+        return false;
+    }
+    
+    $tokenData = json_decode($tokenResponse, true);
+    $accessToken = $tokenData['access_token'];
+    
+    // Now use the access token to send the email
+    $url = "{$endpoint}/emails:send?api-version=2023-03-31";
+
     $payload = [
         "senderAddress" => $senderEmail,
         "content" => [
@@ -136,13 +167,13 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
-        'api-key: ' . $apiKey
+        'Authorization: Bearer ' . $accessToken
     ]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     
     $response = curl_exec($ch);
     $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
+    
     error_log("Email API response - Status: $statusCode, Response: " . $response);
     
     if (curl_errno($ch)) {
