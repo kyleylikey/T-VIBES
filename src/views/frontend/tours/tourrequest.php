@@ -187,26 +187,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db->beginTransaction();
  
             try {
-                $stmt = $db->query("SELECT MAX(tourid) as max_id FROM [taaltourismdb].[tour]");
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                $newTourId = ($result['max_id'] ? $result['max_id'] + 1 : 1);
- 
+                $successCount = 0;
+            
                 foreach ($_SESSION['tour_destinations'] as $destination) {
                     $siteid = $destination['siteid'];
- 
-                    $stmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] (tourid, siteid, userid, status, date, companions, created_at) 
-                                    VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, GETDATE())");
-                    $stmt->bindParam(':tourid', $newTourId, PDO::PARAM_INT);
+            
+                    $stmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] 
+                        (siteid, userid, status, date, companions, created_at) 
+                        VALUES (:siteid, :userid, 'request', :date, :companions, GETDATE())");
+            
                     $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
                     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
                     $stmt->bindParam(':date', $selectedDate);
                     $stmt->bindParam(':companions', $companions, PDO::PARAM_INT);
- 
+            
                     if ($stmt->execute()) {
                         $successCount++;
                     }
                 }
- 
+            
                 if ($successCount == count($_SESSION['tour_destinations'])) {
                     $db->commit();
                     echo json_encode(['success' => true, 'message' => 'Tour requests created successfully']);
@@ -215,7 +214,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo json_encode(['success' => false, 'message' => 'Some tour requests failed to be created']);
                 }
                 exit();
-            } catch (Exception $e) {
+            } catch (PDOException $e) {
+                $db->rollback();
+                echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+                exit();
+            }
+             catch (Exception $e) {
                 $db->rollback();
                 echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
                 exit();
