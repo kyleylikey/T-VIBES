@@ -101,36 +101,74 @@ if (isset($_GET['token'])) {
 
         // Now check for the token in the table we found
         try {
-            // Modify line 157-158 (around the checkQuery)
-            $checkQuery = "SELECT * FROM $tableName WHERE emailveriftoken COLLATE Latin1_General_CS_AS = ?";
-            $debugOutput .= "Executing query with specific collation: $checkQuery with token: " . substr($cleanedToken, 0, 10) . "...\n";
-
+            // Use a direct fully-qualified query without any special collation clauses
+            $checkQuery = "SELECT userid, username, email, status, token_expiry FROM taaltourismdb.users WHERE emailveriftoken = ?";
             $checkStmt = $conn->prepare($checkQuery);
             $checkStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
-            $executed = $checkStmt->execute();
+            $checkStmt->execute();
             
-            if (!$executed) {
-                $debugOutput .= "Failed to execute token check query\n";
-            }
-            
-            $debugOutput .= "Rows returned: " . $checkStmt->rowCount() . "\n";
-        } catch (PDOException $e) {
-            // Add after your existing token check if it fails
-        if (!($checkStmt && $userData)) {
-            $debugOutput .= "Token not found with exact match, trying case-insensitive...\n";
-            $ciQuery = "SELECT * FROM $tableName WHERE LOWER(emailveriftoken) = LOWER(?)";
-            $ciStmt = $conn->prepare($ciQuery);
-            $ciStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
-            $ciStmt->execute();
-            $userData = $ciStmt->fetch(PDO::FETCH_ASSOC);
+            // Don't rely on rowCount() - fetch the actual data
+            $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
             
             if ($userData) {
-                $debugOutput .= "Token found with case-insensitive match!\n";
+                $debugOutput .= "Token found! User: " . $userData['username'] . "\n";
+                
+                // Check if user is already verified
+                if ($userData['status'] !== 'inactive') {
+                    $message = 'Your email is already verified.';
+                    $debugInfo = 'User account is already active';
+                    $debugOutput .= "User already verified\n";
+                }
+                // Check if token is expired
+                else if (strtotime($userData['token_expiry']) < time()) {
+                    $message = 'Your verification link has expired.';
+                    $debugInfo = 'Token expired on ' . $userData['token_expiry'];
+                    $debugOutput .= "Token expired\n";
+                }
+                // Everything is good, verify the email
+                else {
+                    $updateQuery = "UPDATE taaltourismdb.users 
+                                   SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
+                                   WHERE emailveriftoken = ?";
+                    $updateStmt = $conn->prepare($updateQuery);
+                    $updateStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
+                    
+                    if ($updateStmt->execute()) {
+                        $success = true;
+                        $message = 'Your email has been successfully verified!';
+                        $iconHtml = '<i class="fas fa-check-circle"></i>';
+                        $debugInfo = 'Email verification successful for: ' . $userData['email'];
+                    } else {
+                        $message = 'Error updating your account.';
+                        $debugInfo = 'Failed to update user status';
+                    }
+                }
+            } else {
+                $message = 'Invalid verification link. Please request a new one.';
+                $debugInfo = 'No matching token found in database';
+                
+                // IMPORTANT: Add a direct token search for debugging
+                $directQuery = "SELECT TOP 5 username, email, 
+                                SUBSTRING(emailveriftoken, 1, 10) AS token_start,
+                                SUBSTRING(emailveriftoken, LEN(emailveriftoken)-9, 10) AS token_end, 
+                                LEN(emailveriftoken) AS token_length
+                                FROM taaltourismdb.users 
+                                WHERE emailveriftoken IS NOT NULL";
+                $directResult = $conn->query($directQuery);
+                
+                if ($directResult) {
+                    $debugOutput .= "\nActive tokens in database:\n";
+                    while ($row = $directResult->fetch(PDO::FETCH_ASSOC)) {
+                        $debugOutput .= "- User: " . $row['username'] . 
+                                       ", Token start: " . $row['token_start'] . 
+                                       ", Token end: " . $row['token_end'] . 
+                                       ", Length: " . $row['token_length'] . "\n";
+                    }
+                }
             }
-        }
-            $debugOutput .= "Error checking token: " . $e->getMessage() . "\n";
         } catch (Exception $e) {
-            $debugOutput .= "General error: " . $e->getMessage() . "\n";
+            $message = 'An error occurred during verification.';
+            $debugInfo = 'Error: ' . $e->getMessage();
         }
         
         // Get connection info for debugging
