@@ -65,12 +65,12 @@ if (isset($_GET['token'])) {
         
         // Try with different table name formats
         $possibleTableNames = [
+            "taaltourismdb.users", // This is the most likely one based on the schema output
+            "[taaltourismdb].[users]",
             "users", 
             "dbo.users", 
             "[users]", 
             "[dbo].[users]",
-            "taaltourismdb.users",
-            "[taaltourismdb].[users]", 
             "taaltourismdb.dbo.users",
             "[taaltourismdb].[dbo].[users]"
         ];
@@ -91,9 +91,10 @@ if (isset($_GET['token'])) {
             }
         }
         
+        // Based on the schema listing, we know the table is taaltourismdb.users
         if (!$tableName) {
-            $debugOutput .= "Could not find a valid users table. Using 'users' as fallback.\n";
-            $tableName = "users";
+            $tableName = "taaltourismdb.users";
+            $debugOutput .= "Using 'taaltourismdb.users' based on schema listing.\n";
         }
         
         // Get connection info for debugging
