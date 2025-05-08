@@ -26,11 +26,14 @@ if (!$conn) {
 }
 
 // Validate token
-$query = "SELECT * FROM [taaltourismdb].[users] WHERE email = :email AND LOWER(emailveriftoken) = LOWER(:token) AND token_expiry > GETDATE()";
+$query = "SELECT * FROM [taaltourismdb].[users] WHERE LOWER(email) = LOWER(:email) AND LOWER(emailveriftoken) = LOWER(:token) AND token_expiry > GETDATE()";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':email', $email);
 $stmt->bindParam(':token', $cleanedToken);
 $stmt->execute();
+
+// Debug output
+echo "Email: " . $email . "<br>Token: " . $cleanedToken . "<br>Rows: " . $stmt->rowCount();
 
 if ($stmt->rowCount() > 0) {
     // Token is valid, set session variable and include the reset password form
