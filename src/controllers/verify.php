@@ -19,67 +19,50 @@ if (isset($_GET['token'])) {
     $conn = $database->getConnection();
 
     try {
-        // First check without the conditions to diagnose the issue
-        $baseQuery = "SELECT email, status, 
-                     CONVERT(VARCHAR, token_expiry, 120) as expiry_time,
-                     CONVERT(VARCHAR, GETDATE(), 120) as current_datetime
-                     FROM [taaltourismdb].[users] 
-                     WHERE emailveriftoken = ?";
+        // First, check if there are any tokens in DB
+        $tokenCheckQuery = "SELECT COUNT(*) as token_count 
+                          FROM [taaltourismdb].[users] 
+                          WHERE emailveriftoken IS NOT NULL";
+        $tokenCheck = $conn->query($tokenCheckQuery);
+        $tokenCount = $tokenCheck->fetch(PDO::FETCH_ASSOC)['token_count'];
+        error_log("Total tokens in database: " . $tokenCount);
         
-        $baseStmt = $conn->prepare($baseQuery);
-        $baseStmt->bindParam(1, $token, PDO::PARAM_STR);
-        $baseStmt->execute();
+        // Try direct query using literal token value instead of parameter binding
+        $directQuery = "SELECT email, status, 
+                      CONVERT(VARCHAR, token_expiry, 120) as expiry_time,
+                      CONVERT(VARCHAR, GETDATE(), 120) as current_datetime
+                      FROM [taaltourismdb].[users] 
+                      WHERE emailveriftoken = '" . $conn->quote($token) . "'";
         
-        // Log whether we found anything with just the token
-        if ($baseStmt->rowCount() > 0) {
-            $foundData = $baseStmt->fetch(PDO::FETCH_ASSOC);
-            error_log("Token EXISTS in database! Status: " . $foundData['status'] . 
-                      ", Expiry: " . $foundData['expiry_time'] . ", Current: " . $foundData['current_datetime']);
+        error_log("Executing direct query: " . substr($directQuery, 0, 100) . "...");
+        $directResult = $conn->query($directQuery);
+        
+        if ($directResult && $directResult->rowCount() > 0) {
+            error_log("Direct query FOUND the token!");
+            $foundData = $directResult->fetch(PDO::FETCH_ASSOC);
+            // Continue with existing code...
+        } else {
+            error_log("Direct query did NOT find the token");
             
-            $debugInfo = "Token found. Status: " . $foundData['status'] . 
-                      ", Expiry: " . $foundData['expiry_time'] . ", Current: " . $foundData['current_datetime'];
+            // Try a LIKE query to see if there are case sensitivity or whitespace issues
+            $likeQuery = "SELECT email, username, emailveriftoken, status
+                        FROM [taaltourismdb].[users] 
+                        WHERE emailveriftoken LIKE '%" . substr($token, 5, 10) . "%'";
+            $likeResult = $conn->query($likeQuery);
             
-            // If the token exists but didn't match our full criteria, let's see why
-            if ($foundData['status'] !== 'inactive') {
-                error_log("Token found but status is not inactive: " . $foundData['status']);
-                $message = 'Your email has already been verified.';
-                $debugInfo = "Token found but account status is already: " . $foundData['status'];
-            } else {
-                // Try to parse the dates to see if expiration is the issue
-                $expiryTime = strtotime($foundData['expiry_time']);
-                $currentTime = strtotime($foundData['current_datetime']);
-                
-                if ($expiryTime && $currentTime) {
-                    error_log("Expiry timestamp: " . $expiryTime . ", Current timestamp: " . $currentTime);
-                    if ($expiryTime <= $currentTime) {
-                        error_log("Token found but is expired: " . $foundData['expiry_time']);
-                        $message = 'Your verification link has expired. Please request a new one.';
-                        $debugInfo = "Token expired: " . $foundData['expiry_time'] . " < " . $foundData['current_datetime'];
-                    } else {
-                        error_log("Token should be valid! Expiry > Current time");
-                        
-                        // Token is valid, perform verification
-                        $updateQuery = "UPDATE [taaltourismdb].[users] SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = ?";
-                        $updateStmt = $conn->prepare($updateQuery);
-                        $updateStmt->bindParam(1, $token);
-                        
-                        if ($updateStmt->execute() && $updateStmt->rowCount() > 0) {
-                            $success = true;
-                            $message = 'Your email has been successfully verified!';
-                            $iconHtml = '<i class="fas fa-check-circle"></i>';
-                            $debugInfo = "Email verification successful for: " . $foundData['email'];
-                            error_log("Email verification successful for: " . $foundData['email']);
-                        } else {
-                            $message = 'Error updating account status. Please try again.';
-                            $debugInfo = "Database update failed: " . implode(', ', $updateStmt->errorInfo());
-                            error_log("Failed to update user status: " . implode(', ', $updateStmt->errorInfo()));
-                        }
+            if ($likeResult && $likeResult->rowCount() > 0) {
+                error_log("LIKE query found potential matches:");
+                while ($row = $likeResult->fetch(PDO::FETCH_ASSOC)) {
+                    error_log("Username: " . $row['username'] . ", Token: " . $row['emailveriftoken']);
+                    
+                    // If we find an exact match with PHP's comparison (case sensitive)
+                    if (trim($row['emailveriftoken']) === trim($token)) {
+                        error_log("FOUND EXACT MATCH in PHP comparison");
+                        $foundData = $row;
+                        break;
                     }
                 }
             }
-        } else {
-            error_log("Token NOT found in database: " . substr($token, 0, 10) . "...");
-            $debugInfo = "No matching token found in database";
         }
     } catch (PDOException $e) {
         error_log("Diagnostic query error: " . $e->getMessage());
