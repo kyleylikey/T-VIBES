@@ -96,6 +96,27 @@ if (isset($_GET['token'])) {
             $tableName = "taaltourismdb.users";
             $debugOutput .= "Using 'taaltourismdb.users' based on schema listing.\n";
         }
+
+        // Replace the missing check statements after finding the table name
+
+        // Now check for the token in the table we found
+        try {
+            $checkQuery = "SELECT * FROM $tableName WHERE emailveriftoken = ?";
+            $debugOutput .= "Executing query: $checkQuery with token: " . substr($cleanedToken, 0, 10) . "...\n";
+            
+            $checkStmt = $conn->prepare($checkQuery);
+            $checkStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
+            $executed = $checkStmt->execute();
+            
+            if (!$executed) {
+                $debugOutput .= "Failed to execute token check query\n";
+            }
+            
+            $debugOutput .= "Rows returned: " . $checkStmt->rowCount() . "\n";
+        } catch (PDOException $e) {
+            $debugOutput .= "Error executing token check: " . $e->getMessage() . "\n";
+            $checkStmt = null;
+        }
         
         // Get connection info for debugging
         $debugOutput .= "Database driver: " . $conn->getAttribute(PDO::ATTR_DRIVER_NAME) . "\n";
