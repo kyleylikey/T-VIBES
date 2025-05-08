@@ -15,12 +15,24 @@ if (isset($_GET['token'])) {
         $cleanedToken = trim($token);
         echo "Cleaned token: '$cleanedToken'\n"; // Log cleaned token for debugging
 
-        // First, check if the token exists at all (without additional conditions)
-        $checkTokenQuery = "SELECT userid, status, token_expiry FROM [taaltourismdb].[taaltourismdb].[users] WHERE emailveriftoken = :token";
+        // Check for database connectivity first
+        try {
+            $testQuery = "SELECT 1";
+            $testStmt = $conn->query($testQuery);
+            echo "Database connection successful\n";
+        } catch (PDOException $e) {
+            echo "Database connection test failed: " . $e->getMessage() . "\n";
+        }
+
+        // First, check if the token exists without any conditions
+        echo "Checking if token exists in database...\n";
+        $checkTokenQuery = "SELECT id, status, token_expiry FROM users WHERE emailveriftoken = ?";
         $checkStmt = $conn->prepare($checkTokenQuery);
-        $checkStmt->execute([':token' => $cleanedToken]);
+        $checkStmt->execute([$cleanedToken]);
         
-        if ($checkStmt->rowCount() > 0) {
+        echo "Check token query executed\n";
+        
+        if ($checkStmt && $checkStmt->rowCount() > 0) {
             $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
             echo "Token found in database!\n";
             echo "User status: " . $userData['status'] . "\n";
@@ -36,49 +48,68 @@ if (isset($_GET['token'])) {
                 echo "Token has expired!\n";
             }
         } else {
-            echo "Token not found in database!\n";
+            echo "Token not found in database or error occurred!\n";
+            echo "PDO Error Info: " . print_r($checkStmt->errorInfo(), true) . "\n";
+            
+            // Try another version of the query
+            echo "Trying alternative query...\n";
+            $altQuery = "SELECT TOP 1 id, status, token_expiry, emailveriftoken FROM users";
+            $altStmt = $conn->query($altQuery);
+            $sampleRow = $altStmt->fetch(PDO::FETCH_ASSOC);
+            echo "Sample row from users table: " . print_r($sampleRow, true) . "\n";
+            echo "Token format in database vs provided token:\n";
+            echo "Database token format: " . gettype($sampleRow['emailveriftoken']) . " Length: " . strlen($sampleRow['emailveriftoken']) . "\n";
+            echo "Provided token format: " . gettype($cleanedToken) . " Length: " . strlen($cleanedToken) . "\n";
         }
 
-        // Original query with simpler token comparison
-        $query = "SELECT * FROM [taaltourismdb].[taaltourismdb].[users] 
-                  WHERE emailveriftoken = :token 
+        // Simplified query without schema references
+        $query = "SELECT * FROM users 
+                  WHERE emailveriftoken = ? 
                   AND status = 'inactive' 
                   AND token_expiry > GETDATE()";
         
-        echo "Executing query: $query\n";
-        echo "With token: $cleanedToken\n"; 
-        
+        echo "Executing main query: $query\n";
         $stmt = $conn->prepare($query);
-        $stmt->execute([':token' => $cleanedToken]);
+        
+        if (!$stmt) {
+            echo "Statement preparation failed: " . print_r($conn->errorInfo(), true) . "\n";
+        } else {
+            $stmt->execute([$cleanedToken]);
+            echo "Statement executed. Row count: " . $stmt->rowCount() . "\n";
+            echo "PDO Error Info: " . print_r($stmt->errorInfo(), true) . "\n";
+        }
 
         $success = false; 
         $message = '';
         $iconHtml = '<i class=\"fas fa-exclamation-circle\"></i>';
         $debugInfo = '';
 
-        if ($stmt->rowCount() > 0) {
-            $updateQuery = "UPDATE [taaltourismdb].[taaltourismdb].[users] 
+        if ($stmt && $stmt->rowCount() > 0) {
+            $updateQuery = "UPDATE users 
                 SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
-                WHERE emailveriftoken = :token";
+                WHERE emailveriftoken = ?";
                 
             $updateStmt = $conn->prepare($updateQuery);
 
-            if ($updateStmt->execute([':token' => $cleanedToken])) {
+            if ($updateStmt->execute([$cleanedToken])) {
                 $success = true;
                 $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
                 $message = 'Your email has been successfully verified!';
                 $debugInfo = 'User account activated successfully';
             } else {
                 $message = 'Failed to verify your email. Please try again later.';
-                $debugInfo = 'Database update failed: ' . implode(', ', $updateStmt->errorInfo());
+                $debugInfo = 'Database update failed: ' . print_r($updateStmt->errorInfo(), true);
             }
         } else {
             $message = 'Your email is already verified, the link is invalid, or it has expired.';
-            $debugInfo = 'No matching token found or token expired. Row count: ' . $stmt->rowCount();
+            $debugInfo = 'No matching token found or token expired. Row count: ' . ($stmt ? $stmt->rowCount() : 'NULL');
         }
     } catch (PDOException $e) {
         $message = 'An error occurred during verification. Please contact support.';
-        $debugInfo = 'Database error: ' . $e->getMessage();
+        $debugInfo = 'Database error: ' . $e->getMessage() . ' | Trace: ' . $e->getTraceAsString();
+        
+        echo "PDO Exception caught: " . $e->getMessage() . "\n";
+        echo "Error code: " . $e->getCode() . "\n";
     }
 
     // Escape quotes for JavaScript
@@ -95,23 +126,39 @@ if (isset($_GET['token'])) {
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
         <link href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap' rel='stylesheet'>
         <style>
+            body {
+                font-family: 'Nunito', sans-serif;
+                background-color: #f8f9fa;
+                color: #434343;
+                padding: 20px;
+            }
+            pre {
+                background: #f4f4f4;
+                padding: 10px;
+                border-radius: 5px;
+                overflow-x: auto;
+            }
+            .debug-container {
+                margin-top: 40px;
+                padding: 20px;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
             .swal2-icon {
                 background: none !important;
                 border: none !important;
                 box-shadow: none !important;
             }
-
             .swal2-icon-custom {
                 font-size: 10px; 
                 color: #EC6350; 
             }
-
             .swal2-title-custom {
                 font-size: 24px !important;
                 font-weight: bold;
                 color: #434343 !important;
             }
-
             .swal-custom-popup {
                 padding: 20px;
                 border-radius: 25px;
@@ -140,8 +187,8 @@ if (isset($_GET['token'])) {
                             popup: 'swal-custom-popup'
                         },
                         title: '$message',
-                        showConfirmButton: false, 
-                        timer: 3000
+                        showConfirmButton: true,
+                        confirmButtonText: 'Go to Login'
                     }).then(() => {
                         console.log('Redirecting to login page...');
                         window.location.href = '../views/frontend/login.php'; 
@@ -153,6 +200,21 @@ if (isset($_GET['token'])) {
                 }
             });
         </script>
+        
+        <!-- Debug information section - will be visible on the page -->
+        <div class='debug-container'>
+            <h2>Debug Information</h2>
+            <p>This section is for debugging purposes and should be removed in production.</p>
+            <pre id='debug-output'>
+            Token: <?php echo htmlspecialchars($token); ?>
+            
+            Success: <?php echo $success ? 'true' : 'false'; ?>
+            
+            Message: <?php echo htmlspecialchars($message); ?>
+            
+            Debug Info: <?php echo htmlspecialchars($debugInfo); ?>
+            </pre>
+        </div>
     </body>
     </html>";
 }
