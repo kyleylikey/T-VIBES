@@ -8,23 +8,43 @@ error_reporting(E_ALL);
 function sendconfirmationEmail($username, $email, $verificationToken) {
     $verificationLink = "https://tourtaal.azurewebsites.net/verify.php?token=" . urlencode($verificationToken);
     
-    $endpoint = getenv('AZURE_EMAIL_ENDPOINT');
-    $apiKey = getenv('AZURE_EMAIL_API_KEY');
+    $connectionString = getenv('AZURE_EMAIL_SENDER_CONNECTION_STRING');
     $senderEmail = getenv('AZURE_EMAIL_SENDER');
-
-    if (empty($endpoint) || empty($apiKey) || empty($senderEmail)) {
-        error_log("Email configuration missing - ENDPOINT: " . (empty($endpoint) ? "MISSING" : "SET") .
-                  ", API_KEY: " . (empty($apiKey) ? "MISSING" : "SET") .
-                  ", SENDER: " . (empty($senderEmail) ? "MISSING" : "SET"));
+    
+    if (empty($connectionString) || empty($senderEmail)) {
+        error_log("Email configuration missing");
         return false;
     }
-
-    // Use direct API key authentication instead of OAuth2 flow
+    
+    // Extract credentials from connection string
+    preg_match('/endpoint=(.*?);accesskey=(.*?)($|;)/', $connectionString, $matches);
+    if (count($matches) < 3) {
+        error_log("Invalid connection string format");
+        return false;
+    }
+    
+    $endpoint = rtrim($matches[1], '/');
+    $accessKey = $matches[2];
+    
+    // Generate SAS token
+    $expiry = time() + 3600; // Token valid for 1 hour
+    $url = $endpoint . '/emails:send?api-version=2023-03-31';
+    $urlPath = parse_url($url, PHP_URL_PATH) . '?' . parse_url($url, PHP_URL_QUERY);
+    
+    $stringToSign = $urlPath . "\n" . $expiry;
+    $signature = base64_encode(hash_hmac('sha256', $stringToSign, base64_decode($accessKey), true));
+    
+    $sasToken = "SharedAccessSignature sr=" . urlencode($urlPath) . 
+                "&sig=" . urlencode($signature) . 
+                "&se=" . $expiry . 
+                "&skn=communication";
+    
     $headers = [
         'Content-Type: application/json',
-        'X-Api-Key: ' . $apiKey
+        'Authorization: ' . $sasToken
     ];
-    
+
+
     $url = "{$endpoint}emails:send?api-version=2023-03-31";
 
 
@@ -144,22 +164,17 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
-    // Debug settings
     curl_setopt($ch, CURLOPT_VERBOSE, true);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     
     $response = curl_exec($ch);
     $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
+    
     error_log("Email API response - Status: $statusCode, Response: " . $response);
     
     if (curl_errno($ch)) {
         error_log("cURL error: " . curl_error($ch));
     }
-
+    
     curl_close($ch);
     
     return $statusCode >= 200 && $statusCode < 300;
