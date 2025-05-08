@@ -50,7 +50,7 @@ class User {
     }
 
     public function createUser($name, $username, $hashedPassword, $contactnum, $email, $verificationToken, $tokenExpiry) {
-        $query = "INSERT INTO [users] ([name], [username], [hashedpassword], [contactnum], [email], [usertype], [status], [emailveriftoken], [token_expiry])
+        $query = "INSERT INTO [taaltourismdb].[users] ([name], [username], [hashedpassword], [contactnum], [email], [usertype], [status], [emailveriftoken], [token_expiry])
                   VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive', :emailveriftoken, :token_expiry)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $name);
