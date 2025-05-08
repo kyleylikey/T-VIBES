@@ -22,7 +22,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     // Use direct API key authentication instead of OAuth2 flow
     $headers = [
         'Content-Type: application/json',
-        'api-key: ' . $apiKey
+        'X-Api-Key: ' . $apiKey
     ];
     
     $url = "{$endpoint}emails:send?api-version=2023-03-31";
