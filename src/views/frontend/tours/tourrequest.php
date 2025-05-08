@@ -48,7 +48,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empt
         
         // Prepare the query to get common available days
         $availabilityQuery = "SELECT 
-            BIN(BIT_AND(s.opdays) & 127) AS all_opdays_and_binary
+            CONVERT(VARCHAR(10), MIN(s.opdays) & 127) AS all_opdays_and_binary
         FROM 
             [taaltourismdb].[sites] s
         WHERE 

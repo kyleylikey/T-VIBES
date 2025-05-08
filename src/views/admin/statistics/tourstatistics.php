@@ -12,7 +12,7 @@ $query = "
         MONTH(date) AS month,
         COUNT(DISTINCT CASE WHEN status = 'accepted' THEN tourid END) AS accepted_count,
         COUNT(DISTINCT CASE WHEN status = 'cancelled' THEN tourid END) AS cancelled_count,
-        COUNT(DISTINCT CASE WHEN status = 'accepted' AND date < CURDATE() THEN tourid END) AS completed_count
+        COUNT(DISTINCT CASE WHEN status = 'accepted' AND date < CONVERT(DATE, GETDATE()) THEN tourid END) AS completed_count
     FROM [taaltourismdb].[tour]
     WHERE YEAR(date) = :year
     GROUP BY MONTH(date)
@@ -38,7 +38,7 @@ $totalQuery = "
     SELECT 
         COUNT(DISTINCT CASE WHEN status = 'accepted' THEN tourid END) AS total_accepted,
         COUNT(DISTINCT CASE WHEN status = 'cancelled' THEN tourid END) AS total_cancelled,
-        COUNT(DISTINCT CASE WHEN status = 'accepted' AND date < CURDATE() THEN tourid END) AS total_completed
+        COUNT(DISTINCT CASE WHEN status = 'accepted' AND date < CONVERT(DATE, GETDATE()) THEN tourid END) AS total_completed
     FROM [taaltourismdb].[tour]
     WHERE YEAR(date) = :year
 ";

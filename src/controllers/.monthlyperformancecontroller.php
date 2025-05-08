@@ -114,7 +114,7 @@ $query = "SELECT COUNT(*) AS total_tours
                 FROM [taaltourismdb].[tour] t
                 JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                 WHERE MONTH(date) = :currentMonth AND YEAR(date) = :currentYear
-                AND t.status = 'accepted' AND date < CURDATE()
+                AND t.status = 'accepted' AND date < CONVERT(DATE, GETDATE())
                 GROUP BY t.tourid, t.userid
             ) AS subquery";
 $stmt = $conn->prepare($query);
@@ -132,7 +132,7 @@ $query = "SELECT COUNT(*) AS total_tours
                 FROM [taaltourismdb].[tour] t
                 JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                 WHERE MONTH(date) = :lastMonth AND YEAR(date) = :lastYear
-                AND t.status = 'accepted' AND date < CURDATE()
+                AND t.status = 'accepted' AND date < CONVERT(DATE, GETDATE())
                 GROUP BY t.tourid, t.userid
             ) AS subquery";
 $stmt = $conn->prepare($query);

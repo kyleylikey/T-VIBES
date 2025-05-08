@@ -30,7 +30,7 @@ $stmt->closeCursor();
 
 // Total Completed Tours This Year: using 'accepted' and tour date in the past
 $query = "SELECT COUNT(*) as total FROM [taaltourismdb].[tour] 
-          WHERE status = 'accepted' AND date < CURDATE()
+          WHERE status = 'accepted' AND date < CONVERT(DATE, GETDATE())
           AND YEAR(date) = :currentYear";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);
@@ -79,7 +79,7 @@ $query = "SELECT MONTH(t.date) AS month, COUNT(DISTINCT t.tourid) AS total
           FROM [taaltourismdb].[tour] t
           JOIN [taaltourismdb].[users] u ON t.userid = u.userid
           WHERE t.status = 'accepted' 
-          AND t.date < CURDATE() 
+          AND t.date < CONVERT(DATE, GETDATE()) 
           AND YEAR(t.date) = :currentYear 
           GROUP BY MONTH(t.date)
           ORDER BY MONTH(t.date)";

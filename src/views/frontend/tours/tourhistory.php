@@ -136,7 +136,7 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 // MODIFIED: Group by tourid to get unique tours
 $query = "SELECT t.tourid, t.date, t.status, t.created_at, t.companions 
           FROM [taaltourismdb].[tour] t
-          WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CURDATE()
+          WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CONVERT(DATE, GETDATE())
           GROUP BY t.tourid
           ORDER BY t.created_at DESC";
 
