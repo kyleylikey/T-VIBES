@@ -20,7 +20,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     }
 
     // First, get an access token using the API key
-    $tokenEndpoint = "https://taaltourismemailsender.communication.azure.com/tokens";
+    $tokenEndpoint = "https://taaltourismemailsender.asiapacific.communication.azure.com/tokens";
     
     $tokenHeaders = [
         'Content-Type: application/json',
