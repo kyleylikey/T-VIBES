@@ -28,12 +28,13 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
 
     // Generate SAS token
     $expiry = time() + 3600; // Token valid for 1 hour
-    $urlPath = '/emails:send';
+    $host = parse_url($endpoint, PHP_URL_HOST);
 
-    $stringToSign = $urlPath . "\n" . $expiry;
+    // This is the critical change - use the full host in the resource string
+    $stringToSign = $host . "\n" . $expiry;
     $signature = base64_encode(hash_hmac('sha256', $stringToSign, base64_decode($accessKey), true));
 
-    $sasToken = "SharedAccessSignature sr=" . urlencode($urlPath) . 
+    $sasToken = "SharedAccessSignature sr=" . $host . 
                 "&sig=" . urlencode($signature) . 
                 "&se=" . $expiry . 
                 "&skn=communication";
@@ -163,6 +164,12 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_VERBOSE, true);
     
+    // Add these to your existing cURL options
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    // Add error handling with more details
+    curl_setopt($ch, CURLOPT_FAILONERROR, false);
     $response = curl_exec($ch);
     $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
