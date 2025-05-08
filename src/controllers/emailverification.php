@@ -25,26 +25,12 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     
     $endpoint = rtrim($matches[1], '/');
     $accessKey = $matches[2];
-
-    // Generate SAS token
-    $expiry = time() + 3600; // Token valid for 1 hour
+    
+    $httpVerb = "POST";
+    $timestamp = gmdate('D, d M Y H:i:s T', time()); // RFC1123 format
     $host = parse_url($endpoint, PHP_URL_HOST);
-
-    // This is the critical change - use the full host in the resource string
-    $stringToSign = $host . "\n" . $expiry;
-    $signature = base64_encode(hash_hmac('sha256', $stringToSign, base64_decode($accessKey), true));
-
-    $sasToken = "SharedAccessSignature sr=" . $host . 
-                "&sig=" . urlencode($signature) . 
-                "&se=" . $expiry . 
-                "&skn=communication";
-
-    $headers = [
-        'Content-Type: application/json',
-        'Authorization: ' . $sasToken
-    ];
-
-    $url = "{$endpoint}/emails:send?api-version=2023-03-31";
+    $uriPathAndQuery = "/emails:send?api-version=2023-03-31";
+    
 
     $payload = [
         "senderAddress" => $senderEmail,
@@ -155,6 +141,35 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
             "to" => [["address" => $email]]
         ]
     ];
+
+    $payloadJson = json_encode($payload);
+    $contentHash = base64_encode(hash('sha256', $payloadJson, true));
+    
+    // Construct the string to sign
+    $stringToSign = $httpVerb . "\n" . 
+                   $uriPathAndQuery . "\n" .
+                   $timestamp . ";" . $host . ";" . $contentHash;
+    
+    // Generate HMAC-SHA256 signature
+    $signature = base64_encode(hash_hmac('sha256', $stringToSign, base64_decode($accessKey), true));
+    
+    // Create Authorization header
+    $authorization = "HMAC-SHA256 SignedHeaders=x-ms-date;host;x-ms-content-sha256&Signature=" . $signature;
+    
+    $headers = [
+        'Content-Type: application/json',
+        'x-ms-date: ' . $timestamp,
+        'x-ms-content-sha256: ' . $contentHash,
+        'host: ' . $host,
+        'Authorization: ' . $authorization
+    ];
+
+    $url = "{$endpoint}/emails:send?api-version=2023-03-31";
+    
+    // Add debugging
+    error_log("Making request to: " . $url);
+    error_log("Authorization: " . $authorization);
+    error_log("Content hash: " . $contentHash);
     
 
     $ch = curl_init($url);
