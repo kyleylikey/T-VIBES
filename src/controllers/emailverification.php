@@ -9,9 +9,6 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     $verificationLink = "https://tourtaal.azurewebsites.net/src/controllers/verify.php?token=" . urlencode($verificationToken);
 
     try {
-        // Azure Email Communication Services credentials
-        $endpoint = getenv('AZURE_EMAIL_ENDPOINT');
-        $apiKey = getenv('AZURE_EMAIL_API_KEY');   
         $senderEmail = getenv('AZURE_EMAIL_SENDER');
         $senderName = 'Taal Tourism Office';
         
@@ -126,7 +123,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         
         async function sendEmail() {
             try {
-                const connectionString = process.env.COMMUNICATION_SERVICES_CONNECTION_STRING;
+                const connectionString = getenv('AZURE_EMAIL_SENDER_CONNECTION_STRING');
                 const client = new EmailClient(connectionString);
                 
                 const emailMessage = {
