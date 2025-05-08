@@ -20,8 +20,8 @@ if (isset($_GET['token'])) {
         echo "Executing query: $query\n";
         echo "With token: $cleanedToken\n"; // Log token to make sure it's passed correctly
         $stmt = $conn->prepare($query);
-        $stmt->execute([':token' => $cleanedToken]);
-        $stmt->execute();
+        $stmt->execute([':token' => (string)$cleanedToken]);
+
 
 
         $success = false; 
@@ -35,10 +35,10 @@ if (isset($_GET['token'])) {
                 WHERE LTRIM(RTRIM(emailveriftoken)) = CAST(:token AS NVARCHAR(MAX))
             ";
             $updateStmt = $conn->prepare($updateQuery);
-            $stmt->execute([':token' => $cleanedToken]);
+    
 
 
-            if ($updateStmt->execute()) {
+            if ($updateStmt->execute([':token' => (string)$cleanedToken])) {
                 $success = true;
                 $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
                 $message = 'Your email has been successfully verified!';
