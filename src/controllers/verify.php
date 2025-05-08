@@ -11,7 +11,13 @@ if (isset($_GET['token'])) {
     $conn = $database->getConnection();
 
     try {
+        // Define the query
         $query = "SELECT * FROM [taaltourismdb].[users] WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > GETDATE()";
+        
+        // Create a debugging copy of the query with actual value
+        $debugQuery = str_replace(':token', "'$token'", $query);
+        error_log("SQL Query: " . $debugQuery);
+        
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->execute();
@@ -20,9 +26,20 @@ if (isset($_GET['token'])) {
         $message = '';
         $iconHtml = '<i class=\"fas fa-exclamation-circle\"></i>';
         $debugInfo = '';
+        
+        // Debug info about token
+        $debugInfo .= "Token: " . htmlspecialchars(substr($token, 0, 5)) . "..., Length: " . strlen($token);
 
         if ($stmt->rowCount() > 0) {
+            // Get user info for debugging
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            error_log("Found user: " . $user['email'] . " with matching token");
+            
             $updateQuery = "UPDATE [taaltourismdb].[users] SET status = 'active', emailveriftoken = NULL, token_expiry = NULL WHERE emailveriftoken = :token";
+            // Debug update query
+            $debugUpdateQuery = str_replace(':token', "'$token'", $updateQuery);
+            error_log("Update SQL Query: " . $debugUpdateQuery);
+            
             $updateStmt = $conn->prepare($updateQuery);
             $updateStmt->bindParam(':token', $token);
 
@@ -30,18 +47,58 @@ if (isset($_GET['token'])) {
                 $success = true;
                 $iconHtml = '<i class=\"fas fa-check-circle\"></i>';
                 $message = 'Your email has been successfully verified!';
-                $debugInfo = 'User account activated successfully';
+                $debugInfo .= ' | User account activated successfully';
+                error_log("User account activated successfully");
             } else {
                 $message = 'Failed to verify your email. Please try again later.';
-                $debugInfo = 'Database update failed: ' . implode(', ', $updateStmt->errorInfo());
+                $debugInfo .= ' | Database update failed: ' . implode(', ', $updateStmt->errorInfo());
+                error_log("Database update failed: " . implode(', ', $updateStmt->errorInfo()));
             }
         } else {
             $message = 'Your email is already verified, the link is invalid, or it has expired.';
-            $debugInfo = 'No matching token found or token expired';
+            $debugInfo .= ' | No matching token found or token expired';
+            
+            // Additional debugging queries to help diagnose the issue
+            $checkQuery = "SELECT email, status, emailveriftoken, 
+                          CONVERT(VARCHAR, token_expiry, 120) as expiry_time, 
+                          CASE WHEN token_expiry > GETDATE() THEN 'Valid' ELSE 'Expired' END as expiry_status 
+                          FROM [taaltourismdb].[users] WHERE emailveriftoken = :token";
+            $checkStmt = $conn->prepare($checkQuery);
+            $checkStmt->bindParam(':token', $token);
+            $checkStmt->execute();
+            
+            if ($checkStmt->rowCount() > 0) {
+                $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
+                error_log("Found token but criteria not met: Status=" . $userData['status'] . 
+                          ", Expiry=" . $userData['expiry_time'] . " (" . $userData['expiry_status'] . ")");
+                $debugInfo .= " | Token found but: Status=" . $userData['status'] . 
+                            ", Expiry=" . $userData['expiry_time'] . " (" . $userData['expiry_status'] . ")";
+            } else {
+                error_log("No user found with token: " . substr($token, 0, 5) . "...");
+                
+                // Additional query to check for similar tokens (in case of URL encoding issues)
+                $likeQuery = "SELECT TOP 5 email, SUBSTRING(emailveriftoken, 1, 10) as token_preview, status 
+                             FROM [taaltourismdb].[users] 
+                             WHERE emailveriftoken IS NOT NULL";
+                $likeStmt = $conn->prepare($likeQuery);
+                $likeStmt->execute();
+                
+                if ($likeStmt->rowCount() > 0) {
+                    $debugInfo .= " | Some active tokens in DB: ";
+                    while ($row = $likeStmt->fetch(PDO::FETCH_ASSOC)) {
+                        error_log("Active token found: " . $row['token_preview'] . "... for " . $row['email']);
+                        $debugInfo .= substr($row['token_preview'], 0, 5) . "..., ";
+                    }
+                } else {
+                    error_log("No active tokens found in database");
+                    $debugInfo .= " | No active tokens in DB";
+                }
+            }
         }
     } catch (PDOException $e) {
         $message = 'An error occurred during verification.';
         $debugInfo = 'Database error: ' . $e->getMessage();
+        error_log("PDO Exception: " . $e->getMessage());
     }
 
     // Escape quotes for JavaScript
@@ -80,6 +137,26 @@ if (isset($_GET['token'])) {
                 border-radius: 25px;
                 font-family: 'Nunito', sans-serif !important;
             }
+            
+            .debug-info {
+                margin-top: 20px;
+                padding: 10px;
+                background-color: #f8f9fa;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-family: monospace;
+                font-size: 12px;
+                white-space: pre-wrap;
+                display: none;
+            }
+            
+            .debug-toggle {
+                margin-top: 10px;
+                text-align: center;
+                font-size: 12px;
+                color: #6c757d;
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
@@ -103,8 +180,11 @@ if (isset($_GET['token'])) {
                             popup: 'swal-custom-popup'
                         },
                         title: '$message',
-                        showConfirmButton: false, 
-                        timer: 3000
+                        html: '$message<div class=\"debug-toggle\" onclick=\"toggleDebug()\">Show technical details</div><div class=\"debug-info\" id=\"debugInfo\">Token: " . htmlspecialchars(substr($token, 0, 5)) . "...<br>Full debug info: $debugInfo</div>',
+                        showConfirmButton: true,
+                        confirmButtonText: 'Go to Login',
+                        timer: 15000,
+                        timerProgressBar: true
                     }).then(() => {
                         console.log('Redirecting to login page...');
                         window.location.href = '../views/frontend/login.php'; 
@@ -113,8 +193,19 @@ if (isset($_GET['token'])) {
                     });
                 } catch (error) {
                     console.error('Error in verification process:', error);
+                    document.body.innerHTML += '<div style=\"padding: 20px; color: red;\">Error occurred: ' + error + '</div>';
+                    document.body.innerHTML += '<div style=\"padding: 20px;\">Debug info: ' + '$debugInfo' + '</div>';
                 }
             });
+            
+            function toggleDebug() {
+                const debugElement = document.getElementById('debugInfo');
+                if (debugElement.style.display === 'block') {
+                    debugElement.style.display = 'none';
+                } else {
+                    debugElement.style.display = 'block';
+                }
+            }
         </script>
     </body>
     </html>";
