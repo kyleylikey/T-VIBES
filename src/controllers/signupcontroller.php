@@ -31,7 +31,7 @@ class SignupController {
             
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
             $verificationToken = bin2hex(random_bytes(32)); 
-            $tokenExpiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
+            $tokenExpiry = date('Y-m-d\TH:i:s.0000000', strtotime('+24 hours'));
             
             try {
                 if ($user->createUser($name, $username, $hashedPassword, $contactnum, $email, $verificationToken, $tokenExpiry)) {

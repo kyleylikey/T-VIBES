@@ -1,10 +1,6 @@
 <?php
 require_once '../config/dbconnect.php';
 require_once '../models/User.php';
-require_once '../../vendor/autoload.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 class ForgotPasswordController {
     private $conn;
@@ -31,7 +27,7 @@ class ForgotPasswordController {
             exit();
         }
 
-        $query = "SELECT * FROM [taaltourismdb].[users]  WHERE email = :email AND emailveriftoken IS NULL";
+        $query = "SELECT * FROM [taaltourismdb].[users] WHERE email = :email AND emailveriftoken IS NULL";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
@@ -47,7 +43,7 @@ class ForgotPasswordController {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         $token = bin2hex(random_bytes(32)); 
 
-        $query = "UPDATE [taaltourismdb].[users] SET emailveriftoken = :token, token_expiry = DATE_ADD(GETDATE(), INTERVAL 1 HOUR) WHERE email = :email";
+        $query = "UPDATE [taaltourismdb].[users] SET emailveriftoken = :token, token_expiry = DATEADD(HOUR, 1, GETDATE()) WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->bindParam(':email', $email);
@@ -61,34 +57,51 @@ class ForgotPasswordController {
         }
 
         $resetLink = "https://tourtaal.azurewebsites.net/src/controllers/resetpw.php?email=" . urlencode($email) . "&token=$token";
-
-        // Send email using PHPMailer
-        $mail = new PHPMailer(true);
-
-        try {
-            $mail->isSMTP();
-            $mail->SMTPAuth   = true;
-            $mail->Host       = 'smtp.gmail.com';
-            $mail->Username   = 'kyleashleighbaldoza.tomcat@gmail.com';
-            $mail->Password   = 'ikkt npxt cghd dhbj';
-            $mail->SMTPSecure = 'tls';
-            $mail->Port       = 587;
-
-            $mail->setFrom('kyleashleighbaldoza.tomcat@gmail.com', 'Taal Tourism Office');
-            $mail->addAddress($email);
-
-            $mail->isHTML(true);
-            $mail->Subject = 'Password Reset Request';
-            $mail->Body = "
-                <!DOCTYPE html>
+        
+        // Get Azure Communication Services credentials
+        $connectionString = getenv('AZURE_EMAIL_SENDER_CONNECTION_STRING');
+        $senderEmail = getenv('AZURE_EMAIL_SENDER');
+        
+        if (empty($connectionString) || empty($senderEmail)) {
+            error_log("Email configuration missing");
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Email service configuration error.'
+            ]);
+            exit();
+        }
+        
+        // Extract credentials from connection string
+        preg_match('/endpoint=(.*?);accesskey=(.*?)($|;)/', $connectionString, $matches);
+        if (count($matches) < 3) {
+            error_log("Invalid connection string format");
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Email service configuration error.'
+            ]);
+            exit();
+        }
+        
+        $endpoint = rtrim($matches[1], '/');
+        $accessKey = $matches[2];
+        
+        $httpVerb = "POST";
+        $timestamp = gmdate('D, d M Y H:i:s T', time()); // RFC1123 format
+        $host = parse_url($endpoint, PHP_URL_HOST);
+        $uriPathAndQuery = "/emails:send?api-version=2023-03-31";
+        
+        // Create email payload
+        $payload = [
+            "senderAddress" => $senderEmail,
+            "content" => [
+                "subject" => "Reset Your Password - Taal Tourism Office",
+                "plainText" => "Click this link to reset your password: {$resetLink}",
+                "html" => "<!DOCTYPE html>
                 <html lang='en'>
                 <head>
                     <meta charset='UTF-8'>
                     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
                     <title>Reset Your Password - Taal Tourism Office</title>
-                    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
-                    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH' crossorigin='anonymous'>
-                    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
                     <style>
                         body {
                             background-color: #FFFFFF;
@@ -171,7 +184,8 @@ class ForgotPasswordController {
                             <h1>Reset Your Password</h1>
                         </div>
                         <div class='content'>
-                            <p>Hello, {$user['name']}.</p>
+                            <h2>Hello, {$user['name']}</h2>
+                            <p>We received a request to reset your password for your Taal Tourism account.</p>
                             <p>Please click the button below to reset your password.</p>
                             <a href='$resetLink' class='button'>Reset Password</a>
                             <p>If you did not request this, please ignore this email.</p>
@@ -181,22 +195,74 @@ class ForgotPasswordController {
                         </div>
                     </div>
                 </body>
-                </html>";
+                </html>"
+            ],
+            "recipients" => [
+                "to" => [["address" => $email]]
+            ]
+        ];
 
-            $mail->send();
+        $payloadJson = json_encode($payload);
+        $contentHash = base64_encode(hash('sha256', $payloadJson, true));
+        
+        // Construct the string to sign
+        $stringToSign = $httpVerb . "\n" . 
+                       $uriPathAndQuery . "\n" .
+                       $timestamp . ";" . $host . ";" . $contentHash;
+        
+        // Generate HMAC-SHA256 signature
+        $signature = base64_encode(hash_hmac('sha256', $stringToSign, base64_decode($accessKey), true));
+        
+        // Create Authorization header
+        $authorization = "HMAC-SHA256 SignedHeaders=x-ms-date;host;x-ms-content-sha256&Signature=" . $signature;
+        
+        $headers = [
+            'Content-Type: application/json',
+            'x-ms-date: ' . $timestamp,
+            'x-ms-content-sha256: ' . $contentHash,
+            'host: ' . $host,
+            'Authorization: ' . $authorization
+        ];
+
+        $url = "{$endpoint}/emails:send?api-version=2023-03-31";
+        
+        // Add debugging
+        error_log("Making password reset request to: " . $url);
+        
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payloadJson);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_FAILONERROR, false);
+        
+        $response = curl_exec($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        error_log("Password reset email response - Status: $statusCode, Response: " . $response);
+        
+        if (curl_errno($ch)) {
+            error_log("cURL error in password reset: " . curl_error($ch));
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to send reset email. Please try again later.'
+            ]);
+        } else if ($statusCode >= 200 && $statusCode < 300) {
             echo json_encode([
                 'status' => 'success',
                 'message' => 'Password reset link sent. Please check your email.'
             ]);
-            exit();
-
-        } catch (Exception $e) {
+        } else {
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Failed to send reset email: ' . $mail->ErrorInfo
+                'message' => 'Failed to send reset email. Please try again later.'
             ]);
-            exit();
         }
+        
+        curl_close($ch);
     }
 }
 
