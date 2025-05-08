@@ -123,7 +123,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         
         async function sendEmail() {
             try {
-                const connectionString = getenv('AZURE_EMAIL_SENDER_CONNECTION_STRING');
+                const connectionString = process.env.AZURE_EMAIL_SENDER_CONNECTION_STRING;
                 const client = new EmailClient(connectionString);
                 
                 const emailMessage = {
