@@ -16,7 +16,7 @@ if (isset($_GET['token'])) {
         echo "Cleaned token: '$cleanedToken'\n"; // Log cleaned token for debugging
 
         // First, check if the token exists at all (without additional conditions)
-        $checkTokenQuery = "SELECT id, status, token_expiry FROM [taaltourismdb].[taaltourismdb].[users] WHERE emailveriftoken = :token";
+        $checkTokenQuery = "SELECT userid, status, token_expiry FROM [taaltourismdb].[taaltourismdb].[users] WHERE emailveriftoken = :token";
         $checkStmt = $conn->prepare($checkTokenQuery);
         $checkStmt->execute([':token' => $cleanedToken]);
         
