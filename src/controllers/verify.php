@@ -187,8 +187,6 @@ if (isset($_GET['token'])) {
         });
     </script>
     
-    <?php if ($_SERVER['SERVER_NAME'] === 'localhost' || strpos($_SERVER['SERVER_NAME'], 'dev') !== false): ?>
-    <!-- Debug information section - only visible in development -->
     <div class='debug-container'>
         <h2>Debug Information</h2>
         <p>This section is for debugging purposes and is only visible in development environments.</p>
@@ -205,7 +203,6 @@ Detailed Debug Output:
 <?php echo htmlspecialchars($debugOutput); ?>
         </pre>
     </div>
-    <?php endif; ?>
 </body>
 </html>
 <?php
