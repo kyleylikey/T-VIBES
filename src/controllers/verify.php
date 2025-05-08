@@ -3,9 +3,11 @@ require_once '../config/dbconnect.php';
 
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
+    $decodedToken = urldecode($token);
+    $token = $decodedToken;
     
     // Log to PHP error log
-    error_log("Verification attempt with token: " . substr($token, 0, 5) . "...");
+    error_log("Verification attempt with token: " . $token);
     
     $database = new Database();
     $conn = $database->getConnection();
