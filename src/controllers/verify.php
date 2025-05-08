@@ -101,9 +101,10 @@ if (isset($_GET['token'])) {
 
         // Now check for the token in the table we found
         try {
-            $checkQuery = "SELECT * FROM $tableName WHERE emailveriftoken = ?";
-            $debugOutput .= "Executing query: $checkQuery with token: " . substr($cleanedToken, 0, 10) . "...\n";
-            
+            // Modify line 157-158 (around the checkQuery)
+            $checkQuery = "SELECT * FROM $tableName WHERE emailveriftoken COLLATE Latin1_General_CS_AS = ?";
+            $debugOutput .= "Executing query with specific collation: $checkQuery with token: " . substr($cleanedToken, 0, 10) . "...\n";
+
             $checkStmt = $conn->prepare($checkQuery);
             $checkStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
             $executed = $checkStmt->execute();
@@ -114,8 +115,22 @@ if (isset($_GET['token'])) {
             
             $debugOutput .= "Rows returned: " . $checkStmt->rowCount() . "\n";
         } catch (PDOException $e) {
-            $debugOutput .= "Error executing token check: " . $e->getMessage() . "\n";
-            $checkStmt = null;
+            // Add after your existing token check if it fails
+        if (!($checkStmt && $userData)) {
+            $debugOutput .= "Token not found with exact match, trying case-insensitive...\n";
+            $ciQuery = "SELECT * FROM $tableName WHERE LOWER(emailveriftoken) = LOWER(?)";
+            $ciStmt = $conn->prepare($ciQuery);
+            $ciStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
+            $ciStmt->execute();
+            $userData = $ciStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($userData) {
+                $debugOutput .= "Token found with case-insensitive match!\n";
+            }
+        }
+            $debugOutput .= "Error checking token: " . $e->getMessage() . "\n";
+        } catch (Exception $e) {
+            $debugOutput .= "General error: " . $e->getMessage() . "\n";
         }
         
         // Get connection info for debugging
