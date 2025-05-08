@@ -19,6 +19,8 @@ if (isset($_GET['token']) && isset($_GET['email'])) {
         // Clean token and email
         $cleanedToken = trim($token);
         $cleanedEmail = trim($email);
+        error_log("Email: '" . $cleanedEmail . "' Token: '" . $cleanedToken . "'");
+
         
         // Verify the token and email
         $checkQuery = "SELECT userid, username, email, token_expiry, emailveriftoken 
@@ -31,6 +33,10 @@ if (isset($_GET['token']) && isset($_GET['email'])) {
         
         // Fetch the user data
         $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($userData) {
+            error_log("DB Email: '" . $userData['email'] . "' DB Token: '" . $userData['emailveriftoken'] . "'");
+        }
         
         if ($userData) {
             // Check if token is expired

@@ -114,14 +114,6 @@ try {
         .invalid {
             color: #dc3545;
         }
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .logo {
-            max-width: 150px;
-            height: auto;
-        }
         .info-text {
             text-align: center;
             margin-bottom: 25px;
@@ -133,9 +125,6 @@ try {
 <body>
     <?php if ($validRequest): ?>
     <div class="form-container">
-        <div class="logo-container">
-            <img src="../assets/images/logo.png" alt="TourTaal Logo" class="logo">
-        </div>
         <h2 class="form-title">Reset Your Password</h2>
         <div class="info-text">
             Please enter a new password for your account.
@@ -172,9 +161,6 @@ try {
     </div>
     <?php else: ?>
     <div class="form-container">
-        <div class="logo-container">
-            <img src="../assets/images/logo.png" alt="TourTaal Logo" class="logo">
-        </div>
         <h2 class="form-title">Invalid Reset Request</h2>
         <div class="info-text">
             This password reset link is invalid or has expired. Please request a new password reset from the login page.
@@ -285,11 +271,6 @@ try {
             newPassword.addEventListener('keyup', validatePassword);
             retypeNewPassword.addEventListener('keyup', validatePassword);
             
-            // Form submission
-            document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
-                // Form is validated by the submit button being enabled
-                // Additional form submission logic can be added here if needed
-            });
             <?php endif; ?>
         });
     </script>
