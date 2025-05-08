@@ -24,25 +24,20 @@ if (isset($_GET['token']) && isset($_GET['email'])) {
         
         // Verify the token and email
         $checkQuery = "SELECT userid, username, email, token_expiry, emailveriftoken 
-                       FROM taaltourismdb.users 
-                       WHERE LOWER(email) = LOWER(?) AND LOWER(emailveriftoken) = LOWER(?)";
+               FROM taaltourismdb.users 
+               WHERE LOWER(email) = LOWER(?) AND LOWER(emailveriftoken) = LOWER(?)";
         $checkStmt = $conn->prepare($checkQuery);
         $checkStmt->bindParam(1, $cleanedEmail, PDO::PARAM_STR);
         $checkStmt->bindParam(2, $cleanedToken, PDO::PARAM_STR);
         $checkStmt->execute();
-        
         // Fetch the user data
         $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
         if ($userData) {
             error_log("DB Email: '" . $userData['email'] . "' DB Token: '" . $userData['emailveriftoken'] . "'");
-        }
-        
-        if ($userData) {
-            // Check if token is expired
+            // Check if token is expired in PHP
             if (isset($userData['token_expiry']) && strtotime($userData['token_expiry']) < time()) {
                 $message = 'Your password reset link has expired. Please request a new one.';
-                
                 // Set emailveriftoken and token_expiry to NULL for expired token
                 $expireQuery = "UPDATE taaltourismdb.users 
                                 SET emailveriftoken = NULL, token_expiry = NULL 
@@ -50,14 +45,10 @@ if (isset($_GET['token']) && isset($_GET['email'])) {
                 $expireStmt = $conn->prepare($expireQuery);
                 $expireStmt->bindParam(1, $userData['userid'], PDO::PARAM_INT);
                 $expireStmt->execute();
-            }
-            // Everything is good, allow password reset
-            else {
+            } else {
                 $validReset = true;
                 $message = 'Please enter your new password.';
                 $iconHtml = '<i class="fas fa-key"></i>';
-                
-                // Store user ID in session for the password reset form
                 if (session_status() == PHP_SESSION_NONE) {
                     session_start();
                 }

@@ -14,17 +14,21 @@ $database = new Database();
 $conn = $database->getConnection();
 
 try {
-    $query = "SELECT userid FROM [taaltourismdb].[users] 
-              WHERE LOWER(email) = LOWER(:email) AND 
-                    emailveriftoken IS NOT NULL AND 
-                    token_expiry > GETDATE()";
+    $query = "SELECT userid, token_expiry, emailveriftoken FROM [taaltourismdb].[users] 
+          WHERE LOWER(email) = LOWER(:email) AND LOWER(emailveriftoken) = LOWER(:token)";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':token', $token, PDO::PARAM_STR);
     $stmt->execute();
-    
-    // We don't need to check the exact token here - just validate the form is being shown
-    // for an email that has a reset in progress
-    $validRequest = ($stmt->rowCount() > 0);
+
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+    $validRequest = false;
+    if ($userData) {
+        // Check expiry in PHP
+        if (isset($userData['token_expiry']) && strtotime($userData['token_expiry']) > time()) {
+            $validRequest = true;
+        }
+    }
 } catch (PDOException $e) {
     // Just log the error, don't reveal details
     error_log("Error validating reset request: " . $e->getMessage());
