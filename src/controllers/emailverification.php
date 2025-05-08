@@ -119,13 +119,13 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         
         // PHP script that executes JavaScript using Node.js
         $jsScript = <<<EOT
-        const { EmailClient } = require("@azure/communication-email");
-        
+                const { EmailClient } = require("@azure/communication-email");
+
         async function sendEmail() {
             try {
                 const connectionString = process.env.AZURE_EMAIL_SENDER_CONNECTION_STRING;
                 const client = new EmailClient(connectionString);
-                
+
                 const emailMessage = {
                     senderAddress: "$senderEmail",
                     senderName: "$senderName",
@@ -143,7 +143,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                         ],
                     },
                 };
-                
+
                 const poller = await client.beginSend(emailMessage);
                 const result = await poller.pollUntilDone();
                 console.log("Email sent successfully:", result);
@@ -153,16 +153,17 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                 throw error;
             }
         }
-        
+
         sendEmail();
+
         EOT;
         
         // Save the JavaScript to a temporary file
         $tempFile = tempnam(sys_get_temp_dir(), 'email_script_');
         file_put_contents($tempFile, $jsScript);
         
-        // Execute the Node.js script
-        $command = "node " . escapeshellarg($tempFile);
+        $envVar = getenv('AZURE_EMAIL_SENDER_CONNECTION_STRING');
+        $command = "AZURE_EMAIL_SENDER_CONNECTION_STRING=" . escapeshellarg($envVar) . " node " . escapeshellarg($tempFile);
         $output = [];
         $returnVar = 0;
         exec($command, $output, $returnVar);
