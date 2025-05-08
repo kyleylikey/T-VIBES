@@ -29,10 +29,10 @@ if (isset($_GET['token'])) {
         
         // Try direct query using literal token value instead of parameter binding
         $directQuery = "SELECT email, status, 
-                      CONVERT(VARCHAR, token_expiry, 120) as expiry_time,
-                      CONVERT(VARCHAR, GETDATE(), 120) as current_datetime
-                      FROM [taaltourismdb].[users] 
-                      WHERE emailveriftoken = '" . $conn->quote($token) . "'";
+              CONVERT(VARCHAR, token_expiry, 120) as expiry_time,
+              CONVERT(VARCHAR, GETDATE(), 120) as current_datetime
+              FROM [taaltourismdb].[users] 
+              WHERE emailveriftoken = " . $conn->quote($token);
         
         error_log("Executing direct query: " . substr($directQuery, 0, 100) . "...");
         $directResult = $conn->query($directQuery);
