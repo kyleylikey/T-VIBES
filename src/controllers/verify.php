@@ -9,6 +9,8 @@ if (isset($_GET['token'])) {
     
     $database = new Database();
     $conn = $database->getConnection();
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 
     try {
         $query = "SELECT * FROM [taaltourismdb].[users] WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > GETDATE()";
@@ -40,7 +42,7 @@ if (isset($_GET['token'])) {
             $debugInfo = 'No matching token found or token expired';
         }
     } catch (PDOException $e) {
-        $message = 'An error occurred during verification.';
+        $message = 'An error occurred during verification. Please contact support.';
         $debugInfo = 'Database error: ' . $e->getMessage();
     }
 
