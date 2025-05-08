@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn = $database->getConnection();
 
             // Check if user already submitted a review for this site
-            $checkQuery = "SELECT revid FROM rev WHERE userid = :user_id AND siteid = :siteid";
+            $checkQuery = "SELECT revid FROM [taaltourismdb].[rev] WHERE userid = :user_id AND siteid = :siteid";
             $checkStmt = $conn->prepare($checkQuery);
             $checkStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
             $checkStmt->bindParam(':siteid', $siteId, PDO::PARAM_INT);
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Insert new review
-            $insertQuery = "INSERT INTO rev (review, userid, siteid) VALUES (:review, :user_id, :siteid)";
+            $insertQuery = "INSERT INTO [taaltourismdb].[rev] (review, userid, siteid) VALUES (:review, :user_id, :siteid)";
             $insertStmt = $conn->prepare($insertQuery);
             $insertStmt->bindParam(':review', $review, PDO::PARAM_STR);
             $insertStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
@@ -126,7 +126,7 @@ $database = new Database();
 $conn = $database->getConnection();
 
 // Fetch all sites the user has already rated
-$ratedSitesQuery = "SELECT site_id FROM [taaltourismdb].[users_ratings] WHERE user_id = :user_id";
+$ratedSitesQuery = "SELECT site_id FROM [taaltourismdb].[user_ratings] WHERE user_id = :user_id";
 $ratedSitesStmt = $conn->prepare($ratedSitesQuery);
 $ratedSitesStmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
 $ratedSitesStmt->execute();
