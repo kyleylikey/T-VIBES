@@ -13,12 +13,16 @@ if (isset($_GET['token'])) {
 
 
     try {
-        $query = "SELECT * FROM [taaltourismdb].[taaltourismdb].[users]
-            WHERE LTRIM(RTRIM(emailveriftoken)) = :token
-            AND status = 'inactive' AND token_expiry > GETDATE()";
+        $cleanedToken = LTRIM(RTRIM($token));
+        echo "Cleaned token: '$cleanedToken'\n"; // Log cleaned token for debugging
+
+        $query = "SELECT * FROM [taaltourismdb].[taaltourismdb].[users] WHERE LTRIM(RTRIM(emailveriftoken)) = :token AND status = 'inactive' AND token_expiry > GETDATE()";
+        echo "Executing query: $query\n";
+        echo "With token: $cleanedToken\n"; // Log token to make sure it's passed correctly
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':token', $token);
+        $stmt->bindParam(':token', $cleanedToken, PDO::PARAM_STR);
         $stmt->execute();
+
 
         $success = false; 
         $message = '';
