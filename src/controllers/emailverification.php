@@ -6,15 +6,20 @@ ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
 function sendconfirmationEmail($username, $email, $verificationToken) {
-    $verificationLink = "https://tourtaal.azurewebsites.net/src/controllers/verify.php?token=" . urlencode($verificationToken);
+    $verificationLink = "https://tourtaal.azurewebsites.net/verify.php?token=" . urlencode($verificationToken);
+    
+    $endpoint = getenv('COMMUNICATION_SERVICES_ENDPOINT');
+    $apiKey = getenv('COMMUNICATION_SERVICES_KEY');
+    $senderEmail = getenv('AZURE_EMAIL_SENDER');
 
-    try {
-        $senderEmail = getenv('AZURE_EMAIL_SENDER');
-        $senderName = 'Taal Tourism Office';
-        
-        // Create HTML email content
-        $htmlContent = "
-            <!DOCTYPE html>
+    $url = "{$endpoint}/emails:send?api-version=2023-03-31";
+    
+    $payload = [
+        "senderAddress" => $senderEmail,
+        "content" => [
+            "subject" => "Verify Your Email - Taal Tourism Office",
+            "plainText" => "Click this link to verify your email: {$verificationLink}",
+            "html" => "<!DOCTYPE html>
             <html lang='en'>
             <head>
                 <meta charset='UTF-8'>
@@ -112,76 +117,25 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
                     </div>
                 </div>
             </body>
-            </html>";
-        
-        // Create plain text alternative
-        $plainText = "Hi $username,\n\nThank you for signing up at Taal Tourism! Your account has been successfully created.\n\nPlease verify your email address by clicking the link below:\n$verificationLink\n\n© " . date("Y") . " Taal Tourism Office. All rights reserved.";
-        
-        // PHP script that executes JavaScript using Node.js
-        $jsScript = <<<EOT
-                const { EmailClient } = require("@azure/communication-email");
-
-        async function sendEmail() {
-            try {
-                const connectionString = process.env.AZURE_EMAIL_SENDER_CONNECTION_STRING;
-                const client = new EmailClient(connectionString);
-
-                const emailMessage = {
-                    senderAddress: "$senderEmail",
-                    senderName: "$senderName",
-                    content: {
-                        subject: "Verify Email Address",
-                        plainText: `$plainText`,
-                        html: `$htmlContent`,
-                    },
-                    recipients: {
-                        to: [
-                            { 
-                                address: "$email",
-                                displayName: "$username"
-                            }
-                        ],
-                    },
-                };
-
-                const poller = await client.beginSend(emailMessage);
-                const result = await poller.pollUntilDone();
-                console.log("Email sent successfully:", result);
-                return result;
-            } catch (error) {
-                console.error("Error sending email:", error);
-                throw error;
-            }
-        }
-
-        sendEmail();
-
-        EOT;
-        
-        // Save the JavaScript to a temporary file
-        $tempFile = tempnam(sys_get_temp_dir(), 'email_script_');
-        file_put_contents($tempFile, $jsScript);
-        
-        $envVar = getenv('AZURE_EMAIL_SENDER_CONNECTION_STRING');
-        $command = "AZURE_EMAIL_SENDER_CONNECTION_STRING=" . escapeshellarg($envVar) . " node " . escapeshellarg($tempFile);
-        $output = [];
-        $returnVar = 0;
-        exec($command, $output, $returnVar);
-        
-        // Clean up the temporary file
-        unlink($tempFile);
-        
-        if ($returnVar !== 0) {
-            error_log("Node.js execution failed with code: " . $returnVar);
-            error_log("Output: " . implode("\n", $output));
-            return "Email could not be sent. Node.js Error: " . implode("\n", $output);
-        }
-        
-        return true;
-        
-    } catch (Exception $e) {
-        error_log("Email sending failed: " . $e->getMessage());
-        return "Message could not be sent. Error: " . $e->getMessage();
-    }
+            </html>"
+        ],
+        "recipients" => [
+            "to" => [["address" => $email]]
+        ]
+    ];
+    
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    $response = curl_exec($ch);
+    $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    return $statusCode >= 200 && $statusCode < 300;
 }
-?>

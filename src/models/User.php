@@ -41,26 +41,39 @@ class User {
     }
 
     public function doesUserExist($email, $username) {
-        $query = "SELECT * FROM " . $this->table . " WHERE email = :email OR username = :username";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
+        try {
+            $query = "SELECT COUNT(*) as count FROM " . $this->table . " 
+                      WHERE email = :email OR username = :username";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':username', $username);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['count'] > 0;
+        } catch (PDOException $e) {
+            error_log("Error checking user existence: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function createUser($name, $username, $hashedPassword, $contactnum, $email, $verificationToken, $tokenExpiry) {
-        $query = "INSERT INTO [taaltourismdb].[users] ([name], [username], [hashedpassword], [contactnum], [email], [usertype], [status], [emailveriftoken], [token_expiry])
-                  VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive', :emailveriftoken, :token_expiry)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':hashedpassword', $hashedPassword);
-        $stmt->bindParam(':contactnum', $contactnum);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':emailveriftoken', $verificationToken);
-        $stmt->bindParam(':token_expiry', $tokenExpiry);
-        return $stmt->execute();
+        try {
+            if ($this->doesUserExist($email, $username)) {
+                return false;
+            }
+            
+            $query = "INSERT INTO [taaltourismdb].[users] ([name], [username], [hashedpassword], [contactnum], [email], [usertype], [status], [emailveriftoken], [token_expiry])
+                    VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive', :emailveriftoken, :token_expiry)";
+            $stmt = $this->conn->prepare($query);
+            // bind parameters...
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("User creation error: " . $e->getMessage());
+            if (strpos($e->getMessage(), 'UNIQUE KEY') !== false) {
+                throw new Exception('Email or username already exists.');
+            }
+            throw new Exception('Database error during account creation.');
+        }
     }
 
     public function editUser($userid, $name, $username, $contactnum, $email) {

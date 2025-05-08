@@ -18,40 +18,50 @@ class SignupController {
 
 
     public function createAccount($name, $username, $password, $contactnum, $email) {
-
-        $user = new User($this->conn);
-
-        if ($user->doesUserExist($email, $username)) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Email or username already exists.'
-            ]);
-            return;
-        }
-
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $verificationToken = bin2hex(random_bytes(32)); 
-        $tokenExpiry = date('Y-m-d H:i:s', strtotime('+24 hours')); 
-
-        if ($user->createUser($name, $username, $hashedPassword, $contactnum, $email, $verificationToken, $tokenExpiry)) {
-            if (sendconfirmationEmail($username, $email, $verificationToken)) {
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Please check your email for a verification link.'
-                ]);
-            } else {
+        try {
+            $user = new User($this->conn);
+            
+            if ($user->doesUserExist($email, $username)) {
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'Account created, but failed to send the verification email. Please contact support.'
+                    'message' => 'Email or username already exists.'
                 ]);
+                return;
             }
-            return;
+            
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $verificationToken = bin2hex(random_bytes(32)); 
+            $tokenExpiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
+            
+            try {
+                if ($user->createUser($name, $username, $hashedPassword, $contactnum, $email, $verificationToken, $tokenExpiry)) {
+                    if (sendconfirmationEmail($username, $email, $verificationToken)) {
+                        echo json_encode([
+                            'status' => 'success',
+                            'message' => 'Please check your email for a verification link.'
+                        ]);
+                    } else {
+                        echo json_encode([
+                            'status' => 'error',
+                            'message' => 'Account created, but failed to send the verification email. Please contact support.'
+                        ]);
+                    }
+                    return;
+                }
+            } catch (Exception $e) {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ]);
+                return;
+            }
+            
+        } catch (Exception $e) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred: ' . $e->getMessage()
+            ]);
         }
-
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Failed to create account. Please try again later.'
-        ]);
     }
 }
 
