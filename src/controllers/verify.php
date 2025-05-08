@@ -5,7 +5,7 @@ if (isset($_GET['token'])) {
     $token = trim($_GET['token']);
     
     // Log to PHP error log
-    error_log("Verification attempt with token: " . substr($token, 0, 5) . "...");
+    error_log("Verification attempt with token: " . $token);
     
     $database = new Database();
     $conn = $database->getConnection();
@@ -13,7 +13,9 @@ if (isset($_GET['token'])) {
 
 
     try {
-        $query = "SELECT * FROM [taaltourismdb].[taaltourismdb].[users] WHERE emailveriftoken = :token AND status = 'inactive' AND token_expiry > GETDATE()";
+        $query = "SELECT * FROM [taaltourismdb].[taaltourismdb].[users]
+            WHERE LTRIM(RTRIM(emailveriftoken)) = :token
+            AND status = 'inactive' AND token_expiry > GETDATE()";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->execute();
