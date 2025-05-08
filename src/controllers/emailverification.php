@@ -25,28 +25,25 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
     
     $endpoint = rtrim($matches[1], '/');
     $accessKey = $matches[2];
-    
+
     // Generate SAS token
     $expiry = time() + 3600; // Token valid for 1 hour
-    $url = $endpoint . '/emails:send?api-version=2023-03-31';
-    $urlPath = parse_url($url, PHP_URL_PATH) . '?' . parse_url($url, PHP_URL_QUERY);
-    
+    $urlPath = '/emails:send';
+
     $stringToSign = $urlPath . "\n" . $expiry;
     $signature = base64_encode(hash_hmac('sha256', $stringToSign, base64_decode($accessKey), true));
-    
+
     $sasToken = "SharedAccessSignature sr=" . urlencode($urlPath) . 
                 "&sig=" . urlencode($signature) . 
                 "&se=" . $expiry . 
                 "&skn=communication";
-    
+
     $headers = [
         'Content-Type: application/json',
         'Authorization: ' . $sasToken
     ];
 
-
-    $url = "{$endpoint}emails:send?api-version=2023-03-31";
-
+    $url = "{$endpoint}/emails:send?api-version=2023-03-31";
 
     $payload = [
         "senderAddress" => $senderEmail,
