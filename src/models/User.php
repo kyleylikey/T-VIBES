@@ -50,12 +50,8 @@ class User {
     }
 
     public function createUser($name, $username, $hashedPassword, $contactnum, $email, $verificationToken, $tokenExpiry) {
-        echo "Checkpoint 5: Running INSERT.<br>";
-        $query = "INSERT INTO " . $this->table . " ([name], [username], [hashedpassword], [contactnum], [email], [usertype], [status], [emailveriftoken], [token_expiry])
+        $query = "INSERT INTO [users] ([name], [username], [hashedpassword], [contactnum], [email], [usertype], [status], [emailveriftoken], [token_expiry])
                   VALUES (:name, :username, :hashedpassword, :contactnum, :email, 'trst', 'inactive', :emailveriftoken, :token_expiry)";
-        echo "Query: " . $query . "<br>";
-        var_dump($this->conn);
-        echo "Final Query: $query<br>";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':username', $username);
@@ -65,14 +61,6 @@ class User {
         $stmt->bindParam(':emailveriftoken', $verificationToken);
         $stmt->bindParam(':token_expiry', $tokenExpiry);
         return $stmt->execute();
-        if (!$stmt->execute()) {
-            $errorInfo = $stmt->errorInfo();
-            echo "SQLSTATE: " . $errorInfo[0] . "<br>";
-            echo "Error Code: " . $errorInfo[1] . "<br>";
-            echo "Error Message: " . $errorInfo[2] . "<br>";
-            return false;
-        }
-        
     }
 
     public function editUser($userid, $name, $username, $contactnum, $email) {

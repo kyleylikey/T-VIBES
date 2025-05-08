@@ -1,7 +1,6 @@
 <?php
 require_once '../config/dbconnect.php';
 require_once '../models/User.php';
-echo "Checkpoint 1: Included all files.<br>";
 include 'emailverification.php';
 
 ini_set('display_errors', 0);
@@ -12,15 +11,12 @@ class SignupController {
     private $conn;
 
     public function __construct() {
-    echo "Checkpoint 2: Constructing SignupController.<br>";
     $database = new Database();
     $this->conn = $database->getConnection();
-    echo "Checkpoint 3: DB connection established.<br>";
     }
 
 
     public function createAccount($name, $username, $password, $contactnum, $email) {
-        echo "Checkpoint 4: Entering createAccount.<br>";
 
         $user = new User($this->conn);
 
