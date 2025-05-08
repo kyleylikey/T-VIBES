@@ -194,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 foreach ($_SESSION['tour_destinations'] as $destination) {
                     $siteid = $destination['siteid'];
  
-                    $stmt = $db->prepare("INSERT INTO tour (tourid, siteid, userid, status, date, companions, created_at) 
+                    $stmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] (tourid, siteid, userid, status, date, companions, created_at) 
                                     VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, GETDATE())");
                     $stmt->bindParam(':tourid', $newTourId, PDO::PARAM_INT);
                     $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
