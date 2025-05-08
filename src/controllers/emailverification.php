@@ -25,7 +25,7 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         'api-key: ' . $apiKey
     ];
     
-    $url = "{$endpoint}/emails:send?api-version=2023-03-31";
+    $url = "{$endpoint}emails:send?api-version=2023-03-31";
 
 
     $payload = [
