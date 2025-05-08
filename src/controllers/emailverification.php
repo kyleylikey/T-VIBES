@@ -19,46 +19,14 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         return false;
     }
 
-    // The correct way to get an access token using client credentials
-    $tokenEndpoint = "https://communication.azure.com/tokens";
-    
-    $tokenHeaders = [
-        'Content-Type: application/json'
+    // Use direct API key authentication instead of OAuth2 flow
+    $headers = [
+        'Content-Type: application/json',
+        'api-key: ' . $apiKey
     ];
     
-    // Setup for OAuth2 client credentials flow
-    $tokenPayload = [
-        "grant_type" => "client_credentials",
-        "client_id" => $apiKey,
-        "scope" => "https://communication.azure.com/.default"
-    ];
-    
-    $ch = curl_init($tokenEndpoint);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($tokenPayload));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $tokenHeaders);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
-    curl_setopt($ch, CURLOPT_VERBOSE, true);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-
-    $tokenResponse = curl_exec($ch);
-    $tokenStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
-    error_log("Token API response - Status: $tokenStatusCode, Response: " . $tokenResponse);
-    
-    if ($tokenStatusCode != 200) {
-        error_log("Failed to get access token");
-        return false;
-    }
-    
-    $tokenData = json_decode($tokenResponse, true);
-    $accessToken = $tokenData['access_token'];
-    
-    // Now use the access token to send the email
     $url = "{$endpoint}/emails:send?api-version=2023-03-31";
+
 
     $payload = [
         "senderAddress" => $senderEmail,
@@ -170,14 +138,18 @@ function sendconfirmationEmail($username, $email, $verificationToken) {
         ]
     ];
     
+
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $accessToken
-    ]);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    // Debug settings
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     
     $response = curl_exec($ch);
     $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
