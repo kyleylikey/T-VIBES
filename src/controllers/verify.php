@@ -8,8 +8,6 @@ if (isset($_GET['token'])) {
     $success = false;
     $message = '';
     $iconHtml = '<i class="fas fa-exclamation-circle"></i>';
-    $debugInfo = '';
-    $debugOutput = '';
     
     try {
         $database = new Database();
@@ -18,9 +16,7 @@ if (isset($_GET['token'])) {
         
         // Clean token
         $cleanedToken = trim($token);
-        $debugOutput .= "Verification attempt with token: " . $cleanedToken . "\n";
-        $debugOutput .= "Token (hex): " . bin2hex($cleanedToken) . "\n";
-
+    
         
         // Verify the token directly using the correct table name
         $checkQuery = "SELECT userid, username, email, status, token_expiry, emailveriftoken 
@@ -34,21 +30,22 @@ if (isset($_GET['token'])) {
         $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
         
         if ($userData) {
-            $debugOutput .= "Token found! User: " . $userData['username'] . "\n";
-            $debugOutput .= "DB Token (hex): " . bin2hex($userData['emailveriftoken']) . "\n";
-
-            
             // Check if already verified
             if ($userData['status'] !== 'inactive') {
                 $message = 'Your email is already verified.';
-                $debugInfo = 'User account is already active';
-                $debugOutput .= "User already verified\n";
             }
             // Check if token is expired
             else if (isset($userData['token_expiry']) && strtotime($userData['token_expiry']) < time()) {
                 $message = 'Your verification link has expired. Please request a new one.';
-                $debugInfo = 'Token expired on ' . $userData['token_expiry'];
-                $debugOutput .= "Token expired\n";
+
+                // Set emailveriftoken and token_expiry to NULL for expired token
+                    $expireQuery = "UPDATE taaltourismdb.users 
+                    SET emailveriftoken = NULL, token_expiry = NULL 
+                    WHERE userid = ?";
+                $expireStmt = $conn->prepare($expireQuery);
+                $expireStmt->bindParam(1, $userData['userid'], PDO::PARAM_INT);
+                $expireStmt->execute();
+
             }
             // Everything is good, verify the email
             else {
@@ -62,18 +59,13 @@ if (isset($_GET['token'])) {
                     $success = true;
                     $message = 'Your email has been successfully verified!';
                     $iconHtml = '<i class="fas fa-check-circle"></i>';
-                    $debugInfo = 'Email verification successful for: ' . $userData['email'];
-                    $debugOutput .= "User account activated successfully\n";
                 } else {
                     $message = 'Error updating your account.';
-                    $debugInfo = 'Failed to update user status';
-                    $debugOutput .= "Failed to update user status\n";
+                    
                 }
             }
         } else {
             $message = 'Invalid verification link. Please request a new one.';
-            $debugInfo = 'No matching token found in database';
-            $debugOutput .= "Token not found in database\n";
             
             // Additional debugging info for token matching issues
             $directQuery = "SELECT TOP 5 username, 
@@ -84,27 +76,15 @@ if (isset($_GET['token'])) {
                            WHERE emailveriftoken IS NOT NULL";
             $directResult = $conn->query($directQuery);
             
-            if ($directResult && $directResult->rowCount() > 0) {
-                $debugOutput .= "Active tokens in database:\n";
-                while ($row = $directResult->fetch(PDO::FETCH_ASSOC)) {
-                    $debugOutput .= "- User: " . $row['username'] . 
-                                   ", Token start: " . $row['token_start'] . 
-                                   ", Token end: " . $row['token_end'] . 
-                                   ", Length: " . $row['token_length'] . "\n";
-                }
-            } else {
-                $debugOutput .= "No active tokens found in database\n";
-            }
         }
     } catch (PDOException $e) {
         $message = 'An error occurred during verification. Please contact support.';
-        $debugInfo = 'Database error: ' . $e->getMessage();
-        $debugOutput .= "PDO Exception caught: " . $e->getMessage() . "\n";
+
     }
 
     // Escape quotes for JavaScript
     $message = str_replace("'", "\\'", $message);
-    $debugInfo = str_replace("'", "\\'", $debugInfo);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -165,7 +145,6 @@ if (isset($_GET['token'])) {
             console.log('Verification page loaded');
             console.log('Success:', <?php echo $success ? 'true' : 'false'; ?>);
             console.log('Message:', '<?php echo $message; ?>');
-            console.log('Debug info:', '<?php echo $debugInfo; ?>');
             
             // Try-catch to catch and log any errors during SweetAlert execution
             try {
@@ -190,23 +169,6 @@ if (isset($_GET['token'])) {
             }
         });
     </script>
-    
-    <div class='debug-container'>
-        <h2>Debug Information</h2>
-        <p>This section is for debugging purposes and is only visible in development environments.</p>
-        <pre id='debug-output'>
-Token: <?php echo htmlspecialchars($token); ?>
-
-Success: <?php echo $success ? 'true' : 'false'; ?>
-
-Message: <?php echo htmlspecialchars($message); ?>
-
-Debug Info: <?php echo htmlspecialchars($debugInfo); ?>
-
-Detailed Debug Output:
-<?php echo htmlspecialchars($debugOutput); ?>
-        </pre>
-    </div>
 </body>
 </html>
 <?php

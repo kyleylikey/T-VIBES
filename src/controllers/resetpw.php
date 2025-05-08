@@ -16,6 +16,8 @@ if (!isset($_GET['email']) || !isset($_GET['token'])) {
 $email = urldecode($_GET['email']);
 $token = $_GET['token'];
 
+$cleanedToken = trim($token);
+
 $database = new Database();
 $conn = $database->getConnection();
 
@@ -24,10 +26,10 @@ if (!$conn) {
 }
 
 // Validate token
-$query = "SELECT * FROM [taaltourismdb].[users] WHERE email = :email AND emailveriftoken = CAST(:token AS NVARCHAR(MAX)) AND token_expiry > GETDATE()";
+$query = "SELECT * FROM [taaltourismdb].[users] WHERE email = :email AND LOWER(emailveriftoken) = LOWER(:token) AND token_expiry > GETDATE()";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':email', $email);
-$stmt->bindParam(':token', $token);
+$stmt->bindParam(':token', $cleanedToken);
 $stmt->execute();
 
 if ($stmt->rowCount() > 0) {
