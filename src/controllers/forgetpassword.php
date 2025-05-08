@@ -60,7 +60,7 @@ class ForgotPasswordController {
             exit();
         }
 
-        $resetLink = "http://localhosthttps://tourtaal.azurewebsites.net/src/controllers/resetpw.php?email=" . urlencode($email) . "&token=$token";
+        $resetLink = "https://tourtaal.azurewebsites.net/src/controllers/resetpw.php?email=" . urlencode($email) . "&token=$token";
 
         // Send email using PHPMailer
         $mail = new PHPMailer(true);

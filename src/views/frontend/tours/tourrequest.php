@@ -1622,7 +1622,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("addMoreDestinations").addEventListener("click", function () {
-        window.location.href = "http://localhosthttps://tourtaal.azurewebsites.net/src/views/frontend/explore.php";
+        window.location.href = "https://tourtaal.azurewebsites.net/src/views/frontend/explore.php";
     });
 
     const style = document.createElement('style');
@@ -2464,6 +2464,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+// Replace this section in your tourrequest.php file
 document.querySelector(".modal-footer .btn").addEventListener("click", function () {
     if (!selectedDate) {
         Swal.fire({
@@ -2500,34 +2501,79 @@ document.querySelector(".modal-footer .btn").addEventListener("click", function 
         document.getElementById("tour-date").value = selectedDate;
         closeModal();
     } else {
-        fetch("tourrequest.php", {
+        // Use the full URL to ensure it works in Azure
+        const requestUrl = window.location.href;
+        console.log("Sending request to:", requestUrl);
+        console.log("Selected date:", selectedDate);
+        
+        fetch(requestUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: "selected_date=" + selectedDate + "&create_request=true"
+            headers: { 
+                "Content-Type": "application/x-www-form-urlencoded",
+                // Add this to prevent caching issues
+                "Cache-Control": "no-cache"
+            },
+            body: "selected_date=" + encodeURIComponent(selectedDate) + "&create_request=true"
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log("Response status:", response.status);
+            return response.text().then(text => {
+                console.log("Raw response:", text);
+                try {
+                    return JSON.parse(text);
+                } catch(e) {
+                    console.error("JSON parse error:", e);
+                    throw new Error("Invalid JSON response");
+                }
+            });
+        })
         .then(data => {
-            if (data.success) {
-                document.getElementById("tour-date").value = selectedDate;
-                isEditMode = false;
-                previouslySelectedDate = selectedDate;
+            console.log("Parsed data:", data);
+            if (data && data.success) {
                 closeModal();
-                updateUIAfterSelection();
-                updateEstimatedFees();
-                
                 Swal.fire({
                     iconHtml: '<i class="fas fa-check-circle"></i>',
-                    title: "Tour Request Created!",
-                    text: "Your tour request has been created successfully. Click 'Submit Request' to finalize it.",
+                    title: "Date Selected!",
+                    text: "Your tour date has been set. You can now submit your request.",
                     timer: 3000,
                     showConfirmButton: false,
                     customClass: {
                         title: "swal2-title-custom",
-                        icon: "swal2-icon-custom", 
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
+                });
+                document.getElementById("tour-date").value = selectedDate;
+                updateUIAfterSelection();
+            } else {
+                Swal.fire({
+                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                    title: "Error!",
+                    text: data && data.message ? data.message : "Failed to save date selection",
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
                         popup: "swal-custom-popup"
                     }
                 });
             }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+            Swal.fire({
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                title: "Error!",
+                text: "Failed to communicate with server. Please try again.",
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                    title: "swal2-title-custom",
+                    icon: "swal2-icon-custom",
+                    popup: "swal-custom-popup"
+                }
+            });
         });
     }
 });

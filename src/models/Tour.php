@@ -149,18 +149,32 @@ class Tour {
 
     public function getPendingTourByUser($userid) {
         $query = "SELECT 
-                t.*, 
-                u.name, 
-                COUNT(*) OVER (PARTITION BY t.tourid, t.userid) AS total_sites
-            FROM 
-                ".$this->table." t
-            JOIN 
-                [taaltourismdb].[users] u ON t.userid = u.userid
-            WHERE 
-                t.userid = ? AND t.status = 'submitted'
-            ORDER BY 
-                t.created_at DESC;
-            ";
+            t.tourid,
+            t.userid,
+            t.status,
+            t.date,
+            t.companions,
+            t.created_at,
+            u.name,
+            COUNT(t.siteid) AS total_sites
+        FROM 
+            [taaltourismdb].[tour] t
+        JOIN 
+            [taaltourismdb].[users] u ON t.userid = u.userid
+        WHERE 
+            t.userid = ? 
+            AND t.status = 'submitted'
+        GROUP BY 
+            t.tourid,
+            t.userid,
+            t.status,
+            t.date,
+            t.companions,
+            t.created_at,
+            u.name
+        ORDER BY 
+            t.created_at DESC;
+        ";
                 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $userid);

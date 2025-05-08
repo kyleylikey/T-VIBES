@@ -134,11 +134,23 @@ $ratedSites = $ratedSitesStmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Query to get completed tours (accepted status with past dates)
 // MODIFIED: Group by tourid to get unique tours
-$query = "SELECT t.tourid, t.date, t.status, t.created_at, t.companions 
-          FROM [taaltourismdb].[tour] t
-          WHERE t.userid = ? AND t.status = 'accepted' AND t.date < CONVERT(DATE, GETDATE())
-          GROUP BY t.tourid
-          ORDER BY t.created_at DESC";
+$query = "SELECT 
+            t.tourid, 
+            t.date, 
+            t.status, 
+            t.created_at, 
+            t.companions
+        FROM 
+            [taaltourismdb].[tour] t
+        WHERE 
+            t.userid = ? 
+            AND t.status = 'accepted' 
+            AND t.date < CONVERT(DATE, GETDATE())
+        GROUP BY 
+            t.tourid, t.date, t.status, t.created_at, t.companions
+        ORDER BY 
+            t.created_at DESC;
+        ";
 
 $stmt = $conn->prepare($query);
 $stmt->bindParam(1, $userid);

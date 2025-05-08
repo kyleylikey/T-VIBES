@@ -22,7 +22,7 @@ class Logs {
             $stmt->bindParam(':searchTerm', $searchParam, PDO::PARAM_STR);
         } else {
             $query = "SELECT logs.action, logs.datetime, users.name 
-                     FROM logs 
+                     FROM [taaltourismdb].[logs] 
                      INNER JOIN [taaltourismdb].[users] ON logs.userid = users.userid 
                      ORDER BY logs.datetime DESC 
                      LIMIT :limit OFFSET :offset";
@@ -47,7 +47,7 @@ class Logs {
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':searchTerm', $searchParam, PDO::PARAM_STR);
         } else {
-            $query = "SELECT COUNT(*) as total FROM logs";
+            $query = "SELECT COUNT(*) as total FROM [taaltourismdb].[logs]";
             $stmt = $this->conn->prepare($query);
         }
         
