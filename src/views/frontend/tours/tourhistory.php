@@ -303,12 +303,10 @@ $completedTours = $stmt->fetchAll(PDO::FETCH_ASSOC);
             margin-bottom: 5px;
             font-size: 14px;
             color: #757575;
-            text-decoration: line-through; /* Strikethrough to show completed */
             opacity: 0.9;
         }
 
         .destinations-list li:before {
-            content: "★"; /* Star for history tours */
             position: absolute;
             left: 0;
             top: 0;

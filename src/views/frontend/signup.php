@@ -1,7 +1,6 @@
 <?php
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
-ini_set('error_log', 'https://tourtaal.azurewebsites.net/temp/error.txt');
 error_reporting(E_ALL);
 ?>
 <!DOCTYPE html>
@@ -188,57 +187,6 @@ error_reporting(E_ALL);
         </div>
 
     <script>
-    // document.getElementById('signupForm').addEventListener('submit', function(event) {
-    //     event.preventDefault();
-        
-    //     const formData = new FormData(this);
-    //     const submitButton = document.getElementById('submitBtn');
-    //     submitButton.disabled = true;
-    //     submitButton.textContent = "Loading...";
-
-    //     fetch('/src/controllers/signupcontroller.php', {
-    //         method: 'POST',
-    //         body: formData
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         Swal.fire({
-    //             iconHtml: data.status === 'success' ? '<i class="fas fa-envelope" style="color: #EC6350 !important;"></i>' : '<i class="fas fa-exclamation-circle" style="color: #EC6350 !important;"></i>',
-    //             title: data.message,
-    //             showConfirmButton: false,
-    //             timer: 3000,
-    //             customClass: {
-    //                 title: "swal2-title-custom",
-    //                 icon: "swal2-icon-custom",
-    //                 popup: "swal-custom-popup"
-    //             }
-    //         });
-
-    //         if (data.status === 'success') {
-    //             submitButton.textContent = "Email Sent!";
-    //         } else {
-    //             submitButton.disabled = false;
-    //             submitButton.textContent = "Create Account";
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.error('Error:', error);
-    //         Swal.fire({
-    //             iconHtml: '<i class="fas fa-exclamation-circle" style: "color: #EC6350 !important;"></i>',
-    //             title: 'Something went wrong. Please try again later.',
-    //             showConfirmButton: false,
-    //             timer: 3000,
-    //             customClass: {
-    //                 title: "swal2-title-custom",
-    //                 icon: "swal2-icon-custom",
-    //                 popup: "swal-custom-popup"
-    //             }
-    //         }).then(() => {
-    //             submitButton.disabled = false;
-    //             submitButton.textContent = "Create Account";
-    //         });
-    //     });
-    // });
 
     document.getElementById('signupForm').addEventListener('submit', function(event) {
     event.preventDefault();
