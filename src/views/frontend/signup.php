@@ -94,11 +94,11 @@ error_reporting(E_ALL);
 <body class="taalbgpic">
     <div class="container">
         <div class="row justify-content-between">
-            <div class="col-0 col-lg-3"></div>
             <div class="align-self-end col-12 col-lg-5 d-none d-lg-block large-text-overlay-signup">
                 <h1>Your Lively</h1>
                 <h1>Getaway Awaits!</h1>
             </div>
+            <div class="col-0 col-lg-3"></div>
             <div class="col-12 col-lg-4 p-4 signup-container">
                 <h1>Sign Up</h1>
                 <p>Please register to log in.</p>

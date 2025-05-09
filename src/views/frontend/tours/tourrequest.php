@@ -2507,7 +2507,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// Replace this section in your tourrequest.php file
 document.querySelector(".modal-footer .btn").addEventListener("click", function () {
     if (!selectedDate) {
         Swal.fire({
@@ -2544,47 +2543,66 @@ document.querySelector(".modal-footer .btn").addEventListener("click", function 
         document.getElementById("tour-date").value = selectedDate;
         closeModal();
     } else {
-        // Get the full URL of the current page to ensure correct path
-    const requestUrl = window.location.href;
+        // Get the full URL of the current page
+        const requestUrl = window.location.href;
+        // Get the people count value
+        const peopleCount = document.getElementById("counter-input").value;
 
-    fetch(requestUrl, {
-        method: "POST",
-        headers: { 
-            "Content-Type": "application/x-www-form-urlencoded",
-            // Prevent caching issues
-            "Cache-Control": "no-cache, no-store"
-        },
-        body: "selected_date=" + encodeURIComponent(selectedDate) + 
-            "&people_count=" + encodeURIComponent(peopleCount) + 
-            "&save_changes=true" + 
-            "&update_db=true" + 
-            "&destinations=" + encodeURIComponent(JSON.stringify(selectedSites))
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text().then(text => {
-            // Log response for debugging
-            console.log("Raw response:", text);
-            
-            // Try to parse as JSON if possible
-            try {
-                return JSON.parse(text);
-            } catch(e) {
-                console.error("Failed to parse response as JSON:", e);
-                throw new Error("Invalid server response");
+        // Make the request to create a new tour request
+        fetch(requestUrl, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Cache-Control": "no-cache, no-store"
+            },
+            body: "selected_date=" + encodeURIComponent(selectedDate) + 
+                  "&create_request=true" +
+                  "&people_count=" + encodeURIComponent(peopleCount)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-        });
-    })
-    .then(data => {
-        if (data.success) {
-            // Rest of your success code...
-        } else {
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                closeModal();
+                updateUIAfterSelection();
+                
+                Swal.fire({
+                    iconHtml: '<i class="fas fa-check-circle"></i>',
+                    title: "Date Selected!",
+                    text: "Your tour date has been set successfully.",
+                    timer: 2000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
+                });
+            } else {
+                Swal.fire({
+                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                    title: "Error!",
+                    text: data.message || "Failed to set tour date. Please try again.",
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: "swal2-title-custom",
+                        icon: "swal2-icon-custom",
+                        popup: "swal-custom-popup"
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Error during date selection:", error);
             Swal.fire({
                 iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                 title: "Error!",
-                text: data.message || "Failed to save changes. Please try again.",
+                text: "An unexpected error occurred. Please try again.",
                 timer: 3000,
                 showConfirmButton: false,
                 customClass: {
@@ -2593,25 +2611,9 @@ document.querySelector(".modal-footer .btn").addEventListener("click", function 
                     popup: "swal-custom-popup"
                 }
             });
-        }
-    })
-    .catch(error => {
-        console.error("Error during save:", error);
-        Swal.fire({
-            iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-            title: "Error!",
-            text: "An unexpected error occurred. Please try again. Details: " + error.message,
-            timer: 5000,
-            showConfirmButton: false,
-            customClass: {
-                title: "swal2-title-custom",
-                icon: "swal2-icon-custom",
-                popup: "swal-custom-popup"
-            }
         });
-    });
     }
-});
+});;
 
 function updateUIAfterSelection() {
     document.getElementById("addMoreDestinations").style.display = "none";
