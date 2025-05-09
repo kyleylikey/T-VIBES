@@ -23,7 +23,6 @@ body {
 }
 
 .login-container {
-    position: relative;
     background-color: #ffffffd1;
     padding: 30px 40px;
     border-radius: 10px;
@@ -33,11 +32,6 @@ body {
     text-align: center;
     color: #333333;
     z-index: 1;
-    position: absolute;
-    left: 10%;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 550px;
     transition: opacity 1s ease-in-out;
 }
 
@@ -97,12 +91,10 @@ input[type="text"], input[type="password"] {
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     z-index: 2;
-    text-align: right;
+    text-align: left;
 }
 
-/* Sign-Up Page Specific Styles */
 .signup-container {
-    position: relative;
     background-color: #E7EBEE;
     padding: 30px 50px;
     border-radius: 10px;
@@ -112,11 +104,6 @@ input[type="text"], input[type="password"] {
     text-align: center;
     color: #333333;
     z-index: 1;
-    position: absolute;
-    right: 10%;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 650px;
     transition: opacity 1s ease-in-out;
 }
 

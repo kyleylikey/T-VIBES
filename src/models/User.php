@@ -43,7 +43,7 @@ class User {
     public function doesUserExist($email, $username) {
         try {
             $query = "SELECT TOP 1 [userid] FROM " . $this->table . " 
-                    WHERE [email] = :email OR [username] = :username";
+                    WHERE LOWER([email]) = LOWER(:email) OR LOWER([username]) = LOWER(:username)";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':username', $username);

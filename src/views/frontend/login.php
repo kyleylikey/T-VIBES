@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../../../public/assets/styles/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
@@ -75,24 +76,25 @@
     </style>
 </head>
 <body class="taalbgpic">
-    <div class="login-container">
-        <h1>Login</h1>
-        <p style="margin-bottom: 30px;">Please sign in to continue.</p>
-        <form id="loginForm">
-            <input type="text" id="username" name="username" placeholder="Username" required>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <a href="resetpwemail.php" class="forgot-password">Forgot Password?</a>
-            <button type="submit" style="font-weight: bold;" class="btn-custom">Login</button>
-            <p style="margin-top: 20%; color: #434343; font-size: 14px;">Don't have an account? <a href="signup.php" style="text-decoration: none; font-weight: bold; font-size: 14px; color: #102E47;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">Sign Up</a></p>
-        </form>
-    </div>
+    <div class="d-flex flex-row-reverse">
+        <div class="login-container">
+            <h1>Login</h1>
+            <p style="margin-bottom: 30px;">Please sign in to continue.</p>
+            <form id="loginForm">
+                <input type="text" id="username" name="username" placeholder="Username" required>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <a href="resetpwemail.php" class="forgot-password">Forgot Password?</a>
+                <button type="submit" style="font-weight: bold;" class="btn-custom">Login</button>
+                <p style="margin-top: 20%; color: #434343; font-size: 14px;">Don't have an account? <a href="signup.php" style="text-decoration: none; font-weight: bold; font-size: 14px; color: #102E47;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">Sign Up</a></p>
+            </form>
+        </div>
 
-    <div class="large-text-overlay-login">
-        <h1>We've Missed You!</h1>
-        <h1>Let's Pick Up</h1>
-        <h1>Where You Left Off</h1>
+        <div class="d-none d-md-block large-text-overlay-login">
+            <h1>We've Missed You!</h1>
+            <h1>Let's Pick Up</h1>
+            <h1>Where You Left Off</h1>
+        </div>
     </div>
-
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
