@@ -77,38 +77,43 @@ if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empt
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['userid']) && !isset($_SESSION['tour_destinations'])) {
-    $userid = $_SESSION['userid'];
-    
-    $stmt = $db->prepare("SELECT TOP 1 tourid FROM [taaltourismdb].[tour] WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC");
-    $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if ($result) {
-        $tourid = $result['tourid'];
+    if (isset($_SESSION['just_submitted'])) {
+        unset($_SESSION['just_submitted']);
+    } 
+    else {
+        $userid = $_SESSION['userid'];
         
-        $stmt = $db->prepare("SELECT t.siteid, t.date, t.companions, s.sitename, s.siteimage, s.price 
-                             FROM [taaltourismdb].[tour] t 
-                             JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid 
-                             WHERE t.tourid = :tourid AND t.userid = :userid");
-        $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
+        $stmt = $db->prepare("SELECT TOP 1 tourid FROM [taaltourismdb].[tour] WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC");
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
         $stmt->execute();
-        $destinations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if (!empty($destinations)) {
-            $_SESSION['tour_destinations'] = array_map(function($dest) {
-                return [
-                    'siteid' => $dest['siteid'],
-                    'sitename' => $dest['sitename'],
-                    'siteimage' => $dest['siteimage'],
-                    'price' => $dest['price']
-                ];
-            }, $destinations);
+        if ($result) {
+            $tourid = $result['tourid'];
             
-            $_SESSION['selected_tour_date'] = $destinations[0]['date'];
-            $_SESSION['tour_people_count'] = $destinations[0]['companions'];
-            $_SESSION['tour_ui_state'] = 'confirmed';
+            $stmt = $db->prepare("SELECT t.siteid, t.date, t.companions, s.sitename, s.siteimage, s.price 
+                                FROM [taaltourismdb].[tour] t 
+                                JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid 
+                                WHERE t.tourid = :tourid AND t.userid = :userid");
+            $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
+            $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+            $stmt->execute();
+            $destinations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (!empty($destinations)) {
+                $_SESSION['tour_destinations'] = array_map(function($dest) {
+                    return [
+                        'siteid' => $dest['siteid'],
+                        'sitename' => $dest['sitename'],
+                        'siteimage' => $dest['siteimage'],
+                        'price' => $dest['price']
+                    ];
+                }, $destinations);
+                
+                $_SESSION['selected_tour_date'] = $destinations[0]['date'];
+                $_SESSION['tour_people_count'] = $destinations[0]['companions'];
+                $_SESSION['tour_ui_state'] = 'confirmed';
+            }
         }
     }
 }
@@ -403,16 +408,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $tourid = $result['tourid'];
 
-        $stmt = $db->prepare("UPDATE [taaltourismdb].[tour] SET status = 'submitted' WHERE tourid = :tourid AND userid = :userid");
-        $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
+        $stmt = $db->prepare("UPDATE [taaltourismdb].[tour] SET status = 'submitted' 
+                     WHERE userid = :userid AND status = 'request'");
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
+            // Clear all session variables related to tours
             unset($_SESSION['tour_ui_state']);
             unset($_SESSION['tour_destinations']);
             unset($_SESSION['selected_tour_date']);
             unset($_SESSION['tour_people_count']);
 
+            // Add session flag to prevent auto-reloading pending requests
+            $_SESSION['just_submitted'] = true;
+            
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to update tour status']);

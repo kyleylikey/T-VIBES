@@ -363,7 +363,7 @@ class Tour {
     }
 
     public function getPendingToursCount() {
-        $query = "SELECT COUNT(*)
+        $query = "SELECT COUNT(*) AS pending_count
         FROM (
             SELECT 
                 t.*, 
