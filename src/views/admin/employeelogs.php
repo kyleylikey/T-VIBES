@@ -131,6 +131,10 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                 </thead>
                                 <tbody>
                                     <?php foreach ($logs as $log): ?>
+                                        <?php
+                                        $utc = new DateTime($log['datetime'], new DateTimeZone('UTC'));
+                                        $utc->setTimezone(new DateTimeZone('Asia/Manila'));
+                                        ?>
                                         <tr>
                                             <td><?php echo htmlspecialchars($log['name']); ?></td>
                                             <td><?php echo htmlspecialchars($log['action']); ?></td>
