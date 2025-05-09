@@ -1,8 +1,9 @@
 <?php
 require_once '../config/dbconnect.php';
 
-if (isset($_GET['token'])) {
+if (isset($_GET['token']) && isset($_GET['email'])) {
     $token = trim($_GET['token']);
+    $email = trim(urldecode($_GET['email']));
     
     // Initialize variables
     $success = false;
@@ -30,52 +31,54 @@ if (isset($_GET['token'])) {
         $userData = $checkStmt->fetch(PDO::FETCH_ASSOC);
         
         if ($userData) {
-            // Check if already verified
-            if ($userData['status'] !== 'inactive') {
-                $message = 'Your email is already verified.';
-            }
-            // Check if token is expired
-            else if (isset($userData['token_expiry']) && strtotime($userData['token_expiry']) < time()) {
-                $message = 'Your verification link has expired. Please request a new one.';
-
-                // Set emailveriftoken and token_expiry to NULL for expired token
-                    $expireQuery = "UPDATE taaltourismdb.users 
-                    SET emailveriftoken = NULL, token_expiry = NULL 
-                    WHERE userid = ?";
-                $expireStmt = $conn->prepare($expireQuery);
-                $expireStmt->bindParam(1, $userData['userid'], PDO::PARAM_INT);
-                $expireStmt->execute();
-
-            }
             // Everything is good, verify the email
-            else {
-                $updateQuery = "UPDATE taaltourismdb.users 
-                               SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
-                               WHERE emailveriftoken = ?";
-                $updateStmt = $conn->prepare($updateQuery);
-                $updateStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
+            $updateQuery = "UPDATE taaltourismdb.users 
+                            SET status = 'active', emailveriftoken = NULL, token_expiry = NULL 
+                            WHERE emailveriftoken = ?";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bindParam(1, $cleanedToken, PDO::PARAM_STR);
+            
+            if ($updateStmt->execute()) {
+                $success = true;
+                $message = 'Your email has been successfully verified!';
+                $iconHtml = '<i class="fas fa-check-circle"></i>';
+            } else {
+                $message = 'Error updating your account.';
                 
-                if ($updateStmt->execute()) {
-                    $success = true;
-                    $message = 'Your email has been successfully verified!';
-                    $iconHtml = '<i class="fas fa-check-circle"></i>';
-                } else {
-                    $message = 'Error updating your account.';
-                    
-                }
             }
         } else {
-            $message = 'Invalid verification link. Please request a new one.';
-            
-            // Additional debugging info for token matching issues
-            $directQuery = "SELECT TOP 5 username, 
-                           SUBSTRING(emailveriftoken, 1, 10) AS token_start,
-                           SUBSTRING(emailveriftoken, LEN(emailveriftoken)-9, 10) AS token_end, 
-                           LEN(emailveriftoken) AS token_length
-                           FROM taaltourismdb.users 
-                           WHERE emailveriftoken IS NOT NULL";
-            $directResult = $conn->query($directQuery);
-            
+            $checkQuerybyEmail = "SELECT userid, username, email, status, token_expiry, emailveriftoken 
+               FROM taaltourismdb.users 
+               WHERE LOWER(email) = LOWER(N'?')";
+            $checkStmtbyEmail = $conn->prepare($checkQuerybyEmail);
+            $checkStmtbyEmail->bindParam(1, $email, PDO::PARAM_STR);
+            $checkStmtbyEmail->execute();
+
+            $userDatabyEmail = $checkStmtbyEmail->fetch(PDO::FETCH_ASSOC);
+
+            if ($userDatabyEmail) {
+                // Check if already verified
+                if ($userDatabyEmail['status'] == 'active') {
+                    $message = 'Your email is already verified.';
+                }
+                // Check if token is expired
+                else if (!empty($userDatabyEmail['token_expiry']) && strtotime($userDatabyEmail['token_expiry']) < time()) {
+                    $message = 'Your verification link has expired. Please request a new one.';
+
+                    // Set emailveriftoken and token_expiry to NULL for expired token
+                    $expireQuery = "UPDATE taaltourismdb.users 
+                        SET emailveriftoken = NULL, token_expiry = NULL 
+                        WHERE userid = ?";
+                    $expireStmt = $conn->prepare($expireQuery);
+                    $expireStmt->bindParam(1, $userDatabyEmail['userid'], PDO::PARAM_INT);
+                    $expireStmt->execute();
+                }
+                else {
+                    $message = 'Invalid verification link. Please request a new one.';
+                }
+            } else {
+                $message = 'Invalid verification link. Please request a new one.';
+            }
         }
     } catch (PDOException $e) {
         $message = 'An error occurred during verification. Please contact support.';
