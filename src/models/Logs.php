@@ -22,10 +22,10 @@ class Logs {
             $stmt->bindParam(':searchTerm', $searchParam, PDO::PARAM_STR);
         } else {
             $query = "SELECT logs.action, logs.datetime, users.name 
-                     FROM [taaltourismdb].[logs] 
-                     INNER JOIN [taaltourismdb].[users] ON logs.userid = users.userid 
-                     ORDER BY logs.datetime DESC 
-                     LIMIT :limit OFFSET :offset";
+                FROM [taaltourismdb].[logs] 
+                INNER JOIN [taaltourismdb].[users] ON logs.userid = users.userid 
+                ORDER BY logs.datetime DESC 
+                OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY";
             
             $stmt = $this->conn->prepare($query);
         }

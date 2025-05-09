@@ -9,8 +9,8 @@ $toursThisMonthQuery = "
     SELECT COUNT(DISTINCT tourid) AS total_tours 
     FROM [taaltourismdb].[tour] 
     WHERE status = 'accepted' 
-    AND MONTH(date) = MONTH(CURRENT_DATE()) 
-    AND YEAR(date) = YEAR(CURRENT_DATE())";
+    AND MONTH(date) = MONTH(GETDATE()) 
+    AND YEAR(date) = YEAR(GETDATE())";
 
 $toursThisMonthStmt = $conn->prepare($toursThisMonthQuery);
 $toursThisMonthStmt->execute();
@@ -30,8 +30,8 @@ function getTourCount($conn, $status, $dateCondition) {
     return $result['total_tours'] ?? 0;
 }
 
-$thisMonthCondition = "MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE())";
-$lastMonthCondition = "MONTH(date) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(date) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)";
+$thisMonthCondition = "MONTH(date) = MONTH(GETDATE()) AND YEAR(date) = YEAR(GETDATE())";
+$lastMonthCondition = "MONTH(date) = MONTH(DATEADD(MONTH, -1, GETDATE())) AND YEAR(date) = YEAR(DATEADD(MONTH, -1, GETDATE()))";
 
 $acceptedThisMonth = getTourCount($conn, 'accepted', $thisMonthCondition);
 $acceptedLastMonth = getTourCount($conn, 'accepted', $lastMonthCondition);
@@ -39,8 +39,8 @@ $acceptedLastMonth = getTourCount($conn, 'accepted', $lastMonthCondition);
 $cancelledThisMonth = getTourCount($conn, 'cancelled', $thisMonthCondition);
 $cancelledLastMonth = getTourCount($conn, 'cancelled', $lastMonthCondition);
 
-$completedThisMonth = getTourCount($conn, 'accepted', "$thisMonthCondition AND date < CURRENT_DATE()");
-$completedLastMonth = getTourCount($conn, 'accepted', "$lastMonthCondition AND date < CURRENT_DATE()");
+$completedThisMonth = getTourCount($conn, 'accepted', "$thisMonthCondition AND date < CAST(GETDATE() AS DATE)");
+$completedLastMonth = getTourCount($conn, 'accepted', "$lastMonthCondition AND date < CAST(GETDATE() AS DATE)");
 
 function calculatePercentageChange($current, $previous) {
     if ($previous == 0) {
@@ -54,13 +54,13 @@ $cancelledChange = calculatePercentageChange($cancelledThisMonth, $cancelledLast
 $completedChange = calculatePercentageChange($completedThisMonth, $completedLastMonth);
 
 $busiestDaysQuery = "
-    SELECT TOP 3 DATE(date) AS tour_date, COUNT(DISTINCT tourid) AS total_tours 
+    SELECT TOP 3 CAST(date AS DATE) AS tour_date, COUNT(DISTINCT tourid) AS total_tours 
     FROM [taaltourismdb].[tour] 
     WHERE status = 'accepted' 
-    AND MONTH(date) = MONTH(CURRENT_DATE()) 
-    AND YEAR(date) = YEAR(CURRENT_DATE()) 
-    GROUP BY DATE(date) 
-    ORDER BY total_tours DESC 
+    AND MONTH(date) = MONTH(GETDATE()) 
+    AND YEAR(date) = YEAR(GETDATE()) 
+    GROUP BY CAST(date AS DATE) 
+    ORDER BY total_tours DESC
     ";
 
 $busiestDaysStmt = $conn->prepare($busiestDaysQuery);
@@ -72,9 +72,9 @@ $topSitesQuery = "
     FROM [taaltourismdb].[tour] t
     JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
     WHERE t.status = 'accepted'
-    AND MONTH(t.date) = MONTH(CURRENT_DATE()) 
-    AND YEAR(t.date) = YEAR(CURRENT_DATE())
-    GROUP BY t.siteid
+    AND MONTH(t.date) = MONTH(GETDATE()) 
+    AND YEAR(t.date) = YEAR(GETDATE())
+    GROUP BY s.siteid, s.sitename, s.siteimage
     ORDER BY total_visitors DESC
     ";
 
@@ -90,10 +90,10 @@ $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
 $visitorData = array_fill(1, $daysInMonth, 0);
 
 $query = "SELECT DAY(date) AS day, SUM(companions) AS total_visitors 
-          FROM (SELECT userid, date, companions FROM [taaltourismdb].[tour] 
-                WHERE YEAR(date) = :year AND MONTH(date) = :month AND status = 'accepted' GROUP BY tourid, userid
+        FROM (SELECT userid, date, companions FROM [taaltourismdb].[tour] 
+            WHERE YEAR(date) = :year AND MONTH(date) = :month AND status = 'accepted' GROUP BY tourid, userid, date, companions
             ) AS distinct_tours
-          GROUP BY DAY(date)";
+        GROUP BY DAY(date)";
 
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':year', $currentYear, PDO::PARAM_INT);

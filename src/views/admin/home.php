@@ -30,13 +30,19 @@ $employeeResult = $employeeStmt->fetch(PDO::FETCH_ASSOC);
 $activeEmployees = $employeeResult['active_employees'] ?? 0;
 
 $busiestDaysQuery = "
-    SELECT TOP 3 DATE(date) AS tour_date, COUNT(DISTINCT tourid) AS total_tours 
-    FROM [taaltourismdb].[tour] 
-    WHERE status = 'accepted' 
-    AND MONTH(date) = MONTH(CURRENT_DATE()) 
-    AND YEAR(date) = YEAR(CURRENT_DATE()) 
-    GROUP BY DATE(date) 
-    ORDER BY total_tours DESC 
+        SELECT TOP 3 
+        CAST(date AS DATE) AS tour_date, 
+        COUNT(DISTINCT tourid) AS total_tours 
+    FROM 
+        [taaltourismdb].[tour] 
+    WHERE 
+        status = 'accepted' 
+        AND MONTH(date) = MONTH(GETDATE()) 
+        AND YEAR(date) = YEAR(GETDATE()) 
+    GROUP BY 
+        CAST(date AS DATE) 
+    ORDER BY 
+        total_tours DESC;
     ";
 
 $busiestDaysStmt = $conn->prepare($busiestDaysQuery);
@@ -44,14 +50,23 @@ $busiestDaysStmt->execute();
 $busiestDays = $busiestDaysStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $topSitesQuery = "
-    SELECT TOP 3 s.siteid, s.sitename, s.siteimage, SUM(t.companions) AS total_visitors
-    FROM [taaltourismdb].[tour] t
-    JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
-    WHERE t.status = 'accepted'
-    AND MONTH(t.date) = MONTH(CURRENT_DATE()) 
-    AND YEAR(t.date) = YEAR(CURRENT_DATE())
-    GROUP BY t.siteid
-    ORDER BY total_visitors DESC
+        SELECT TOP 3 
+        s.siteid, 
+        s.sitename, 
+        s.siteimage, 
+        SUM(t.companions) AS total_visitors
+    FROM 
+        [taaltourismdb].[tour] t
+    LEFT JOIN 
+        [taaltourismdb].[sites] s ON t.siteid = s.siteid
+    WHERE 
+        t.status = 'accepted'
+        AND MONTH(t.date) = MONTH(GETDATE()) 
+        AND YEAR(t.date) = YEAR(GETDATE())
+    GROUP BY 
+        s.siteid, s.sitename, s.siteimage
+    ORDER BY 
+        total_visitors DESC;
     ";
 
 $topSitesStmt = $conn->prepare($topSitesQuery);
