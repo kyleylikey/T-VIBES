@@ -191,7 +191,7 @@ function sendTourConfirmation($email, $username, $date) {
             <div class='content'>
                 <h2>Hi $username,</h2>
                 <p>Your tour scheduled on $date is now accepted!</p>
-                <p>Should there be cancellations or special accommodations needed, please let us know by contacting us through our Facebook Page or (number).</p>
+                <p>Should there be cancellations or special accommodations needed, please let us know by contacting us through our <a href='https://tourtaal.azurewebsites.net/src/views/frontend/contactus.php'>Contact Page</a>.</p>
             </div>
             <div class='footer'>
                 <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
@@ -200,7 +200,7 @@ function sendTourConfirmation($email, $username, $date) {
     </body>
     </html>";
 
-    $plainTextContent = "Hi $username,\n\nYour tour scheduled on $date is now accepted!\n\nShould there be cancellations or special accommodations needed, please let us know by contacting us through our Facebook Page or (number).\n\n© " . date("Y") . " Taal Tourism Office. All rights reserved.";
+    $plainTextContent = "Hi $username,\n\nYour tour scheduled on $date is now accepted!\n\nShould there be cancellations or special accommodations needed, please let us know by contacting us through our <a href='https://tourtaal.azurewebsites.net/src/views/frontend/contactus.php'>Contact Page</a>.\n\n© " . date("Y") . " Taal Tourism Office. All rights reserved.";
 
     $payload = [
         "senderAddress" => $senderEmail,
@@ -362,7 +362,7 @@ function sendTourDecline($email, $username, $date, $message) {
                 <p>Your tour scheduled on $date has been declined!</p>
                 <p>We regret to inform you that your request has been declined due to the following reason(s):</p>
                 <p>$message</p>
-                <p>If there are any concerns, please let us know by contacting us through our Facebook Page or (number).</p>
+                <p>If there are any concerns, please let us know by contacting us through our <a href='https://tourtaal.azurewebsites.net/src/views/frontend/contactus.php'>Contact Page</a>.</p>
             </div>
             <div class='footer'>
                 <p>&copy; " . date("Y") . " Taal Tourism Office. All rights reserved.</p>
@@ -371,7 +371,7 @@ function sendTourDecline($email, $username, $date, $message) {
     </body>
     </html>";
 
-    $plainTextContent = "Hi $username,\n\nYour tour scheduled on $date has been declined!\n\nWe regret to inform you that your request has been declined due to the following reason(s):\n\n$message\n\nIf there are any concerns, please let us know by contacting us through our Facebook Page or (number).\n\n© " . date("Y") . " Taal Tourism Office. All rights reserved.";
+    $plainTextContent = "Hi $username,\n\nYour tour scheduled on $date has been declined!\n\nWe regret to inform you that your request has been declined due to the following reason(s):\n\n$message\n\nIf there are any concerns, please let us know by contacting us through our <a href='https://tourtaal.azurewebsites.net/src/views/frontend/contactus.php'>Contact Page</a>.\n\n© " . date("Y") . " Taal Tourism Office. All rights reserved.";
 
     $payload = [
         "senderAddress" => $senderEmail,

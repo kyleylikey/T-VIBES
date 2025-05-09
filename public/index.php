@@ -273,7 +273,7 @@ else {
                             <?php endif; ?>
                         </div>
                         <h5 class="mt-3"><?php echo $site['sitename']; ?></h5>
-                        <div class="mx-auto" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 25px;"> ★ <?php echo ($site['rating_cnt'] == 0) ? '0.0' : number_format($site['rating'] / $site['rating_cnt'], 1); ?> </div>
+                        <div class="mx-auto" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 25px;"> ★ <?php echo ($site['rating_cnt'] == 0) ? '0.0' : number_format($site['ratings'] / $site['rating_cnt'], 1); ?> </div>
                     </div>
                 </div>
             <?php endforeach; ?>

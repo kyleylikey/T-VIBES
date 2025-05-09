@@ -380,43 +380,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => true]);
         exit();
     }
-}
 
-if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
-    if (!isset($_SESSION['userid'])) {
-        echo json_encode(['success' => false, 'message' => 'User not logged in']);
+    
+    if (isset($_POST['action']) && $_POST['action'] === "submit_request") {
+        
+        if (!isset($_SESSION['userid'])) {
+            echo json_encode(['success' => false, 'message' => 'User not logged in']);
+            exit();
+        }
+
+        $userid = $_SESSION['userid'];
+
+        $stmt = $db->prepare("SELECT TOP 1 tourid FROM [taaltourismdb].[tour] WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC");
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            echo json_encode(['success' => false, 'message' => 'No pending tour request found']);
+            exit();
+        }
+
+        $tourid = $result['tourid'];
+
+        $stmt = $db->prepare("UPDATE [taaltourismdb].[tour] SET status = 'submitted' WHERE tourid = :tourid AND userid = :userid");
+        $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            unset($_SESSION['tour_ui_state']);
+            unset($_SESSION['tour_destinations']);
+            unset($_SESSION['selected_tour_date']);
+            unset($_SESSION['tour_people_count']);
+
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to update tour status']);
+        }
         exit();
     }
-
-    $userid = $_SESSION['userid'];
-
-    $stmt = $db->prepare("SELECT TOP 1 tourid FROM [taaltourismdb].[tour] WHERE userid = :userid AND status = 'request' ORDER BY created_at DESC");
-    $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$result) {
-        echo json_encode(['success' => false, 'message' => 'No pending tour request found']);
-        exit();
-    }
-
-    $tourid = $result['tourid'];
-
-    $stmt = $db->prepare("UPDATE [taaltourismdb].[tour] SET status = 'submitted' WHERE tourid = :tourid AND userid = :userid");
-    $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
-    $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
-
-    if ($stmt->execute()) {
-        unset($_SESSION['tour_ui_state']);
-        unset($_SESSION['tour_destinations']);
-        unset($_SESSION['selected_tour_date']);
-        unset($_SESSION['tour_people_count']);
-
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update tour status']);
-    }
-    exit();
 }
 ?>
 

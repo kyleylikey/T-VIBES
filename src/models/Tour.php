@@ -363,7 +363,7 @@ class Tour {
     }
 
     public function getPendingToursCount() {
-        $query = "SELECT COUNT(*) AS TotalRowCount
+        $query = "SELECT COUNT(*)
         FROM (
             SELECT 
                 t.*, 
