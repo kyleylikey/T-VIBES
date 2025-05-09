@@ -203,23 +203,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             try {
                 // First, generate a new tour ID by inserting a dummy record and getting its ID
-                $stmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] 
-                    (siteid, userid, status, date, companions, created_at) 
-                    OUTPUT INSERTED.tourid
-                    VALUES (0, :userid, 'temp', :date, :companions, GETDATE())");
-                
-                $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
-                $stmt->bindParam(':date', $selectedDate);
-                $stmt->bindParam(':companions', $companions, PDO::PARAM_INT);
+                $stmt = $db->prepare("SELECT ISNULL(MAX(tourid), 0) + 1 AS next_tourid FROM [taaltourismdb].[tour]");
                 $stmt->execute();
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                $tourid = $result['tourid'];
-                
-                // Delete the temporary record
-                $stmt = $db->prepare("DELETE FROM [taaltourismdb].[tour] WHERE tourid = :tourid");
-                $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
-                $stmt->execute();
-                
+                $tourid = $result['next_tourid'];
+
                 // Now insert all destinations with the same tourid
                 foreach ($_SESSION['tour_destinations'] as $destination) {
                     $siteid = $destination['siteid'];
@@ -227,7 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] 
                         (tourid, siteid, userid, status, date, companions, created_at) 
                         VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, GETDATE())");
-                    
                     $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
                     $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
                     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
