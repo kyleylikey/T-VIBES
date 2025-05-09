@@ -79,7 +79,7 @@
 <body class="taalbgpic">
     <div class="container">
         <div class="row justify-content-between">
-            <div class="col-12 col-md-4 p-md-4 login-container">
+            <div class="col-12 col-lg-4 p-4 login-container">
                 <h1>Login</h1>
                 <p style="margin-bottom: 30px;">Please sign in to continue.</p>
                 <form id="loginForm">
@@ -91,9 +91,9 @@
                 </form>
             </div>
 
-            <div class="col-0 col-md-3"></div>
+            <div class="col-0 col-lg-3"></div>
 
-            <div class="col-12 col-md-5 p-md-4 d-none d-md-block large-text-overlay-login">
+            <div class="align-self-end col-12 col-lg-5 d-none d-lg-block large-text-overlay-login">
                 <h1>We've Missed You!</h1>
                 <h1>Let's Pick Up</h1>
                 <h1>Where You Left Off</h1>

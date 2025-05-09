@@ -71,9 +71,6 @@ input[type="text"], input[type="password"] {
     text-decoration: underline;
 }
 .large-text-overlay-login {
-    position: absolute;
-    bottom: 20%;
-    right: 5%;
     color: #ffffff;
     font-size: 30px;
     font-weight: bold;
@@ -83,9 +80,6 @@ input[type="text"], input[type="password"] {
 }
 
 .large-text-overlay-signup {
-    position: absolute;
-    bottom: 20%;
-    left: 5%;
     color: #ffffff;
     font-size: 30px;
     font-weight: bold;

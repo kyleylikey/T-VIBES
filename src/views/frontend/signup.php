@@ -45,18 +45,17 @@ error_reporting(E_ALL);
         }
 
         .large-text-overlay-signup {
-            position: absolute;
-            bottom: 20%;
-            left: 5%;
             color: #FFFFFF !important;
             font-family: 'Raleway', sans-serif !important;
             font-size: 30px;
-            font-weight: 700 !important;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             z-index: 2;
             text-align: left;
         }
 
+        .large-text-overlay-signup {
+            font-weight: 700 !important;
+        }
         .btn-custom {
             font-weight: bold !important;
             border: 2px solid #102E47 !important;
@@ -95,12 +94,12 @@ error_reporting(E_ALL);
 <body class="taalbgpic">
     <div class="container">
         <div class="row justify-content-between">
-            <div class="col-0 col-md-3"></div>
-            <div class="col-12 col-md-5 p-md-4 d-none d-md-block large-text-overlay-signup">
+            <div class="col-0 col-lg-3"></div>
+            <div class="align-self-end col-12 col-lg-5 d-none d-lg-block large-text-overlay-signup">
                 <h1>Your Lively</h1>
                 <h1>Getaway Awaits!</h1>
             </div>
-            <div class="col-12 col-md-4 p-md-4 signup-container">
+            <div class="col-12 col-lg-4 p-4 signup-container">
                 <h1>Sign Up</h1>
                 <p>Please register to log in.</p>
                 <form id="signupForm">
