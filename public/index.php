@@ -26,6 +26,8 @@ function recordVisit() {
     }
 }
 
+var_dump($_SESSION);
+
 recordVisit();
 ?>
 

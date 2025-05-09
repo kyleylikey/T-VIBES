@@ -76,23 +76,25 @@
     </style>
 </head>
 <body class="taalbgpic">
-    <div class="d-flex flex-row-reverse">
-        <div class="login-container">
-            <h1>Login</h1>
-            <p style="margin-bottom: 30px;">Please sign in to continue.</p>
-            <form id="loginForm">
-                <input type="text" id="username" name="username" placeholder="Username" required>
-                <input type="password" id="password" name="password" placeholder="Password" required>
-                <a href="resetpwemail.php" class="forgot-password">Forgot Password?</a>
-                <button type="submit" style="font-weight: bold;" class="btn-custom">Login</button>
-                <p style="margin-top: 20%; color: #434343; font-size: 14px;">Don't have an account? <a href="signup.php" style="text-decoration: none; font-weight: bold; font-size: 14px; color: #102E47;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">Sign Up</a></p>
-            </form>
-        </div>
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-12 col-md-6 p-md-4 login-container">
+                <h1>Login</h1>
+                <p style="margin-bottom: 30px;">Please sign in to continue.</p>
+                <form id="loginForm">
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <a href="resetpwemail.php" class="forgot-password">Forgot Password?</a>
+                    <button type="submit" style="font-weight: bold;" class="btn-custom">Login</button>
+                    <p style="margin-top: 20%; color: #434343; font-size: 14px;">Don't have an account? <a href="signup.php" style="text-decoration: none; font-weight: bold; font-size: 14px; color: #102E47;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">Sign Up</a></p>
+                </form>
+            </div>
 
-        <div class="d-none d-md-block large-text-overlay-login">
-            <h1>We've Missed You!</h1>
-            <h1>Let's Pick Up</h1>
-            <h1>Where You Left Off</h1>
+            <div class="col-12 col-md-6 p-md-4 d-none d-md-block large-text-overlay-login">
+                <h1>We've Missed You!</h1>
+                <h1>Let's Pick Up</h1>
+                <h1>Where You Left Off</h1>
+            </div>
         </div>
     </div>
     <script>

@@ -93,31 +93,34 @@ error_reporting(E_ALL);
     </style>
 </head>
 <body class="taalbgpic">
-    <div class="d-flex flex-row-reverse">
-        <div class="signup-container">
-            <h1>Sign Up</h1>
-            <p>Please register to log in.</p>
-            <form id="signupForm">
-                <div class="form-group">
-                    <input type="text" id="fullname" name="fullname" placeholder="Full Name" required class="half-width-input" pattern="^[A-Za-z\s]+$" title="Full name must contain only alphabets and spaces.">
-                    <input type="text" id="username" name="username" placeholder="Username" required class="half-width-input" pattern="^\w{3,20}$" title="Username must be 3-20 characters long and can only include letters, numbers, and underscores.">
-                </div>
-                <input type="tel" id="contact" name="contact" placeholder="Contact Number" pattern="^\d{11}$" required class="full-width-input" title="Contact number must be exactly 11 digits." inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                <input type="email" id="email" name="email" placeholder="Email" required class="full-width-input">
-                <input type="password" id="password" name="password" placeholder="Password" required class="full-width-input" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" title="Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-12 col-md-6 p-md-4 signup-container">
+                <h1>Sign Up</h1>
+                <p>Please register to log in.</p>
+                <form id="signupForm">
+                    <div class="form-group">
+                        <input type="text" id="fullname" name="fullname" placeholder="Full Name" required class="half-width-input" pattern="^[A-Za-z\s]+$" title="Full name must contain only alphabets and spaces.">
+                        <input type="text" id="username" name="username" placeholder="Username" required class="half-width-input" pattern="^\w{3,20}$" title="Username must be 3-20 characters long and can only include letters, numbers, and underscores.">
+                    </div>
+                    <input type="tel" id="contact" name="contact" placeholder="Contact Number" pattern="^\d{11}$" required class="full-width-input" title="Contact number must be exactly 11 digits." inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                    <input type="email" id="email" name="email" placeholder="Email" required class="full-width-input">
+                    <input type="password" id="password" name="password" placeholder="Password" required class="full-width-input" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" title="Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.">
 
-                <div class="checkbox-container form-check">
-                </div>
+                    <div class="checkbox-container form-check">
+                    </div>
 
-                <button type="submit" id="submitBtn" class="btn-custom">Create Account</button>
-                <p class="login-redirect">Already have an account? <a href="login.php" class="font-link">Login</a></p>
-            </form>
+                    <button type="submit" id="submitBtn" class="btn-custom">Create Account</button>
+                    <p class="login-redirect">Already have an account? <a href="login.php" class="font-link">Login</a></p>
+                </form>
+            </div>
+
+            <div class="col-12 col-md-6 p-md-4 d-none d-md-block large-text-overlay-signup">
+                <h1>Your Lively</h1>
+                <h1>Getaway Awaits!</h1>
+            </div>
         </div>
 
-        <div class="d-none d-md-block large-text-overlay-signup">
-            <h1>Your Lively</h1>
-            <h1>Getaway Awaits!</h1>
-        </div>
     </div>
     <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
