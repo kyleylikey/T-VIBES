@@ -201,7 +201,17 @@ try {
     </style>
 </head>
 <body>
-    <?php if ($validRequest && !$success): ?>
+    <?php if ($success): ?>
+    <div class="form-container">
+        <h2 class="form-title">Password Reset Successful</h2>
+        <div class="info-text">
+            <?php echo $message; ?>
+        </div>
+        <div class="d-grid gap-2 mt-4">
+            <a href="https://tourtaal.azurewebsites.net/src/views/frontend/login.php" class="btn btn-primary">Go to Login</a>
+        </div>
+    </div>
+    <?php elseif ($validRequest): ?>
     <div class="form-container">
         <h2 class="form-title">Reset Your Password</h2>
         <div class="info-text">
@@ -244,7 +254,7 @@ try {
             This password reset link is invalid or has expired. Please request a new password reset from the login page.
         </div>
         <div class="d-grid gap-2 mt-4">
-            <a href="login.php" class="btn btn-primary">Go to Login</a>
+            <a href="https://tourtaal.azurewebsites.net/src/views/frontend/login.php" class="btn btn-primary">Go to Login</a>
         </div>
     </div>
     <?php endif; ?>
