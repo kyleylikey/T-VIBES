@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
     <link rel="stylesheet" href="../../../public/assets/styles/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -41,6 +41,7 @@
         .large-text-overlay-login h1 {
             color: #FFFFFF !important;
             font-family: 'Raleway', sans-serif !important;
+            font-weight: 700 !important;
         }
 
         .btn-custom {
@@ -78,7 +79,7 @@
 <body class="taalbgpic">
     <div class="container">
         <div class="row justify-content-between">
-            <div class="col-12 col-md-6 p-md-4 login-container">
+            <div class="col-12 col-md-4 p-md-4 login-container">
                 <h1>Login</h1>
                 <p style="margin-bottom: 30px;">Please sign in to continue.</p>
                 <form id="loginForm">
@@ -90,7 +91,9 @@
                 </form>
             </div>
 
-            <div class="col-12 col-md-6 p-md-4 d-none d-md-block large-text-overlay-login">
+            <div class="col-0 col-md-3"></div>
+
+            <div class="col-12 col-md-5 p-md-4 d-none d-md-block large-text-overlay-login">
                 <h1>We've Missed You!</h1>
                 <h1>Let's Pick Up</h1>
                 <h1>Where You Left Off</h1>

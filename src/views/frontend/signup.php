@@ -12,7 +12,7 @@ error_reporting(E_ALL);
     <link rel="stylesheet" href="../../../public/assets/styles/main.css">
     <link rel="stylesheet" href="../../../public/assets/styles/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Raleway:wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
@@ -51,7 +51,7 @@ error_reporting(E_ALL);
             color: #FFFFFF !important;
             font-family: 'Raleway', sans-serif !important;
             font-size: 30px;
-            font-weight: bold;
+            font-weight: 700 !important;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             z-index: 2;
             text-align: left;
@@ -95,7 +95,12 @@ error_reporting(E_ALL);
 <body class="taalbgpic">
     <div class="container">
         <div class="row justify-content-between">
-            <div class="col-12 col-md-6 p-md-4 signup-container">
+            <div class="col-0 col-md-3"></div>
+            <div class="col-12 col-md-5 p-md-4 d-none d-md-block large-text-overlay-signup">
+                <h1>Your Lively</h1>
+                <h1>Getaway Awaits!</h1>
+            </div>
+            <div class="col-12 col-md-4 p-md-4 signup-container">
                 <h1>Sign Up</h1>
                 <p>Please register to log in.</p>
                 <form id="signupForm">
@@ -115,10 +120,6 @@ error_reporting(E_ALL);
                 </form>
             </div>
 
-            <div class="col-12 col-md-6 p-md-4 d-none d-md-block large-text-overlay-signup">
-                <h1>Your Lively</h1>
-                <h1>Getaway Awaits!</h1>
-            </div>
         </div>
 
     </div>
