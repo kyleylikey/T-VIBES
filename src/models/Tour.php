@@ -363,7 +363,19 @@ class Tour {
     }
 
     public function getPendingToursCount() {
-        $query = "SELECT COUNT(DISTINCT tourid) AS pending_count FROM [taaltourismdb].[tour] WHERE status = 'submitted'";
+        $query = "SELECT COUNT(*) AS TotalRowCount
+        FROM (
+            SELECT 
+                t.*, 
+                u.name, 
+                COUNT(*) OVER (PARTITION BY t.tourid, t.userid) AS total_sites
+            FROM 
+                [taaltourismdb].[tour] t
+            JOIN 
+                [taaltourismdb].[users] u ON t.userid = u.userid
+            WHERE 
+                t.status = 'submitted'
+        ) AS subquery;";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['pending_count'];
