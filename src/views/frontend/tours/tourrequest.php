@@ -33,6 +33,17 @@ if (isset($_SESSION['userid']) && isset($_SESSION['tour_destinations']) && !empt
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_SESSION['just_submitted'])) {
+        // Clear any tour-related session data again to be absolutely sure
+        unset($_SESSION['tour_ui_state']);
+        unset($_SESSION['tour_destinations']);
+        unset($_SESSION['selected_tour_date']);
+        unset($_SESSION['tour_people_count']);
+        unset($_SESSION['just_submitted']);
+    }
+}
+
 // Set a default empty value for all_opdays_and_binary - it will be calculated in JS
 $getDate = ['all_opdays_and_binary' => '0000000'];
 
@@ -188,24 +199,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
         if (isset($_SESSION['tour_destinations']) && !empty($_SESSION['tour_destinations'])) {
             $successCount = 0;
- 
             $db->beginTransaction();
- 
-            try {
-                $successCount = 0;
             
+            try {
+                // First, generate a new tour ID by inserting a dummy record and getting its ID
+                $stmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] 
+                    (siteid, userid, status, date, companions, created_at) 
+                    OUTPUT INSERTED.tourid
+                    VALUES (0, :userid, 'temp', :date, :companions, GETDATE())");
+                
+                $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+                $stmt->bindParam(':date', $selectedDate);
+                $stmt->bindParam(':companions', $companions, PDO::PARAM_INT);
+                $stmt->execute();
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $tourid = $result['tourid'];
+                
+                // Delete the temporary record
+                $stmt = $db->prepare("DELETE FROM [taaltourismdb].[tour] WHERE tourid = :tourid");
+                $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
+                $stmt->execute();
+                
+                // Now insert all destinations with the same tourid
                 foreach ($_SESSION['tour_destinations'] as $destination) {
                     $siteid = $destination['siteid'];
-            
+                    
                     $stmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] 
-                        (siteid, userid, status, date, companions, created_at) 
-                        VALUES (:siteid, :userid, 'request', :date, :companions, GETDATE())");
-            
+                        (tourid, siteid, userid, status, date, companions, created_at) 
+                        VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, GETDATE())");
+                    
+                    $stmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
                     $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
                     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
                     $stmt->bindParam(':date', $selectedDate);
                     $stmt->bindParam(':companions', $companions, PDO::PARAM_INT);
-            
+                    
                     if ($stmt->execute()) {
                         $successCount++;
                     }
@@ -2516,71 +2544,47 @@ document.querySelector(".modal-footer .btn").addEventListener("click", function 
         document.getElementById("tour-date").value = selectedDate;
         closeModal();
     } else {
-        // Use the full URL to ensure it works in Azure
-        const requestUrl = window.location.href;
-        console.log("Sending request to:", requestUrl);
-        console.log("Selected date:", selectedDate);
-        
-        fetch(requestUrl, {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/x-www-form-urlencoded",
-                // Add this to prevent caching issues
-                "Cache-Control": "no-cache"
-            },
-            body: "selected_date=" + encodeURIComponent(selectedDate) + "&create_request=true"
-        })
-        .then(response => {
-            console.log("Response status:", response.status);
-            return response.text().then(text => {
-                console.log("Raw response:", text);
-                try {
-                    return JSON.parse(text);
-                } catch(e) {
-                    console.error("JSON parse error:", e);
-                    throw new Error("Invalid JSON response");
-                }
-            });
-        })
-        .then(data => {
-            console.log("Parsed data:", data);
-            if (data && data.success) {
-                closeModal();
-                Swal.fire({
-                    iconHtml: '<i class="fas fa-check-circle"></i>',
-                    title: "Date Selected!",
-                    text: "Your tour date has been set. You can now submit your request.",
-                    timer: 3000,
-                    showConfirmButton: false,
-                    customClass: {
-                        title: "swal2-title-custom",
-                        icon: "swal2-icon-custom",
-                        popup: "swal-custom-popup"
-                    }
-                });
-                document.getElementById("tour-date").value = selectedDate;
-                updateUIAfterSelection();
-            } else {
-                Swal.fire({
-                    iconHtml: '<i class="fas fa-exclamation-circle"></i>',
-                    title: "Error!",
-                    text: data && data.message ? data.message : "Failed to save date selection",
-                    timer: 3000,
-                    showConfirmButton: false,
-                    customClass: {
-                        title: "swal2-title-custom",
-                        icon: "swal2-icon-custom",
-                        popup: "swal-custom-popup"
-                    }
-                });
+        // Get the full URL of the current page to ensure correct path
+    const requestUrl = window.location.href;
+
+    fetch(requestUrl, {
+        method: "POST",
+        headers: { 
+            "Content-Type": "application/x-www-form-urlencoded",
+            // Prevent caching issues
+            "Cache-Control": "no-cache, no-store"
+        },
+        body: "selected_date=" + encodeURIComponent(selectedDate) + 
+            "&people_count=" + encodeURIComponent(peopleCount) + 
+            "&save_changes=true" + 
+            "&update_db=true" + 
+            "&destinations=" + encodeURIComponent(JSON.stringify(selectedSites))
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text().then(text => {
+            // Log response for debugging
+            console.log("Raw response:", text);
+            
+            // Try to parse as JSON if possible
+            try {
+                return JSON.parse(text);
+            } catch(e) {
+                console.error("Failed to parse response as JSON:", e);
+                throw new Error("Invalid server response");
             }
-        })
-        .catch(error => {
-            console.error("Fetch error:", error);
+        });
+    })
+    .then(data => {
+        if (data.success) {
+            // Rest of your success code...
+        } else {
             Swal.fire({
                 iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                 title: "Error!",
-                text: "Failed to communicate with server. Please try again.",
+                text: data.message || "Failed to save changes. Please try again.",
                 timer: 3000,
                 showConfirmButton: false,
                 customClass: {
@@ -2589,7 +2593,23 @@ document.querySelector(".modal-footer .btn").addEventListener("click", function 
                     popup: "swal-custom-popup"
                 }
             });
+        }
+    })
+    .catch(error => {
+        console.error("Error during save:", error);
+        Swal.fire({
+            iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+            title: "Error!",
+            text: "An unexpected error occurred. Please try again. Details: " + error.message,
+            timer: 5000,
+            showConfirmButton: false,
+            customClass: {
+                title: "swal2-title-custom",
+                icon: "swal2-icon-custom",
+                popup: "swal-custom-popup"
+            }
         });
+    });
     }
 });
 
@@ -2883,6 +2903,10 @@ document.getElementById("submit-btn").addEventListener("click", function() {
                             popup: "swal-custom-popup"
                         }
                     }).then(() => {
+                        // Add a small delay before reloading
+                        setTimeout(() => {
+                            window.location.href = window.location.href;  // Use full URL instead of reload()
+                        }, 500);
                         window.location.reload(); 
                     });
                 } else {
