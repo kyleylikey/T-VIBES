@@ -69,11 +69,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         }
     }
 </style>
-<head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-</head>
-</head>
 <header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-white">
 				<div class="container-fluid">
@@ -108,7 +103,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 						</a>
 					</li>
 					</ul>
-
 				</div>
 				</div>
 			</nav>

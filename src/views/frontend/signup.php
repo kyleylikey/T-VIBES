@@ -49,11 +49,11 @@ error_reporting(E_ALL);
             font-family: 'Raleway', sans-serif !important;
             font-size: 30px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            z-index: 2;
+            z-index: 0;
             text-align: left;
         }
 
-        .large-text-overlay-signup {
+        .large-text-overlay-signup h1 {
             font-weight: 700 !important;
         }
         .btn-custom {

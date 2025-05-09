@@ -98,7 +98,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                         </div>
                         <div class="ms-3">
                             <p class="mb-1 fw-bold">Email</p>
-                            <p>sample@email.com</p>
+                            <p><a href="mailto:tourismtaal1572@gmail.com">tourismtaal1572@gmail.com</a></p>
                         </div>
                     </div>
 
@@ -108,7 +108,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                         </div>
                         <div class="ms-3">
                             <p class="mb-1 fw-bold">Phone</p>
-                            <p>+63 123 456 7890</p>
+                            <p><a href="tel:+639088645669">+63 908 864 5669</a></p>
                         </div>
                     </div>
 
@@ -123,6 +123,11 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                 <div class="mt-3 p-3 d-flex align-items-center" style="background-color: #EC6350; color: white; border-radius: 0.5rem;">
                     <div class="icon">
                         <p><i class="fas fa-map-marker-alt"></i> Address </p>
+                        <p class="mb-0"><strong>Tourism Office of Taal</strong>
+                        Located beside Escuala Pia,
+                        Calle Gliceria Marella,
+                        Taal, Batangas, Philippines.
+                        </p>
                     </div>
                 </div>
             </div>

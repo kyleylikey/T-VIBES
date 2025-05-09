@@ -109,7 +109,7 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
             ?>
                 <div class="carousel-item <?php echo $isFirst ? 'active' : ''; ?> h-100">
                     <img src="../../../public/uploads/<?php echo $site['siteimage']; ?>" class="img-fluid mt-3 h-75 w-100 object-fit-cover rounded" style="object-fit: cover; border-radius: 25px;" alt="<?php echo $site['sitename']; ?>">
-                    <h2 class="my-3 fw-bold"><?php echo $site['sitename']; ?></h2>
+                    <h3 class="my-3 fw-bold"><?php echo $site['sitename']; ?></h3>
                 </div>
                 <?php $isFirst = false; ?>
             <?php endforeach; ?>

@@ -26,8 +26,6 @@ function recordVisit() {
     }
 }
 
-var_dump($_SESSION);
-
 recordVisit();
 ?>
 
@@ -107,6 +105,11 @@ recordVisit();
             font-family: 'Raleway', sans-serif !important;
             font-weight: bold !important;
             color: #102E47  !important;
+        }
+
+        btn-dark {
+            width: 40px !important;
+            height: 40px !important;
         }
 
         .cta-button {
@@ -270,7 +273,7 @@ else {
                             <?php endif; ?>
                         </div>
                         <h5 class="mt-3"><?php echo $site['sitename']; ?></h5>
-                        <p>★ <?php echo $site['ratings']; ?></p>
+                        <div style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 25px;">★ <?php echo ($site['rating_cnt'] == 0) ? '0.0' : number_format($site['rating'] / $site['rating_cnt'], 1); ?></div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -293,16 +296,16 @@ else {
                 <p>Straight From Our Guests</p>
             </div>
         </div>
-        <div id="storiesCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div id="storiesCarousel" class="carousel slide <?php echo count($recentReviews) < 3 ? 'd-none' : 'd-block'; ?>" data-bs-ride="carousel">
             <div class="carousel-inner text-start">
                 <?php foreach ($recentReviews as $index => $review): ?>
                     <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                        <blockquote class="blockquote p-4 bg-light text-white rounded text-center">
-                            <i class="bi bi-person-circle" style="font-size: 3rem;"></i><br>
-                            <h5 class="fw-bold"><?php echo $review['author']; ?></h5>
-                            <p class="fw-bold fs-4 fst-italic">"<?php echo $review['review']; ?>"</p>
-                            <h4 class="" style="color: #434343;"><?php echo $review['sitename']; ?> | <?php echo $review['date']; ?></h4>
-                        </blockquote>
+                    <blockquote class="blockquote p-4 bg-light text-white rounded text-center">
+                        <i class="bi bi-person-circle" style="font-size: 3rem;"></i><br>
+                        <h5 class="fw-bold"><?php echo $review['author']; ?></h5>
+                        <p class="fw-bold fs-4 fst-italic">"<?php echo $review['review']; ?>"</p>
+                        <h4 class="" style="color: #434343;"><?php echo $review['sitename']; ?> | <?php echo $review['date']; ?></h4>
+                    </blockquote>
                     </div>
                 <?php endforeach; ?>
             </div>
