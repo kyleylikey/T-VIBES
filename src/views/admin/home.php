@@ -8,8 +8,8 @@ $conn = $database->getConnection();
 $tourQuery = "SELECT COUNT(DISTINCT tourid) AS tour_requests 
               FROM [taaltourismdb].[tour] 
               WHERE status = 'submitted' 
-              AND MONTH(date) = MONTH(CURRENT_DATE()) 
-              AND YEAR(date) = YEAR(CURRENT_DATE())";
+              AND MONTH(date) = MONTH(GETDATE()) 
+              AND YEAR(date) = YEAR(GETDATE())";
 
 $tourStmt = $conn->prepare($tourQuery);
 $tourStmt->execute();
