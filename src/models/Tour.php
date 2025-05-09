@@ -306,15 +306,14 @@ class Tour {
                     t.date, 
                     t.companions, 
                     t.created_at,
-                    STRING_AGG(s.sitename, '||') AS sites
+                    STRING_AGG(s.sitename, '||') WITHIN GROUP (ORDER BY s.sitename) AS sites
                 FROM [taaltourismdb].[tour] t
                 JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                 JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
-                WHERE CONVERT(DATE, t.date) = :today AND t.status = 'accepted'
-                GROUP BY t.tourid, u.name, t.date, t.companions, t.created_at";
+                WHERE CAST(t.date AS DATE) = ? AND t.status = 'accepted'
+                GROUP BY t.tourid, u.userid, u.name, t.date, t.companions, t.created_at";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':today', $today);
-        $stmt->execute();
+        $stmt->execute([$today]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -331,7 +330,7 @@ class Tour {
                 JOIN [taaltourismdb].[users] u ON t.userid = u.userid
                 JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
                 WHERE t.status = 'accepted' AND CONVERT(DATE, t.date) >= CONVERT(DATE, GETDATE())
-                GROUP BY t.tourid, u.name, t.date, t.companions, t.created_at
+                GROUP BY t.tourid, u.name, t.date, t.companions, t.created_at, u.userid
                 ORDER BY t.date ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
