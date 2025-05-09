@@ -260,7 +260,7 @@ else {
 </section>
 
 <section class="container my-5 text-center">
-        <h2 class="mb-4 fw-bold">Top Destinations</h2>
+        <h2 class="mb-4 fw-bold">Most Visited Destinations</h2>
         <div class="row justify-content-center g-4 mx-auto">
             <?php foreach ($topSites as $site): ?>
                 <div class="col-md-4">
@@ -273,7 +273,7 @@ else {
                             <?php endif; ?>
                         </div>
                         <h5 class="mt-3"><?php echo $site['sitename']; ?></h5>
-                        <div style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 25px;">★ <?php echo ($site['rating_cnt'] == 0) ? '0.0' : number_format($site['rating'] / $site['rating_cnt'], 1); ?></div>
+                        <div class="mx-auto" style="background-color: #EC6350; color: white; padding: 4px 8px; border-radius: 25px;"> ★ <?php echo ($site['rating_cnt'] == 0) ? '0.0' : number_format($site['rating'] / $site['rating_cnt'], 1); ?> </div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -314,7 +314,7 @@ else {
 
     <section class="container my-5 text-center">
         <h2 class="fw-bold">Trivia</h2>
-        <p class="text-muted">Get to know a little bit more</p>
+        <p class="text-muted">Get to know Taal a little bit more</p>
         <div class="row align-items-center mx-auto">
             <div class="col-md-6 text-start">
                 <h4 class="fw-bold" style="text-align: justify; color: #102E47;">Did You Know? Taal is home to the largest Catholic church in Asia, the Basilica of St. Martin de Tours!</h4>

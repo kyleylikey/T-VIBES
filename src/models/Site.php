@@ -125,7 +125,7 @@ class Site {
     }
 
     public function getTopSites($currentYear) {
-        $query = "SELECT TOP 3 s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.price, s.status, SUM(t.companions) as visitor_count 
+        $query = "SELECT TOP 3 s.siteid, s.sitename, s.siteimage, s.description, s.opdays, s.rating as ratings, s.rating_cnt s.price, s.status, SUM(t.companions) as visitor_count 
                   FROM [taaltourismdb].[sites] s 
                   LEFT JOIN [taaltourismdb].[tour] t ON s.siteid = t.siteid AND t.status = 'accepted'
                   WHERE YEAR(t.date) = :currentYear 

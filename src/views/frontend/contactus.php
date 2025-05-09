@@ -123,9 +123,9 @@ if (!isset($_SESSION['usertype']) || $_SESSION['usertype'] !== 'trst') {
                 <div class="mt-3 p-3 d-flex align-items-center" style="background-color: #EC6350; color: white; border-radius: 0.5rem;">
                     <div class="icon">
                         <p><i class="fas fa-map-marker-alt"></i> Address </p>
-                        <p class="mb-0"><strong>Tourism Office of Taal</strong>
-                        Located beside Escuala Pia,
-                        Calle Gliceria Marella,
+                        <p class="mb-0"><strong>Tourism Office of Taal</strong><br>
+                        Located beside Escuala Pia,<br>
+                        Calle Gliceria Marella,<br>
                         Taal, Batangas, Philippines.
                         </p>
                     </div>
