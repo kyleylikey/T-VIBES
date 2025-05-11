@@ -1896,17 +1896,24 @@ function saveChanges() {
     document.getElementById("tour-date").value = selectedDate;
     
     const selectedSites = getSelectedSites();
-    
+
     fetch("tourrequest.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "selected_date=" + encodeURIComponent(selectedDate) + 
-              "&people_count=" + encodeURIComponent(peopleCount) + 
-              "&save_changes=true" + 
-              "&update_db=true" + 
-              "&destinations=" + encodeURIComponent(JSON.stringify(selectedSites))
+            "&people_count=" + encodeURIComponent(peopleCount) + 
+            "&save_changes=true" + 
+            "&update_db=true" + 
+            "&destinations=" + encodeURIComponent(JSON.stringify(selectedSites))
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text || `HTTP error! Status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             isEditMode = false;
@@ -1952,7 +1959,7 @@ function saveChanges() {
         Swal.fire({
             iconHtml: '<i class="fas fa-exclamation-circle"></i>',
             title: "Error!",
-            text: "An unexpected error occurred. Please try again.",
+            text: error.message || "An unexpected error occurred. Please try again.",
             timer: 3000,
             showConfirmButton: false,
             customClass: {
@@ -2905,7 +2912,6 @@ document.getElementById("submit-btn").addEventListener("click", function() {
                         setTimeout(() => {
                             window.location.href = window.location.href;  // Use full URL instead of reload()
                         }, 500);
-                        window.location.reload(); 
                     });
                 } else {
                     Swal.fire({
