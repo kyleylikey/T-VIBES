@@ -49,30 +49,27 @@ class Tour {
 
     public function getTourRequestList() {
             $query = "SELECT 
-                        t.tourid, 
-                        t.userid,
-                        t.status,
-                        t.date,
-                        t.companions,
-                        t.created_at,
-                        u.name, 
-                        COUNT(*) OVER (PARTITION BY t.tourid, t.userid) AS total_sites
-                    FROM 
-                        [taaltourismdb].[tour] t
-                    JOIN 
-                        [taaltourismdb].[users] u ON t.userid = u.userid
-                    WHERE 
-                        t.status = 'submitted'
-                    GROUP BY 
-                        t.tourid, 
-                        t.userid,
-                        t.status,
-                        t.date, 
-                        t.companions, 
-                        t.created_at,
-                        u.name
-                    ORDER BY 
-                        t.created_at DESC
+                            t.tourid,
+                            t.userid,
+                            MAX(t.status) AS status,
+                            MAX(t.date) AS date,
+                            MAX(t.companions) AS companions,
+                            MAX(t.created_at) AS created_at,
+                            MAX(u.name) AS name,
+                            COUNT(DISTINCT t.siteid) AS total_sites
+                        FROM 
+                            [taaltourismdb].[tour] t
+                        JOIN 
+                            [taaltourismdb].[users] u ON t.userid = u.userid
+                        JOIN
+                            [taaltourismdb].[sites] s ON t.siteid = s.siteid
+                        WHERE 
+                            t.status = 'submitted'
+                        GROUP BY 
+                            t.tourid,
+                            t.userid
+                        ORDER BY 
+                            MAX(t.created_at) DESC;
                 ";  
     
         $stmt = $this->conn->prepare($query);
@@ -156,30 +153,26 @@ class Tour {
         $query = "SELECT 
             t.tourid,
             t.userid,
-            t.status,
-            t.date,
-            t.companions,
-            t.created_at,
-            u.name,
-            COUNT(t.siteid) AS total_sites
+            MAX(t.status) AS status,
+            MAX(t.date) AS date,
+            MAX(t.companions) AS companions,
+            MAX(t.created_at) AS created_at,
+            MAX(u.name) AS name,
+            COUNT(DISTINCT t.siteid) AS total_sites
         FROM 
             [taaltourismdb].[tour] t
         JOIN 
             [taaltourismdb].[users] u ON t.userid = u.userid
+        JOIN
             [taaltourismdb].[sites] s ON t.siteid = s.siteid
         WHERE 
             t.userid = ? 
             AND t.status = 'submitted'
         GROUP BY 
             t.tourid,
-            t.userid,
-            t.status,
-            t.date,
-            t.companions,
-            t.created_at,
-            u.name
+            t.userid
         ORDER BY 
-            t.created_at DESC;
+            MAX(t.created_at) DESC;
         ";
                 
         $stmt = $this->conn->prepare($query);
