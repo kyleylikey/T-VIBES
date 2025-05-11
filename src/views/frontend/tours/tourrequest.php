@@ -273,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $userid = $_SESSION['userid'];
         
-        $stmt = $db->prepare("SELECT DISTINCT TOP 1 tourid FROM [taaltourismdb].[tour] WHERE userid = :userid ORDER BY created_at DESC");
+        $stmt = $db->prepare("SELECT TOP 1 tourid FROM [taaltourismdb].[tour] WHERE userid = :userid ORDER BY created_at DESC");
         $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -289,10 +289,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         try {
             $updateStmt = $db->prepare("UPDATE [taaltourismdb].[tour] 
-                           SET status = 'submitted', date = :date, companions = :companions 
-                           WHERE userid = :userid AND status = 'request'");
+               SET status = 'request', date = :date, companions = :companions 
+               WHERE tourid = :tourid AND userid = :userid");
             $updateStmt->bindParam(':date', $selectedDate);
-            $updateStmt->bindParam(':companions', $peopleCount, PDO::PARAM_INT);
+            $updateStmt->bindParam(':companions', $companions, PDO::PARAM_INT);
+            $updateStmt->bindParam(':tourid', $tourid, PDO::PARAM_INT);
             $updateStmt->bindParam(':userid', $userid, PDO::PARAM_INT);
             $updateStmt->execute();
             

@@ -282,18 +282,20 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
         }
 
         .btn-action {
+            text-align: center;
+            font-size: 14px;
+            width: 100px; 
             display: inline-block;
-            padding: 10px 20px;
+            padding: 8px 0;
             font-size: 16px;
             font-weight: bold;
             border: 2px solid #102E47;
-            border-radius: 25px;
+            border-radius: 20px;
             background-color: white;
             color: #434343;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-right: 10px;
-            margin-top: 10px;
+            margin: 5px auto;
             min-width: 80px;
             text-align: center;
             font-family: 'Nunito', sans-serif !important;
@@ -309,17 +311,6 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
             background-color: #102E47;
             color: #FFFFFF;
             font-weight: bold;
-        }
-
-        .btn-action {
-            display: block;
-            width: 100px; 
-            margin: 5px auto;
-            padding: 8px 0;
-            text-align: center;
-            font-size: 14px;
-            border-radius: 20px;
-            cursor: pointer;
         }
 
         .btn-action.cancel-tour {

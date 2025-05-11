@@ -48,18 +48,31 @@ class Tour {
     }
 
     public function getTourRequestList() {
-        $query = "SELECT 
-                    t.*, 
-                    u.name, 
-                    COUNT(*) OVER (PARTITION BY t.tourid, t.userid) AS total_sites
-                FROM 
-                    [taaltourismdb].[tour] t
-                JOIN 
-                    [taaltourismdb].[users] u ON t.userid = u.userid
-                WHERE 
-                    t.status = 'submitted'
-                ORDER BY 
-                    t.created_at DESC;
+            $query = "SELECT 
+                        t.tourid, 
+                        t.userid,
+                        t.status,
+                        t.date,
+                        t.companions,
+                        t.created_at,
+                        u.name, 
+                        COUNT(*) OVER (PARTITION BY t.tourid, t.userid) AS total_sites
+                    FROM 
+                        [taaltourismdb].[tour] t
+                    JOIN 
+                        [taaltourismdb].[users] u ON t.userid = u.userid
+                    WHERE 
+                        t.status = 'submitted'
+                    GROUP BY 
+                        t.tourid, 
+                        t.userid,
+                        t.status,
+                        t.date, 
+                        t.companions, 
+                        t.created_at,
+                        u.name
+                    ORDER BY 
+                        t.created_at DESC
                 ";  
     
         $stmt = $this->conn->prepare($query);
@@ -153,6 +166,7 @@ class Tour {
             [taaltourismdb].[tour] t
         JOIN 
             [taaltourismdb].[users] u ON t.userid = u.userid
+            [taaltourismdb].[sites] s ON t.siteid = s.siteid
         WHERE 
             t.userid = ? 
             AND t.status = 'submitted'
