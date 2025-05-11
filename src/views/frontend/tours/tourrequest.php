@@ -208,6 +208,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 $tourid = $result['next_tourid'];
 
+                $db->exec("SET IDENTITY_INSERT [taaltourismdb].[tour] ON");
+
+
                 // Now insert all destinations with the same tourid
                 foreach ($_SESSION['tour_destinations'] as $destination) {
                     $siteid = $destination['siteid'];
@@ -225,6 +228,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $successCount++;
                     }
                 }
+
+                $db->exec("SET IDENTITY_INSERT [taaltourismdb].[tour] OFF");
             
                 if ($successCount == count($_SESSION['tour_destinations'])) {
                     $db->commit();
@@ -307,6 +312,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
             $destinationsToAdd = array_diff($destinations, $currentDestinations);
             if (!empty($destinationsToAdd)) {
+                $db->exec("SET IDENTITY_INSERT [taaltourismdb].[tour] ON");
+
                 foreach ($destinationsToAdd as $siteid) {
                     $insertStmt = $db->prepare("INSERT INTO [taaltourismdb].[tour] (tourid, siteid, userid, status, date, companions, created_at) 
                                                 VALUES (:tourid, :siteid, :userid, 'request', :date, :companions, GETDATE())");
@@ -317,6 +324,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $insertStmt->bindParam(':companions', $companions, PDO::PARAM_INT);
                     $insertStmt->execute();
                 }
+                $db->exec("SET IDENTITY_INSERT [taaltourismdb].[tour] OFF");
+
             }
  
             $_SESSION['selected_tour_date'] = $selectedDate;
