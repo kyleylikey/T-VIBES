@@ -82,6 +82,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return;
     }
 
+    if (!preg_match('/^[a-zA-Z]+ [a-zA-Z ]+$/', $name)) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Full name must contain at least first and last name, and only alphabetic characters.'
+        ]);
+        return;
+    }
+
+    if (strlen($username) > 20) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Username cannot exceed 20 characters.'
+        ]);
+        return;
+    }
+
+    if (!preg_match('/^[a-zA-Z]/', $username)) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Username must start with an alphabetic character.'
+        ]);
+        return;
+    }
+
+    if (!preg_match('/^[a-zA-Z0-9]+$/', $username)) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Username can only contain letters and numbers.'
+        ]);
+        return;
+    }
+
     $signupController = new SignupController();
     $signupController->createAccount($name, $username, $password, $contactnum, $email);
 }
