@@ -248,40 +248,41 @@ $employeeName = $employee ? htmlspecialchars($employee['name']) : "Employee";
 
         .table th:nth-child(2), 
         .table td:nth-child(2) {
-            width: 25%; 
+            width: 20%; 
         }
 
         .table th:nth-child(3), 
         .table td:nth-child(3) {
-            width: 15%; 
+            width: 10%; 
         }
 
         .table th:nth-child(4), 
         .table td:nth-child(4) {
-            width: 20%; 
+            width: 10%; 
         }
 
         .table th:nth-child(5), 
         .table td:nth-child(5) {
-            width: 35%; 
+            width: 20%; 
         }
 
         .table th:nth-child(6), 
         .table td:nth-child(6) {
-            width: 15%; 
+            width: 10%; 
         }
 
         .table th:nth-child(7), 
         .table td:nth-child(7) {
-            width: 10%; 
+            width: 5%; 
         }
 
         .table th:nth-child(8), 
         .table td:nth-child(8) {
-            width: 15%; 
+            width: 20%; 
         }
 
         .btn-action {
+            display: inline-block;
             padding: 10px 20px;
             font-size: 16px;
             font-weight: bold;

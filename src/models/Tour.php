@@ -47,14 +47,6 @@ class Tour {
         return $stmt->execute();
     }
 
-    public function addToNewTour($siteid, $userid) {
-        $query = "INSERT INTO [taaltourismdb].[tour] (siteid, userid, status) VALUES (:siteid, :userid, 'request')";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':siteid', $siteid, PDO::PARAM_INT);
-        $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
-
     public function getTourRequestList() {
         $query = "SELECT 
                     t.*, 
