@@ -278,6 +278,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                             </button>
                         <?php endif; ?>
                         <tr>
+                            <th scope="col">#</th>
                             <th scope="col">Name</th>
                             <th scope="col">Username</th>
                             <th scope="col">Contact No.</th>
@@ -293,6 +294,7 @@ $adminName = $admin ? htmlspecialchars($admin['name']) : "Admin";
                                 id="user-<?php echo $account['userid']; ?>"
                                 onclick="showAccountModal('<?php echo $account['userid']; ?>', '<?php echo $account['name']; ?>', '<?php echo $account['username']; ?>', '<?php echo $account['contactnum']; ?>', '<?php echo $account['email']; ?>', '<?php echo $account['usertype']; ?>', '<?php echo $account['status']; ?>')"
                                 style="cursor: pointer;">
+                                <td></td>
                                 <td>
                                         <?php echo htmlspecialchars($account['name']); ?>
                                 </td>
