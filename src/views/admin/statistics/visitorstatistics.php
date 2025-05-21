@@ -32,13 +32,21 @@ try {
 $monthlyVisitors = array_fill(0, 12, 0);
 
 try {
-    $query = "SELECT MONTH(date) AS month, SUM(companions) AS monthly_visitors FROM (
-                SELECT userid, MONTH(date) AS month, companions, date
+    $query = "SELECT 
+                month, 
+                SUM(companions) AS monthly_visitors 
+            FROM (
+                SELECT 
+                    tourid,
+                    userid, 
+                    MONTH(date) AS month, 
+                    companions
                 FROM [taaltourismdb].[tour]
                 WHERE status = 'accepted' AND YEAR(date) = :currentYear
-                GROUP BY tourid, userid
+                GROUP BY tourid, userid, MONTH(date), companions, date
             ) AS distinct_tours
-            GROUP BY MONTH(date)";
+            GROUP BY month
+            ORDER BY month";
     
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':currentYear', $currentYear, PDO::PARAM_INT);

@@ -6,10 +6,10 @@ $database = new Database();
 $conn = $database->getConnection();
 
 $query = "SELECT s.sitename, SUM(t.companions) AS total_visitors 
-          FROM [taaltourismdb].[tour] t
-          JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
-          WHERE t.status = 'accepted'
-          GROUP BY t.siteid";
+        FROM [taaltourismdb].[tour] t
+        JOIN [taaltourismdb].[sites] s ON t.siteid = s.siteid
+        WHERE t.status = 'accepted'
+        GROUP BY t.siteid, s.sitename";
 
 $stmt = $conn->prepare($query);
 $stmt->execute();
