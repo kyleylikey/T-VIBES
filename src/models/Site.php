@@ -19,22 +19,21 @@ class Site {
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
         
-        $binaryData = '';
+        // Convert to hexadecimal string for SQL Server
+        $hexData = '';
         for ($i = 0; $i < 7; $i++) {
-            $binaryData .= chr(intval($opdays[$i]));
+            $hexData .= sprintf('%02X', intval($opdays[$i]));
         }
         
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
-                  VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
+                  VALUES (?, ?, ?, 0x{$hexData}, ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $siteName, PDO::PARAM_STR);
         $stmt->bindParam(2, $siteImage, PDO::PARAM_STR);
         $stmt->bindParam(3, $siteDescription, PDO::PARAM_STR);
-        $stmt->bindParam(4, $binaryData, PDO::PARAM_LOB);
-        $stmt->bindParam(5, $sitePrice, PDO::PARAM_INT);
+        $stmt->bindParam(4, $sitePrice, PDO::PARAM_INT);
         $stmt->execute();
     }
-    
 
     public function getSiteImage($siteId) {
         $query = "SELECT siteimage FROM [taaltourismdb].[sites] WHERE siteid = ?";
@@ -47,10 +46,10 @@ class Site {
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
         
-        // Convert binary string to actual binary data
-        $binaryData = '';
+        // Convert to hexadecimal string for SQL Server
+        $hexData = '';
         for ($i = 0; $i < 7; $i++) {
-            $binaryData .= chr(intval($opdays[$i]));
+            $hexData .= sprintf('%02X', intval($opdays[$i]));
         }
         
         if ($imageName) {
@@ -58,34 +57,31 @@ class Site {
                     sitename = ?, 
                     siteimage = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = 0x{$hexData}, 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindValue(1, $siteName, PDO::PARAM_STR);
             $stmt->bindValue(2, $imageName, PDO::PARAM_STR);
             $stmt->bindValue(3, $siteDescription, PDO::PARAM_STR);
-            $stmt->bindValue(4, $binaryData, PDO::PARAM_LOB);
-            $stmt->bindValue(5, $sitePrice, PDO::PARAM_INT);
-            $stmt->bindValue(6, $siteId, PDO::PARAM_INT);
+            $stmt->bindValue(4, $sitePrice, PDO::PARAM_INT);
+            $stmt->bindValue(5, $siteId, PDO::PARAM_INT);
             $stmt->execute();
         } else {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = 0x{$hexData}, 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindValue(1, $siteName, PDO::PARAM_STR);
             $stmt->bindValue(2, $siteDescription, PDO::PARAM_STR);
-            $stmt->bindValue(3, $binaryData, PDO::PARAM_LOB);
-            $stmt->bindValue(4, $sitePrice, PDO::PARAM_INT);
-            $stmt->bindValue(5, $siteId, PDO::PARAM_INT);
+            $stmt->bindValue(3, $sitePrice, PDO::PARAM_INT);
+            $stmt->bindValue(4, $siteId, PDO::PARAM_INT);
             $stmt->execute();
         }
     }
-
     public function getSites() {
         $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM [taaltourismdb].[sites] WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
