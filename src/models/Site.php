@@ -18,7 +18,11 @@ class Site {
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
-        $opdaysByte = pack('C', bindec($opdays));  // convert to binary byte
+        $opdaysArray = str_split($opdays);
+        $opdaysBytes = '';
+        foreach ($opdaysArray as $bit) {
+            $opdaysBytes .= pack('C', $bit === '1' ? 1 : 0);
+        }
         
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
                   VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
@@ -27,7 +31,7 @@ class Site {
             $siteName,
             $siteImage,
             $siteDescription,
-            $opdaysByte,
+            $opdaysBytes,
             $sitePrice
         ]);
     }
@@ -42,7 +46,11 @@ class Site {
 
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
-        $opdaysByte = pack('C', bindec($opdays));  // convert to binary byte
+        $opdaysArray = str_split($opdays);
+        $opdaysBytes = '';
+        foreach ($opdaysArray as $bit) {
+            $opdaysBytes .= pack('C', $bit === '1' ? 1 : 0);
+        }
         
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
@@ -57,7 +65,7 @@ class Site {
                 $siteName,
                 $imageName,
                 $siteDescription,
-                $opdaysByte,
+                $opdaysBytes,
                 $sitePrice,
                 $siteId
             ]);
@@ -72,7 +80,7 @@ class Site {
             $stmt->execute([
                 $siteName,
                 $siteDescription,
-                $opdaysByte,
+                $opdaysBytes,
                 $sitePrice,
                 $siteId
             ]);
