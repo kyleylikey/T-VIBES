@@ -18,7 +18,7 @@ class Site {
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt) 
-                    VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
+                    VALUES (?, CONVERT(varbinary(max), ?), ?, ?, ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             $siteName,
@@ -41,7 +41,7 @@ class Site {
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                       sitename = ?, 
-                      siteimage = ?, 
+                      siteimage = CONVERT(varbinary(max), ?), 
                       description = ?, 
                       opdays = ?, 
                       price = ? 
