@@ -17,17 +17,14 @@ class Site {
     }
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
-        // Convert the binary string to actual binary data
-        $binaryOpdays = pack('H*', bin2hex($opdays));
-        
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
-                  VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
+                  VALUES (?, ?, ?, CONVERT(VARBINARY(7), ?), ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             $siteName,
             $siteImage,
             $siteDescription,
-            $binaryOpdays,
+            $opdays,
             $sitePrice
         ]);
     }
@@ -41,15 +38,12 @@ class Site {
     }
 
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
-        // Convert the binary string to actual binary data
-        $binaryOpdays = pack('H*', bin2hex($opdays));
-        
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     siteimage = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = CONVERT(VARBINARY(7), ?), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
@@ -57,7 +51,7 @@ class Site {
                 $siteName,
                 $imageName,
                 $siteDescription,
-                $binaryOpdays,
+                $opdays,
                 $sitePrice,
                 $siteId
             ]);
@@ -65,14 +59,14 @@ class Site {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = CONVERT(VARBINARY(7), ?), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([
                 $siteName,
                 $siteDescription,
-                $binaryOpdays,
+                $opdays,
                 $sitePrice,
                 $siteId
             ]);
