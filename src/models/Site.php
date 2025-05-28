@@ -59,7 +59,7 @@ class Site {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = CONVERT(BINARY(7), ?), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
