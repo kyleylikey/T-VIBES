@@ -18,11 +18,7 @@ class Site {
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
-        $opdaysArray = str_split($opdays);
-        $opdaysBytes = '';
-        foreach ($opdaysArray as $bit) {
-            $opdaysBytes .= pack('C', $bit === '1' ? 1 : 0);
-        }
+        $opdaysBytes = $opdays;
         
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
                   VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
@@ -45,11 +41,7 @@ class Site {
 
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
-        $opdaysArray = str_split($opdays);
-        $opdaysBytes = '';
-        foreach ($opdaysArray as $bit) {
-            $opdaysBytes .= pack('C', $bit === '1' ? 1 : 0);
-        }
+        $opdaysBytes = $opdays;
         
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
