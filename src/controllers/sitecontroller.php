@@ -13,12 +13,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $siteName = $_POST["siteName"] ?? null;
         $sitePrice = $_POST["sitePrice"] ?? null;
         $siteDescription = $_POST["siteDescription"] ?? null;
-        $opdays = str_repeat("0", 7);
+    
+        // Initialize opdays as an array of "0"s
+        $opdaysArray = array_fill(0, 7, "0");
         if (!empty($_POST["adays"])) {
             foreach ($_POST["adays"] as $day) {
-                $opdays[$day] = "1";
+                $opdaysArray[$day] = "1"; // Update the corresponding index
             }
         }
+        $opdays = implode("", $opdaysArray); // Convert array to binary string
+    
         
         // Fix the file upload handling
         $siteImage = "";
@@ -51,12 +55,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $sitePrice = $_POST["sitePrice"] ?? null;
         $siteDescription = $_POST["siteDescription"] ?? null;
 
-        $opdays = str_repeat("0", 7);
+        // Initialize opdays as an array of "0"s
+        $opdaysArray = array_fill(0, 7, "0");
         if (!empty($_POST["editDays"])) {
             foreach ($_POST["editDays"] as $day) {
-                $opdays[$day] = "1";
+                $opdaysArray[$day] = "1"; // Update the corresponding index
             }
         }
+        $opdays = implode("", $opdaysArray); // Convert array to binary string
 
         $imageName = null;
         if (!empty($_FILES["imageUpload"]["name"])) {
