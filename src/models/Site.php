@@ -17,21 +17,17 @@ class Site {
     }
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
-        // Base64 encode the opdays before storing
-        $encodedOpdays = base64_encode($opdays);
-        
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
-                  VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
+                  VALUES (?, ?, ?, CONVERT(BINARY(7), ?), ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             $siteName,
             $siteImage,
             $siteDescription,
-            $encodedOpdays,
+            $opdays,
             $sitePrice
         ]);
     }
-    
 
     public function getSiteImage($siteId) {
         $query = "SELECT siteimage FROM [taaltourismdb].[sites] WHERE siteid = ?";
@@ -42,15 +38,12 @@ class Site {
     }
 
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
-        // Base64 encode the opdays before storing
-        $encodedOpdays = base64_encode($opdays);
-        
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     siteimage = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = CONVERT(BINARY(7), ?), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
@@ -58,7 +51,7 @@ class Site {
                 $siteName,
                 $imageName,
                 $siteDescription,
-                $encodedOpdays,
+                $opdays,
                 $sitePrice,
                 $siteId
             ]);
@@ -66,14 +59,14 @@ class Site {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = CONVERT(BINARY(7), ?), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([
                 $siteName,
                 $siteDescription,
-                $encodedOpdays,
+                $opdays,
                 $sitePrice,
                 $siteId
             ]);
@@ -84,31 +77,14 @@ class Site {
         $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM [taaltourismdb].[sites] WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Decode the opdays for each result
-        foreach ($results as &$result) {
-            if (isset($result['opdays'])) {
-                $result['opdays'] = base64_decode($result['opdays']);
-            }
-        }
-        
-        return $results;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     public function getSiteList() {
         $query = "SELECT * FROM " . $this->table;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Decode the opdays for each result
-        foreach ($results as &$result) {
-            if (isset($result['opdays'])) {
-                $result['opdays'] = base64_decode($result['opdays']);
-            }
-        }
-        
-        return $results;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     function getSiteDetails($siteid) {
         $db = new Database();
