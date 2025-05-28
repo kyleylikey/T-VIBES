@@ -94,17 +94,23 @@ document.addEventListener("DOMContentLoaded", function () {
             var siteDescription = this.getAttribute("data-sitedescription");
             var opdays = this.getAttribute("data-opdays");
             var price = this.getAttribute("data-price");
-
+    
             document.getElementById("editSiteId").value = siteId;
             document.getElementById("editSiteName").value = siteName;
             document.getElementById("editSitePrice").value = price;
             document.getElementById("editSiteDescription").value = siteDescription;
-
+    
+            // Store original values as data attributes
+            document.getElementById("editSiteName").setAttribute("data-original", siteName);
+            document.getElementById("editSitePrice").setAttribute("data-original", price);
+            document.getElementById("editSiteDescription").setAttribute("data-original", siteDescription);
+            document.getElementById("editSiteId").setAttribute("data-original-days", opdays);
+    
             var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
             for (var i = 0; i < 7; i++) {
                 document.getElementById("edit" + days[i]).checked = opdays[i] === "1";
             }
-
+    
             if (siteImage) {
                 document.getElementById("editPreviewImage").src = "https://tourtaal.azurewebsites.net/public/uploads/" + siteImage;
                 document.getElementById("editPreviewImage").style.display = "block";
@@ -113,10 +119,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("editPreviewImage").style.display = "none";
                 document.getElementById("editPreviewIcon").style.display = "block";
             }
-
+    
             var editModal = new bootstrap.Modal(document.getElementById("editTouristSitesModal"));
             editModal.show();
         });
+    
     });
 
     document.querySelector("#editTouristSitesModal .btn-custom").addEventListener("click", function (event) {
@@ -138,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         let selectedDays = selectedDaysArray.join("");
     
-        if (!siteName || !sitePrice || !siteDescription || selectedDays.length === 0) {
+        if (!siteName || !sitePrice || !siteDescription || !selectedDays.includes("1")) {
             Swal.fire({
                 iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                 title: "Please fill out all fields!",

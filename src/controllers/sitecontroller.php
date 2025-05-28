@@ -58,20 +58,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $siteName = $_POST["siteName"] ?? null;
         $sitePrice = $_POST["sitePrice"] ?? null;
         $siteDescription = $_POST["siteDescription"] ?? null;
-
+    
+        // Debug: Log what we're receiving
+        error_log("POST data received:");
+        error_log("editDays: " . print_r($_POST["editDays"] ?? [], true));
+        
         // Initialize opdays as an array of "0"s
         $opdaysArray = array_fill(0, 7, "0");
         if (!empty($_POST["editDays"])) {
             foreach ($_POST["editDays"] as $day) {
                 // Convert string values to integers if needed
                 $dayIndex = (int)$day;
+                error_log("Processing day: $day, converted to index: $dayIndex");
                 if ($dayIndex >= 0 && $dayIndex <= 6) {
                     $opdaysArray[$dayIndex] = "1";
+                    error_log("Set opdaysArray[$dayIndex] = 1");
                 }
             }
         }
         $opdays = implode("", $opdaysArray);
-
+        error_log("Final opdays string: $opdays");
+        error_log("Final opdaysArray: " . print_r($opdaysArray, true));
+    
         $imageName = null;
         if (!empty($_FILES["imageUpload"]["name"])) {
             $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/public/uploads/';
