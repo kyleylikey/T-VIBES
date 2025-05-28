@@ -13,16 +13,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $siteName = $_POST["siteName"] ?? null;
         $sitePrice = $_POST["sitePrice"] ?? null;
         $siteDescription = $_POST["siteDescription"] ?? null;
-
         $opdays = str_repeat("0", 7);
         if (!empty($_POST["adays"])) {
             foreach ($_POST["adays"] as $day) {
                 $opdays[$day] = "1";
             }
         }
-
-        $siteImage = $_FILES["imageUpload"]["name"] ?? "";
-
+        
+        // Fix the file upload handling
+        $siteImage = "";
+        if (!empty($_FILES["imageUpload"]["name"])) {
+            $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/public/uploads/';
+            $siteImage = basename($_FILES["imageUpload"]["name"]);
+            $targetFilePath = $targetDir . $siteImage;
+            
+            if (!move_uploaded_file($_FILES["imageUpload"]["tmp_name"], $targetFilePath)) {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to upload image.']);
+                exit();
+            }
+        }
+        
         if ($siteName && $sitePrice && $siteDescription) {
             $siteModel->addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage);
             $logs = new Logs();
