@@ -18,22 +18,14 @@ class Site {
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
-        error_log("Site.php addSite - Input opdays: " . $opdays);
-        
-        // Convert to hexadecimal string using ASCII values for SQL Server
         $hexData = '';
         for ($i = 0; $i < 7; $i++) {
             $hexByte = sprintf('%02X', ord($opdays[$i])); // Use ord() to get ASCII value
             $hexData .= $hexByte;
-            error_log("Site.php addSite - Byte $i: '{$opdays[$i]}' -> ASCII: " . ord($opdays[$i]) . " -> hex: $hexByte");
         }
-        error_log("Site.php addSite - Final hexData: $hexData");
-        error_log("Site.php addSite - SQL will use: 0x{$hexData}");
         
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
-                  VALUES (?, ?, ?, 0x{$hexData}, ?, 'displayed', 0, 0)";
-        error_log("Site.php addSite - Final query: $query");
-        
+                  VALUES (?, ?, ?, 0x{$hexData}, ?, 'displayed', 0, 0)";        
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $siteName, PDO::PARAM_STR);
         $stmt->bindParam(2, $siteImage, PDO::PARAM_STR);
@@ -52,18 +44,12 @@ class Site {
 
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
-        error_log("Site.php editSite - Input opdays: " . $opdays);
-        
-        // Convert to hexadecimal string using ASCII values for SQL Server
         $hexData = '';
         for ($i = 0; $i < 7; $i++) {
             $hexByte = sprintf('%02X', ord($opdays[$i])); // Use ord() to get ASCII value
             $hexData .= $hexByte;
-            error_log("Site.php editSite - Byte $i: '{$opdays[$i]}' -> ASCII: " . ord($opdays[$i]) . " -> hex: $hexByte");
         }
-        error_log("Site.php editSite - Final hexData: $hexData");
-        error_log("Site.php editSite - SQL will use: 0x{$hexData}");
-        
+
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
@@ -72,7 +58,6 @@ class Site {
                     opdays = 0x{$hexData}, 
                     price = ? 
                     WHERE siteid = ?";
-            error_log("Site.php editSite - Query with image: $query");
             $stmt = $this->conn->prepare($query);
             $stmt->bindValue(1, $siteName, PDO::PARAM_STR);
             $stmt->bindValue(2, $imageName, PDO::PARAM_STR);
@@ -87,7 +72,6 @@ class Site {
                     opdays = 0x{$hexData}, 
                     price = ? 
                     WHERE siteid = ?";
-            error_log("Site.php editSite - Query without image: $query");
             $stmt = $this->conn->prepare($query);
             $stmt->bindValue(1, $siteName, PDO::PARAM_STR);
             $stmt->bindValue(2, $siteDescription, PDO::PARAM_STR);
