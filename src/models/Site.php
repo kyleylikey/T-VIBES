@@ -18,7 +18,7 @@ class Site {
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt) 
-                    VALUES (?, ?, ?), ?, ?, ?, 'displayed', 0, 0)";
+                    VALUES (?, ?, ?, ?, ?, ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             $siteName,
