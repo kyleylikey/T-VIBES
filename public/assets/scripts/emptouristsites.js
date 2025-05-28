@@ -126,13 +126,18 @@ document.addEventListener("DOMContentLoaded", function () {
         let originalSitePrice = document.getElementById("editSitePrice").getAttribute("data-original");
         let originalSiteDescription = document.getElementById("editSiteDescription").getAttribute("data-original");
         let originalDays = document.getElementById("editSiteId").getAttribute("data-original-days");
-
+    
         let siteName = document.getElementById("editSiteName").value.trim();
         let sitePrice = document.getElementById("editSitePrice").value.trim();
         let siteDescription = document.getElementById("editSiteDescription").value.trim();
-        let selectedDays = Array.from(document.querySelectorAll("input[name='editDays[]']:checked"))
-            .map(day => day.value).join("");
-
+        
+        // Fix the selectedDays logic to create proper binary string
+        let selectedDaysArray = Array(7).fill("0");
+        document.querySelectorAll("input[name='editDays[]']:checked").forEach(checkbox => {
+            selectedDaysArray[parseInt(checkbox.value)] = "1";
+        });
+        let selectedDays = selectedDaysArray.join("");
+    
         if (!siteName || !sitePrice || !siteDescription || selectedDays.length === 0) {
             Swal.fire({
                 iconHtml: '<i class="fas fa-exclamation-circle"></i>',
@@ -147,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             return;
         }
-
+    
         if (siteName === originalSiteName && sitePrice === originalSitePrice && siteDescription === originalSiteDescription && selectedDays === originalDays) {
             Swal.fire({
                 iconHtml: '<i class="fas fa-info-circle"></i>',
