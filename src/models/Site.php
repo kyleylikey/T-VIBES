@@ -21,7 +21,7 @@ class Site {
         $opdaysBytes = $opdays;
         
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
-                  VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
+                  VALUES (?, ?, ?, CONVERT(binary(7), ?), ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $siteName, PDO::PARAM_STR);
         $stmt->bindParam(2, $siteImage, PDO::PARAM_STR);
@@ -48,7 +48,7 @@ class Site {
                     sitename = ?, 
                     siteimage = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = CONVERT(binary(7), ?), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
@@ -64,7 +64,7 @@ class Site {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     description = ?, 
-                    opdays = ?, 
+                    opdays = CONVERT(binary(7), ?), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
