@@ -20,14 +20,20 @@ class Site {
         // Ensure opdays is exactly 7 characters
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
         
+        // Convert string to binary bytes (ASCII values)
+        $binaryOpdays = '';
+        for ($i = 0; $i < 7; $i++) {
+            $binaryOpdays .= chr(ord($opdays[$i]));
+        }
+        
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
-                  VALUES (?, ?, ?, CAST(? AS BINARY(7)), ?, 'displayed', 0, 0)";
+                  VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             $siteName,
             $siteImage,
             $siteDescription,
-            $opdays,
+            $binaryOpdays,
             $sitePrice
         ]);
     }
@@ -44,12 +50,18 @@ class Site {
         // Ensure opdays is exactly 7 characters
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
         
+        // Convert string to binary bytes (ASCII values)
+        $binaryOpdays = '';
+        for ($i = 0; $i < 7; $i++) {
+            $binaryOpdays .= chr(ord($opdays[$i]));
+        }
+        
         if ($imageName) {
-            $query = "UPDATE [taaltourismdb].[sites] SET s
+            $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     siteimage = ?, 
                     description = ?, 
-                    opdays = CAST(? AS BINARY(7)), 
+                    opdays = ?, 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
@@ -57,7 +69,7 @@ class Site {
                 $siteName,
                 $imageName,
                 $siteDescription,
-                $opdays,
+                $binaryOpdays,
                 $sitePrice,
                 $siteId
             ]);
@@ -65,19 +77,20 @@ class Site {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     description = ?, 
-                    opdays = CAST(? AS BINARY(7)), 
+                    opdays = ?, 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([
                 $siteName,
                 $siteDescription,
-                $opdays,
+                $binaryOpdays,
                 $sitePrice,
                 $siteId
             ]);
         }
     }
+
     public function getSites() {
         $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM [taaltourismdb].[sites] WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
