@@ -41,7 +41,7 @@ class Site {
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
-                    siteimage = ?, 
+                    siteimage = CONVERT(varbinary(max), ?), 
                     description = ?, 
                     opdays = ?, 
                     price = ? 
