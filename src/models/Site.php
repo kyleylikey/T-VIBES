@@ -20,12 +20,12 @@ class Site {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
         error_log("Site.php addSite - Input opdays: " . $opdays);
         
-        // Convert to hexadecimal string for SQL Server
+        // Convert to hexadecimal string using ASCII values for SQL Server
         $hexData = '';
         for ($i = 0; $i < 7; $i++) {
-            $hexByte = sprintf('%02X', intval($opdays[$i]));
+            $hexByte = sprintf('%02X', ord($opdays[$i])); // Use ord() to get ASCII value
             $hexData .= $hexByte;
-            error_log("Site.php addSite - Byte $i: '{$opdays[$i]}' -> int: " . intval($opdays[$i]) . " -> hex: $hexByte");
+            error_log("Site.php addSite - Byte $i: '{$opdays[$i]}' -> ASCII: " . ord($opdays[$i]) . " -> hex: $hexByte");
         }
         error_log("Site.php addSite - Final hexData: $hexData");
         error_log("Site.php addSite - SQL will use: 0x{$hexData}");
@@ -50,17 +50,16 @@ class Site {
         return $result ? $result['siteimage'] : null;
     }
 
-
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
         error_log("Site.php editSite - Input opdays: " . $opdays);
         
-        // Convert to hexadecimal string for SQL Server
+        // Convert to hexadecimal string using ASCII values for SQL Server
         $hexData = '';
         for ($i = 0; $i < 7; $i++) {
-            $hexByte = sprintf('%02X', intval($opdays[$i]));
+            $hexByte = sprintf('%02X', ord($opdays[$i])); // Use ord() to get ASCII value
             $hexData .= $hexByte;
-            error_log("Site.php editSite - Byte $i: '{$opdays[$i]}' -> int: " . intval($opdays[$i]) . " -> hex: $hexByte");
+            error_log("Site.php editSite - Byte $i: '{$opdays[$i]}' -> ASCII: " . ord($opdays[$i]) . " -> hex: $hexByte");
         }
         error_log("Site.php editSite - Final hexData: $hexData");
         error_log("Site.php editSite - SQL will use: 0x{$hexData}");
@@ -97,7 +96,7 @@ class Site {
             $stmt->execute();
         }
     }
-    
+
     public function getSites() {
         $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM [taaltourismdb].[sites] WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
