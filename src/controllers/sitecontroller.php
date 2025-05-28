@@ -52,12 +52,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         if (!empty($_FILES["imageUpload"]["name"])) {
             $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/public/uploads/';
             $imageName = basename($_FILES["imageUpload"]["name"]);
-            $targetFilePath = $_SERVER['DOCUMENT_ROOT'] . $targetDir . $imageName;
+            $targetFilePath = $targetDir . $imageName;
 
             if (move_uploaded_file($_FILES["imageUpload"]["tmp_name"], $targetFilePath)) {
                 $siteModel->editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName);
                 $logs = new Logs();
                 $logs->logEditSite($_SESSION['userid'], $siteName);
+                header("Location: touristsites.php");
             }
         } else {
             $siteModel->editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays);

@@ -40,12 +40,12 @@ class Site {
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
-                      sitename = ?, 
-                      siteimage = CONVERT(varbinary(max), ?), 
-                      description = ?, 
-                      opdays = ?, 
-                      price = ? 
-                      WHERE siteid = ?";
+                    sitename = ?, 
+                    siteimage = ?, 
+                    description = ?, 
+                    opdays = ?, 
+                    price = ? 
+                    WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([
                 $siteName,
@@ -57,11 +57,11 @@ class Site {
             ]);
         } else {
             $query = "UPDATE [taaltourismdb].[sites] SET 
-                      sitename = ?, 
-                      description = ?, 
-                      opdays = ?, 
-                      price = ? 
-                      WHERE siteid = ?";
+                    sitename = ?, 
+                    description = ?, 
+                    opdays = ?, 
+                    price = ? 
+                    WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([
                 $siteName,
@@ -72,6 +72,7 @@ class Site {
             ]);
         }
     }
+
     public function getSites() {
         $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM [taaltourismdb].[sites] WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
