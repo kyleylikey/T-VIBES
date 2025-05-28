@@ -17,8 +17,11 @@ class Site {
     }
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
+        // Ensure opdays is exactly 7 characters
+        $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
+        
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
-                  VALUES (?, ?, ?, CONVERT(VARBINARY(MAX), ?), ?, 'displayed', 0, 0)";
+                  VALUES (?, ?, ?, CAST(? AS BINARY(7)), ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             $siteName,
@@ -38,12 +41,15 @@ class Site {
     }
 
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
+        // Ensure opdays is exactly 7 characters
+        $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
+        
         if ($imageName) {
-            $query = "UPDATE [taaltourismdb].[sites] SET 
+            $query = "UPDATE [taaltourismdb].[sites] SET s
                     sitename = ?, 
                     siteimage = ?, 
                     description = ?, 
-                    opdays = CONVERT(VARBINARY(MAX), ?), 
+                    opdays = CAST(? AS BINARY(7)), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
@@ -59,7 +65,7 @@ class Site {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     description = ?, 
-                    opdays = CONVERT(VARBINARY(MAX), ?), 
+                    opdays = CAST(? AS BINARY(7)), 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
@@ -72,7 +78,6 @@ class Site {
             ]);
         }
     }
-
     public function getSites() {
         $query = "SELECT siteid, sitename, siteimage, description, opdays, rating, price, rating_cnt FROM [taaltourismdb].[sites] WHERE status = 'displayed'";
         $stmt = $this->conn->prepare($query);
