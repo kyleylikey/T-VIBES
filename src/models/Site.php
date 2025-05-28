@@ -72,7 +72,7 @@ class Site {
             $stmt->execute([
                 $siteName,
                 $siteDescription,
-                $opdays,
+                $opdaysByte,
                 $sitePrice,
                 $siteId
             ]);
