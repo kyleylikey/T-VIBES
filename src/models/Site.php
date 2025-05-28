@@ -17,17 +17,17 @@ class Site {
     }
 
     public function addSite($siteName, $sitePrice, $siteDescription, $opdays, $siteImage) {
-        // Ensure opdays is exactly 7 characters
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
+        $opdaysByte = pack('C', bindec($opdays));  // convert to binary byte
         
         $query = "INSERT INTO [taaltourismdb].[sites] (sitename, siteimage, description, opdays, price, status, rating, rating_cnt)
-                  VALUES (?, ?, ?, CONVERT(BINARY(7), ?), ?, 'displayed', 0, 0)";
+                  VALUES (?, ?, ?, ?, ?, 'displayed', 0, 0)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             $siteName,
             $siteImage,
             $siteDescription,
-            $opdays,
+            $opdaysByte,
             $sitePrice
         ]);
     }
@@ -41,15 +41,15 @@ class Site {
     }
 
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
-        // Ensure opdays is exactly 7 characters
         $opdays = str_pad(substr($opdays, 0, 7), 7, '0', STR_PAD_RIGHT);
+        $opdaysByte = pack('C', bindec($opdays));  // convert to binary byte
         
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
                     sitename = ?, 
                     siteimage = ?, 
                     description = ?, 
-                    opdays = CONVERT(BINARY(7), ?), 
+                    opdays = ?, 
                     price = ? 
                     WHERE siteid = ?";
             $stmt = $this->conn->prepare($query);
@@ -57,7 +57,7 @@ class Site {
                 $siteName,
                 $imageName,
                 $siteDescription,
-                $opdays,
+                $opdaysByte,
                 $sitePrice,
                 $siteId
             ]);
