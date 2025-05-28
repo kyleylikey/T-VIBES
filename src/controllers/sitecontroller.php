@@ -18,10 +18,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $opdaysArray = array_fill(0, 7, "0");
         if (!empty($_POST["adays"])) {
             foreach ($_POST["adays"] as $day) {
-                $opdaysArray[$day] = "1"; // Update the corresponding index
+                // Convert string values to integers if needed
+                $dayIndex = (int)$day;
+                if ($dayIndex >= 0 && $dayIndex <= 6) {
+                    $opdaysArray[$dayIndex] = "1";
+                }
             }
         }
-        $opdays = implode("", $opdaysArray); // Convert array to binary string
+        $opdays = implode("", $opdaysArray);
     
         
         // Fix the file upload handling
@@ -59,10 +63,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $opdaysArray = array_fill(0, 7, "0");
         if (!empty($_POST["editDays"])) {
             foreach ($_POST["editDays"] as $day) {
-                $opdaysArray[$day] = "1"; // Update the corresponding index
+                // Convert string values to integers if needed
+                $dayIndex = (int)$day;
+                if ($dayIndex >= 0 && $dayIndex <= 6) {
+                    $opdaysArray[$dayIndex] = "1";
+                }
             }
         }
-        $opdays = implode("", $opdaysArray); // Convert array to binary string
+        $opdays = implode("", $opdaysArray);
 
         $imageName = null;
         if (!empty($_FILES["imageUpload"]["name"])) {
