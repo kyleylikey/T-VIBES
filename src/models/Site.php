@@ -29,6 +29,14 @@ class Site {
         ]);
     }
 
+    public function getSiteImage($siteId) {
+        $query = "SELECT siteimage FROM [taaltourismdb].[sites] WHERE siteid = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$siteId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['siteimage'] : null;
+    }
+
     public function editSite($siteId, $siteName, $sitePrice, $siteDescription, $opdays, $imageName = null) {
         if ($imageName) {
             $query = "UPDATE [taaltourismdb].[sites] SET 
@@ -138,9 +146,22 @@ class Site {
     }
 
     public function deleteSite($siteId) {
+        $imageFilename = $this->getSiteImage($siteId);
+        
+        // Delete the database record
         $deleteQuery = "DELETE FROM [taaltourismdb].[sites] WHERE siteid = ?";
         $stmt = $this->conn->prepare($deleteQuery);
-        return $stmt->execute([$siteId]);
+        $success = $stmt->execute([$siteId]);
+        
+        // If database deletion was successful and we have an image filename, delete the file
+        if ($success && $imageFilename) {
+            $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/public/uploads/' . $imageFilename;
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+        
+        return $success;
     }
 
     public static function binaryToDays($binaryString) {

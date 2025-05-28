@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
 
         $imageName = null;
         if (!empty($_FILES["imageUpload"]["name"])) {
-            $targetDir = "https://tourtaal.azurewebsites.net/public/uploads/";
+            $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/public/uploads/';
             $imageName = basename($_FILES["imageUpload"]["name"]);
             $targetFilePath = $_SERVER['DOCUMENT_ROOT'] . $targetDir . $imageName;
 
@@ -70,6 +70,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_site'])) {
     $siteId = intval($_POST['delete_site']);
+    
+    $siteDetails = $siteModel->getSiteDetails($siteId);    
     $success = $siteModel->deleteSite($siteId);
 
     if ($success) {
